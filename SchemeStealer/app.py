@@ -228,7 +228,7 @@ if 'engine' not in st.session_state:
         st.session_state.engine = SchemeStealerEngine('paints.json')
         logger.info("Engine loaded successfully")
     except Exception as e:
-        st.error(f"âŒ Cogitator Failure: {e}")
+        st.error(f"❌ Cogitator Failure: {e}")
         logger.error(f"Engine initialization failed: {e}", exc_info=True)
         st.stop()
 
@@ -294,7 +294,7 @@ tab1, tab2 = st.tabs(["🧬 AUSPEX SCAN", "🌌 INSPIRATION PROTOCOLS"])
 # ============================================================================
 
 with st.sidebar:
-    st.header("ðŸŒ Sector / Region")
+    st.header("🌍 Sector / Region")
     region_option = st.selectbox(
         "Select Supply Drop Zone:",
         options=list(Affiliate.REGIONS.keys()),
@@ -304,7 +304,7 @@ with st.sidebar:
     
     st.divider()
     
-    st.header("âš™ï¸ Cogitator Settings")
+    st.header("⚙️ Cogitator Settings")
     
     # Mode selection only relevant for Tab 1 really, but kept here for global context
     # We will override these for Tab 2
@@ -331,7 +331,7 @@ with st.sidebar:
         help="Detect sub-patterns (trim, lenses, purity seals)"
     )
     
-    with st.expander("ðŸ”¬ Tech-Priest Override (Optional)", expanded=False):
+    with st.expander("🔬 Tech-Priest Override (Optional)", expanded=False):
         use_awb = st.checkbox(
             "Auto-Lumen Calibration", 
             value=True,
@@ -353,7 +353,7 @@ with st.sidebar:
     st.divider()
     
     st.markdown("""
-    ### ðŸ’¡ Tactica: Imaging
+    ### 💡 Tactica: Imaging
     - Ensure **Lumen** levels are adequate (Diffuse Light).
     - Avoid **Flare** on Power Armour (Glare).
     - Maintain **Macro** distance.
@@ -371,7 +371,7 @@ with tab1:
 
     # File uploader
     uploaded_file = st.file_uploader(
-        "ðŸ“¤ Upload Pict-Capture (Miniature)",
+        "📤 Upload Pict-Capture (Miniature)",
         type=["jpg", "jpeg", "png"],
         help=f"Max {Mobile.MAX_IMAGE_UPLOAD_SIZE}MB",
         key="uploader_auspex"
@@ -405,7 +405,7 @@ with tab1:
             
             # Show issues/warnings if any
             if feedback['show_details']:
-                with st.expander("⚠️ Signal Interference Detected", expanded=True):
+                with st.expander("⚠️ Signal Interference Detected", expanded=True):
                     if quality_report.issues:
                         st.error("**Critical Errors:**")
                         for issue in quality_report.issues:
@@ -465,6 +465,38 @@ with tab1:
                         else:
                             st.success(f"✅ Cogitator Analysis Successful - {len(recipes)} Pigment Patterns Found")
                             
+                            # === ANALYTICS & DISCLAIMER (NEW v2.1) ===
+                            
+                            # 1. SANITIZE DATA: Create a clean copy of recipes for logging
+                            # We must remove the 'reticle' (image) and ensure RGB is a simple list
+                            log_recipes = []
+                            for r in recipes:
+                                r_copy = r.copy()
+                                if 'reticle' in r_copy:
+                                    del r_copy['reticle']  # Remove the numpy image array
+                                if 'rgb_preview' in r_copy and hasattr(r_copy['rgb_preview'], 'tolist'):
+                                    r_copy['rgb_preview'] = r_copy['rgb_preview'].tolist()
+                                log_recipes.append(r_copy)
+
+                            # 2. LOG SCAN
+                            scan_id = st.session_state.feedback_logger.log_scan({
+                                'image_size': raw_img.shape,
+                                'quality_score': quality_report.score,
+                                'recipes': log_recipes,  # <--- Send the clean version here
+                                'mode': mode_key,
+                                'brands': Affiliate.SUPPORTED_BRANDS
+                            })
+                            st.session_state.current_scan_id = scan_id
+                            
+                            # Track analytics
+                            st.session_state.analytics.track_scan(
+                                mode=mode_key,
+                                num_colors=len(recipes),
+                                quality_score=quality_report.score
+                            )
+                            
+                            # Show smart contextual disclaimer
+                            show_smart_disclaimer(recipes, quality_report.score)
                             # ===== COLOR PALETTE PREVIEW =====
                             st.markdown("### 🎨 Detected Pigments")
                             
@@ -484,7 +516,7 @@ with tab1:
                                         st.markdown(f"""
                                             <div class="palette-box" style="background-color: {color_css};"></div>
                                             <div class="palette-label">{recipe['family']}</div>
-                                        """, unsafe_allow_html=True)
+                                            """, unsafe_allow_html=True)
                             
                             # Show detail colors
                             if detail_colors:
@@ -498,7 +530,7 @@ with tab1:
                                         st.markdown(f"""
                                             <div class="palette-box" style="background-color: {color_css}; height: 40px;"></div>
                                             <div class="palette-label">{recipe['family']}</div>
-                                        """, unsafe_allow_html=True)
+                                            """, unsafe_allow_html=True)
                             
                             st.divider()
                             
@@ -535,7 +567,7 @@ with tab1:
                                             if match:
                                                 paint_name = match['name']
                                                 affiliate_url = get_affiliate_link(brand, paint_name, region_option)
-                                                link_html = f"<a href='{affiliate_url}' target='_blank'>{paint_name} ðŸ›’</a>"
+                                                link_html = f"<a href='{affiliate_url}' target='_blank'>{paint_name} 🛒</a>"
                                                 st.markdown(
                                                     f"<span class='{css_class}'>{brand}:</span> {link_html}",
                                                     unsafe_allow_html=True
@@ -549,13 +581,271 @@ with tab1:
                                         st.markdown("")
                                     
                                     # Render layers
-                                    render_paint_layer("🛡️ Base", recipe['base'])
+                                    render_paint_layer("🛡️ Base", recipe['base'])
                                     render_paint_layer("✨ Highlight", recipe['highlight'])
                                     
-                                    shade_label = "ðŸ’§ Wash" if recipe['shade_type'] == 'wash' else "🌑 Shade"
+                                    shade_label = "💧 Wash" if recipe['shade_type'] == 'wash' else "🌑 Shade"
                                     render_paint_layer(shade_label, recipe['shade'])
                                 
                                 st.divider()
+                    
+                            # === ADDITION #2: FEEDBACK SYSTEM (NEW v2.1) ===
+                            st.divider()
+                            st.markdown("### 📊 How Did We Do?")
+                            st.caption("Your feedback helps us improve the algorithm")
+                            
+                            col_fb1, col_fb2, col_fb3 = st.columns([1, 1, 2])
+                            
+                            with col_fb1:
+                                if st.button("👍 Accurate", key="thumbs_up_tab1", use_container_width=True):
+                                    scan_id = st.session_state.get('current_scan_id')
+                                    if scan_id:
+                                        st.session_state.feedback_logger.log_feedback(
+                                            scan_id, 'thumbs_up', rating=5
+                                        )
+                                        st.session_state.analytics.track_feature_usage('feedback_positive')
+                                        st.success("Thanks! 🎉")
+                            
+                            with col_fb2:
+                                if st.button("👎 Needs Work", key="thumbs_down_tab1", use_container_width=True):
+                                    st.session_state.show_correction_form = True
+                                    st.rerun()
+                            
+                            with col_fb3:
+                                if st.button("📊 View Stats", key="stats_tab1", use_container_width=True):
+                                    stats = st.session_state.feedback_logger.get_scan_stats()
+                                    st.info(
+                                        f"📈 **{stats['total_scans']}** scans completed\n\n"
+                                        f"😊 **{stats['satisfaction_rate']*100:.0f}%** satisfaction rate"
+                                    )
+                            
+                            # Correction form (appears after thumbs down)
+                            if st.session_state.get('show_correction_form', False):
+                                st.divider()
+                                with st.expander("📝 Help Us Improve", expanded=True):
+                                    st.markdown("**What needs improvement?**")
+                                    
+                                    issues = st.multiselect(
+                                        "Select all issues:",
+                                        [
+                                            "Wrong color detected",
+                                            "Missing accent colors",
+                                            "Wrong paint recommendation",
+                                            "Base not removed properly",
+                                            "Metallic detection wrong",
+                                            "Other issue"
+                                        ],
+                                        key="correction_issues"
+                                    )
+                                    
+                                    comments = st.text_area(
+                                        "Additional details (optional):",
+                                        placeholder="E.g., 'The gold trim was detected as brown'",
+                                        key="correction_comments"
+                                    )
+                                    
+                                    col1, col2 = st.columns([1, 1])
+                                    with col1:
+                                        if st.button("✅ Submit Feedback", key="submit_correction", type="primary"):
+                                            scan_id = st.session_state.get('current_scan_id')
+                                            if scan_id and (issues or comments):
+                                                st.session_state.feedback_logger.log_feedback(
+                                                    scan_id,
+                                                    'correction',
+                                                    rating=2,
+                                                    corrections=[{'issues': issues}],
+                                                    comments=comments
+                                                )
+                                                st.success("✅ Feedback submitted. Thank you!")
+                                                st.session_state.show_correction_form = False
+                                                st.rerun()
+                                            else:
+                                                st.warning("⚠️ Please select at least one issue or add a comment")
+                                    
+                                    with col2:
+                                        if st.button("❌ Cancel", key="cancel_correction"):
+                                            st.session_state.show_correction_form = False
+                                            st.rerun()
+
+                            # === ADDITION #3: SHOPPING CART (NEW v2.1) ===
+                            st.divider()
+                            st.markdown("### 🛒 Build Your Shopping List")
+                            st.info("💡 **Tip:** Select base paints for main colors, add highlights/shades as needed")
+                            
+                            selected_paints = []
+                            
+                            # Paint selection for each recipe
+                            for idx, recipe in enumerate(recipes):
+                                is_detail = recipe.get('is_detail', False)
+                                
+                                # Build header with badges
+                                header = f"{recipe['family']} ({recipe['dominance']:.1f}%)"
+                                if is_detail:
+                                    header = "⭐ " + header
+                                
+                                with st.expander(f"📦 {header}", expanded=(idx < 3 and not is_detail)):
+                                    # Brand selector
+                                    selected_brand = st.selectbox(
+                                        "Preferred brand:",
+                                        options=Affiliate.SUPPORTED_BRANDS,
+                                        index=0,  # Default to first brand (Citadel)
+                                        key=f"brand_select_{idx}",
+                                        help="Different brands have different paint availability"
+                                    )
+                                    
+                                    st.markdown("**Select paints to add:**")
+                                    
+                                    # Base paint
+                                    base_match = recipe['base'].get(selected_brand)
+                                    if base_match:
+                                        col1, col2 = st.columns([1, 3])
+                                        with col1:
+                                            base_selected = st.checkbox(
+                                                "🛡️", 
+                                                value=True,  # Pre-check base paints
+                                                key=f"check_base_{idx}",
+                                                help="Base layer"
+                                            )
+                                        with col2:
+                                            st.markdown(f"**Base:** {base_match['name']}")
+                                        
+                                        if base_selected:
+                                            selected_paints.append({
+                                                'brand': selected_brand,
+                                                'name': base_match['name'],
+                                                'layer': 'Base',
+                                                'family': recipe['family']
+                                            })
+                                    else:
+                                        st.caption(f"⚠️ No base paint available for {selected_brand}")
+                                    
+                                    # Highlight paint
+                                    highlight_match = recipe['highlight'].get(selected_brand)
+                                    if highlight_match:
+                                        col1, col2 = st.columns([1, 3])
+                                        with col1:
+                                            highlight_selected = st.checkbox(
+                                                "✨", 
+                                                value=False,  # Optional
+                                                key=f"check_highlight_{idx}",
+                                                help="Highlight layer"
+                                            )
+                                        with col2:
+                                            st.markdown(f"**Highlight:** {highlight_match['name']}")
+                                        
+                                        if highlight_selected:
+                                            selected_paints.append({
+                                                'brand': selected_brand,
+                                                'name': highlight_match['name'],
+                                                'layer': 'Highlight',
+                                                'family': recipe['family']
+                                            })
+                                    
+                                    # Shade/Wash paint
+                                    shade_match = recipe['shade'].get(selected_brand)
+                                    shade_type = recipe['shade_type']
+                                    shade_emoji = "💧" if shade_type == 'wash' else "🌑"
+                                    shade_label = "Wash" if shade_type == 'wash' else "Shade"
+                                    
+                                    if shade_match:
+                                        col1, col2 = st.columns([1, 3])
+                                        with col1:
+                                            shade_selected = st.checkbox(
+                                                shade_emoji, 
+                                                value=False,  # Optional
+                                                key=f"check_shade_{idx}",
+                                                help=f"{shade_label} layer"
+                                            )
+                                        with col2:
+                                            st.markdown(f"**{shade_label}:** {shade_match['name']}")
+                                        
+                                        if shade_selected:
+                                            selected_paints.append({
+                                                'brand': selected_brand,
+                                                'name': shade_match['name'],
+                                                'layer': shade_label,
+                                                'family': recipe['family']
+                                            })
+                            
+                            # Cart summary and checkout
+                            if selected_paints:
+                                st.divider()
+                                st.markdown("#### 🛍️ Your Shopping Cart")
+                                
+                                # Create cart
+                                cart = ShoppingCart(region_option)
+                                for paint in selected_paints:
+                                    cart.add_paint(paint['brand'], paint['name'])
+                                
+                                # Show summary
+                                summary = cart.get_cart_summary()
+                                costs = cart.estimate_cost()
+                                
+                                col1, col2, col3 = st.columns(3)
+                                with col1:
+                                    st.metric("🎨 Paints", summary['total_bottles'])
+                                with col2:
+                                    brands_text = ", ".join([f"{k}: {v}" for k, v in summary['brands'].items()])
+                                    st.metric("🏷️ Brands", len(summary['brands']))
+                                    st.caption(brands_text)
+                                with col3:
+                                    st.metric("💰 Est. Cost", f"${costs['avg']:.0f}")
+                                    st.caption(f"${costs['min']:.0f} - ${costs['max']:.0f}")
+                                
+                                # Detailed list
+                                with st.expander("📋 View Cart Details", expanded=False):
+                                    for i, paint in enumerate(selected_paints, 1):
+                                        st.markdown(
+                                            f"{i}. **{paint['brand']}** - {paint['name']} "
+                                            f"*({paint['layer']} for {paint['family']})*"
+                                        )
+                                
+                                # Shop button
+                                st.markdown("---")
+                                col1, col2 = st.columns([2, 1])
+                                
+                                with col1:
+                                    if st.button(
+                                        "🛍️ Shop on Amazon",
+                                        type="primary",
+                                        use_container_width=True,
+                                        key="shop_amazon_btn"
+                                    ):
+                                        cart_url = cart.generate_cart_url()
+                                        
+                                        # Track conversion attempt
+                                        st.session_state.analytics.track_conversion(
+                                            num_paints=len(selected_paints),
+                                            brands=list(summary['brands'].keys()),
+                                            total_value=costs['avg']
+                                        )
+                                        
+                                        # Display link
+                                        st.markdown(
+                                            f"### [🔗 **Open Amazon** →]({cart_url})",
+                                            unsafe_allow_html=True
+                                        )
+                                        st.success("🎉 Amazon link opened! Supporting SchemeStealer.")
+                                        st.caption("💡 Purchases through this link help us improve the tool")
+                                
+                                with col2:
+                                    # Export list button
+                                    paint_list = "\n".join([
+                                        f"{i}. {p['brand']} - {p['name']}"
+                                        for i, p in enumerate(selected_paints, 1)
+                                    ])
+                                    
+                                    st.download_button(
+                                        "📄 Export List",
+                                        data=paint_list,
+                                        file_name="paint_list.txt",
+                                        mime="text/plain",
+                                        use_container_width=True,
+                                        key="export_list_btn"
+                                    )
+                            
+                            else:
+                                st.info("👆 Select paints above to build your shopping list")
                     
                     except Exception as e:
                         st.error(f"❌ Cogitator Error: {str(e)}")
@@ -701,7 +991,7 @@ with tab2:
                                         if match:
                                             paint_name = match['name']
                                             affiliate_url = get_affiliate_link(brand, paint_name, region_option)
-                                            link_html = f"<a href='{affiliate_url}' target='_blank'>{paint_name} ðŸ›’</a>"
+                                            link_html = f"<a href='{affiliate_url}' target='_blank'>{paint_name} 🛒</a>"
                                             st.markdown(
                                                 f"<span class='{css_class}'>{brand}:</span> {link_html}",
                                                 unsafe_allow_html=True
@@ -714,7 +1004,7 @@ with tab2:
                                             )
                                     st.markdown("")
                                 
-                                render_paint_layer("🛡️ Base", recipe['base'])
+                                render_paint_layer("🛡️ Base", recipe['base'])
                                 render_paint_layer("✨ Highlight", recipe['highlight'])
                                 shade_label = "💧 Wash" if recipe['shade_type'] == 'wash' else "🌑 Shade"
                                 render_paint_layer(shade_label, recipe['shade'])
@@ -722,7 +1012,7 @@ with tab2:
                             st.divider()
 
                 except Exception as e:
-                    st.error(f"âŒ Cogitator Error: {str(e)}")
+                    st.error(f"❌ Cogitator Error: {str(e)}")
                     logger.error(f"Inspiration analysis error: {e}", exc_info=True)
         
         except Exception as e:
