@@ -1,0 +1,991 @@
+2026-01-09 09:30:20,359 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5
+2026-01-09 09:30:20,384 - SchemeStealer - INFO - Loaded 86 paints
+2026-01-09 09:30:20,384 - SchemeStealer - INFO - Paint matcher initialized with 86 paints
+2026-01-09 09:30:20,384 - SchemeStealer - INFO - Engine initialization complete
+2026-01-09 09:30:20,387 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 09:32:54,286 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 09:32:54,286 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 09:32:54,478 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 09:32:54,478 - SchemeStealer - ERROR - Image load error: ImageMixin.image() got an unexpected keyword argument 'use_container_width'
+Traceback (most recent call last):
+  File "E:\Code projects\SchemeStealer\app.py", line 289, in <module>
+    st.image(preview, caption="Enhanced Preview", use_container_width=True)
+  File "E:\Code projects\SchemeStealer\venv\Lib\site-packages\streamlit\runtime\metrics_util.py", line 397, in wrapped_func
+    result = non_optional_func(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: ImageMixin.image() got an unexpected keyword argument 'use_container_width'
+2026-01-09 09:35:32,900 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5
+2026-01-09 09:35:32,908 - SchemeStealer - INFO - Loaded 86 paints
+2026-01-09 09:35:32,918 - SchemeStealer - INFO - Paint matcher initialized with 86 paints
+2026-01-09 09:35:32,919 - SchemeStealer - INFO - Engine initialization complete
+2026-01-09 09:35:32,921 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 09:35:42,576 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 09:35:42,576 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 09:35:42,775 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 09:35:52,923 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 09:35:52,923 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 09:35:52,951 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 09:35:52,965 - SchemeStealer - INFO - ============================================================
+2026-01-09 09:35:52,965 - SchemeStealer - INFO - Starting miniature analysis
+2026-01-09 09:35:52,965 - SchemeStealer - INFO - Mode: mini, Remove base: True, AWB: True
+2026-01-09 09:35:52,971 - SchemeStealer - INFO - Step 1: Photo quality assessment
+2026-01-09 09:35:52,972 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 09:35:52,986 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 09:35:52,992 - SchemeStealer - INFO - Step 2: Preprocessing
+2026-01-09 09:35:53,044 - SchemeStealer - INFO - Step 3: Background removal
+2026-01-09 09:35:55,690 - SchemeStealer - INFO - Resizing from 451x928 to 300x617
+2026-01-09 09:35:55,690 - SchemeStealer - INFO - Step 5: Base detection
+2026-01-09 09:35:55,690 - SchemeStealer - INFO - Starting base detection on 300x617 image
+2026-01-09 09:35:56,084 - SchemeStealer - INFO - Base detection complete: removed 41.2% as base material
+2026-01-09 09:35:56,084 - SchemeStealer - INFO - Step 6: Color extraction
+2026-01-09 09:35:59,130 - SchemeStealer - INFO - Major color 0: 13.9%, metallic=False
+2026-01-09 09:35:59,130 - SchemeStealer - INFO - Major color 1: 26.1%, metallic=False
+2026-01-09 09:35:59,139 - SchemeStealer - INFO - Major color 3: 16.9%, metallic=False
+2026-01-09 09:35:59,143 - SchemeStealer - INFO - Major color 4: 38.3%, metallic=False
+2026-01-09 09:35:59,143 - SchemeStealer - INFO - Starting detail color detection
+2026-01-09 09:35:59,173 - SchemeStealer - INFO - Found detail color: Gold/Yellow Detail (4.13%)
+2026-01-09 09:35:59,173 - SchemeStealer - INFO - Detected 1 unique detail colors
+2026-01-09 09:35:59,173 - SchemeStealer - INFO - Step 7: Building paint recipes
+2026-01-09 09:35:59,445 - SchemeStealer - INFO - Analysis complete: 5 colors detected
+2026-01-09 09:35:59,445 - SchemeStealer - INFO - ============================================================
+2026-01-09 09:35:59,445 - SchemeStealer - INFO - Analysis complete: 5 colors found
+2026-01-09 09:36:02,692 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5
+2026-01-09 09:36:02,712 - SchemeStealer - INFO - Loaded 86 paints
+2026-01-09 09:36:02,713 - SchemeStealer - INFO - Paint matcher initialized with 86 paints
+2026-01-09 09:36:02,713 - SchemeStealer - INFO - Engine initialization complete
+2026-01-09 09:36:02,716 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 09:51:21,402 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5
+2026-01-09 09:51:21,424 - SchemeStealer - INFO - Loaded 86 paints
+2026-01-09 09:51:21,425 - SchemeStealer - INFO - Paint matcher initialized with 86 paints
+2026-01-09 09:51:21,425 - SchemeStealer - INFO - Engine initialization complete
+2026-01-09 09:51:21,429 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 09:51:35,005 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 09:51:35,005 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 09:51:35,227 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 09:51:44,124 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 09:51:44,139 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 09:51:44,158 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 09:51:44,178 - SchemeStealer - INFO - ============================================================
+2026-01-09 09:51:44,179 - SchemeStealer - INFO - Starting miniature analysis
+2026-01-09 09:51:44,179 - SchemeStealer - INFO - Mode: mini, Remove base: True, AWB: True
+2026-01-09 09:51:44,179 - SchemeStealer - INFO - Step 1: Photo quality assessment
+2026-01-09 09:51:44,179 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 09:51:44,204 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 09:51:44,205 - SchemeStealer - INFO - Step 2: Preprocessing
+2026-01-09 09:51:44,271 - SchemeStealer - INFO - Step 3: Background removal
+2026-01-09 09:51:46,801 - SchemeStealer - INFO - Resizing from 451x928 to 300x617
+2026-01-09 09:51:46,801 - SchemeStealer - INFO - Step 5: Base detection
+2026-01-09 09:51:46,801 - SchemeStealer - INFO - Starting base detection on 300x617 image
+2026-01-09 09:51:46,866 - SchemeStealer - INFO - Base detection complete: removed 41.2% as base material
+2026-01-09 09:51:46,875 - SchemeStealer - INFO - Step 6: Color extraction
+2026-01-09 09:51:49,350 - SchemeStealer - INFO - Major color 0: 13.9%, metallic=False
+2026-01-09 09:51:49,350 - SchemeStealer - INFO - Major color 1: 26.1%, metallic=False
+2026-01-09 09:51:49,367 - SchemeStealer - INFO - Major color 3: 16.9%, metallic=False
+2026-01-09 09:51:49,370 - SchemeStealer - INFO - Major color 4: 38.3%, metallic=False
+2026-01-09 09:51:49,371 - SchemeStealer - INFO - Starting detail color detection
+2026-01-09 09:51:49,402 - SchemeStealer - INFO - Found detail color: Gold/Yellow Detail (4.13%)
+2026-01-09 09:51:49,409 - SchemeStealer - INFO - Detected 1 unique detail colors
+2026-01-09 09:51:49,411 - SchemeStealer - INFO - Step 7: Building paint recipes
+2026-01-09 09:51:49,732 - SchemeStealer - INFO - Analysis complete: 5 colors detected
+2026-01-09 09:51:49,732 - SchemeStealer - INFO - ============================================================
+2026-01-09 09:51:49,732 - SchemeStealer - INFO - Analysis complete: 5 colors found
+2026-01-09 10:00:41,428 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5
+2026-01-09 10:00:41,443 - SchemeStealer - INFO - Loaded 86 paints
+2026-01-09 10:00:41,446 - SchemeStealer - INFO - Paint matcher initialized with 86 paints
+2026-01-09 10:00:41,447 - SchemeStealer - INFO - Engine initialization complete
+2026-01-09 10:00:41,448 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 10:00:50,388 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 10:00:50,388 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 10:00:50,605 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 10:00:50,605 - SchemeStealer - ERROR - Image load error: Invalid width value: None. Width must be either an integer (pixels), 'stretch', or 'content'.
+Traceback (most recent call last):
+  File "E:\Code projects\SchemeStealer\app.py", line 289, in <module>
+    st.image(preview, caption="Enhanced Preview", width=None)
+  File "E:\Code projects\SchemeStealer\venv\Lib\site-packages\streamlit\runtime\metrics_util.py", line 531, in wrapped_func
+    result = non_optional_func(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Code projects\SchemeStealer\venv\Lib\site-packages\streamlit\elements\image.py", line 202, in image
+    validate_width(width, allow_content=True)
+  File "E:\Code projects\SchemeStealer\venv\Lib\site-packages\streamlit\elements\lib\layout_utils.py", line 77, in validate_width
+    raise StreamlitInvalidWidthError(width, allow_content)
+streamlit.errors.StreamlitInvalidWidthError: Invalid width value: None. Width must be either an integer (pixels), 'stretch', or 'content'.
+2026-01-09 10:01:47,068 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5
+2026-01-09 10:01:47,091 - SchemeStealer - INFO - Loaded 86 paints
+2026-01-09 10:01:47,099 - SchemeStealer - INFO - Paint matcher initialized with 86 paints
+2026-01-09 10:01:47,101 - SchemeStealer - INFO - Engine initialization complete
+2026-01-09 10:01:47,104 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 10:01:53,760 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 10:01:53,760 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 10:01:53,992 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 10:02:00,763 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 10:02:00,780 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 10:02:00,803 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 10:02:00,823 - SchemeStealer - INFO - ============================================================
+2026-01-09 10:02:00,824 - SchemeStealer - INFO - Starting miniature analysis
+2026-01-09 10:02:00,826 - SchemeStealer - INFO - Mode: mini, Remove base: True, AWB: True
+2026-01-09 10:02:00,827 - SchemeStealer - INFO - Step 1: Photo quality assessment
+2026-01-09 10:02:00,829 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 10:02:00,848 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 10:02:00,848 - SchemeStealer - INFO - Step 2: Preprocessing
+2026-01-09 10:02:00,931 - SchemeStealer - INFO - Step 3: Background removal
+2026-01-09 10:02:03,708 - SchemeStealer - INFO - Resizing from 451x928 to 300x617
+2026-01-09 10:02:03,710 - SchemeStealer - INFO - Step 5: Base detection
+2026-01-09 10:02:03,710 - SchemeStealer - INFO - Starting base detection on 300x617 image
+2026-01-09 10:02:03,793 - SchemeStealer - INFO - Base detection complete: removed 41.2% as base material
+2026-01-09 10:02:03,793 - SchemeStealer - INFO - Step 6: Color extraction
+2026-01-09 10:02:06,253 - SchemeStealer - INFO - Major color 0: 13.9%, chroma=14.4, metallic=False, h=194.3°
+2026-01-09 10:02:06,253 - SchemeStealer - INFO - Major color 1: 26.1%, chroma=34.0, metallic=False, h=334.2°
+2026-01-09 10:02:06,268 - SchemeStealer - INFO - Major color 3: 16.9%, chroma=16.0, metallic=False, h=321.0°
+2026-01-09 10:02:06,274 - SchemeStealer - INFO - Major color 4: 38.3%, chroma=39.8, metallic=False, h=331.0°
+2026-01-09 10:02:06,274 - SchemeStealer - INFO - Starting detail color detection
+2026-01-09 10:02:06,310 - SchemeStealer - INFO - Found detail color: Gold/Yellow Detail (4.13%)
+2026-01-09 10:02:06,310 - SchemeStealer - INFO - Detected 1 unique detail colors
+2026-01-09 10:02:06,310 - SchemeStealer - INFO - Step 7: Building paint recipes
+2026-01-09 10:02:06,631 - SchemeStealer - INFO - Analysis complete: 5 colors detected
+2026-01-09 10:02:06,631 - SchemeStealer - INFO - ============================================================
+2026-01-09 10:02:06,631 - SchemeStealer - INFO - Analysis complete: 5 colors found
+2026-01-09 10:09:44,164 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5
+2026-01-09 10:09:44,180 - SchemeStealer - INFO - Loaded 86 paints
+2026-01-09 10:09:44,194 - SchemeStealer - INFO - Paint matcher initialized with 86 paints
+2026-01-09 10:09:44,195 - SchemeStealer - INFO - Engine initialization complete
+2026-01-09 10:09:44,197 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 10:09:52,787 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 10:09:52,787 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 10:09:53,038 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 10:10:04,155 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 10:10:04,155 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 10:10:04,186 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 10:10:04,201 - SchemeStealer - INFO - ============================================================
+2026-01-09 10:10:04,202 - SchemeStealer - INFO - Starting miniature analysis
+2026-01-09 10:10:04,203 - SchemeStealer - INFO - Mode: mini, Remove base: True, AWB: True
+2026-01-09 10:10:04,204 - SchemeStealer - INFO - Step 1: Photo quality assessment
+2026-01-09 10:10:04,205 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 10:10:04,225 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 10:10:04,225 - SchemeStealer - INFO - Step 2: Preprocessing
+2026-01-09 10:10:04,285 - SchemeStealer - INFO - Step 3: Background removal
+2026-01-09 10:10:06,708 - SchemeStealer - INFO - Resizing from 451x928 to 300x617
+2026-01-09 10:10:06,708 - SchemeStealer - INFO - Step 5: Base detection
+2026-01-09 10:10:06,708 - SchemeStealer - INFO - Starting base detection on 300x617 image
+2026-01-09 10:10:06,767 - SchemeStealer - INFO - Base detection complete: removed 41.2% as base material
+2026-01-09 10:10:06,777 - SchemeStealer - INFO - Step 6: Color extraction
+2026-01-09 10:10:09,156 - SchemeStealer - INFO - Major color 0: 13.9%, chroma=14.4, metallic=False, h=194.3°
+2026-01-09 10:10:09,160 - SchemeStealer - INFO - Major color 1: 26.1%, chroma=34.0, metallic=False, h=334.2°
+2026-01-09 10:10:09,165 - SchemeStealer - INFO - Major color 3: 16.9%, chroma=16.0, metallic=False, h=321.0°
+2026-01-09 10:10:09,169 - SchemeStealer - INFO - Major color 4: 38.3%, chroma=39.8, metallic=False, h=331.0°
+2026-01-09 10:10:09,170 - SchemeStealer - INFO - Starting detail color detection
+2026-01-09 10:10:09,210 - SchemeStealer - INFO - Detected 0 unique detail colors
+2026-01-09 10:10:09,210 - SchemeStealer - INFO - Step 7: Building paint recipes
+2026-01-09 10:10:09,443 - SchemeStealer - INFO - Analysis complete: 4 colors detected
+2026-01-09 10:10:09,443 - SchemeStealer - INFO - ============================================================
+2026-01-09 10:10:09,443 - SchemeStealer - INFO - Analysis complete: 4 colors found
+2026-01-09 10:17:31,354 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5
+2026-01-09 10:17:31,369 - SchemeStealer - INFO - Loaded 86 paints
+2026-01-09 10:17:31,384 - SchemeStealer - INFO - Paint matcher initialized with 86 paints
+2026-01-09 10:17:31,386 - SchemeStealer - INFO - Engine initialization complete
+2026-01-09 10:17:31,388 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 10:17:37,306 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 10:17:37,326 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 10:17:37,590 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 10:17:42,211 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 10:17:42,213 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 10:17:42,232 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 10:17:42,246 - SchemeStealer - INFO - ============================================================
+2026-01-09 10:17:42,246 - SchemeStealer - INFO - Starting miniature analysis
+2026-01-09 10:17:42,249 - SchemeStealer - INFO - Mode: mini, Remove base: True, AWB: True
+2026-01-09 10:17:42,250 - SchemeStealer - INFO - Step 1: Photo quality assessment
+2026-01-09 10:17:42,251 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 10:17:42,268 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 10:17:42,268 - SchemeStealer - INFO - Step 2: Preprocessing
+2026-01-09 10:17:42,315 - SchemeStealer - INFO - Step 3: Background removal
+2026-01-09 10:17:44,654 - SchemeStealer - INFO - Resizing from 451x928 to 300x617
+2026-01-09 10:17:44,664 - SchemeStealer - INFO - Step 5: Base detection
+2026-01-09 10:17:44,664 - SchemeStealer - INFO - Starting base detection on 300x617 image
+2026-01-09 10:17:44,720 - SchemeStealer - INFO - Base detection complete: removed 41.2% as base material
+2026-01-09 10:17:44,728 - SchemeStealer - INFO - Step 6: Color extraction
+2026-01-09 10:17:47,142 - SchemeStealer - INFO - Major color 0: 13.9%, chroma=14.4, metallic=False, h=194.3°
+2026-01-09 10:17:47,142 - SchemeStealer - INFO - Major color 1: 26.1%, chroma=34.0, metallic=False, h=334.2°
+2026-01-09 10:17:47,142 - SchemeStealer - INFO - Major color 3: 16.9%, chroma=16.0, metallic=False, h=321.0°
+2026-01-09 10:17:47,160 - SchemeStealer - INFO - Major color 4: 38.3%, chroma=39.8, metallic=False, h=331.0°
+2026-01-09 10:17:47,161 - SchemeStealer - INFO - Starting detail color detection
+2026-01-09 10:17:47,230 - SchemeStealer - INFO - Detected 0 unique detail colors
+2026-01-09 10:17:47,232 - SchemeStealer - INFO - Step 7: Building paint recipes
+2026-01-09 10:17:47,325 - SchemeStealer - WARNING - Low confidence (0.04), returning best guess: Pink/Magenta
+2026-01-09 10:17:47,478 - SchemeStealer - INFO - Analysis complete: 4 colors detected
+2026-01-09 10:17:47,478 - SchemeStealer - INFO - ============================================================
+2026-01-09 10:17:47,478 - SchemeStealer - INFO - Analysis complete: 4 colors found
+2026-01-09 10:32:06,881 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5
+2026-01-09 10:32:06,901 - SchemeStealer - INFO - Loaded 86 paints
+2026-01-09 10:32:06,902 - SchemeStealer - INFO - Paint matcher initialized with 86 paints
+2026-01-09 10:32:06,903 - SchemeStealer - INFO - Engine initialization complete
+2026-01-09 10:32:06,904 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 10:32:25,787 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 10:32:25,790 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 10:32:25,993 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 10:32:29,832 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 10:32:29,835 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 10:32:29,856 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 10:32:29,870 - SchemeStealer - INFO - ============================================================
+2026-01-09 10:32:29,872 - SchemeStealer - INFO - Starting miniature analysis
+2026-01-09 10:32:29,872 - SchemeStealer - INFO - Mode: mini, Remove base: True, AWB: True
+2026-01-09 10:32:29,874 - SchemeStealer - INFO - Step 1: Photo quality assessment
+2026-01-09 10:32:29,874 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 10:32:29,892 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 10:32:29,892 - SchemeStealer - INFO - Step 2: Preprocessing
+2026-01-09 10:32:29,950 - SchemeStealer - INFO - Step 3: Background removal
+2026-01-09 10:32:32,333 - SchemeStealer - INFO - Resizing from 451x928 to 300x617
+2026-01-09 10:32:32,333 - SchemeStealer - INFO - Step 5: Base detection
+2026-01-09 10:32:32,333 - SchemeStealer - INFO - Starting base detection on 300x617 image
+2026-01-09 10:32:32,698 - SchemeStealer - INFO - Base detection complete: removed 41.2% as base material
+2026-01-09 10:32:32,698 - SchemeStealer - INFO - Step 6: Color extraction
+2026-01-09 10:32:35,456 - SchemeStealer - INFO - Major color 0: 13.9%, chroma=14.4, metallic=False, h=194.3°
+2026-01-09 10:32:35,461 - SchemeStealer - INFO - Major color 1: 26.1%, chroma=34.0, metallic=False, h=334.2°
+2026-01-09 10:32:35,463 - SchemeStealer - INFO - Major color 3: 16.9%, chroma=16.0, metallic=False, h=321.0°
+2026-01-09 10:32:35,467 - SchemeStealer - INFO - Major color 4: 38.3%, chroma=39.8, metallic=False, h=331.0°
+2026-01-09 10:32:35,468 - SchemeStealer - INFO - Starting detail color detection
+2026-01-09 10:32:35,538 - SchemeStealer - INFO - Detected 0 unique detail colors
+2026-01-09 10:32:35,538 - SchemeStealer - INFO - Step 7: Building paint recipes
+2026-01-09 10:32:35,633 - SchemeStealer - WARNING - Low confidence (0.04), returning best guess: Pink/Magenta
+2026-01-09 10:32:35,789 - SchemeStealer - INFO - Analysis complete: 4 colors detected
+2026-01-09 10:32:35,789 - SchemeStealer - INFO - ============================================================
+2026-01-09 10:32:35,789 - SchemeStealer - INFO - Analysis complete: 4 colors found
+2026-01-09 11:40:01,828 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5 (Pure SMART)
+2026-01-09 11:40:01,851 - SchemeStealer - INFO - Paint matcher initialized with 86 paints
+2026-01-09 11:40:01,851 - SchemeStealer - INFO - Engine initialization complete (Removed old ColorAnalyzer dependency)
+2026-01-09 11:40:01,851 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 11:40:09,769 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 11:40:09,769 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 11:40:09,974 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 11:40:22,615 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 11:40:22,618 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 11:40:22,637 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 11:40:22,648 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 11:40:22,664 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 11:40:25,132 - SchemeStealer - INFO - Starting base detection on 300x617 image
+2026-01-09 11:40:25,204 - SchemeStealer - INFO - Base detection complete: removed 41.2% as base material
+2026-01-09 11:40:25,205 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 11:40:25,223 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 11:40:27,351 - SchemeStealer - INFO - Found 10 initial clusters
+2026-01-09 11:40:27,371 - SchemeStealer - INFO - After merging: 8 semantic colors
+2026-01-09 11:40:27,371 - SchemeStealer - INFO - Final: 7 major + 1 details
+2026-01-09 11:40:27,371 - SchemeStealer - INFO -   White: 5.0% (detail=False)
+2026-01-09 11:40:27,371 - SchemeStealer - INFO -   Red: 12.0% (detail=False)
+2026-01-09 11:40:27,371 - SchemeStealer - INFO -   Pink: 57.8% (detail=False)
+2026-01-09 11:40:27,371 - SchemeStealer - INFO -   Blue: 4.3% (detail=False)
+2026-01-09 11:40:27,387 - SchemeStealer - INFO -   Red: 6.9% (detail=False)
+2026-01-09 11:40:27,388 - SchemeStealer - INFO -   Gold: 3.4% (detail=False)
+2026-01-09 11:40:27,389 - SchemeStealer - INFO -   Grey: 7.9% (detail=False)
+2026-01-09 11:40:27,390 - SchemeStealer - INFO -   Gold: 2.7% (detail=True)
+2026-01-09 11:40:27,453 - SchemeStealer - ERROR - Analysis error: Cannot interpret '-1' as a data type
+Traceback (most recent call last):
+  File "E:\Code projects\SchemeStealer\app.py", line 302, in <module>
+    recipes, debug_img, quality_dict = st.session_state.engine.analyze_miniature(
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Code projects\SchemeStealer\core\schemestealer_engine.py", line 105, in analyze_miniature
+    recipes = self._build_recipes(colors, resized_original, mini_mask, brands, new_w, new_h)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Code projects\SchemeStealer\core\schemestealer_engine.py", line 143, in _build_recipes
+    spatial_mask.view(-1)[actual_indices] = True
+    ^^^^^^^^^^^^^^^^^^^^^
+TypeError: Cannot interpret '-1' as a data type
+2026-01-09 11:43:46,890 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5 (Pure SMART)
+2026-01-09 11:43:46,917 - SchemeStealer - INFO - Paint matcher initialized with 86 paints
+2026-01-09 11:43:46,918 - SchemeStealer - INFO - Engine initialization complete (Removed old ColorAnalyzer dependency)
+2026-01-09 11:43:46,920 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 11:44:35,680 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 11:44:35,696 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 11:44:35,905 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 11:44:40,220 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 11:44:40,220 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 11:44:40,251 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 11:44:40,271 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 11:44:40,299 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 11:44:42,868 - SchemeStealer - INFO - Starting base detection on 300x617 image
+2026-01-09 11:44:42,952 - SchemeStealer - INFO - Base detection complete: removed 41.2% as base material
+2026-01-09 11:44:42,952 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 11:44:42,985 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 11:44:45,110 - SchemeStealer - INFO - Found 10 initial clusters
+2026-01-09 11:44:45,151 - SchemeStealer - INFO - After merging: 8 semantic colors
+2026-01-09 11:44:45,151 - SchemeStealer - INFO - Final: 7 major + 1 details
+2026-01-09 11:44:45,164 - SchemeStealer - INFO -   White: 5.0% (detail=False)
+2026-01-09 11:44:45,165 - SchemeStealer - INFO -   Red: 12.0% (detail=False)
+2026-01-09 11:44:45,167 - SchemeStealer - INFO -   Pink: 57.8% (detail=False)
+2026-01-09 11:44:45,168 - SchemeStealer - INFO -   Blue: 4.3% (detail=False)
+2026-01-09 11:44:45,171 - SchemeStealer - INFO -   Red: 6.9% (detail=False)
+2026-01-09 11:44:45,172 - SchemeStealer - INFO -   Gold: 3.4% (detail=False)
+2026-01-09 11:44:45,174 - SchemeStealer - INFO -   Grey: 7.9% (detail=False)
+2026-01-09 11:44:45,175 - SchemeStealer - INFO -   Gold: 2.7% (detail=True)
+2026-01-09 11:44:45,680 - SchemeStealer - INFO - Analysis complete: 8 colors found
+2026-01-09 11:52:29,941 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5 (Pure SMART)
+2026-01-09 11:52:29,957 - SchemeStealer - INFO - Paint matcher initialized with 86 paints
+2026-01-09 11:52:29,957 - SchemeStealer - INFO - Engine initialization complete (Removed old ColorAnalyzer dependency)
+2026-01-09 11:52:29,973 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 11:52:36,669 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 11:52:36,672 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 11:52:36,930 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 11:52:43,486 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 11:52:43,486 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 11:52:43,509 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 11:52:43,537 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 11:52:43,559 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 11:52:46,465 - SchemeStealer - INFO - Starting base detection on 300x617 image
+2026-01-09 11:52:46,545 - SchemeStealer - INFO - Base detection complete: removed 41.2% as base material
+2026-01-09 11:52:46,546 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 11:52:46,575 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 11:52:48,605 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Grey'
+2026-01-09 11:52:48,605 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Magenta'
+2026-01-09 11:52:48,605 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Gold'
+2026-01-09 11:52:48,605 - SchemeStealer - INFO - Final: 5 major + 0 details
+2026-01-09 11:52:48,605 - SchemeStealer - INFO -   Pink: 57.8% (detail=False)
+2026-01-09 11:52:48,605 - SchemeStealer - INFO -   Magenta: 18.9% (detail=False)
+2026-01-09 11:52:48,605 - SchemeStealer - INFO -   Grey: 12.9% (detail=False)
+2026-01-09 11:52:48,605 - SchemeStealer - INFO -   Gold: 6.1% (detail=False)
+2026-01-09 11:52:48,605 - SchemeStealer - INFO -   Blue: 4.3% (detail=False)
+2026-01-09 11:52:48,906 - SchemeStealer - INFO - Analysis complete: 5 colors found
+2026-01-09 11:56:07,307 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5 (Pure SMART)
+2026-01-09 11:56:07,329 - SchemeStealer - INFO - Paint matcher initialized with 86 paints
+2026-01-09 11:56:07,329 - SchemeStealer - INFO - Engine initialization complete (Removed old ColorAnalyzer dependency)
+2026-01-09 11:56:07,329 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 11:56:13,467 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 11:56:13,467 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 11:56:13,717 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 11:56:18,007 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 11:56:18,023 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 11:56:18,044 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 11:56:18,052 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 11:56:18,069 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 11:56:20,448 - SchemeStealer - INFO - Starting base detection on 300x617 image
+2026-01-09 11:56:20,506 - SchemeStealer - INFO - Base detection complete: removed 41.2% as base material
+2026-01-09 11:56:20,506 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 11:56:20,539 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 11:56:22,512 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Grey'
+2026-01-09 11:56:22,512 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Magenta'
+2026-01-09 11:56:22,513 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Gold'
+2026-01-09 11:56:22,515 - SchemeStealer - INFO - Final: 4 major + 1 details
+2026-01-09 11:56:22,516 - SchemeStealer - INFO -   Pink: 57.8% (detail=False)
+2026-01-09 11:56:22,517 - SchemeStealer - INFO -   Magenta: 18.9% (detail=False)
+2026-01-09 11:56:22,518 - SchemeStealer - INFO -   Grey: 12.9% (detail=False)
+2026-01-09 11:56:22,518 - SchemeStealer - INFO -   Gold: 6.1% (detail=False)
+2026-01-09 11:56:22,519 - SchemeStealer - INFO -   Blue: 4.3% (detail=True)
+2026-01-09 11:56:22,812 - SchemeStealer - INFO - Analysis complete: 5 colors found
+2026-01-09 12:16:12,341 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5 (Pure SMART)
+2026-01-09 12:16:12,375 - SchemeStealer - INFO - Paint matcher initialized with 86 paints
+2026-01-09 12:16:12,375 - SchemeStealer - INFO - Engine initialization complete (Removed old ColorAnalyzer dependency)
+2026-01-09 12:16:12,375 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 12:16:29,426 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 12:16:29,426 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 12:16:29,642 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 12:16:33,418 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 12:16:33,434 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 12:16:33,456 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 12:16:33,724 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 12:16:33,740 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 12:16:36,219 - SchemeStealer - INFO - Starting base detection on 300x617 image
+2026-01-09 12:16:36,422 - SchemeStealer - INFO - Base detection complete: removed 41.2% as base material
+2026-01-09 12:16:36,422 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 12:16:36,456 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 12:16:38,756 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Grey'
+2026-01-09 12:16:38,756 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Magenta'
+2026-01-09 12:16:38,756 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Gold'
+2026-01-09 12:16:38,756 - SchemeStealer - INFO - Final: 4 major + 1 details
+2026-01-09 12:16:38,756 - SchemeStealer - INFO -   Pink: 57.8% (detail=False)
+2026-01-09 12:16:38,764 - SchemeStealer - INFO -   Magenta: 18.9% (detail=False)
+2026-01-09 12:16:38,765 - SchemeStealer - INFO -   Grey: 12.9% (detail=False)
+2026-01-09 12:16:38,765 - SchemeStealer - INFO -   Gold: 6.1% (detail=False)
+2026-01-09 12:16:38,766 - SchemeStealer - INFO -   Blue: 4.3% (detail=True)
+2026-01-09 12:16:39,600 - SchemeStealer - INFO - Analysis complete: 5 colors found
+2026-01-09 12:20:58,826 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5 (Pure SMART)
+2026-01-09 12:20:58,845 - SchemeStealer - INFO - Paint matcher initialized with 86 paints
+2026-01-09 12:20:58,847 - SchemeStealer - INFO - Engine initialization complete (Removed old ColorAnalyzer dependency)
+2026-01-09 12:20:58,848 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 12:21:14,157 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 12:21:14,173 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 12:21:14,388 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 12:21:20,348 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 12:21:20,348 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 12:21:20,388 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 12:21:20,668 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 12:21:20,701 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 12:21:23,291 - SchemeStealer - INFO - Starting base detection on 300x617 image
+2026-01-09 12:21:23,367 - SchemeStealer - INFO - Base detection complete: removed 41.2% as base material
+2026-01-09 12:21:23,369 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 12:21:23,392 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 12:21:25,405 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Grey'
+2026-01-09 12:21:25,405 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Magenta'
+2026-01-09 12:21:25,405 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Gold'
+2026-01-09 12:21:25,405 - SchemeStealer - INFO - Final: 4 major + 1 details
+2026-01-09 12:21:25,405 - SchemeStealer - INFO -   Pink: 57.8% (detail=False)
+2026-01-09 12:21:25,421 - SchemeStealer - INFO -   Magenta: 18.9% (detail=False)
+2026-01-09 12:21:25,422 - SchemeStealer - INFO -   Grey: 12.9% (detail=False)
+2026-01-09 12:21:25,423 - SchemeStealer - INFO -   Gold: 6.1% (detail=False)
+2026-01-09 12:21:25,424 - SchemeStealer - INFO -   Blue: 4.3% (detail=True)
+2026-01-09 12:21:26,195 - SchemeStealer - INFO - Analysis complete: 5 colors found
+2026-01-09 12:25:44,139 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5 (Pure SMART)
+2026-01-09 12:25:44,161 - SchemeStealer - INFO - Paint matcher initialized with 86 paints
+2026-01-09 12:25:44,161 - SchemeStealer - INFO - Engine initialization complete (Removed old ColorAnalyzer dependency)
+2026-01-09 12:25:44,161 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 12:26:45,140 - SchemeStealer - INFO - Inspiration Image loaded: (427, 806, 3)
+2026-01-09 12:26:49,609 - SchemeStealer - INFO - Inspiration Image loaded: (427, 806, 3)
+2026-01-09 12:26:49,878 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 12:26:50,042 - SchemeStealer - WARNING - Severe color cast detected
+2026-01-09 12:26:50,058 - SchemeStealer - INFO - Photo quality score: 85/100 (Excellent)
+2026-01-09 12:26:50,058 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 12:26:50,092 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 12:26:52,044 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Red'
+2026-01-09 12:26:52,044 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Gold'
+2026-01-09 12:26:52,044 - SchemeStealer - INFO - Final: 3 major + 1 details
+2026-01-09 12:26:52,044 - SchemeStealer - INFO -   Red: 62.2% (detail=False)
+2026-01-09 12:26:52,044 - SchemeStealer - INFO -   Purple: 26.6% (detail=False)
+2026-01-09 12:26:52,044 - SchemeStealer - INFO -   Gold: 9.4% (detail=False)
+2026-01-09 12:26:52,044 - SchemeStealer - INFO -   Brown: 1.8% (detail=True)
+2026-01-09 12:35:16,736 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 12:35:16,736 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 12:35:16,780 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 12:35:16,838 - SchemeStealer - INFO - Inspiration Image loaded: (427, 806, 3)
+2026-01-09 12:35:18,365 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 12:35:18,365 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 12:35:18,411 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 12:35:18,695 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 12:35:18,722 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 12:35:21,861 - SchemeStealer - INFO - Starting base detection on 300x376 image
+2026-01-09 12:35:22,040 - SchemeStealer - INFO - Base detection complete: removed 16.7% as base material
+2026-01-09 12:35:22,040 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 12:35:22,063 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 12:35:22,536 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Blue'
+2026-01-09 12:35:22,536 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-01-09 12:35:22,552 - SchemeStealer - INFO - Final: 2 major + 2 details
+2026-01-09 12:35:22,552 - SchemeStealer - INFO -   Blue: 50.3% (detail=False)
+2026-01-09 12:35:22,552 - SchemeStealer - INFO -   Grey: 41.2% (detail=False)
+2026-01-09 12:35:22,556 - SchemeStealer - INFO -   Red: 4.4% (detail=True)
+2026-01-09 12:35:22,557 - SchemeStealer - INFO -   Gold: 4.2% (detail=True)
+2026-01-09 12:35:23,242 - SchemeStealer - INFO - Analysis complete: 4 colors found
+2026-01-09 12:35:23,292 - SchemeStealer - INFO - Inspiration Image loaded: (427, 806, 3)
+2026-01-09 12:45:47,787 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5 (Pure SMART)
+2026-01-09 12:45:47,821 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-09 12:45:47,821 - SchemeStealer - INFO - Engine initialization complete (Removed old ColorAnalyzer dependency)
+2026-01-09 12:45:47,821 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 12:45:54,940 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 12:45:54,940 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 12:45:55,191 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 12:45:59,360 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 12:45:59,360 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 12:45:59,397 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 12:45:59,680 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 12:45:59,713 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 12:46:02,115 - SchemeStealer - INFO - Starting base detection on 300x376 image
+2026-01-09 12:46:02,164 - SchemeStealer - INFO - Base detection complete: removed 16.7% as base material
+2026-01-09 12:46:02,164 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 12:46:02,197 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 12:46:05,470 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Blue'
+2026-01-09 12:46:05,470 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-01-09 12:46:05,470 - SchemeStealer - INFO - Final: 2 major + 2 details
+2026-01-09 12:46:05,470 - SchemeStealer - INFO -   Blue: 50.3% (detail=False)
+2026-01-09 12:46:05,470 - SchemeStealer - INFO -   Grey: 41.2% (detail=False)
+2026-01-09 12:46:05,470 - SchemeStealer - INFO -   Red: 4.4% (detail=True)
+2026-01-09 12:46:05,470 - SchemeStealer - INFO -   Gold: 4.2% (detail=True)
+2026-01-09 12:46:06,175 - SchemeStealer - INFO - Analysis complete: 4 colors found
+2026-01-09 12:51:07,272 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5 (Pure SMART)
+2026-01-09 12:51:07,309 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-09 12:51:07,310 - SchemeStealer - INFO - Engine initialization complete (Removed old ColorAnalyzer dependency)
+2026-01-09 12:51:07,310 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 12:51:14,263 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 12:51:14,263 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 12:51:14,526 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 12:51:18,741 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 12:51:18,743 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 12:51:18,781 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 12:51:19,058 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 12:51:19,090 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 12:51:21,394 - SchemeStealer - INFO - Starting base detection on 300x376 image
+2026-01-09 12:51:21,455 - SchemeStealer - INFO - Base detection complete: removed 16.7% as base material
+2026-01-09 12:51:21,456 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 12:51:21,471 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 12:51:23,451 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Blue'
+2026-01-09 12:51:23,451 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-01-09 12:51:23,451 - SchemeStealer - INFO - Final: 2 major + 2 details
+2026-01-09 12:51:23,451 - SchemeStealer - INFO -   Blue: 50.3% (detail=False)
+2026-01-09 12:51:23,451 - SchemeStealer - INFO -   Grey: 41.2% (detail=False)
+2026-01-09 12:51:23,462 - SchemeStealer - INFO -   Red: 4.4% (detail=True)
+2026-01-09 12:51:23,463 - SchemeStealer - INFO -   Gold: 4.2% (detail=True)
+2026-01-09 12:51:24,164 - SchemeStealer - INFO - Analysis complete: 4 colors found
+2026-01-09 12:58:32,249 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5 (Pure SMART)
+2026-01-09 12:58:32,275 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-09 12:58:32,275 - SchemeStealer - INFO - Engine initialization complete (Removed old ColorAnalyzer dependency)
+2026-01-09 12:58:32,279 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 12:58:41,870 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 12:58:41,870 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 12:58:42,120 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 12:58:46,013 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 12:58:46,016 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 12:58:46,054 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 12:58:46,332 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 12:58:46,358 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 12:58:48,707 - SchemeStealer - INFO - Starting base detection on 300x376 image
+2026-01-09 12:58:48,767 - SchemeStealer - INFO - Base detection complete: removed 16.7% as base material
+2026-01-09 12:58:48,768 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 12:58:48,788 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 12:58:50,764 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Blue'
+2026-01-09 12:58:50,764 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-01-09 12:58:50,764 - SchemeStealer - INFO - Final: 2 major + 2 details
+2026-01-09 12:58:50,764 - SchemeStealer - INFO -   Blue: 50.3% (detail=False)
+2026-01-09 12:58:50,780 - SchemeStealer - INFO -   Grey: 41.2% (detail=False)
+2026-01-09 12:58:50,780 - SchemeStealer - INFO -   Red: 4.4% (detail=True)
+2026-01-09 12:58:50,782 - SchemeStealer - INFO -   Gold: 4.2% (detail=True)
+2026-01-09 12:58:51,487 - SchemeStealer - INFO - Analysis complete: 4 colors found
+2026-01-09 13:03:04,359 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5 (Pure SMART)
+2026-01-09 13:03:04,398 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-09 13:03:04,398 - SchemeStealer - INFO - Engine initialization complete (Removed old ColorAnalyzer dependency)
+2026-01-09 13:03:04,398 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 13:04:57,747 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5 (Pure SMART)
+2026-01-09 13:04:57,773 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-09 13:04:57,773 - SchemeStealer - INFO - Engine initialization complete (Removed old ColorAnalyzer dependency)
+2026-01-09 13:04:57,773 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 13:05:05,360 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 13:05:05,360 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:05:05,408 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 13:05:07,011 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 13:05:07,031 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:05:07,073 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 13:05:07,353 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:05:07,385 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 13:05:09,932 - SchemeStealer - INFO - Starting base detection on 300x376 image
+2026-01-09 13:05:09,942 - SchemeStealer - INFO - Base detection complete: removed 16.7% as base material
+2026-01-09 13:05:09,942 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 13:05:09,970 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 13:05:10,460 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Blue'
+2026-01-09 13:05:10,460 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-01-09 13:05:10,460 - SchemeStealer - INFO - Final: 2 major + 2 details
+2026-01-09 13:05:10,460 - SchemeStealer - INFO -   Blue: 50.3% (detail=False)
+2026-01-09 13:05:10,460 - SchemeStealer - INFO -   Grey: 41.2% (detail=False)
+2026-01-09 13:05:10,460 - SchemeStealer - INFO -   Red: 4.4% (detail=True)
+2026-01-09 13:05:10,467 - SchemeStealer - INFO -   Gold: 4.2% (detail=True)
+2026-01-09 13:05:11,174 - SchemeStealer - INFO - Analysis complete: 4 colors found
+2026-01-09 13:12:21,494 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5 (Pure SMART)
+2026-01-09 13:12:21,532 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-09 13:12:21,533 - SchemeStealer - INFO - Engine initialization complete (Removed old ColorAnalyzer dependency)
+2026-01-09 13:12:21,534 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 13:12:31,558 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 13:12:31,558 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:12:31,759 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 13:12:35,712 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 13:12:35,714 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:12:35,749 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 13:12:36,035 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:12:36,073 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 13:12:38,415 - SchemeStealer - INFO - Starting base detection on 300x376 image
+2026-01-09 13:12:38,475 - SchemeStealer - INFO - Base detection complete: removed 16.7% as base material
+2026-01-09 13:12:38,476 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 13:12:38,496 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 13:12:40,515 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Blue'
+2026-01-09 13:12:40,515 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-01-09 13:12:40,515 - SchemeStealer - INFO - Final: 2 major + 2 details
+2026-01-09 13:12:40,515 - SchemeStealer - INFO -   Blue: 50.3% (detail=False)
+2026-01-09 13:12:40,515 - SchemeStealer - INFO -   Grey: 41.2% (detail=False)
+2026-01-09 13:12:40,523 - SchemeStealer - INFO -   Red: 4.4% (detail=True)
+2026-01-09 13:12:40,525 - SchemeStealer - INFO -   Gold: 4.2% (detail=True)
+2026-01-09 13:12:41,269 - SchemeStealer - INFO - Analysis complete: 4 colors found
+2026-01-09 13:17:16,226 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5 (Pure SMART)
+2026-01-09 13:17:16,262 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-09 13:17:16,262 - SchemeStealer - INFO - Engine initialization complete (Removed old ColorAnalyzer dependency)
+2026-01-09 13:17:16,262 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 13:17:24,391 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 13:17:24,391 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:17:24,641 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 13:17:27,174 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 13:17:27,174 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:17:27,210 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 13:17:27,489 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:17:27,523 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 13:17:29,871 - SchemeStealer - INFO - Starting base detection on 300x376 image
+2026-01-09 13:17:29,926 - SchemeStealer - INFO - Base detection complete: removed 16.7% as base material
+2026-01-09 13:17:29,927 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 13:17:29,943 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 13:17:31,928 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Blue'
+2026-01-09 13:17:31,928 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-01-09 13:17:31,928 - SchemeStealer - INFO - Final: 2 major + 2 details
+2026-01-09 13:17:31,928 - SchemeStealer - INFO -   Blue: 50.3% (detail=False)
+2026-01-09 13:17:31,928 - SchemeStealer - INFO -   Grey: 41.2% (detail=False)
+2026-01-09 13:17:31,941 - SchemeStealer - INFO -   Red: 4.4% (detail=True)
+2026-01-09 13:17:31,942 - SchemeStealer - INFO -   Gold: 4.2% (detail=True)
+2026-01-09 13:17:32,666 - SchemeStealer - INFO - Analysis complete: 4 colors found
+2026-01-09 13:32:47,263 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5 (Pure SMART)
+2026-01-09 13:32:47,300 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-09 13:32:47,301 - SchemeStealer - INFO - Engine initialization complete (Removed old ColorAnalyzer dependency)
+2026-01-09 13:32:47,303 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 13:33:02,501 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 13:33:02,504 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:33:02,710 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 13:33:06,459 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 13:33:06,459 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:33:06,501 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 13:33:06,784 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:33:06,811 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 13:33:09,158 - SchemeStealer - INFO - Starting base detection on 300x376 image
+2026-01-09 13:33:09,214 - SchemeStealer - INFO - Base detection complete: removed 16.7% as base material
+2026-01-09 13:33:09,215 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 13:33:09,235 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 13:33:11,222 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Blue'
+2026-01-09 13:33:11,222 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-01-09 13:33:11,222 - SchemeStealer - INFO - Final: 2 major + 2 details
+2026-01-09 13:33:11,222 - SchemeStealer - INFO -   Blue: 50.3% (detail=False)
+2026-01-09 13:33:11,222 - SchemeStealer - INFO -   Grey: 41.2% (detail=False)
+2026-01-09 13:33:11,222 - SchemeStealer - INFO -   Red: 4.4% (detail=True)
+2026-01-09 13:33:11,237 - SchemeStealer - INFO -   Gold: 4.2% (detail=True)
+2026-01-09 13:33:11,988 - SchemeStealer - INFO - Analysis complete: 4 colors found
+2026-01-09 13:42:59,143 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5 (Pure SMART)
+2026-01-09 13:42:59,167 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-09 13:42:59,176 - SchemeStealer - INFO - Engine initialization complete (Removed old ColorAnalyzer dependency)
+2026-01-09 13:42:59,180 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 13:43:06,738 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 13:43:06,750 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:43:06,983 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 13:43:10,922 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 13:43:10,922 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:43:10,971 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 13:43:11,252 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:43:11,287 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 13:43:13,646 - SchemeStealer - INFO - Starting base detection on 300x376 image
+2026-01-09 13:43:13,709 - SchemeStealer - INFO - Base detection complete: removed 16.7% as base material
+2026-01-09 13:43:13,710 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 13:43:13,727 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 13:43:15,678 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Blue'
+2026-01-09 13:43:15,678 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-01-09 13:43:15,694 - SchemeStealer - INFO - Final: 2 major + 2 details
+2026-01-09 13:43:15,694 - SchemeStealer - INFO -   Blue: 50.3% (detail=False)
+2026-01-09 13:43:15,694 - SchemeStealer - INFO -   Grey: 41.2% (detail=False)
+2026-01-09 13:43:15,697 - SchemeStealer - INFO -   Red: 4.4% (detail=True)
+2026-01-09 13:43:15,699 - SchemeStealer - INFO -   Gold: 4.2% (detail=True)
+2026-01-09 13:43:16,425 - SchemeStealer - INFO - Analysis complete: 4 colors found
+2026-01-09 13:43:59,501 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 13:43:59,501 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:43:59,544 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 13:44:01,002 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 13:44:01,002 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:44:01,038 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 13:44:01,354 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:44:01,375 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 13:44:03,690 - SchemeStealer - INFO - Starting base detection on 300x617 image
+2026-01-09 13:44:03,700 - SchemeStealer - INFO - Base detection complete: removed 41.2% as base material
+2026-01-09 13:44:03,700 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 13:44:03,738 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 13:44:04,201 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Grey'
+2026-01-09 13:44:04,201 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Magenta'
+2026-01-09 13:44:04,216 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Gold'
+2026-01-09 13:44:04,216 - SchemeStealer - INFO - Final: 4 major + 1 details
+2026-01-09 13:44:04,216 - SchemeStealer - INFO -   Pink: 57.8% (detail=False)
+2026-01-09 13:44:04,224 - SchemeStealer - INFO -   Magenta: 18.9% (detail=False)
+2026-01-09 13:44:04,225 - SchemeStealer - INFO -   Grey: 12.9% (detail=False)
+2026-01-09 13:44:04,226 - SchemeStealer - INFO -   Gold: 6.1% (detail=False)
+2026-01-09 13:44:04,227 - SchemeStealer - INFO -   Blue: 4.3% (detail=True)
+2026-01-09 13:44:05,072 - SchemeStealer - INFO - Analysis complete: 5 colors found
+2026-01-09 13:44:30,646 - SchemeStealer - INFO - Image loaded: (681, 663, 3)
+2026-01-09 13:44:30,646 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:44:30,759 - SchemeStealer - INFO - Glare detected and corrected
+2026-01-09 13:44:30,767 - SchemeStealer - INFO - Overexposure corrected
+2026-01-09 13:44:30,772 - SchemeStealer - INFO - Photo quality score: 55/100 (Fair)
+2026-01-09 13:44:32,418 - SchemeStealer - INFO - Image loaded: (681, 663, 3)
+2026-01-09 13:44:32,418 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:44:32,434 - SchemeStealer - INFO - Glare detected and corrected
+2026-01-09 13:44:32,449 - SchemeStealer - INFO - Overexposure corrected
+2026-01-09 13:44:32,453 - SchemeStealer - INFO - Photo quality score: 55/100 (Fair)
+2026-01-09 13:44:32,719 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:44:32,719 - SchemeStealer - INFO - Glare detected and corrected
+2026-01-09 13:44:32,734 - SchemeStealer - INFO - Overexposure corrected
+2026-01-09 13:44:32,737 - SchemeStealer - INFO - Photo quality score: 55/100 (Fair)
+2026-01-09 13:44:34,966 - SchemeStealer - INFO - Starting base detection on 300x372 image
+2026-01-09 13:44:34,979 - SchemeStealer - INFO - Base detection complete: removed 54.2% as base material
+2026-01-09 13:44:34,981 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 13:44:34,992 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 13:44:35,343 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Red'
+2026-01-09 13:44:35,343 - SchemeStealer - INFO - Final: 3 major + 0 details
+2026-01-09 13:44:35,343 - SchemeStealer - INFO -   Brown: 51.8% (detail=False)
+2026-01-09 13:44:35,343 - SchemeStealer - INFO -   Red: 26.2% (detail=False)
+2026-01-09 13:44:35,343 - SchemeStealer - INFO -   Grey: 22.0% (detail=False)
+2026-01-09 13:44:36,025 - SchemeStealer - INFO - Analysis complete: 3 colors found
+2026-01-09 13:45:46,641 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 13:45:46,641 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:45:46,684 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 13:45:48,507 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 13:45:48,507 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:45:48,552 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 13:45:48,831 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:45:48,854 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 13:45:51,185 - SchemeStealer - INFO - Starting base detection on 300x376 image
+2026-01-09 13:45:51,192 - SchemeStealer - INFO - Base detection complete: removed 16.7% as base material
+2026-01-09 13:45:51,192 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 13:45:51,211 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 13:45:51,693 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Blue'
+2026-01-09 13:45:51,693 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-01-09 13:45:51,693 - SchemeStealer - INFO - Final: 2 major + 2 details
+2026-01-09 13:45:51,693 - SchemeStealer - INFO -   Blue: 50.3% (detail=False)
+2026-01-09 13:45:51,693 - SchemeStealer - INFO -   Grey: 41.2% (detail=False)
+2026-01-09 13:45:51,703 - SchemeStealer - INFO -   Red: 4.4% (detail=True)
+2026-01-09 13:45:51,704 - SchemeStealer - INFO -   Gold: 4.2% (detail=True)
+2026-01-09 13:45:52,436 - SchemeStealer - INFO - Analysis complete: 4 colors found
+2026-01-09 13:51:18,072 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5 (Pure SMART)
+2026-01-09 13:51:18,116 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-09 13:51:18,116 - SchemeStealer - INFO - Engine initialization complete (Removed old ColorAnalyzer dependency)
+2026-01-09 13:51:18,116 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 13:51:35,618 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 13:51:35,618 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:51:35,838 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 13:51:39,711 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 13:51:39,711 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:51:39,750 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 13:51:40,042 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:51:40,071 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 13:51:42,314 - SchemeStealer - INFO - Starting base detection on 300x376 image
+2026-01-09 13:51:42,377 - SchemeStealer - INFO - Base detection complete: removed 16.7% as base material
+2026-01-09 13:51:42,378 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 13:51:42,398 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 13:51:44,429 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Blue'
+2026-01-09 13:51:44,445 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-01-09 13:51:44,445 - SchemeStealer - INFO - Final: 2 major + 2 details
+2026-01-09 13:51:44,445 - SchemeStealer - INFO -   Blue: 50.3% (detail=False)
+2026-01-09 13:51:44,450 - SchemeStealer - INFO -   Grey: 41.2% (detail=False)
+2026-01-09 13:51:44,451 - SchemeStealer - INFO -   Red: 4.4% (detail=True)
+2026-01-09 13:51:44,451 - SchemeStealer - INFO -   Gold: 4.2% (detail=True)
+2026-01-09 13:51:45,180 - SchemeStealer - INFO - Analysis complete: 4 colors found
+2026-01-09 13:58:48,682 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5 (Pure SMART)
+2026-01-09 13:58:48,713 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-09 13:58:48,713 - SchemeStealer - INFO - Engine initialization complete (Removed old ColorAnalyzer dependency)
+2026-01-09 13:58:48,713 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 13:58:56,717 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 13:58:56,717 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:58:56,967 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 13:59:01,324 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 13:59:01,340 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:59:01,376 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 13:59:01,655 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 13:59:01,696 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 13:59:04,044 - SchemeStealer - INFO - Starting base detection on 300x376 image
+2026-01-09 13:59:04,107 - SchemeStealer - INFO - Base detection complete: removed 16.7% as base material
+2026-01-09 13:59:04,108 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 13:59:04,128 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 13:59:06,128 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Blue'
+2026-01-09 13:59:06,128 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-01-09 13:59:06,128 - SchemeStealer - INFO - Final: 2 major + 2 details
+2026-01-09 13:59:06,128 - SchemeStealer - INFO -   Blue: 50.3% (detail=False)
+2026-01-09 13:59:06,128 - SchemeStealer - INFO -   Grey: 41.2% (detail=False)
+2026-01-09 13:59:06,139 - SchemeStealer - INFO -   Red: 4.4% (detail=True)
+2026-01-09 13:59:06,140 - SchemeStealer - INFO -   Gold: 4.2% (detail=True)
+2026-01-09 13:59:06,859 - SchemeStealer - INFO - Analysis complete: 4 colors found
+2026-01-09 15:20:54,053 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5 (Pure SMART)
+2026-01-09 15:20:54,083 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-09 15:20:54,083 - SchemeStealer - INFO - Engine initialization complete (Removed old ColorAnalyzer dependency)
+2026-01-09 15:20:54,088 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 15:21:03,798 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 15:21:03,798 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 15:21:03,993 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 15:21:07,998 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 15:21:08,003 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 15:21:08,037 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 15:21:08,320 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 15:21:08,353 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 15:21:10,733 - SchemeStealer - INFO - Starting base detection v2.0 on 300x376 image
+2026-01-09 15:21:10,747 - SchemeStealer - INFO - Base detection complete: removed 0.2% as base material
+2026-01-09 15:21:10,748 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 15:21:10,774 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 15:21:12,985 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Blue'
+2026-01-09 15:21:12,987 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-01-09 15:21:12,990 - SchemeStealer - INFO - Final: 2 major + 2 details
+2026-01-09 15:21:12,991 - SchemeStealer - INFO -   Blue: 56.5% (detail=False)
+2026-01-09 15:21:12,992 - SchemeStealer - INFO -   Grey: 35.9% (detail=False)
+2026-01-09 15:21:12,992 - SchemeStealer - INFO -   Red: 3.9% (detail=True)
+2026-01-09 15:21:12,993 - SchemeStealer - INFO -   Gold: 3.8% (detail=True)
+2026-01-09 15:21:13,711 - SchemeStealer - INFO - Analysis complete: 4 colors found
+2026-01-09 15:40:19,645 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5 (Pure SMART)
+2026-01-09 15:40:19,676 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-09 15:40:19,677 - SchemeStealer - INFO - Engine initialization complete (Removed old ColorAnalyzer dependency)
+2026-01-09 15:40:19,678 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 15:40:41,837 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 15:40:41,842 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 15:40:42,032 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 15:40:46,192 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 15:40:46,192 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 15:40:46,217 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 15:40:46,486 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 15:40:46,502 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 15:40:48,901 - SchemeStealer - INFO - Starting base detection v2.0 on 300x617 image
+2026-01-09 15:40:48,988 - SchemeStealer - INFO - Base detection complete: removed 24.7% as base material
+2026-01-09 15:40:48,989 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 15:40:49,019 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 15:40:51,187 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Magenta'
+2026-01-09 15:40:51,192 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-01-09 15:40:51,192 - SchemeStealer - INFO - Final: 4 major + 2 details
+2026-01-09 15:40:51,192 - SchemeStealer - INFO -   Magenta: 38.5% (detail=False)
+2026-01-09 15:40:51,197 - SchemeStealer - INFO -   Pink: 26.1% (detail=False)
+2026-01-09 15:40:51,198 - SchemeStealer - INFO -   Grey: 23.0% (detail=False)
+2026-01-09 15:40:51,199 - SchemeStealer - INFO -   Brown: 6.1% (detail=False)
+2026-01-09 15:40:51,200 - SchemeStealer - INFO -   Blue: 3.4% (detail=True)
+2026-01-09 15:40:51,200 - SchemeStealer - INFO -   Gold: 3.0% (detail=True)
+2026-01-09 15:40:52,061 - SchemeStealer - INFO - Analysis complete: 6 colors found
+2026-01-09 18:26:38,477 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 18:26:38,477 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 18:26:38,526 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 18:26:42,816 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 18:26:42,831 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 18:26:42,865 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 18:26:43,142 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 18:26:43,176 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 18:26:45,759 - SchemeStealer - INFO - Starting base detection v2.0 on 300x376 image
+2026-01-09 18:26:45,772 - SchemeStealer - INFO - Base detection complete: removed 0.2% as base material
+2026-01-09 18:26:45,773 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 18:26:45,797 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 18:26:46,279 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Blue'
+2026-01-09 18:26:46,279 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-01-09 18:26:46,279 - SchemeStealer - INFO - Final: 2 major + 2 details
+2026-01-09 18:26:46,279 - SchemeStealer - INFO -   Blue: 56.5% (detail=False)
+2026-01-09 18:26:46,279 - SchemeStealer - INFO -   Grey: 35.9% (detail=False)
+2026-01-09 18:26:46,279 - SchemeStealer - INFO -   Red: 3.9% (detail=True)
+2026-01-09 18:26:46,279 - SchemeStealer - INFO -   Gold: 3.8% (detail=True)
+2026-01-09 18:26:46,995 - SchemeStealer - INFO - Analysis complete: 4 colors found
+2026-01-09 18:27:03,222 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 18:27:03,226 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 18:27:03,265 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 18:27:03,308 - SchemeStealer - INFO - Inspiration Image loaded: (427, 806, 3)
+2026-01-09 18:27:05,875 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 18:27:05,875 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 18:27:05,919 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 18:27:05,956 - SchemeStealer - INFO - Inspiration Image loaded: (427, 806, 3)
+2026-01-09 18:27:06,220 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 18:27:06,220 - SchemeStealer - WARNING - Severe color cast detected
+2026-01-09 18:27:06,220 - SchemeStealer - INFO - Photo quality score: 85/100 (Excellent)
+2026-01-09 18:27:06,234 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 18:27:06,258 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 18:27:06,715 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Red'
+2026-01-09 18:27:06,715 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Gold'
+2026-01-09 18:27:06,715 - SchemeStealer - INFO - Final: 3 major + 1 details
+2026-01-09 18:27:06,715 - SchemeStealer - INFO -   Red: 62.2% (detail=False)
+2026-01-09 18:27:06,715 - SchemeStealer - INFO -   Purple: 26.6% (detail=False)
+2026-01-09 18:27:06,730 - SchemeStealer - INFO -   Gold: 9.4% (detail=False)
+2026-01-09 18:27:06,731 - SchemeStealer - INFO -   Brown: 1.8% (detail=True)
+2026-01-09 18:28:23,001 - SchemeStealer - INFO - Image loaded: (1200, 1200, 3)
+2026-01-09 18:28:23,003 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 18:28:23,042 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 18:28:23,318 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 18:28:23,353 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 18:28:25,689 - SchemeStealer - INFO - Starting base detection v2.0 on 300x376 image
+2026-01-09 18:28:25,697 - SchemeStealer - INFO - Base detection complete: removed 0.2% as base material
+2026-01-09 18:28:25,697 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 18:28:25,726 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 18:28:26,223 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Blue'
+2026-01-09 18:28:26,223 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-01-09 18:28:26,223 - SchemeStealer - INFO - Final: 2 major + 2 details
+2026-01-09 18:28:26,223 - SchemeStealer - INFO -   Blue: 56.5% (detail=False)
+2026-01-09 18:28:26,223 - SchemeStealer - INFO -   Grey: 35.9% (detail=False)
+2026-01-09 18:28:26,223 - SchemeStealer - INFO -   Red: 3.9% (detail=True)
+2026-01-09 18:28:26,238 - SchemeStealer - INFO -   Gold: 3.8% (detail=True)
+2026-01-09 18:28:26,934 - SchemeStealer - INFO - Analysis complete: 4 colors found
+2026-01-09 18:28:26,971 - SchemeStealer - INFO - Inspiration Image loaded: (427, 806, 3)
+2026-01-09 19:33:49,840 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5 (Pure SMART)
+2026-01-09 19:33:49,888 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-09 19:33:49,889 - SchemeStealer - INFO - Engine initialization complete (Removed old ColorAnalyzer dependency)
+2026-01-09 19:33:49,891 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 19:34:23,067 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 19:34:23,067 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 19:34:23,267 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 19:34:27,489 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 19:34:27,493 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 19:34:27,514 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 19:34:27,784 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 19:34:27,803 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 19:34:30,012 - SchemeStealer - INFO - Starting base detection v2.0 on 300x617 image
+2026-01-09 19:34:30,228 - SchemeStealer - INFO - Base detection complete: removed 24.7% as base material
+2026-01-09 19:34:30,228 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 19:34:30,260 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 19:34:32,634 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Magenta'
+2026-01-09 19:34:32,634 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-01-09 19:34:32,638 - SchemeStealer - INFO - Final: 4 major + 2 details
+2026-01-09 19:34:32,642 - SchemeStealer - INFO -   Magenta: 38.5% (detail=False)
+2026-01-09 19:34:32,643 - SchemeStealer - INFO -   Pink: 26.1% (detail=False)
+2026-01-09 19:34:32,644 - SchemeStealer - INFO -   Grey: 23.0% (detail=False)
+2026-01-09 19:34:32,645 - SchemeStealer - INFO -   Brown: 6.1% (detail=False)
+2026-01-09 19:34:32,646 - SchemeStealer - INFO -   Blue: 3.4% (detail=True)
+2026-01-09 19:34:32,647 - SchemeStealer - INFO -   Gold: 3.0% (detail=True)
+2026-01-09 19:34:33,503 - SchemeStealer - INFO - Analysis complete: 6 colors found
+2026-01-09 21:33:48,904 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5 (Pure SMART)
+2026-01-09 21:33:48,931 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-09 21:33:48,932 - SchemeStealer - INFO - Engine initialization complete (Removed old ColorAnalyzer dependency)
+2026-01-09 21:33:48,933 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 21:34:20,729 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5 (Pure SMART)
+2026-01-09 21:34:20,763 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-09 21:34:20,764 - SchemeStealer - INFO - Engine initialization complete (Removed old ColorAnalyzer dependency)
+2026-01-09 21:34:20,769 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 21:36:34,023 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5 (Pure SMART)
+2026-01-09 21:36:34,046 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-09 21:36:34,046 - SchemeStealer - INFO - Engine initialization complete (Removed old ColorAnalyzer dependency)
+2026-01-09 21:36:34,054 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 22:00:35,028 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5 (Pure SMART)
+2026-01-09 22:00:35,050 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-09 22:00:35,050 - SchemeStealer - INFO - Engine initialization complete (Removed old ColorAnalyzer dependency)
+2026-01-09 22:00:35,060 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 22:01:01,221 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 22:01:01,221 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 22:01:01,431 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 22:05:34,783 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 22:05:34,783 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 22:05:34,816 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 22:05:35,084 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 22:05:35,102 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 22:05:37,349 - SchemeStealer - INFO - Starting base detection v2.0 on 300x617 image
+2026-01-09 22:05:37,429 - SchemeStealer - INFO - Base detection complete: removed 24.7% as base material
+2026-01-09 22:05:37,430 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 22:05:37,452 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 22:05:39,577 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Magenta'
+2026-01-09 22:05:39,577 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-01-09 22:05:39,577 - SchemeStealer - INFO - Final: 4 major + 2 details
+2026-01-09 22:05:39,577 - SchemeStealer - INFO -   Magenta: 38.5% (detail=False)
+2026-01-09 22:05:39,585 - SchemeStealer - INFO -   Pink: 26.1% (detail=False)
+2026-01-09 22:05:39,585 - SchemeStealer - INFO -   Grey: 23.0% (detail=False)
+2026-01-09 22:05:39,587 - SchemeStealer - INFO -   Brown: 6.1% (detail=False)
+2026-01-09 22:05:39,587 - SchemeStealer - INFO -   Blue: 3.4% (detail=True)
+2026-01-09 22:05:39,587 - SchemeStealer - INFO -   Gold: 3.0% (detail=True)
+2026-01-09 22:05:40,456 - SchemeStealer - INFO - Analysis complete: 6 colors found
+2026-01-09 22:09:11,177 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.5 (Pure SMART)
+2026-01-09 22:09:11,202 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-09 22:09:11,209 - SchemeStealer - INFO - Engine initialization complete (Removed old ColorAnalyzer dependency)
+2026-01-09 22:09:11,213 - SchemeStealer - INFO - Engine loaded successfully
+2026-01-09 22:09:51,613 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 22:09:51,613 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 22:09:51,635 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 22:09:51,635 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 22:09:51,842 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 22:09:51,842 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 22:09:56,374 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 22:09:56,374 - SchemeStealer - INFO - Image loaded: (970, 778, 3)
+2026-01-09 22:09:56,374 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 22:09:56,374 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 22:09:56,405 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 22:09:56,405 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 22:09:56,675 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 22:09:56,675 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-09 22:09:56,692 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 22:09:56,692 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-09 22:09:59,000 - SchemeStealer - INFO - Starting base detection v2.0 on 300x617 image
+2026-01-09 22:09:59,000 - SchemeStealer - INFO - Starting base detection v2.0 on 300x617 image
+2026-01-09 22:09:59,070 - SchemeStealer - INFO - Base detection complete: removed 24.7% as base material
+2026-01-09 22:09:59,070 - SchemeStealer - INFO - Base detection complete: removed 24.7% as base material
+2026-01-09 22:09:59,070 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 22:09:59,070 - SchemeStealer - INFO - Starting smart color extraction
+2026-01-09 22:09:59,100 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 22:09:59,100 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-01-09 22:10:01,251 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Magenta'
+2026-01-09 22:10:01,251 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Magenta'
+2026-01-09 22:10:01,251 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-01-09 22:10:01,251 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-01-09 22:10:01,251 - SchemeStealer - INFO - Final: 4 major + 2 details
+2026-01-09 22:10:01,251 - SchemeStealer - INFO - Final: 4 major + 2 details
+2026-01-09 22:10:01,251 - SchemeStealer - INFO -   Magenta: 38.5% (detail=False)
+2026-01-09 22:10:01,251 - SchemeStealer - INFO -   Magenta: 38.5% (detail=False)
+2026-01-09 22:10:01,266 - SchemeStealer - INFO -   Pink: 26.1% (detail=False)
+2026-01-09 22:10:01,266 - SchemeStealer - INFO -   Pink: 26.1% (detail=False)
+2026-01-09 22:10:01,267 - SchemeStealer - INFO -   Grey: 23.0% (detail=False)
+2026-01-09 22:10:01,267 - SchemeStealer - INFO -   Grey: 23.0% (detail=False)
+2026-01-09 22:10:01,270 - SchemeStealer - INFO -   Brown: 6.1% (detail=False)
+2026-01-09 22:10:01,270 - SchemeStealer - INFO -   Brown: 6.1% (detail=False)
+2026-01-09 22:10:01,271 - SchemeStealer - INFO -   Blue: 3.4% (detail=True)
+2026-01-09 22:10:01,271 - SchemeStealer - INFO -   Blue: 3.4% (detail=True)
+2026-01-09 22:10:01,272 - SchemeStealer - INFO -   Gold: 3.0% (detail=True)
+2026-01-09 22:10:01,272 - SchemeStealer - INFO -   Gold: 3.0% (detail=True)
+2026-01-09 22:10:02,135 - SchemeStealer - INFO - Analysis complete: 6 colors found
+2026-01-09 22:10:02,135 - SchemeStealer - INFO - Analysis complete: 6 colors found
