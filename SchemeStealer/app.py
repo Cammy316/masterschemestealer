@@ -1,5 +1,5 @@
 """
-SchemeStealer v2.9 - Main Application
+SchemeStealer v2.9.1 - Main Application
 Mobile-optimized Streamlit MVP with Enhanced UI/UX
 """
 
@@ -620,6 +620,7 @@ with tab1:
                     progress_bar = st.empty()
                     
                     try:
+                        # START TIMER
                         start_time = time.time()
                         
                         def update_progress(stage_key, progress_pct):
@@ -687,19 +688,21 @@ with tab1:
                         
                         # Continue with existing logging code...
                         if recipes:
-                            # Sanitize for logs
+                            # Sanitize for logs (recipes now contain ML features like numpy arrays)
                             log_recipes = []
                             for r in recipes:
                                 r_copy = r.copy()
                                 if 'reticle' in r_copy: del r_copy['reticle']
-                                if 'rgb_preview' in r_copy and isinstance(r_copy['rgb_preview'], np.ndarray): 
-                                    r_copy['rgb_preview'] = r_copy['rgb_preview'].tolist()
+                                # Convert numpy arrays to lists for JSON serialization
+                                for k, v in r_copy.items():
+                                    if isinstance(v, np.ndarray):
+                                        r_copy[k] = v.tolist()
                                 log_recipes.append(r_copy)
 
                             scan_id = st.session_state.feedback_logger.log_scan({
                                 'image_size': raw_img.shape,
                                 'quality_score': quality_report.score,
-                                'recipes': log_recipes,
+                                'recipes': log_recipes,  # Now includes lab, hsv, chroma, position!
                                 'mode': mode_key,
                                 'brands': Affiliate.SUPPORTED_BRANDS,
                                 'processing_time': processing_time
@@ -730,7 +733,7 @@ with tab1:
                         
                         # Show processing time
                         if 'processing_time' in st.session_state and st.session_state.processing_time > 0:
-                            st.caption(f"⏱️ Analysis completed in {st.session_state.processing_time:.1f} seconds")
+                            st.caption(f"⏱️ Analysis completed in {st.session_state.processing_time:.2f} seconds")
                         
                         # Add summary metrics
                         st.markdown("---")
@@ -771,36 +774,37 @@ with tab1:
 
                         show_smart_disclaimer(recipes, quality_score)
                         
-                        # ===== COLOR PALETTE PREVIEW =====
-                        st.markdown("### 🎨 Detected Pigments")
+                        # ===== LIVE PALETTE PREVIEW STRIP =====
+                        st.markdown("### 🎨 Your Color Scheme Preview")
                         
-                        # Major colors
-                        if major_colors:
-                            st.caption(f"**Primary Scheme Components ({len(major_colors)})**")
-                            cols = st.columns(min(len(major_colors), 4))
-                            for idx, recipe in enumerate(major_colors[:4]):
-                                with cols[idx]:
-                                    rgb = recipe['rgb_preview']
-                                    color_css = f"rgb({rgb[0]},{rgb[1]},{rgb[2]})"
-                                    st.markdown(f"""
-                                        <div class="palette-box" style="background-color: {color_css};"></div>
-                                        <div class="palette-label">{recipe['family']}</div>
-                                        """, unsafe_allow_html=True)
+                        # Create proportional color bar (No spaces at start of lines!)
+                        palette_html = "<div style='display: flex; height: 80px; border-radius: 12px; overflow: hidden; border: 3px solid #333; box-shadow: 0 4px 12px rgba(0,0,0,0.4); margin: 16px 0;'>"
                         
-                        # Detail colors
-                        if detail_colors:
-                            st.caption(f"**Sub-Patterns / Details ({len(detail_colors)})**")
-                            detail_cols = st.columns(min(len(detail_colors), 4))
-                            for idx, recipe in enumerate(detail_colors[:4]):
-                                with detail_cols[idx]:
-                                    rgb = recipe['rgb_preview']
-                                    color_css = f"rgb({rgb[0]},{rgb[1]},{rgb[2]})"
-                                    st.markdown(f"""
-                                        <div class="palette-box" style="background-color: {color_css}; height: 40px;"></div>
-                                        <div class="palette-label">{recipe['family']}</div>
-                                        """, unsafe_allow_html=True)
+                        # Calculate total coverage for proportions
+                        display_recipes = recipes[:6]  # Show up to 6 colors
+                        total_coverage = sum([r['dominance'] for r in display_recipes])
                         
-                        st.divider()
+                        for recipe in display_recipes:
+                            rgb = recipe['rgb_preview']
+                            color_css = f"rgb({rgb[0]},{rgb[1]},{rgb[2]})"
+                            width_pct = (recipe['dominance'] / total_coverage) * 100
+                            
+                            # Choose text color based on background brightness
+                            brightness = sum(rgb) / 3
+                            text_color = '#000' if brightness > 128 else '#fff'
+                            text_shadow = '#fff' if brightness < 128 else '#000'
+                            
+                            # No indentation in the f-string to prevent code block rendering
+                            palette_html += f"<div style='background: {color_css}; width: {width_pct}%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: {text_color}; text-shadow: 0 0 3px {text_shadow}; padding: 8px; font-family: \"Share Tech Mono\", monospace; transition: all 0.2s; cursor: pointer;' onmouseover='this.style.transform=\"scale(1.05)\"; this.style.zIndex=\"10\";' onmouseout='this.style.transform=\"scale(1)\"; this.style.zIndex=\"1\";'><div style='font-size: 1.2em; font-weight: bold;'>{recipe['dominance']:.0f}%</div><div style='font-size: 0.85em;'>{recipe['family']}</div></div>"
+                        
+                        palette_html += "</div>"
+                        st.markdown(palette_html, unsafe_allow_html=True)
+                        
+                        # Add caption
+                        if len(recipes) > 6:
+                            st.caption(f"**Showing top 6 of {len(recipes)} detected colors**")
+                        
+                        st.markdown("---")
                         
                         # ===== DETAILED RECIPES =====
                         st.markdown("### ✨ Sacred Formulations")
@@ -809,6 +813,8 @@ with tab1:
                         
                         for idx, recipe in enumerate(recipes):
                             is_detail = recipe.get('is_detail', False)
+                            rgb = recipe['rgb_preview']
+                            
                             header = f"{recipe['family']} ({recipe['dominance']:.1f}%)"
                             if is_detail: header = "⭐ " + header
                             
@@ -818,35 +824,172 @@ with tab1:
                             except ValueError:
                                 brand_index = 0
                             
-                            with st.expander(f"📦 {header}", expanded=(idx < 3 and not is_detail)):
-                                # Use global brand preference as default
-                                selected_brand = st.selectbox(
-                                    "Preferred brand:", 
-                                    options=Affiliate.SUPPORTED_BRANDS, 
-                                    index=brand_index, 
-                                    key=f"brand_select_{idx}"
-                                )
+                            # Expander with EMOJI instead of HTML (Fixes "span" text showing up)
+                            with st.expander(f"🎨 {header}", expanded=(idx < 3 and not is_detail)):
                                 
+                                # === ROW 1: Reticle Toggle + Brand Selector ===
+                                col_toggle, col_brand = st.columns([1, 2])
+                                
+                                with col_toggle:
+                                    show_location = st.checkbox(
+                                        "📍 Show location",
+                                        value=(idx < 2 and not is_detail),  # First 2 major colors ON
+                                        key=f"show_loc_{idx}",
+                                        help="View where this color appears on the miniature"
+                                    )
+                                
+                                with col_brand:
+                                    selected_brand = st.selectbox(
+                                        "Preferred brand:", 
+                                        options=Affiliate.SUPPORTED_BRANDS, 
+                                        index=brand_index, 
+                                        key=f"brand_select_{idx}"
+                                    )
+                                
+                                # === ROW 2: Reticle Image (if toggled ON) ===
+                                if show_location:
+                                    st.image(
+                                        recipe['reticle'], 
+                                        caption=f"Areas containing {recipe['family']} ({recipe['dominance']:.1f}%)",
+                                        use_column_width=True
+                                    )
+                                    st.caption("💡 Colored border shows detected regions")
+                                    st.markdown("---")
+                                
+                                # === ROW 3: Paint Recommendations ===
+                                st.markdown("**🎨 Recommended Paints:**")
+                                st.markdown("")  # Spacing
+                                
+                                # Base Paint
                                 base_match = recipe['base'].get(selected_brand)
                                 if base_match:
-                                    c1, c2 = st.columns([1,3])
-                                    with c1: b_sel = st.checkbox("🛡️", value=True, key=f"chk_b_{idx}")
-                                    with c2: st.markdown(f"**Base:** {base_match['name']}")
-                                    if b_sel: selected_paints.append({'brand': selected_brand, 'name': base_match['name'], 'layer': 'Base', 'family': recipe['family']})
+                                    col1, col2, col3 = st.columns([2, 1, 1])
+                                    
+                                    with col1:
+                                        st.markdown(f"🛡️ **Base:** {base_match['name']}")
+                                    
+                                    with col2:
+                                        url = get_affiliate_link(selected_brand, base_match['name'], region_option)
+                                        st.markdown(f"<a href='{url}' target='_blank'><button style='width:100%; padding:8px; background:#5DA153; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold;'>🛒 Buy</button></a>", unsafe_allow_html=True)
+                                    
+                                    with col3:
+                                        if st.button("➕", key=f"add_b_{idx}", help="Add to cart", use_container_width=True):
+                                            selected_paints.append({
+                                                'brand': selected_brand, 
+                                                'name': base_match['name'], 
+                                                'layer': 'Base', 
+                                                'family': recipe['family']
+                                            })
                                 
+                                # Highlight Paint
                                 high_match = recipe['highlight'].get(selected_brand)
                                 if high_match:
-                                    c1, c2 = st.columns([1,3])
-                                    with c1: h_sel = st.checkbox("✨", value=False, key=f"chk_h_{idx}")
-                                    with c2: st.markdown(f"**High:** {high_match['name']}")
-                                    if h_sel: selected_paints.append({'brand': selected_brand, 'name': high_match['name'], 'layer': 'Highlight', 'family': recipe['family']})
+                                    col1, col2, col3 = st.columns([2, 1, 1])
+                                    
+                                    with col1:
+                                        st.markdown(f"✨ **Highlight:** {high_match['name']}")
+                                    
+                                    with col2:
+                                        url = get_affiliate_link(selected_brand, high_match['name'], region_option)
+                                        st.markdown(f"<a href='{url}' target='_blank'><button style='width:100%; padding:8px; background:#5DA153; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold;'>🛒 Buy</button></a>", unsafe_allow_html=True)
+                                    
+                                    with col3:
+                                        if st.button("➕", key=f"add_h_{idx}", help="Add to cart", use_container_width=True):
+                                            selected_paints.append({
+                                                'brand': selected_brand, 
+                                                'name': high_match['name'], 
+                                                'layer': 'Highlight', 
+                                                'family': recipe['family']
+                                            })
                                 
+                                # Shade/Wash Paint
                                 shade_match = recipe['shade'].get(selected_brand)
                                 if shade_match:
-                                    c1, c2 = st.columns([1,3])
-                                    with c1: s_sel = st.checkbox("💧", value=False, key=f"chk_s_{idx}")
-                                    with c2: st.markdown(f"**Wash:** {shade_match['name']}")
-                                    if s_sel: selected_paints.append({'brand': selected_brand, 'name': shade_match['name'], 'layer': 'Wash', 'family': recipe['family']})
+                                    col1, col2, col3 = st.columns([2, 1, 1])
+                                    
+                                    shade_icon = "💧" if recipe['shade_type'] == 'wash' else "🌑"
+                                    shade_label = "Wash" if recipe['shade_type'] == 'wash' else "Shade"
+                                    
+                                    with col1:
+                                        st.markdown(f"{shade_icon} **{shade_label}:** {shade_match['name']}")
+                                    
+                                    with col2:
+                                        url = get_affiliate_link(selected_brand, shade_match['name'], region_option)
+                                        st.markdown(f"<a href='{url}' target='_blank'><button style='width:100%; padding:8px; background:#5DA153; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold;'>🛒 Buy</button></a>", unsafe_allow_html=True)
+                                    
+                                    with col3:
+                                        if st.button("➕", key=f"add_s_{idx}", help="Add to cart", use_container_width=True):
+                                            selected_paints.append({
+                                                'brand': selected_brand, 
+                                                'name': shade_match['name'], 
+                                                'layer': 'Shade', 
+                                                'family': recipe['family']
+                                            })
+                                
+                                # === ROW 4: Quick Add Buttons ===
+                                st.markdown("---")
+                                st.markdown("**⚡ Quick Actions:**")
+                                
+                                col1, col2 = st.columns(2)
+                                
+                                with col1:
+                                    if st.button(
+                                        "➕ Add All 3 Layers", 
+                                        key=f"quick_all_{idx}",
+                                        use_container_width=True,
+                                        help="Add base, highlight, and shade all at once"
+                                    ):
+                                        added_count = 0
+                                        
+                                        if base_match:
+                                            selected_paints.append({
+                                                'brand': selected_brand, 
+                                                'name': base_match['name'], 
+                                                'layer': 'Base', 
+                                                'family': recipe['family']
+                                            })
+                                            added_count += 1
+                                        
+                                        if high_match:
+                                            selected_paints.append({
+                                                'brand': selected_brand, 
+                                                'name': high_match['name'], 
+                                                'layer': 'Highlight', 
+                                                'family': recipe['family']
+                                            })
+                                            added_count += 1
+                                        
+                                        if shade_match:
+                                            selected_paints.append({
+                                                'brand': selected_brand, 
+                                                'name': shade_match['name'], 
+                                                'layer': 'Shade', 
+                                                'family': recipe['family']
+                                            })
+                                            added_count += 1
+                                        
+                                        if added_count > 0:
+                                            st.success(f"✅ Added {added_count} paint{'s' if added_count != 1 else ''} for {recipe['family']}!")
+                                        else:
+                                            st.warning("No paints available for this brand")
+                                
+                                with col2:
+                                    if st.button(
+                                        "➕ Base Only",
+                                        key=f"quick_base_{idx}",
+                                        use_container_width=True,
+                                        help="Add just the base paint"
+                                    ):
+                                        if base_match:
+                                            selected_paints.append({
+                                                'brand': selected_brand, 
+                                                'name': base_match['name'], 
+                                                'layer': 'Base', 
+                                                'family': recipe['family']
+                                            })
+                                            st.success(f"✅ Added {base_match['name']}!")
+                                        else:
+                                            st.warning("No base paint available for this brand")
 
                         if selected_paints:
                             st.divider()
@@ -880,8 +1023,18 @@ with tab1:
                         # Use the first brand available for the quick list if nothing selected
                         default_brand = Affiliate.SUPPORTED_BRANDS[0]
                         for recipe in recipes:
-                            base = recipe['base'].get(default_brand)
-                            if base: all_paints.append(f"{recipe['family']}: {base['name']}")
+                            # Try to find a base match from ANY available brand if preferred not selected
+                            base = recipe['base'].get(global_brand_pref, None)
+                            if not base:
+                                # Fallback to first available
+                                for b in Affiliate.SUPPORTED_BRANDS:
+                                    if recipe['base'].get(b):
+                                        base = recipe['base'][b]
+                                        break
+                            
+                            if base: 
+                                all_paints.append(f"{recipe['family']}: {base['name']}")
+                        
                         paint_list_text = "\n".join(all_paints)
 
                         with col1:
