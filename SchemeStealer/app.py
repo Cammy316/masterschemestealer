@@ -8,6 +8,7 @@ import cv2
 import numpy as np
 import random
 import time
+import os
 from PIL import Image
 from typing import List
 from datetime import datetime
@@ -225,8 +226,13 @@ st.markdown("""
 
 if 'engine' not in st.session_state:
     try:
-        st.session_state.engine = SchemeStealerEngine('paints.json')
-        logger.info("Engine loaded successfully")
+        # === FIX FOR STREAMLIT CLOUD PATHS ===
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        paints_path = os.path.join(base_dir, 'paints.json')
+        
+        st.session_state.engine = SchemeStealerEngine(paints_path)
+        logger.info(f"Engine loaded successfully from {paints_path}")
+        
     except Exception as e:
         st.error(f"❌ Cogitator Failure: {e}")
         logger.error(f"Engine initialization failed: {e}", exc_info=True)
@@ -235,7 +241,6 @@ if 'engine' not in st.session_state:
 if 'photo_processor' not in st.session_state:
     st.session_state.photo_processor = PhotoProcessor()
 
-# NEW v2.1: Initialize feedback, shopping, and analytics
 if 'feedback_logger' not in st.session_state:
     st.session_state.feedback_logger = FeedbackLogger()
 
@@ -245,6 +250,12 @@ if 'analytics' not in st.session_state:
 if 'show_correction_form' not in st.session_state:
     st.session_state.show_correction_form = False
 
+# === FIX: PERSISTENT RESULT STORAGE ===
+if 'scan_results' not in st.session_state:
+    st.session_state.scan_results = None
+if 'scan_quality' not in st.session_state:
+    st.session_state.scan_quality = None
+
 # ============================================================================
 # HEADER
 # ============================================================================
@@ -253,7 +264,7 @@ st.title(f"{APP_ICON} {APP_NAME}")
 st.caption(f"v{APP_VERSION} // M42 Pattern Paint Cogitator")
 
 # ============================================================================
-# HELPER FUNCTIONS - NEW v2.1
+# HELPER FUNCTIONS
 # ============================================================================
 
 def show_smart_disclaimer(recipes: List[dict], quality_score: int):
@@ -278,11 +289,6 @@ def show_smart_disclaimer(recipes: List[dict], quality_score: int):
         warnings.append("📸 **Photo Quality**: Your image quality is fair. "
                        "For best results, try better lighting and hold your phone steady.")
     
-    # Check for many details
-    if len(small_details) > 3:
-        warnings.append("🎨 **Complex Scheme**: Lots of accent colors detected! "
-                       "Some may be weathering/dirt. Focus on the main 3-4 colors first.")
-    
     if warnings:
         st.info("**👀 Quick Heads Up:**\n\n" + "\n\n".join(warnings))
 
@@ -306,9 +312,6 @@ with st.sidebar:
     
     st.header("⚙️ Cogitator Settings")
     
-    # Mode selection only relevant for Tab 1 really, but kept here for global context
-    # We will override these for Tab 2
-    
     mode_select = st.radio(
         "Scan Protocol (Auspex Only):",
         ["Operative (Remove Background)", "Terrain (Full Image)"],
@@ -317,48 +320,19 @@ with st.sidebar:
     mode_key = "mini" if "Operative" in mode_select else "scene"
     
     if mode_key == "mini":
-        remove_base = st.checkbox(
-            "Filter Base Materials", 
-            value=True,
-            help="Exclude tactical rocks and sector debris"
-        )
+        remove_base = st.checkbox("Filter Base Materials", value=True)
     else:
         remove_base = False
     
-    detect_details = st.checkbox(
-        "High-Res Sensor Sweep",
-        value=True,
-        help="Detect sub-patterns (trim, lenses, purity seals)"
-    )
+    detect_details = st.checkbox("High-Res Sensor Sweep", value=True)
     
     with st.expander("🔬 Tech-Priest Override (Optional)", expanded=False):
-        use_awb = st.checkbox(
-            "Auto-Lumen Calibration", 
-            value=True,
-            help="Corrects lighting temperature"
-        )
-        
-        use_sat = st.checkbox(
-            "Amplify Pigment Vibrance", 
-            value=True,
-            help="Enhanced visualization feed"
-        )
-        
-        gamma_val = st.slider(
-            "Gain Adjustment",
-            0.5, 2.0, 1.0, 0.1,
-            help="Adjust input brightness"
-        )
+        use_awb = st.checkbox("Auto-Lumen Calibration", value=True)
+        use_sat = st.checkbox("Amplify Pigment Vibrance", value=True)
+        gamma_val = st.slider("Gain Adjustment", 0.5, 2.0, 1.0, 0.1)
     
     st.divider()
-    
-    st.markdown("""
-    ### 💡 Tactica: Imaging
-    - Ensure **Lumen** levels are adequate (Diffuse Light).
-    - Avoid **Flare** on Power Armour (Glare).
-    - Maintain **Macro** distance.
-    - Stabilize **Pict-Recorder**.
-    """)
+    st.markdown("[![Ko-fi](https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/YOUR_USERNAME_HERE)")
 
 # ============================================================================
 # TAB 1: AUSPEX SCAN (Miniature Scanner)
@@ -388,13 +362,10 @@ with tab1:
             if Mobile.AUTO_COMPRESS_IMAGES:
                 raw_img = compress_image_for_mobile(raw_img, Mobile.COMPRESSED_IMAGE_WIDTH)
             
-            logger.info(f"Image loaded: {raw_img.shape}")
-            
             # Photo quality check
             st.subheader("📊 Signal Quality Assessment")
-            with st.spinner("Calibrating sensors..."):
-                quality_report = st.session_state.photo_processor.process_and_assess(raw_img)
-                feedback = st.session_state.photo_processor.generate_quality_feedback_ui(quality_report)
+            quality_report = st.session_state.photo_processor.process_and_assess(raw_img)
+            feedback = st.session_state.photo_processor.generate_quality_feedback_ui(quality_report)
             
             # Display quality score
             quality_class = f"quality-{quality_report.quality_level.lower()}"
@@ -403,43 +374,25 @@ with tab1:
                 unsafe_allow_html=True
             )
             
-            # Show issues/warnings if any
-            if feedback['show_details']:
-                with st.expander("⚠️ Signal Interference Detected", expanded=True):
-                    if quality_report.issues:
-                        st.error("**Critical Errors:**")
-                        for issue in quality_report.issues:
-                            st.write(f"❌ {issue}")
-                    
-                    if quality_report.warnings:
-                        st.warning("**Auto-Correction Protocols Active:**")
-                        for warning in quality_report.warnings:
-                            st.write(f"❌ {warning}")
-            
             # Show enhanced preview
             preview = quality_report.enhanced_image
-            
-            # Apply gamma if set
             if gamma_val != 1.0:
                 from utils.helpers import adjust_gamma
                 preview = adjust_gamma(preview, gamma=gamma_val)
-            
             st.image(preview, caption="Enhanced Visual Feed")
             
-            # Scan button
             st.divider()
             
             if not quality_report.can_process:
                 st.error("⚠️ **Signal too degraded for logic engines.**")
-                st.info("🛍️ Consult the Tactica: Imaging section and retry.")
             else:
+                # === SCAN BUTTON LOGIC ===
+                # If button is clicked, RUN analysis and SAVE to session state
                 if st.button("🧬 INITIATE AUSPEX SCAN", type="primary", key="btn_auspex"):
-                    # Random flavor text
                     msg = AuspexText.get_loading_msg(mode="scan")
                     progress_bar = st.progress(0, text="Initializing...")
                     
                     try:
-                        # Fake progress for immersion
                         for i in range(1, 101, 20):
                             time.sleep(0.05) 
                             progress_bar.progress(i, text=msg)
@@ -458,566 +411,259 @@ with tab1:
                         time.sleep(0.5)
                         progress_bar.empty()
                         
-                        logger.info(f"Analysis complete: {len(recipes)} colors found")
+                        # === SAVE RESULTS TO SESSION STATE ===
+                        st.session_state.scan_results = recipes
+                        st.session_state.scan_quality = quality_report
                         
-                        if not recipes:
-                            st.warning("❌ No pigmentation detected. The Warp obscures our vision.")
-                        else:
-                            st.success(f"✅ Cogitator Analysis Successful - {len(recipes)} Pigment Patterns Found")
-                            
-                            # === ANALYTICS & DISCLAIMER (NEW v2.1) ===
-                            
-                            # 1. SANITIZE DATA: Create a clean copy of recipes for logging
-                            # We must remove the 'reticle' (image) and ensure RGB is a simple list
+                        # LOGGING
+                        if recipes:
+                            # Sanitize for logs
                             log_recipes = []
                             for r in recipes:
                                 r_copy = r.copy()
-                                if 'reticle' in r_copy:
-                                    del r_copy['reticle']  # Remove the numpy image array
-                                if 'rgb_preview' in r_copy and hasattr(r_copy['rgb_preview'], 'tolist'):
-                                    r_copy['rgb_preview'] = r_copy['rgb_preview'].tolist()
+                                if 'reticle' in r_copy: del r_copy['reticle']
+                                if 'rgb_preview' in r_copy: r_copy['rgb_preview'] = r_copy['rgb_preview'].tolist()
                                 log_recipes.append(r_copy)
 
-                            # 2. LOG SCAN
                             scan_id = st.session_state.feedback_logger.log_scan({
                                 'image_size': raw_img.shape,
                                 'quality_score': quality_report.score,
-                                'recipes': log_recipes,  # <--- Send the clean version here
+                                'recipes': log_recipes,
                                 'mode': mode_key,
                                 'brands': Affiliate.SUPPORTED_BRANDS
                             })
                             st.session_state.current_scan_id = scan_id
+                            st.session_state.analytics.track_scan(mode=mode_key, num_colors=len(recipes), quality_score=quality_report.score)
                             
-                            # Track analytics
-                            st.session_state.analytics.track_scan(
-                                mode=mode_key,
-                                num_colors=len(recipes),
-                                quality_score=quality_report.score
-                            )
-                            
-                            # Show smart contextual disclaimer
-                            show_smart_disclaimer(recipes, quality_report.score)
-                            # ===== COLOR PALETTE PREVIEW =====
-                            st.markdown("### 🎨 Detected Pigments")
-                            
-                            # Separate major and detail colors
-                            major_colors = [r for r in recipes if not r.get('is_detail', False)]
-                            detail_colors = [r for r in recipes if r.get('is_detail', False)]
-                            
-                            # Show major colors
-                            if major_colors:
-                                st.caption(f"**Primary Scheme Components ({len(major_colors)})**")
-                                cols = st.columns(min(len(major_colors), 4))
-                                for idx, recipe in enumerate(major_colors[:4]):
-                                    with cols[idx]:
-                                        rgb = recipe['rgb_preview']
-                                        color_css = f"rgb({rgb[0]},{rgb[1]},{rgb[2]})"
-                                        # Use HTML only, no st.image to avoid deprecation
-                                        st.markdown(f"""
-                                            <div class="palette-box" style="background-color: {color_css};"></div>
-                                            <div class="palette-label">{recipe['family']}</div>
-                                            """, unsafe_allow_html=True)
-                            
-                            # Show detail colors
-                            if detail_colors:
-                                st.caption(f"**Sub-Patterns / Details ({len(detail_colors)})**")
-                                detail_cols = st.columns(min(len(detail_colors), 4))
-                                for idx, recipe in enumerate(detail_colors[:4]):
-                                    with detail_cols[idx]:
-                                        rgb = recipe['rgb_preview']
-                                        color_css = f"rgb({rgb[0]},{rgb[1]},{rgb[2]})"
-                                        # Use HTML only
-                                        st.markdown(f"""
-                                            <div class="palette-box" style="background-color: {color_css}; height: 40px;"></div>
-                                            <div class="palette-label">{recipe['family']}</div>
-                                            """, unsafe_allow_html=True)
-                            
-                            st.divider()
-                            
-                            # ===== DETAILED RECIPES =====
-                            st.markdown("### ✨ Sacred Formulations")
-                            
-                            for recipe in recipes:
-                                is_detail = recipe.get('is_detail', False)
-                                
-                                # Header with badges
-                                header = f"#### {recipe['family']} ({recipe['dominance']:.1f}%)"
-                                if is_detail:
-                                    header += " <span class='detail-badge'>💎 DETAIL</span>"
-                                st.markdown(header, unsafe_allow_html=True)
-                                
-                                # Layout: reticle + paints
-                                col_vis, col_data = st.columns([1, 2])
-                                
-                                with col_vis:
-                                    st.image(recipe['reticle'], caption="Target Location")
-                                
-                                with col_data:
-                                    # Helper function to render paint layer
-                                    def render_paint_layer(label, matches, badge=None):
-                                        header_text = f"**{label}**"
-                                        if badge:
-                                            header_text += f" <span class='wash-badge'>{badge}</span>"
-                                        st.markdown(header_text, unsafe_allow_html=True)
-                                        
-                                        for brand in Affiliate.SUPPORTED_BRANDS:
-                                            css_class = f"brand-{brand.replace(' ', '_')}"
-                                            match = matches.get(brand)
-                                            
-                                            if match:
-                                                paint_name = match['name']
-                                                affiliate_url = get_affiliate_link(brand, paint_name, region_option)
-                                                link_html = f"<a href='{affiliate_url}' target='_blank'>{paint_name} 🛒</a>"
-                                                st.markdown(
-                                                    f"<span class='{css_class}'>{brand}:</span> {link_html}",
-                                                    unsafe_allow_html=True
-                                                )
-                                            else:
-                                                st.markdown(
-                                                    f"<span class='{css_class}'>{brand}:</span> "
-                                                    f"<span style='color:#666;'>[NO STC DATA]</span>",
-                                                    unsafe_allow_html=True
-                                                )
-                                        st.markdown("")
-                                    
-                                    # Render layers
-                                    render_paint_layer("🛡️ Base", recipe['base'])
-                                    render_paint_layer("✨ Highlight", recipe['highlight'])
-                                    
-                                    shade_label = "💧 Wash" if recipe['shade_type'] == 'wash' else "🌑 Shade"
-                                    render_paint_layer(shade_label, recipe['shade'])
-                                
-                                st.divider()
-                    
-                            # === ADDITION #2: FEEDBACK SYSTEM (NEW v2.1) ===
-                            st.divider()
-                            st.markdown("### 📊 How Did We Do?")
-                            st.caption("Your feedback helps us improve the algorithm")
-                            
-                            col_fb1, col_fb2, col_fb3 = st.columns([1, 1, 2])
-                            
-                            with col_fb1:
-                                if st.button("👍 Accurate", key="thumbs_up_tab1", use_container_width=True):
-                                    scan_id = st.session_state.get('current_scan_id')
-                                    if scan_id:
-                                        st.session_state.feedback_logger.log_feedback(
-                                            scan_id, 'thumbs_up', rating=5
-                                        )
-                                        st.session_state.analytics.track_feature_usage('feedback_positive')
-                                        st.success("Thanks! 🎉")
-                            
-                            with col_fb2:
-                                if st.button("👎 Needs Work", key="thumbs_down_tab1", use_container_width=True):
-                                    st.session_state.show_correction_form = True
-                                    st.rerun()
-                            
-                            with col_fb3:
-                                if st.button("📊 View Stats", key="stats_tab1", use_container_width=True):
-                                    stats = st.session_state.feedback_logger.get_scan_stats()
-                                    st.info(
-                                        f"📈 **{stats['total_scans']}** scans completed\n\n"
-                                        f"😊 **{stats['satisfaction_rate']*100:.0f}%** satisfaction rate"
-                                    )
-                            
-                            # Correction form (appears after thumbs down)
-                            if st.session_state.get('show_correction_form', False):
-                                st.divider()
-                                with st.expander("📝 Help Us Improve", expanded=True):
-                                    st.markdown("**What needs improvement?**")
-                                    
-                                    issues = st.multiselect(
-                                        "Select all issues:",
-                                        [
-                                            "Wrong color detected",
-                                            "Missing accent colors",
-                                            "Wrong paint recommendation",
-                                            "Base not removed properly",
-                                            "Metallic detection wrong",
-                                            "Other issue"
-                                        ],
-                                        key="correction_issues"
-                                    )
-                                    
-                                    comments = st.text_area(
-                                        "Additional details (optional):",
-                                        placeholder="E.g., 'The gold trim was detected as brown'",
-                                        key="correction_comments"
-                                    )
-                                    
-                                    col1, col2 = st.columns([1, 1])
-                                    with col1:
-                                        if st.button("✅ Submit Feedback", key="submit_correction", type="primary"):
-                                            scan_id = st.session_state.get('current_scan_id')
-                                            if scan_id and (issues or comments):
-                                                st.session_state.feedback_logger.log_feedback(
-                                                    scan_id,
-                                                    'correction',
-                                                    rating=2,
-                                                    corrections=[{'issues': issues}],
-                                                    comments=comments
-                                                )
-                                                st.success("✅ Feedback submitted. Thank you!")
-                                                st.session_state.show_correction_form = False
-                                                st.rerun()
-                                            else:
-                                                st.warning("⚠️ Please select at least one issue or add a comment")
-                                    
-                                    with col2:
-                                        if st.button("❌ Cancel", key="cancel_correction"):
-                                            st.session_state.show_correction_form = False
-                                            st.rerun()
-
-                            # === ADDITION #3: SHOPPING CART (NEW v2.1) ===
-                            st.divider()
-                            st.markdown("### 🛒 Build Your Shopping List")
-                            st.info("💡 **Tip:** Select base paints for main colors, add highlights/shades as needed")
-                            
-                            selected_paints = []
-                            
-                            # Paint selection for each recipe
-                            for idx, recipe in enumerate(recipes):
-                                is_detail = recipe.get('is_detail', False)
-                                
-                                # Build header with badges
-                                header = f"{recipe['family']} ({recipe['dominance']:.1f}%)"
-                                if is_detail:
-                                    header = "⭐ " + header
-                                
-                                with st.expander(f"📦 {header}", expanded=(idx < 3 and not is_detail)):
-                                    # Brand selector
-                                    selected_brand = st.selectbox(
-                                        "Preferred brand:",
-                                        options=Affiliate.SUPPORTED_BRANDS,
-                                        index=0,  # Default to first brand (Citadel)
-                                        key=f"brand_select_{idx}",
-                                        help="Different brands have different paint availability"
-                                    )
-                                    
-                                    st.markdown("**Select paints to add:**")
-                                    
-                                    # Base paint
-                                    base_match = recipe['base'].get(selected_brand)
-                                    if base_match:
-                                        col1, col2 = st.columns([1, 3])
-                                        with col1:
-                                            base_selected = st.checkbox(
-                                                "🛡️", 
-                                                value=True,  # Pre-check base paints
-                                                key=f"check_base_{idx}",
-                                                help="Base layer"
-                                            )
-                                        with col2:
-                                            st.markdown(f"**Base:** {base_match['name']}")
-                                        
-                                        if base_selected:
-                                            selected_paints.append({
-                                                'brand': selected_brand,
-                                                'name': base_match['name'],
-                                                'layer': 'Base',
-                                                'family': recipe['family']
-                                            })
-                                    else:
-                                        st.caption(f"⚠️ No base paint available for {selected_brand}")
-                                    
-                                    # Highlight paint
-                                    highlight_match = recipe['highlight'].get(selected_brand)
-                                    if highlight_match:
-                                        col1, col2 = st.columns([1, 3])
-                                        with col1:
-                                            highlight_selected = st.checkbox(
-                                                "✨", 
-                                                value=False,  # Optional
-                                                key=f"check_highlight_{idx}",
-                                                help="Highlight layer"
-                                            )
-                                        with col2:
-                                            st.markdown(f"**Highlight:** {highlight_match['name']}")
-                                        
-                                        if highlight_selected:
-                                            selected_paints.append({
-                                                'brand': selected_brand,
-                                                'name': highlight_match['name'],
-                                                'layer': 'Highlight',
-                                                'family': recipe['family']
-                                            })
-                                    
-                                    # Shade/Wash paint
-                                    shade_match = recipe['shade'].get(selected_brand)
-                                    shade_type = recipe['shade_type']
-                                    shade_emoji = "💧" if shade_type == 'wash' else "🌑"
-                                    shade_label = "Wash" if shade_type == 'wash' else "Shade"
-                                    
-                                    if shade_match:
-                                        col1, col2 = st.columns([1, 3])
-                                        with col1:
-                                            shade_selected = st.checkbox(
-                                                shade_emoji, 
-                                                value=False,  # Optional
-                                                key=f"check_shade_{idx}",
-                                                help=f"{shade_label} layer"
-                                            )
-                                        with col2:
-                                            st.markdown(f"**{shade_label}:** {shade_match['name']}")
-                                        
-                                        if shade_selected:
-                                            selected_paints.append({
-                                                'brand': selected_brand,
-                                                'name': shade_match['name'],
-                                                'layer': shade_label,
-                                                'family': recipe['family']
-                                            })
-                            
-                            # Cart summary and checkout
-                            if selected_paints:
-                                st.divider()
-                                st.markdown("#### 🛍️ Your Shopping Cart")
-                                
-                                # Create cart
-                                cart = ShoppingCart(region_option)
-                                for paint in selected_paints:
-                                    cart.add_paint(paint['brand'], paint['name'])
-                                
-                                # Show summary
-                                summary = cart.get_cart_summary()
-                                costs = cart.estimate_cost()
-                                
-                                col1, col2, col3 = st.columns(3)
-                                with col1:
-                                    st.metric("🎨 Paints", summary['total_bottles'])
-                                with col2:
-                                    brands_text = ", ".join([f"{k}: {v}" for k, v in summary['brands'].items()])
-                                    st.metric("🏷️ Brands", len(summary['brands']))
-                                    st.caption(brands_text)
-                                with col3:
-                                    st.metric("💰 Est. Cost", f"${costs['avg']:.0f}")
-                                    st.caption(f"${costs['min']:.0f} - ${costs['max']:.0f}")
-                                
-                                # Detailed list
-                                with st.expander("📋 View Cart Details", expanded=False):
-                                    for i, paint in enumerate(selected_paints, 1):
-                                        st.markdown(
-                                            f"{i}. **{paint['brand']}** - {paint['name']} "
-                                            f"*({paint['layer']} for {paint['family']})*"
-                                        )
-                                
-                                # Shop button
-                                st.markdown("---")
-                                col1, col2 = st.columns([2, 1])
-                                
-                                with col1:
-                                    if st.button(
-                                        "🛍️ Shop on Amazon",
-                                        type="primary",
-                                        use_container_width=True,
-                                        key="shop_amazon_btn"
-                                    ):
-                                        cart_url = cart.generate_cart_url()
-                                        
-                                        # Track conversion attempt
-                                        st.session_state.analytics.track_conversion(
-                                            num_paints=len(selected_paints),
-                                            brands=list(summary['brands'].keys()),
-                                            total_value=costs['avg']
-                                        )
-                                        
-                                        # Display link
-                                        st.markdown(
-                                            f"### [🔗 **Open Amazon** →]({cart_url})",
-                                            unsafe_allow_html=True
-                                        )
-                                        st.success("🎉 Amazon link opened! Supporting SchemeStealer.")
-                                        st.caption("💡 Purchases through this link help us improve the tool")
-                                
-                                with col2:
-                                    # Export list button
-                                    paint_list = "\n".join([
-                                        f"{i}. {p['brand']} - {p['name']}"
-                                        for i, p in enumerate(selected_paints, 1)
-                                    ])
-                                    
-                                    st.download_button(
-                                        "📄 Export List",
-                                        data=paint_list,
-                                        file_name="paint_list.txt",
-                                        mime="text/plain",
-                                        use_container_width=True,
-                                        key="export_list_btn"
-                                    )
-                            
-                            else:
-                                st.info("👆 Select paints above to build your shopping list")
-                    
                     except Exception as e:
                         st.error(f"❌ Cogitator Error: {str(e)}")
                         logger.error(f"Analysis error: {e}", exc_info=True)
-                        st.info("⚠️ The Machine Spirit is restless. Retry with different pict-capture.")
-        
-        except Exception as e:
-            st.error(f"❌ Failed to load image: {str(e)}")
-            logger.error(f"Image load error: {e}", exc_info=True)
 
-    else:
-        # Landing state
-        st.info("👆 Awaiting Pict-Capture Upload...")
-        
-        st.markdown("""
-        ---
-        ### 🎯 Operational Protocols
-        
-        1. **📸 Acquire Target:** Capture image of unit.
-        2. **🔬 Upload Data:** Use the uplink above.
-        3. **🧬 Analyse:** Cogitator extracts pigmentation.
-        4. **🎨 Requisition:** Receive paint supply list.
-        
-        ### ✨ Capabilities
-        - **Base Filtration:** Debris and terrain ignored.
-        - **Sub-Pattern Recognition:** Identifies lenses, gems, and trim.
-        - **Lumen Correction:** Auto-adjusts for atmospheric conditions.
-        """)
-
-
-# ============================================================================
-# TAB 2: INSPIRATION PROTOCOLS (General Image Scanner)
-# ============================================================================
-
-with tab2:
-    st.markdown("""
-    **🌌 Inspiration Protocols Active** Upload environmental data (landscapes, artwork, sunsets). The Cogitator will synthesize a color scheme for your next project.
-    """)
-
-    # File uploader for inspiration
-    uploaded_inspiration = st.file_uploader(
-        "📸 Upload Reference Data (Any Image)",
-        type=["jpg", "jpeg", "png"],
-        help=f"Max {Mobile.MAX_IMAGE_UPLOAD_SIZE}MB",
-        key="uploader_inspiration"
-    )
-
-    if uploaded_inspiration is not None:
-        try:
-            # Load image
-            file_bytes = np.asarray(bytearray(uploaded_inspiration.read()), dtype=np.uint8)
-            raw_img = cv2.imdecode(file_bytes, 1)
-            raw_img = cv2.cvtColor(raw_img, cv2.COLOR_BGR2RGB)
-            
-            # Compress for mobile if needed
-            if Mobile.AUTO_COMPRESS_IMAGES:
-                raw_img = compress_image_for_mobile(raw_img, Mobile.COMPRESSED_IMAGE_WIDTH)
-            
-            logger.info(f"Inspiration Image loaded: {raw_img.shape}")
-            
-            # Show simple preview (no enhanced quality check needed for inspiration usually, but we can do simple display)
-            # We can still apply gamma if the user wants
-            if gamma_val != 1.0:
-                from utils.helpers import adjust_gamma
-                raw_img = adjust_gamma(raw_img, gamma=gamma_val)
-            
-            st.image(raw_img, caption="Reference Data Source")
-            
-            st.divider()
-            
-            if st.button("🧬 GENERATE SCHEME", type="primary", key="btn_inspiration"):
-                 # Random flavor text
-                msg = AuspexText.get_loading_msg(mode="inspiration")
-                progress_bar = st.progress(0, text="Initializing Protocols...")
-                
-                try:
-                    # Fake progress
-                    for i in range(1, 101, 20):
-                        time.sleep(0.05) 
-                        progress_bar.progress(i, text=msg)
-
-                    # Run analysis - Force 'scene' mode to skip base removal, disable details to focus on main mood
-                    recipes, debug_img, quality_dict = st.session_state.engine.analyze_miniature(
-                        raw_img,
-                        mode="scene",          # Forces full image analysis
-                        remove_base=False,     # No base to remove
-                        use_awb=False,         # Keep original mood/lighting (sunsets should stay orange!)
-                        sat_boost=1.0,         # Keep original saturation
-                        detect_details=False   # Focus on broad strokes/mood
-                    )
-                    
-                    progress_bar.progress(100, text="Inspiration Synthesized.")
-                    time.sleep(0.5)
-                    progress_bar.empty()
+                # === DISPLAY LOGIC (RUNS IF RESULTS EXIST IN STATE) ===
+                if st.session_state.scan_results:
+                    recipes = st.session_state.scan_results
+                    quality_score = st.session_state.scan_quality.score
                     
                     if not recipes:
-                        st.warning("❌ Data Insufficient. Cannot extract pigmentation.")
+                        st.warning("❌ No pigmentation detected.")
                     else:
-                        st.success(f"✅ Scheme Synthesized - {len(recipes)} Primary Colors Identified")
+                        st.success(f"✅ Cogitator Analysis Successful - {len(recipes)} Pigment Patterns Found")
+                        show_smart_disclaimer(recipes, quality_score)
                         
                         # ===== COLOR PALETTE PREVIEW =====
-                        st.markdown("### 🎨 Suggested Palette")
+                        st.markdown("### 🎨 Detected Pigments")
+                        major_colors = [r for r in recipes if not r.get('is_detail', False)]
+                        detail_colors = [r for r in recipes if r.get('is_detail', False)]
                         
-                        cols = st.columns(min(len(recipes), 4))
-                        for idx, recipe in enumerate(recipes[:4]):
-                            with cols[idx]:
-                                rgb = recipe['rgb_preview']
-                                color_css = f"rgb({rgb[0]},{rgb[1]},{rgb[2]})"
-                                st.markdown(f"""
-                                    <div class="palette-box" style="background-color: {color_css};"></div>
-                                    <div class="palette-label">{recipe['family']}</div>
-                                """, unsafe_allow_html=True)
-                                
+                        # Major colors
+                        if major_colors:
+                            st.caption(f"**Primary Scheme Components ({len(major_colors)})**")
+                            cols = st.columns(min(len(major_colors), 4))
+                            for idx, recipe in enumerate(major_colors[:4]):
+                                with cols[idx]:
+                                    rgb = recipe['rgb_preview']
+                                    color_css = f"rgb({rgb[0]},{rgb[1]},{rgb[2]})"
+                                    st.markdown(f"""
+                                        <div class="palette-box" style="background-color: {color_css};"></div>
+                                        <div class="palette-label">{recipe['family']}</div>
+                                        """, unsafe_allow_html=True)
+                        
+                        # Detail colors
+                        if detail_colors:
+                            st.caption(f"**Sub-Patterns / Details ({len(detail_colors)})**")
+                            detail_cols = st.columns(min(len(detail_colors), 4))
+                            for idx, recipe in enumerate(detail_colors[:4]):
+                                with detail_cols[idx]:
+                                    rgb = recipe['rgb_preview']
+                                    color_css = f"rgb({rgb[0]},{rgb[1]},{rgb[2]})"
+                                    st.markdown(f"""
+                                        <div class="palette-box" style="background-color: {color_css}; height: 40px;"></div>
+                                        <div class="palette-label">{recipe['family']}</div>
+                                        """, unsafe_allow_html=True)
+                        
                         st.divider()
                         
                         # ===== DETAILED RECIPES =====
-                        st.markdown("### ✨ Paint Recommendations")
-                        
+                        st.markdown("### ✨ Sacred Formulations")
                         for recipe in recipes:
-                            # Header
+                            is_detail = recipe.get('is_detail', False)
                             header = f"#### {recipe['family']} ({recipe['dominance']:.1f}%)"
+                            if is_detail: header += " <span class='detail-badge'>💎 DETAIL</span>"
                             st.markdown(header, unsafe_allow_html=True)
                             
-                            # Layout: Simple paints list (no reticle needed for inspiration really, or maybe just simple)
                             col_vis, col_data = st.columns([1, 2])
-                            
                             with col_vis:
-                                # Show reticle anyway to show where this color came from in the scene
-                                st.image(recipe['reticle'], caption="Source Region")
+                                st.image(recipe['reticle'], caption="Target Location")
                             
                             with col_data:
-                                # Reuse render function logic locally
                                 def render_paint_layer(label, matches, badge=None):
                                     header_text = f"**{label}**"
-                                    if badge:
-                                        header_text += f" <span class='wash-badge'>{badge}</span>"
+                                    if badge: header_text += f" <span class='wash-badge'>{badge}</span>"
                                     st.markdown(header_text, unsafe_allow_html=True)
-                                    
                                     for brand in Affiliate.SUPPORTED_BRANDS:
                                         css_class = f"brand-{brand.replace(' ', '_')}"
                                         match = matches.get(brand)
-                                        
                                         if match:
-                                            paint_name = match['name']
-                                            affiliate_url = get_affiliate_link(brand, paint_name, region_option)
-                                            link_html = f"<a href='{affiliate_url}' target='_blank'>{paint_name} 🛒</a>"
-                                            st.markdown(
-                                                f"<span class='{css_class}'>{brand}:</span> {link_html}",
-                                                unsafe_allow_html=True
-                                            )
+                                            url = get_affiliate_link(brand, match['name'], region_option)
+                                            st.markdown(f"<span class='{css_class}'>{brand}:</span> <a href='{url}' target='_blank'>{match['name']} 🛒</a>", unsafe_allow_html=True)
                                         else:
-                                            st.markdown(
-                                                f"<span class='{css_class}'>{brand}:</span> "
-                                                f"<span style='color:#666;'>[NO MATCH]</span>",
-                                                unsafe_allow_html=True
-                                            )
+                                            st.markdown(f"<span class='{css_class}'>{brand}:</span> <span style='color:#666;'>[NO STC DATA]</span>", unsafe_allow_html=True)
                                     st.markdown("")
                                 
                                 render_paint_layer("🛡️ Base", recipe['base'])
                                 render_paint_layer("✨ Highlight", recipe['highlight'])
                                 shade_label = "💧 Wash" if recipe['shade_type'] == 'wash' else "🌑 Shade"
                                 render_paint_layer(shade_label, recipe['shade'])
-                            
                             st.divider()
 
-                except Exception as e:
-                    st.error(f"❌ Cogitator Error: {str(e)}")
-                    logger.error(f"Inspiration analysis error: {e}", exc_info=True)
-        
-        except Exception as e:
-            st.error(f"❌ Failed to load reference image: {str(e)}")
+                        # === FEEDBACK SYSTEM ===
+                        st.markdown("### 📊 How Did We Do?")
+                        col_fb1, col_fb2, col_fb3 = st.columns([1, 1, 2])
+                        with col_fb1:
+                            if st.button("👍 Accurate", use_container_width=True):
+                                scan_id = st.session_state.get('current_scan_id')
+                                if scan_id: st.session_state.feedback_logger.log_feedback(scan_id, 'thumbs_up', rating=5)
+                                st.success("Thanks! 🎉")
+                        with col_fb2:
+                            if st.button("👎 Needs Work", use_container_width=True):
+                                st.session_state.show_correction_form = True
+                                st.rerun()
+                        
+                        if st.session_state.get('show_correction_form', False):
+                            st.divider()
+                            with st.expander("📝 Help Us Improve", expanded=True):
+                                issues = st.multiselect("Select all issues:", ["Wrong color detected", "Missing accent colors", "Wrong paint recommendation", "Base not removed properly", "Metallic detection wrong"])
+                                comments = st.text_area("Additional details:")
+                                if st.button("✅ Submit Feedback"):
+                                    scan_id = st.session_state.get('current_scan_id')
+                                    if scan_id: st.session_state.feedback_logger.log_feedback(scan_id, 'correction', rating=2, corrections=[{'issues': issues}], comments=comments)
+                                    st.success("Feedback submitted!")
+                                    st.session_state.show_correction_form = False
+                                    st.rerun()
 
+                        # === SHOPPING CART ===
+                        st.divider()
+                        st.markdown("### 🛒 Build Your Shopping List")
+                        st.info("💡 **Tip:** Select base paints for main colors, add highlights/shades as needed")
+                        
+                        selected_paints = []
+                        for idx, recipe in enumerate(recipes):
+                            is_detail = recipe.get('is_detail', False)
+                            header = f"{recipe['family']} ({recipe['dominance']:.1f}%)"
+                            if is_detail: header = "⭐ " + header
+                            
+                            with st.expander(f"📦 {header}", expanded=(idx < 3 and not is_detail)):
+                                selected_brand = st.selectbox("Preferred brand:", options=Affiliate.SUPPORTED_BRANDS, index=0, key=f"brand_select_{idx}")
+                                
+                                base_match = recipe['base'].get(selected_brand)
+                                if base_match:
+                                    c1, c2 = st.columns([1,3])
+                                    with c1: b_sel = st.checkbox("🛡️", value=True, key=f"chk_b_{idx}")
+                                    with c2: st.markdown(f"**Base:** {base_match['name']}")
+                                    if b_sel: selected_paints.append({'brand': selected_brand, 'name': base_match['name'], 'layer': 'Base', 'family': recipe['family']})
+                                
+                                high_match = recipe['highlight'].get(selected_brand)
+                                if high_match:
+                                    c1, c2 = st.columns([1,3])
+                                    with c1: h_sel = st.checkbox("✨", value=False, key=f"chk_h_{idx}")
+                                    with c2: st.markdown(f"**High:** {high_match['name']}")
+                                    if h_sel: selected_paints.append({'brand': selected_brand, 'name': high_match['name'], 'layer': 'Highlight', 'family': recipe['family']})
+                                
+                                shade_match = recipe['shade'].get(selected_brand)
+                                if shade_match:
+                                    c1, c2 = st.columns([1,3])
+                                    with c1: s_sel = st.checkbox("💧", value=False, key=f"chk_s_{idx}")
+                                    with c2: st.markdown(f"**Wash:** {shade_match['name']}")
+                                    if s_sel: selected_paints.append({'brand': selected_brand, 'name': shade_match['name'], 'layer': 'Wash', 'family': recipe['family']})
+
+                        if selected_paints:
+                            st.divider()
+                            st.markdown("#### 🛍️ Your Shopping Cart")
+                            cart = ShoppingCart(region_option)
+                            for p in selected_paints: cart.add_paint(p['brand'], p['name'])
+                            summary = cart.get_cart_summary()
+                            costs = cart.estimate_cost()
+                            
+                            c1, c2, c3 = st.columns(3)
+                            with c1: st.metric("🎨 Paints", summary['total_bottles'])
+                            with c2: st.metric("💰 Est. Cost", f"${costs['avg']:.0f}")
+                            with c3: st.caption("Estimated based on region")
+                            
+                            c1, c2 = st.columns([2, 1])
+                            with c1:
+                                if st.button("🛍️ Shop on Amazon", type="primary", use_container_width=True):
+                                    cart_url = cart.generate_cart_url()
+                                    st.markdown(f"### [🔗 **Open Amazon** →]({cart_url})", unsafe_allow_html=True)
+                            with c2:
+                                paint_list = "\n".join([f"{i}. {p['brand']} - {p['name']}" for i, p in enumerate(selected_paints, 1)])
+                                st.download_button("📄 Export List", data=paint_list, file_name="paint_list.txt", mime="text/plain", use_container_width=True)
+
+        except Exception as e:
+            st.error(f"❌ Failed to load image: {str(e)}")
+            logger.error(f"Image load error: {e}", exc_info=True)
+
+    else:
+        st.info("👆 Awaiting Pict-Capture Upload...")
+        st.markdown("""
+        ---
+        ### 🎯 Operational Protocols
+        1. **📸 Acquire Target:** Capture image of unit.
+        2. **🔬 Upload Data:** Use the uplink above.
+        3. **🧬 Analyse:** Cogitator extracts pigmentation.
+        4. **🎨 Requisition:** Receive paint supply list.
+        """)
+
+# ============================================================================
+# TAB 2: INSPIRATION PROTOCOLS (General Image Scanner)
+# ============================================================================
+
+with tab2:
+    st.markdown("**🌌 Inspiration Protocols Active** Upload environmental data (landscapes, artwork).")
+    uploaded_inspiration = st.file_uploader("📸 Upload Reference Data", type=["jpg", "jpeg", "png"], key="uploader_inspiration")
+
+    if uploaded_inspiration is not None:
+        try:
+            file_bytes = np.asarray(bytearray(uploaded_inspiration.read()), dtype=np.uint8)
+            raw_img = cv2.imdecode(file_bytes, 1)
+            raw_img = cv2.cvtColor(raw_img, cv2.COLOR_BGR2RGB)
+            if Mobile.AUTO_COMPRESS_IMAGES:
+                raw_img = compress_image_for_mobile(raw_img, Mobile.COMPRESSED_IMAGE_WIDTH)
+            
+            st.image(raw_img, caption="Reference Data Source")
+            
+            if st.button("🧬 GENERATE SCHEME", type="primary", key="btn_inspiration"):
+                with st.spinner("Synthesizing..."):
+                    recipes, _, _ = st.session_state.engine.analyze_miniature(raw_img, mode="scene", remove_base=False, use_awb=False, sat_boost=1.0, detect_details=False)
+                    
+                    if not recipes:
+                        st.warning("❌ Data Insufficient.")
+                    else:
+                        st.success(f"✅ Scheme Synthesized - {len(recipes)} Colors Identified")
+                        cols = st.columns(min(len(recipes), 4))
+                        for idx, recipe in enumerate(recipes[:4]):
+                            with cols[idx]:
+                                rgb = recipe['rgb_preview']
+                                st.markdown(f"<div class='palette-box' style='background-color: rgb({rgb[0]},{rgb[1]},{rgb[2]});'></div>", unsafe_allow_html=True)
+                        
+                        st.divider()
+                        for recipe in recipes:
+                            st.markdown(f"#### {recipe['family']} ({recipe['dominance']:.1f}%)")
+                            col_vis, col_data = st.columns([1, 2])
+                            with col_vis: st.image(recipe['reticle'], caption="Source")
+                            with col_data:
+                                def render_layer(label, matches):
+                                    st.markdown(f"**{label}**")
+                                    for brand in Affiliate.SUPPORTED_BRANDS:
+                                        match = matches.get(brand)
+                                        if match: 
+                                            url = get_affiliate_link(brand, match['name'], region_option)
+                                            st.markdown(f"- {brand}: [{match['name']}]({url})")
+                                render_layer("Base", recipe['base'])
+                                render_layer("Highlight", recipe['highlight'])
+                                render_layer("Shade", recipe['shade'])
+                            st.divider()
+        except Exception as e:
+            st.error(f"❌ Error: {str(e)}")
 
 # ============================================================================
 # FOOTER
