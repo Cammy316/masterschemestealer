@@ -1,159 +1,137 @@
-"""
-Feedback logging system for ML training data collection
-Stores user feedback and scan data for future improvements
-"""
 import json
-import uuid
+import os
+import streamlit as st
 from datetime import datetime
-from pathlib import Path
-from typing import Dict, List, Optional
-
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 
 class FeedbackLogger:
-    """
-    Logs user feedback for future ML training
-    Stores in JSON Lines format (for MVP) - migrate to PostgreSQL for production
-    """
-    
-    def __init__(self, log_dir: str = "feedback_logs"):
-        self.log_dir = Path(log_dir)
-        self.log_dir.mkdir(exist_ok=True)
-        self.session_file = self.log_dir / "sessions.jsonl"
-        self.feedback_file = self.log_dir / "feedback.jsonl"
-    
-    def log_scan(self, scan_data: Dict) -> str:
+    def __init__(self):
+        # Local backup path
+        self.log_dir = "feedback_logs"
+        if not os.path.exists(self.log_dir):
+            os.makedirs(self.log_dir)
+            
+        self.scan_file = os.path.join(self.log_dir, "sessions.jsonl")
+        self.feedback_file = os.path.join(self.log_dir, "feedback.jsonl")
+        
+        # Initialize Google Sheets Connection
+        self.sheet = None
+        self._connect_to_sheets()
+
+    def _connect_to_sheets(self):
+        """Attempts to connect to Google Sheets using Streamlit Secrets"""
+        try:
+            if "gcp_service_account" in st.secrets and "gsheets" in st.secrets:
+                # Create a credential object from the secrets dictionary
+                scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+                creds = ServiceAccountCredentials.from_json_keyfile_dict(dict(st.secrets["gcp_service_account"]), scope)
+                client = gspread.authorize(creds)
+                
+                # Open the sheet
+                self.sheet = client.open_by_url(st.secrets["gsheets"]["sheet_url"]).sheet1
+                # print("✅ Connected to Google Sheets")
+        except Exception as e:
+            print(f"⚠️ Could not connect to Google Sheets: {e}")
+            self.sheet = None
+
+    def log_scan(self, scan_data):
         """
-        Log a scan session
-        
-        Args:
-            scan_data: Dictionary containing scan results
-        
-        Returns:
-            scan_id: UUID for linking feedback to this scan
+        Logs a new scan session.
+        Returns the unique scan_id.
         """
-        scan_id = str(uuid.uuid4())
+        scan_id = datetime.now().strftime("%Y%m%d_%H%M%S")
+        timestamp = datetime.now().isoformat()
         
+        # 1. Prepare data for JSON log (Full Detail)
         log_entry = {
             'scan_id': scan_id,
-            'timestamp': datetime.now().isoformat(),
-            'image_size': scan_data.get('image_size'),
-            'quality_score': scan_data.get('quality_score'),
-            'colors_detected': len(scan_data.get('recipes', [])),
-            'recipes': scan_data.get('recipes'),  # Full recipe data for ML training
-            'mode': scan_data.get('mode', 'mini'),
-            'brands': scan_data.get('brands', [])
+            'timestamp': timestamp,
+            'data': scan_data
         }
-        
-        # Append to JSONL (one JSON object per line - easy to stream)
-        with open(self.session_file, 'a') as f:
+
+        # 2. Save to Local JSONL (Backup)
+        with open(self.scan_file, 'a') as f:
             f.write(json.dumps(log_entry) + '\n')
-        
+            
+        # 3. Save to Google Sheet (Summary Only)
+        if self.sheet:
+            try:
+                # Extract top colors for the spreadsheet (max 3)
+                recipes = scan_data.get('recipes', [])
+                top_colors = [f"{r['family']} ({r.get('dominance',0):.0f}%)" for r in recipes[:3]]
+                top_colors_str = ", ".join(top_colors)
+                
+                # Append row: [ID, Timestamp, Quality Score, Mode, Top Colors]
+                self.sheet.append_row([
+                    scan_id, 
+                    timestamp, 
+                    scan_data.get('quality_score', 0),
+                    scan_data.get('mode', 'unknown'),
+                    top_colors_str
+                ])
+            except Exception as e:
+                print(f"⚠️ Failed to upload to sheet: {e}")
+
         return scan_id
-    
-    def log_feedback(self, scan_id: str, feedback_type: str, 
-                     rating: Optional[int] = None,
-                     corrections: Optional[List[Dict]] = None,
-                     comments: Optional[str] = None):
+
+    def log_feedback(self, scan_id, feedback_type, rating=None, corrections=None, comments=None):
         """
-        Log user feedback on a scan
+        Logs user feedback for a specific scan.
+        """
+        timestamp = datetime.now().isoformat()
         
-        Args:
-            scan_id: UUID from log_scan()
-            feedback_type: 'thumbs_up', 'thumbs_down', 'correction', 'conversion_attempt'
-            rating: 1-5 stars (optional)
-            corrections: List of {issues, details}
-            comments: Free-form user comments
-        """
-        feedback_entry = {
-            'feedback_id': str(uuid.uuid4()),
+        # 1. Local JSONL Log
+        log_entry = {
+            'timestamp': timestamp,
             'scan_id': scan_id,
-            'timestamp': datetime.now().isoformat(),
             'type': feedback_type,
             'rating': rating,
-            'corrections': corrections or [],
+            'corrections': corrections,
             'comments': comments
         }
         
         with open(self.feedback_file, 'a') as f:
-            f.write(json.dumps(feedback_entry) + '\n')
-    
-    def get_scan_stats(self) -> Dict:
-        """
-        Get overall statistics for display
+            f.write(json.dumps(log_entry) + '\n')
+
+        # 2. Google Sheet Log
+        # We append feedback to the SAME sheet, but we might mark it differently
+        # Or ideally, you'd use a second tab (worksheet) for feedback.
+        # For simplicity, we will just try to find the row and update it, or add a new line.
+        if self.sheet:
+            try:
+                # Simple append for feedback [ID, "FEEDBACK", Type, Rating, Comment]
+                self.sheet.append_row([
+                    scan_id,
+                    "FEEDBACK_RECEIVED",
+                    feedback_type,
+                    rating if rating else "",
+                    comments if comments else ""
+                ])
+            except Exception as e:
+                print(f"⚠️ Failed to upload feedback: {e}")
+
+    def get_scan_stats(self):
+        """Returns basic stats from local logs"""
+        total_scans = 0
+        positive_feedback = 0
+        total_feedback = 0
         
-        Returns:
-            Dict with total scans, feedback counts, satisfaction rate
-        """
-        scans = []
-        feedbacks = []
-        
-        # Load scan data
-        if self.session_file.exists():
-            with open(self.session_file, 'r') as f:
-                scans = [json.loads(line) for line in f]
-        
-        # Load feedback data
-        if self.feedback_file.exists():
+        if os.path.exists(self.scan_file):
+            with open(self.scan_file, 'r') as f:
+                total_scans = sum(1 for line in f)
+                
+        if os.path.exists(self.feedback_file):
             with open(self.feedback_file, 'r') as f:
-                feedbacks = [json.loads(line) for line in f]
-        
-        # Calculate metrics
-        thumbs_up = sum(1 for f in feedbacks if f['type'] == 'thumbs_up')
-        thumbs_down = sum(1 for f in feedbacks if f['type'] == 'thumbs_down')
-        conversions = sum(1 for f in feedbacks if f['type'] == 'conversion_attempt')
+                for line in f:
+                    data = json.loads(line)
+                    total_feedback += 1
+                    if data.get('type') == 'thumbs_up':
+                        positive_feedback += 1
+                        
+        satisfaction = (positive_feedback / total_feedback) if total_feedback > 0 else 1.0
         
         return {
-            'total_scans': len(scans),
-            'total_feedback': len(feedbacks),
-            'thumbs_up': thumbs_up,
-            'thumbs_down': thumbs_down,
-            'conversions': conversions,
-            'satisfaction_rate': thumbs_up / (thumbs_up + thumbs_down) if (thumbs_up + thumbs_down) > 0 else 0,
-            'conversion_rate': conversions / len(scans) if scans else 0
+            'total_scans': total_scans,
+            'satisfaction_rate': satisfaction
         }
-    
-    def export_training_data(self, output_file: str = "training_data.json"):
-        """
-        Export labeled data for ML training
-        Combines scans with their feedback for supervised learning
-        
-        Returns:
-            Path to exported file
-        """
-        scans = {}
-        feedbacks_by_scan = {}
-        
-        # Load all data
-        if self.session_file.exists():
-            with open(self.session_file, 'r') as f:
-                for line in f:
-                    scan = json.loads(line)
-                    scans[scan['scan_id']] = scan
-        
-        if self.feedback_file.exists():
-            with open(self.feedback_file, 'r') as f:
-                for line in f:
-                    feedback = json.loads(line)
-                    scan_id = feedback['scan_id']
-                    if scan_id not in feedbacks_by_scan:
-                        feedbacks_by_scan[scan_id] = []
-                    feedbacks_by_scan[scan_id].append(feedback)
-        
-        # Combine scan + feedback
-        training_data = []
-        for scan_id, scan in scans.items():
-            feedbacks = feedbacks_by_scan.get(scan_id, [])
-            
-            # Only export scans with user feedback
-            if feedbacks:
-                training_data.append({
-                    'scan': scan,
-                    'feedback': feedbacks
-                })
-        
-        # Export as JSON
-        output_path = self.log_dir / output_file
-        with open(output_path, 'w') as f:
-            json.dump(training_data, f, indent=2)
-        
-        return str(output_path)
