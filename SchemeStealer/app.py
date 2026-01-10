@@ -333,6 +333,21 @@ with st.sidebar:
     
     st.divider()
     st.markdown("[![Ko-fi](https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/YOUR_USERNAME_HERE)")
+    
+    # SECRET ADMIN DOWNLOADER
+    st.divider()
+    with st.expander("🔐 Admin Console"):
+        if st.button("📥 Download Feedback Logs"):
+            try:
+                with open('feedback_logs/feedback.jsonl', 'r') as f:
+                    st.download_button(
+                        label="Save Log File",
+                        data=f,
+                        file_name=f"feedback_backup_{datetime.now().strftime('%Y%m%d')}.jsonl",
+                        mime="application/json"
+                    )
+            except FileNotFoundError:
+                st.error("No feedback data found yet.")
 
 # ============================================================================
 # TAB 1: AUSPEX SCAN (Miniature Scanner)
@@ -674,6 +689,8 @@ st.markdown(f"""
 <div style='text-align: center; color: #666; font-size: 0.8em; font-family: monospace;'>
     {APP_NAME} v{APP_VERSION} | 
     Sanctioned by the Mechanicus | 
-    <a href='#' style='color: #5DA153;'>Transmit Astropathic Feedback</a>
+    <a href='mailto:schemestealer@gmail.com?subject=SchemeStealer%20Feedback' style='color: #5DA153; text-decoration: none;'>
+        Transmit Astropathic Feedback
+    </a>
 </div>
 """, unsafe_allow_html=True)
