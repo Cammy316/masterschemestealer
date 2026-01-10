@@ -6,3 +6,5 @@ scikit-image==0.22.0
 rembg==2.0.56
 pillow==10.2.0
 scipy==1.12.0
+gspread
+oauth2client
