@@ -1,5 +1,5 @@
 """
-SchemeStealer v2.9.1 - Main Application
+SchemeStealer v2.9.2 - Main Application
 Mobile-optimized Streamlit MVP with Enhanced UI/UX
 """
 
@@ -395,6 +395,19 @@ if 'processing_time' not in st.session_state:
     st.session_state.processing_time = 0.0
 if 'first_visit' not in st.session_state:
     st.session_state.first_visit = True
+
+# === INSPIRATION TAB STATE VARIABLES (NEW) ===
+if 'show_inspiration_correction' not in st.session_state:
+    st.session_state.show_inspiration_correction = False
+
+if 'show_inspiration_suggestion' not in st.session_state:
+    st.session_state.show_inspiration_suggestion = False
+
+if 'current_inspiration_scan_id' not in st.session_state:
+    st.session_state.current_inspiration_scan_id = None
+
+if 'inspiration_source_type' not in st.session_state:
+    st.session_state.inspiration_source_type = None
 
 # ============================================================================
 # HEADER
@@ -1196,6 +1209,33 @@ with tab2:
             st.markdown("#### 🖼️ Your Inspiration Source")
             st.image(raw_img, use_column_width=True, caption="Original image")
             
+            # === NEW: Source Type Selector ===
+            st.markdown("**📂 What type of image is this?**")
+            st.caption("Helps us improve color extraction for different sources")
+            
+            source_type = st.selectbox(
+                "Image Type:",
+                [
+                    "🌅 Landscape/Nature",
+                    "🎨 Artwork/Painting", 
+                    "🎬 Movie/Game Screenshot",
+                    "🏛️ Architecture",
+                    "🦋 Animal/Creature",
+                    "🍕 Food",
+                    "🌸 Flowers/Plants",
+                    "📸 Photography",
+                    "🎮 Other"
+                ],
+                index=0,
+                key="inspiration_source_type_select",
+                help="Select the type that best matches your inspiration image"
+            )
+            
+            # Store source type
+            st.session_state.inspiration_source_type = source_type
+            
+            st.markdown("---")
+            
             if st.button("🎨 EXTRACT COLOR PALETTE", type="primary", key="btn_inspiration"):
                 with st.spinner("Analyzing color harmonies..."):
                     recipes, _, _ = st.session_state.engine.analyze_miniature(
@@ -1211,8 +1251,50 @@ with tab2:
                         st.warning("⚠️ Couldn't extract distinct colors. Try an image with more color variety!")
                     else:
                         st.success(f"✅ Extracted {len(recipes)} colors from your inspiration!")
+                        
                         # SAVE RESULTS to session state to handle reruns
                         st.session_state.inspiration_results = recipes
+                        
+                        # === NEW: LOG INSPIRATION SCAN ===
+                        try:
+                            # Sanitize recipes for logging (remove numpy arrays and images)
+                            log_recipes = []
+                            for r in recipes:
+                                r_copy = r.copy()
+                                # Remove non-serializable data
+                                if 'reticle' in r_copy:
+                                    del r_copy['reticle']
+                                if 'rgb_preview' in r_copy and isinstance(r_copy['rgb_preview'], np.ndarray):
+                                    r_copy['rgb_preview'] = r_copy['rgb_preview'].tolist()
+                                if 'pixel_indices' in r_copy:
+                                    del r_copy['pixel_indices']
+                                log_recipes.append(r_copy)
+                            
+                            # Log to Google Sheets
+                            inspiration_scan_id = st.session_state.feedback_logger.log_scan({
+                                'mode': 'inspiration',
+                                'source_type': st.session_state.inspiration_source_type,
+                                'image_size': raw_img.shape,
+                                'recipes': log_recipes,
+                                'num_colors': len(recipes),
+                                'brands': Affiliate.SUPPORTED_BRANDS
+                            })
+                            
+                            # Store scan ID for feedback
+                            st.session_state.current_inspiration_scan_id = inspiration_scan_id
+                            
+                            # Track in analytics
+                            st.session_state.analytics.track_scan(
+                                mode='inspiration',
+                                num_colors=len(recipes),
+                                quality_score=100  # No quality check for inspiration mode
+                            )
+                            
+                            logger.info(f"Logged inspiration scan: {inspiration_scan_id}, source: {st.session_state.inspiration_source_type}")
+                            
+                        except Exception as e:
+                            logger.error(f"Failed to log inspiration scan: {e}", exc_info=True)
+                            # Don't show error to user - logging is non-critical
             
             # === DISPLAY LOGIC FOR INSPIRATION ===
             # Run this whenever results exist in session state (handles reruns)
@@ -1416,6 +1498,157 @@ with tab2:
                         colors_text = ", ".join([r['family'] for r in recipes[:3]])
                         share_text = f"Created a custom color scheme with SchemeStealer! 🎨\nColors: {colors_text}"
                         st.info(f"**Copy to share:**\n\n{share_text}")
+
+                # === NEW: INSPIRATION FEEDBACK SECTION ===
+                st.markdown("---")
+                st.markdown("### 📊 How Did We Do?")
+                st.caption("Your feedback helps us improve color extraction for different image types!")
+                
+                col1, col2, col3 = st.columns(3)
+                
+                with col1:
+                    if st.button(
+                        "👍 Accurate Colors", 
+                        use_container_width=True, 
+                        key="insp_thumbs_up",
+                        help="These colors match my image well"
+                    ):
+                        scan_id = st.session_state.get('current_inspiration_scan_id')
+                        if scan_id:
+                            try:
+                                st.session_state.feedback_logger.log_feedback(
+                                    scan_id,
+                                    'thumbs_up',
+                                    rating=5,
+                                    comments=f"Source: {st.session_state.get('inspiration_source_type', 'Unknown')}"
+                                )
+                                st.success("Thanks for the feedback! 🎉")
+                                logger.info(f"Positive feedback for inspiration scan {scan_id}")
+                            except Exception as e:
+                                logger.error(f"Failed to log feedback: {e}")
+                                st.error("Couldn't save feedback, but noted!")
+                
+                with col2:
+                    if st.button(
+                        "👎 Colors Off", 
+                        use_container_width=True, 
+                        key="insp_thumbs_down",
+                        help="The detected colors don't match well"
+                    ):
+                        st.session_state.show_inspiration_correction = True
+                        st.rerun()
+                
+                with col3:
+                    if st.button(
+                        "💡 Suggest Use", 
+                        use_container_width=True, 
+                        key="insp_suggest",
+                        help="Tell us how you'd use this scheme"
+                    ):
+                        st.session_state.show_inspiration_suggestion = True
+                        st.rerun()
+
+                # === CORRECTION FORM ===
+                if st.session_state.get('show_inspiration_correction', False):
+                    st.markdown("---")
+                    with st.expander("📝 Tell us what's wrong", expanded=True):
+                        st.markdown("**What issues did you notice with the color extraction?**")
+                        
+                        issues = st.multiselect(
+                            "Select all that apply:",
+                            [
+                                "Missed a dominant color",
+                                "Detected background instead of subject",
+                                "Too many similar colors",
+                                "Colors don't match the image",
+                                "Wrong color names/families",
+                                "Picked up shadows/highlights as colors",
+                                "Other issue"
+                            ],
+                            key="insp_issues"
+                        )
+                        
+                        comments = st.text_area(
+                            "What colors should have been detected?",
+                            key="insp_comments",
+                            placeholder="E.g., 'Should have found the bright orange sunset, not the gray clouds' or 'Missed the vibrant purple flowers'",
+                            help="Specific feedback helps us improve!"
+                        )
+                        
+                        col_a, col_b = st.columns([1, 1])
+                        
+                        with col_a:
+                            if st.button("✅ Submit Feedback", key="insp_submit", use_container_width=True):
+                                scan_id = st.session_state.get('current_inspiration_scan_id')
+                                if scan_id and (issues or comments):
+                                    try:
+                                        # Formatting source info into comments
+                                        full_comments = f"Source Type: {st.session_state.get('inspiration_source_type')}\n{comments}"
+                                        
+                                        st.session_state.feedback_logger.log_feedback(
+                                            scan_id,
+                                            'correction',
+                                            rating=2,
+                                            issues=issues,
+                                            comments=full_comments
+                                        )
+                                        st.success("Feedback submitted! This helps us improve! 🙏")
+                                        logger.info(f"Correction feedback for inspiration scan {scan_id}: {issues}")
+                                        st.session_state.show_inspiration_correction = False
+                                        st.rerun()
+                                    except Exception as e:
+                                        logger.error(f"Failed to log correction: {e}")
+                                        st.error("Couldn't save feedback, but we noted the issue!")
+                                else:
+                                    st.warning("Please select at least one issue or add a comment")
+                        
+                        with col_b:
+                            if st.button("❌ Cancel", key="insp_cancel", use_container_width=True):
+                                st.session_state.show_inspiration_correction = False
+                                st.rerun()
+                
+                # === SUGGESTION FORM ===
+                if st.session_state.get('show_inspiration_suggestion', False):
+                    st.markdown("---")
+                    with st.expander("💭 Share how you'd use this scheme", expanded=True):
+                        st.markdown("**We'd love to know what you'd paint with these colors!**")
+                        
+                        use_case = st.text_area(
+                            "Your army/project idea:",
+                            placeholder="E.g., 'Perfect for my Chaos Space Marines!' or 'Would use this for my Necron dynasty' or 'Great for terrain bases'",
+                            key="insp_use_case",
+                            help="Your ideas help other users discover great schemes!"
+                        )
+                        
+                        col_a, col_b = st.columns([1, 1])
+                        
+                        with col_a:
+                            if st.button("✅ Share Idea", key="insp_share", use_container_width=True):
+                                scan_id = st.session_state.get('current_inspiration_scan_id')
+                                if scan_id and use_case:
+                                    try:
+                                        st.session_state.feedback_logger.log_feedback(
+                                            scan_id,
+                                            'usage_suggestion',
+                                            rating=4,
+                                            comments=f"Use case: {use_case} | Source: {st.session_state.get('inspiration_source_type')}"
+                                        )
+                                        st.success("Thanks for sharing your creativity! 💡")
+                                        logger.info(f"Usage suggestion for inspiration scan {scan_id}")
+                                        st.session_state.show_inspiration_suggestion = False
+                                        st.rerun()
+                                    except Exception as e:
+                                        logger.error(f"Failed to log suggestion: {e}")
+                                        st.error("Couldn't save suggestion, but we noted it!")
+                                else:
+                                    st.warning("Please share your idea before submitting")
+                        
+                        with col_b:
+                            if st.button("❌ Cancel", key="insp_cancel_suggest", use_container_width=True):
+                                st.session_state.show_inspiration_suggestion = False
+                                st.rerun()
+                
+                st.markdown("---")
                         
         except Exception as e:
             st.error(f"❌ Error processing image: {str(e)}")
