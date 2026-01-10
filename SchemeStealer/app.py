@@ -1,5 +1,5 @@
 """
-SchemeStealer v2.5 - Main Application
+SchemeStealer v2.6 - Main Application
 Mobile-optimized Streamlit MVP
 """
 
@@ -19,8 +19,9 @@ from core.photo_processor import PhotoProcessor
 from utils.helpers import get_affiliate_link, compress_image_for_mobile
 from utils.logging_config import logger
 
-# NEW v2.1 IMPORTS
-from utils.feedback_logger import FeedbackLogger
+# NEW v2.6 IMPORTS - Updated to use EnhancedGSheetsLogger
+# Assuming feedback_logger.py has been replaced with enhanced_gsheets_logger.py code
+from utils.feedback_logger import EnhancedGSheetsLogger as FeedbackLogger
 from utils.shopping_cart import ShoppingCart
 from utils.analytics import SimpleAnalytics
 
@@ -255,6 +256,8 @@ if 'scan_results' not in st.session_state:
     st.session_state.scan_results = None
 if 'scan_quality' not in st.session_state:
     st.session_state.scan_quality = None
+if 'processing_time' not in st.session_state:
+    st.session_state.processing_time = 0.0
 
 # ============================================================================
 # HEADER
@@ -339,6 +342,8 @@ with st.sidebar:
     with st.expander("🔐 Admin Console"):
         if st.button("📥 Download Feedback Logs"):
             try:
+                # Note: This checks the local file which might be empty if we rely only on GSheets
+                # But the Enhanced logger still keeps track if configured to do so, or GSheets is primary
                 with open('feedback_logs/feedback.jsonl', 'r') as f:
                     st.download_button(
                         label="Save Log File",
@@ -408,6 +413,9 @@ with tab1:
                     progress_bar = st.progress(0, text="Initializing...")
                     
                     try:
+                        # START TIMER
+                        start_time = time.time()
+
                         for i in range(1, 101, 20):
                             time.sleep(0.05) 
                             progress_bar.progress(i, text=msg)
@@ -432,22 +440,31 @@ with tab1:
                         
                         # LOGGING
                         if recipes:
-                            # Sanitize for logs
+                            # Sanitize for logs (recipes now contain ML features like numpy arrays)
                             log_recipes = []
                             for r in recipes:
                                 r_copy = r.copy()
                                 if 'reticle' in r_copy: del r_copy['reticle']
-                                if 'rgb_preview' in r_copy: r_copy['rgb_preview'] = r_copy['rgb_preview'].tolist()
+                                # Convert numpy arrays to lists for JSON serialization
+                                for k, v in r_copy.items():
+                                    if isinstance(v, np.ndarray):
+                                        r_copy[k] = v.tolist()
                                 log_recipes.append(r_copy)
 
+                            # Calculate processing time
+                            processing_time = time.time() - start_time
+
+                            # Enhanced logging with full ML features
                             scan_id = st.session_state.feedback_logger.log_scan({
                                 'image_size': raw_img.shape,
                                 'quality_score': quality_report.score,
-                                'recipes': log_recipes,
+                                'recipes': log_recipes,  # Now includes lab, hsv, chroma, position!
                                 'mode': mode_key,
-                                'brands': Affiliate.SUPPORTED_BRANDS
+                                'brands': Affiliate.SUPPORTED_BRANDS,
+                                'processing_time': processing_time
                             })
                             st.session_state.current_scan_id = scan_id
+                            st.session_state.processing_time = processing_time
                             st.session_state.analytics.track_scan(mode=mode_key, num_colors=len(recipes), quality_score=quality_report.score)
                             
                     except Exception as e:
@@ -463,6 +480,11 @@ with tab1:
                         st.warning("❌ No pigmentation detected.")
                     else:
                         st.success(f"✅ Cogitator Analysis Successful - {len(recipes)} Pigment Patterns Found")
+                        
+                        # Show processing time
+                        if 'processing_time' in st.session_state and st.session_state.processing_time > 0:
+                            st.caption(f"⏱️ Analysis completed in {st.session_state.processing_time:.2f} seconds")
+
                         show_smart_disclaimer(recipes, quality_score)
                         
                         # ===== COLOR PALETTE PREVIEW =====
@@ -546,15 +568,63 @@ with tab1:
                         
                         if st.session_state.get('show_correction_form', False):
                             st.divider()
-                            with st.expander("📝 Help Us Improve", expanded=True):
-                                issues = st.multiselect("Select all issues:", ["Wrong color detected", "Missing accent colors", "Wrong paint recommendation", "Base not removed properly", "Metallic detection wrong"])
-                                comments = st.text_area("Additional details:")
-                                if st.button("✅ Submit Feedback"):
-                                    scan_id = st.session_state.get('current_scan_id')
-                                    if scan_id: st.session_state.feedback_logger.log_feedback(scan_id, 'correction', rating=2, corrections=[{'issues': issues}], comments=comments)
-                                    st.success("Feedback submitted!")
-                                    st.session_state.show_correction_form = False
-                                    st.rerun()
+                            with st.expander("🔧 Help Us Improve", expanded=True):
+                                st.markdown("**Your corrections train our AI!** Be as specific as possible.")
+                                
+                                issues = st.multiselect(
+                                    "What went wrong?", 
+                                    [
+                                        "Wrong color family (e.g. called Gold when it's Brown)",
+                                        "Missed small details or trim",
+                                        "Wrong paint brand match",
+                                        "Base wasn't removed properly",
+                                        "Detected metallic when it's not",
+                                        "Didn't detect metallic when it is"
+                                    ]
+                                )
+                                
+                                expected_colors = st.text_area(
+                                    "What should the colors be?",
+                                    placeholder="e.g. 'Gold not Brown' or 'Missed the silver trim'",
+                                    help="Be specific - this helps train the AI!"
+                                )
+                                
+                                comments = st.text_area(
+                                    "Any other details?",
+                                    placeholder="e.g. lighting conditions, photo quality, etc."
+                                )
+                                
+                                # Optional email for follow-up
+                                user_email = st.text_input(
+                                    "Email (optional - for follow-up on your feedback)",
+                                    placeholder="your@email.com"
+                                )
+                                
+                                col_a, col_b = st.columns([1, 1])
+                                with col_a:
+                                    if st.button("✅ Submit Correction", use_container_width=True, type="primary"):
+                                        scan_id = st.session_state.get('current_scan_id')
+                                        if scan_id and expected_colors:
+                                            st.session_state.feedback_logger.log_feedback(
+                                                scan_id=scan_id,
+                                                feedback_type='correction',
+                                                rating=2,
+                                                issues=issues,
+                                                expected_colors=expected_colors,
+                                                comments=comments,
+                                                user_email=user_email if user_email else None
+                                            )
+                                            st.success("✅ Thank you! Your correction helps train the AI! 🧠")
+                                            st.balloons()
+                                            st.session_state.show_correction_form = False
+                                            st.rerun()
+                                        elif not expected_colors:
+                                            st.error("Please tell us what the colors should be!")
+                                
+                                with col_b:
+                                    if st.button("Cancel", use_container_width=True):
+                                        st.session_state.show_correction_form = False
+                                        st.rerun()
 
                         # === SHOPPING CART ===
                         st.divider()
