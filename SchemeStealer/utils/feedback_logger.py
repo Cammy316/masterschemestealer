@@ -17,32 +17,41 @@ class FeedbackLogger:
         
         # Initialize Google Sheets Connection
         self.sheet = None
+        print("🔧 DEBUG: Initializing FeedbackLogger...")
         self._connect_to_sheets()
 
     def _connect_to_sheets(self):
         """Attempts to connect to Google Sheets using Streamlit Secrets"""
+        print("🔧 DEBUG: Attempting Sheet Connection...")
+        
+        # DEBUG: Check if secrets exist
+        if "gcp_service_account" not in st.secrets:
+            print("❌ ERROR: 'gcp_service_account' NOT found in secrets!")
+            return
+        if "gsheets" not in st.secrets:
+            print("❌ ERROR: 'gsheets' NOT found in secrets!")
+            return
+
         try:
-            if "gcp_service_account" in st.secrets and "gsheets" in st.secrets:
-                # Create a credential object from the secrets dictionary
-                scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-                creds = ServiceAccountCredentials.from_json_keyfile_dict(dict(st.secrets["gcp_service_account"]), scope)
-                client = gspread.authorize(creds)
-                
-                # Open the sheet
-                self.sheet = client.open_by_url(st.secrets["gsheets"]["sheet_url"]).sheet1
-                # print("✅ Connected to Google Sheets")
+            # Create a credential object from the secrets dictionary
+            scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+            creds = ServiceAccountCredentials.from_json_keyfile_dict(dict(st.secrets["gcp_service_account"]), scope)
+            client = gspread.authorize(creds)
+            
+            # Open the sheet
+            self.sheet = client.open_by_url(st.secrets["gsheets"]["sheet_url"]).sheet1
+            print("✅ SUCCESS: Connected to Google Sheets!")
         except Exception as e:
-            print(f"⚠️ Could not connect to Google Sheets: {e}")
+            print(f"❌ CRITICAL ERROR: Could not connect to Google Sheets: {e}")
             self.sheet = None
 
     def log_scan(self, scan_data):
-        """
-        Logs a new scan session.
-        Returns the unique scan_id.
-        """
+        """Logs a new scan session."""
         scan_id = datetime.now().strftime("%Y%m%d_%H%M%S")
         timestamp = datetime.now().isoformat()
         
+        print(f"🔧 DEBUG: Logging scan {scan_id}...")
+
         # 1. Prepare data for JSON log (Full Detail)
         log_entry = {
             'scan_id': scan_id,
@@ -57,6 +66,7 @@ class FeedbackLogger:
         # 3. Save to Google Sheet (Summary Only)
         if self.sheet:
             try:
+                print("🔧 DEBUG: Attempting to write row to Sheet...")
                 # Extract top colors for the spreadsheet (max 3)
                 recipes = scan_data.get('recipes', [])
                 top_colors = [f"{r['family']} ({r.get('dominance',0):.0f}%)" for r in recipes[:3]]
@@ -70,15 +80,16 @@ class FeedbackLogger:
                     scan_data.get('mode', 'unknown'),
                     top_colors_str
                 ])
+                print("✅ SUCCESS: Row written to Google Sheet!")
             except Exception as e:
-                print(f"⚠️ Failed to upload to sheet: {e}")
+                print(f"❌ ERROR: Failed to upload to sheet: {e}")
+        else:
+            print("⚠️ WARNING: Skipping Sheet upload (No connection)")
 
         return scan_id
 
     def log_feedback(self, scan_id, feedback_type, rating=None, corrections=None, comments=None):
-        """
-        Logs user feedback for a specific scan.
-        """
+        """Logs user feedback."""
         timestamp = datetime.now().isoformat()
         
         # 1. Local JSONL Log
@@ -95,12 +106,8 @@ class FeedbackLogger:
             f.write(json.dumps(log_entry) + '\n')
 
         # 2. Google Sheet Log
-        # We append feedback to the SAME sheet, but we might mark it differently
-        # Or ideally, you'd use a second tab (worksheet) for feedback.
-        # For simplicity, we will just try to find the row and update it, or add a new line.
         if self.sheet:
             try:
-                # Simple append for feedback [ID, "FEEDBACK", Type, Rating, Comment]
                 self.sheet.append_row([
                     scan_id,
                     "FEEDBACK_RECEIVED",
@@ -109,7 +116,7 @@ class FeedbackLogger:
                     comments if comments else ""
                 ])
             except Exception as e:
-                print(f"⚠️ Failed to upload feedback: {e}")
+                print(f"❌ ERROR: Failed to upload feedback: {e}")
 
     def get_scan_stats(self):
         """Returns basic stats from local logs"""
