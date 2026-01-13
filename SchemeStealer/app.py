@@ -906,7 +906,7 @@ def show_smart_disclaimer(recipes: List[dict], quality_score: int):
 
 # Tabs for Main Scan and Inspiration Mode
 # UPDATED: More balanced tab names
-tab1, tab2 = st.tabs(["🧬 AUSPEX SCAN", "🌌 VISUAL ARCHIVES"])
+tab1, tab2 = st.tabs(["🧬 AUSPEX SCAN", "🌌 COLOUR INSPIRATION"])
 
 # ============================================================================
 # TAB 1: AUSPEX SCAN (Miniature Scanner)
@@ -1509,7 +1509,7 @@ with tab2:
             text-transform: uppercase;
             letter-spacing: 4px;
         '>
-            🌌 VISUAL ARCHIVES
+            🌌 IDEA ENGINE
         </h2>
         <p style='
             text-align: center; 
