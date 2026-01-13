@@ -666,17 +666,44 @@ st.markdown("""
     
     /* Mobile improvements */
     @media (max-width: 768px) {
-        /* Fix Title Wrapping */
+        /* Fix H1 Title (SchemeStealer) */
         h1 {
-            font-size: 8vw !important; /* Scales with screen width (approx 30-35px) */
-            white-space: normal !important; /* Allow text to wrap naturally */
-            line-height: 1.2 !important; /* Prevent gaps if it wraps */
+            font-size: 8vw !important; /* Scales with screen width */
+            white-space: normal !important;
+            line-height: 1.1 !important;
             text-align: center !important;
         }
 
+        /* Fix H2 Headers (Tab Titles like TACTICAL AUSPEX) */
+        h2 {
+            font-size: 6vw !important; /* Adaptive size */
+            white-space: normal !important;
+            line-height: 1.2 !important;
+            text-align: center !important;
+            letter-spacing: 1px !important; /* Reduce spacing slightly on mobile */
+        }
+
+        /* Fix H3 Headers (Section Titles like Quick Actions) */
+        h3 {
+            font-size: 5vw !important;
+            white-space: normal !important;
+            text-align: center !important;
+        }
+
+        /* Ensure generic text wraps properly and doesn't push width */
+        p, div, label, span {
+            max-width: 100% !important;
+            word-wrap: break-word !important;
+            overflow-wrap: break-word !important;
+        }
+
+        /* Adjust button text size */
         .stButton>button {
-            font-size: 16px !important;
-            padding: 14px !important;
+            font-size: 14px !important; /* Slightly smaller text for buttons */
+            padding: 12px 4px !important; /* Reduce padding to fit 3 in a row */
+            white-space: normal !important; /* Allow button text to wrap if needed */
+            height: auto !important; /* Allow button to grow tall if text wraps */
+            min-height: 50px !important;
         }
         
         .palette-box {
