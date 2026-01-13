@@ -666,6 +666,12 @@ st.markdown("""
     
     /* Mobile improvements */
     @media (max-width: 768px) {
+        /* Fix Title Wrapping */
+        h1 {
+            font-size: 2.5rem !important; /* Make title smaller on mobile */
+            white-space: nowrap !important; /* Force single line */
+        }
+
         .stButton>button {
             font-size: 16px !important;
             padding: 14px !important;
@@ -689,7 +695,7 @@ st.markdown("""
 # CACHING: Initialize heavy resources once per session
 @st.cache_resource
 def load_engine():
-    """Initialize SchemeStealer Engine once"""
+    """Initialize  Engine once"""
     try:
         # === FIX FOR STREAMLIT CLOUD PATHS ===
         base_dir = os.path.dirname(os.path.abspath(__file__))
