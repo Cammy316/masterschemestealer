@@ -1,7 +1,7 @@
 """
-SchemeStealer v3.1.0 - Main Application
-Mobile-optimized Streamlit MVP with Enhanced UI/UX
-Features: Memory Management, Session Persistence, ML Logging, Feedback System, Themed UI
+SchemeStealer v3.2.0 - Main Application
+Mobile-optimised Streamlit MVP with Enhanced UI/UX
+Features: Memory Management, Session Persistence, Machine Spirit Logging, Feedback System
 """
 
 import streamlit as st
@@ -12,10 +12,9 @@ import time
 import os
 import gc
 import json
-import base64
-from PIL import Image
-from typing import List, Optional
+import urllib.parse
 from datetime import datetime
+from typing import List, Optional, Dict
 
 from config import APP_NAME, APP_VERSION, APP_ICON, Mobile, Affiliate
 from core.schemestealer_engine import SchemeStealerEngine
@@ -23,10 +22,25 @@ from core.photo_processor import PhotoProcessor
 from utils.helpers import get_affiliate_link, compress_image_for_mobile
 from utils.logging_config import logger
 
-# NEW v2.6 IMPORTS
+# NEW IMPORTS
 from utils.feedback_logger import EnhancedGSheetsLogger as FeedbackLogger
 from utils.shopping_cart import ShoppingCart
 from utils.analytics import SimpleAnalytics
+from utils.session_utils import safe_session_update
+
+# ============================================================================
+# PAGE CONFIGURATION (MUST BE FIRST)
+# ============================================================================
+
+st.set_page_config(
+    page_title=f"{APP_NAME} - Tactical Paint Auspex",
+    page_icon=APP_ICON,
+    layout="centered",
+    initial_sidebar_state="collapsed",
+    menu_items={
+        'About': f"{APP_NAME} v{APP_VERSION} - Scan miniatures, find paints!"
+    }
+)
 
 # ============================================================================
 # MEMORY MANAGEMENT & UTILS
@@ -50,10 +64,25 @@ def get_cart_state_as_json():
         return json.dumps(st.session_state.shopping_cart.cart_items)
     return "[]"
 
-def render_paint_list_ui():
+def render_footer(theme="green"):
+    """Render footer with theme-aware styling"""
+    link_color = "#5DA153" if theme == "green" else "#A97BC4"
+    st.markdown(f"""
+    <div style='text-align: center; color: #666; font-size: 0.8em; font-family: monospace; margin-top: 50px;'>
+        {APP_NAME} v{APP_VERSION} | 
+        Sanctioned by the Mechanicus | 
+        <a href='mailto:schemestealer@gmail.com?subject=SchemeStealer%20Feedback' style='color: {link_color}; text-decoration: none; font-weight: bold;'>
+            Transmit Astropathic Feedback
+        </a>
+    </div>
+    """, unsafe_allow_html=True)
+
+def render_paint_list_ui(key_suffix="default"):
     """
     Render the collapsed Paint List (Cart) UI.
     Shared between Auspex and Inspiration tabs.
+    Args:
+        key_suffix: Unique string to prevent duplicate widget ID errors when rendered in multiple tabs.
     """
     items = []
     if 'shopping_cart' in st.session_state:
@@ -64,7 +93,6 @@ def render_paint_list_ui():
     # Always show the expander so user knows where the list is
     label = f"📋 Your Paint List ({count} items)" if count > 0 else "📋 Your Paint List (Empty)"
     
-    # Auto-expand if items were just added (you can track this with a flag if needed)
     with st.expander(label, expanded=False):
         if count == 0:
             st.info("Your list is empty. Add paints from scan results!")
@@ -82,17 +110,22 @@ def render_paint_list_ui():
             with c1:
                 st.caption(f"**Est. Total:** ${costs['avg']:.0f}")
             with c2:
-                # The only "loud" button, tucked away inside
-                if st.button("🛒 Find on Amazon", type="primary", use_container_width=True, key=f"shop_btn_{int(time.time()*1000)}"):
+                # FIXED: Uses stable key with suffix instead of time.time()
+                if st.button("🛒 Find on Amazon", type="primary", use_container_width=True, key=f"shop_btn_{key_suffix}"):
                     cart_url = st.session_state.shopping_cart.generate_cart_url()
                     st.markdown(f"### [🔗 **Click to Open Amazon** →]({cart_url})", unsafe_allow_html=True)
             
-            if st.button("🗑️ Clear List", use_container_width=True, key=f"clear_btn_{int(time.time()*1000)}"):
-                st.session_state.shopping_cart.clear_cart()
+            # Safe update wrapper for clearing cart
+            def clear_cart_action(cart):
+                cart.clear_cart()
+
+            # FIXED: Uses stable key with suffix instead of time.time()
+            if st.button("🗑️ Clear List", use_container_width=True, key=f"clear_btn_{key_suffix}"):
+                safe_session_update('shopping_cart', clear_cart_action)
                 st.rerun()
 
 # ============================================================================
-# FLAVOUR TEXT & THEMES
+# FLAVOUR TEXT & THEMES (BRITISH ENGLISH + MACHINE SPIRIT)
 # ============================================================================
 
 class AuspexText:
@@ -102,7 +135,7 @@ class AuspexText:
     STAGE_MESSAGES = {
         'initializing': [
             "Awakening the Machine Spirit...",
-            "Initializing Cogitator Arrays...",
+            "Initialising Cogitator Arrays...",
             "Establishing Noospheric Link...",
             "Activating Auspex Protocols..."
         ],
@@ -124,15 +157,15 @@ class AuspexText:
             "Identifying Foundational Substrate...",
             "Detecting Base Material Signatures...",
             "Scanning Terrain Composition...",
-            "Analyzing Mounting Platform...",
+            "Analysing Mounting Platform...",
             "Surveying Foundation Structure..."
         ],
         'color_extraction': [
             "Communing with the Machine Spirit...",
-            "Auspex Scan Initializing...",
+            "Auspex Scan Initialising...",
             "Scanning Biomass Pigmentation...",
             "Extracting Chromatic Data-Patterns...",
-            "Analyzing Pigment Concentrations...",
+            "Analysing Pigment Concentrations...",
             "Interpreting Spectral Signatures...",
             "Divining Colour Harmonics...",
             "Processing Wavelength Frequencies..."
@@ -141,7 +174,7 @@ class AuspexText:
             "Detecting Blessed Metallics...",
             "Identifying Auramite Signatures...",
             "Scanning for Sacred Golds...",
-            "Analyzing Ferrous Compositions...",
+            "Analysing Ferrous Compositions...",
             "Measuring Reflective Properties...",
             "Detecting Adamantium Traces..."
         ],
@@ -158,7 +191,7 @@ class AuspexText:
         'finalizing': [
             "Invoking the Omnissiah's Blessing...",
             "Filtering Warp Interference...",
-            "Finalizing Ritual Calculations...",
+            "Finalising Ritual Calculations...",
             "Completing Sacred Rites...",
             "Sanctifying Results..."
         ]
@@ -166,7 +199,7 @@ class AuspexText:
     
     SUCCESS_MESSAGES = [
         "The Emperor Protects, and Identifies!",
-        "STC Pattern Recognized.",
+        "STC Pattern Recognised.",
         "Machine Spirit Appeased.",
         "Xenos/Heretic Pigment Identified.",
         "Cogitator Analysis Complete.",
@@ -187,10 +220,10 @@ class AuspexText:
     INSPIRATION_LOADING_MESSAGES = [
         "Consulting the Archives of History...",
         "Scanning Environmental Data...",
-        "Analyzing Sector Terrain...",
+        "Analysing Sector Terrain...",
         "Extracting Pigment Data from Pict-Feed...",
-        "Harmonizing Colour Palettes...",
-        "Synthesizing Inspiration Protocols..."
+        "Harmonising Colour Palettes...",
+        "Synthesising Inspiration Protocols..."
     ]
 
     @staticmethod
@@ -208,20 +241,9 @@ class AuspexText:
         return random.choice(messages)
 
 # ============================================================================
-# PAGE CONFIGURATION
+# CSS STYLING (ISOLATED MARKERS & HIGH GOTHIC UI)
 # ============================================================================
 
-st.set_page_config(
-    page_title=f"{APP_NAME} - Tactical Paint Auspex",
-    page_icon=APP_ICON,
-    layout="centered",
-    initial_sidebar_state="collapsed",
-    menu_items={
-        'About': f"{APP_NAME} v{APP_VERSION} - Scan miniatures, find paints!"
-    }
-)
-
-# Mobile-optimized CSS with Custom Fonts & Enhanced UI
 st.markdown("""
     <style>
     /* IMPORT FONTS */
@@ -230,9 +252,364 @@ st.markdown("""
     @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600&display=swap');
 
     /* ========================================================================
-       CLEAN CUSTOM UPLOAD BOXES
+       1. THE COGITATOR SCROLLBAR (GLOBAL)
+       ======================================================================== */
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+        background: #0e0e0e;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #4A7C2C 0%, #1a2e1a 100%);
+        border-radius: 5px;
+        border: 1px solid #000;
+    }
+    ::-webkit-scrollbar-track {
+        background: #000;
+        border-left: 1px solid #333;
+    }
+    ::-webkit-scrollbar-corner {
+        background: #000;
+    }
+    
+    /* ========================================================================
+       2. TACTICAL HUD GRID (CUSTOM METRIC REPLACEMENT)
+       ======================================================================== */
+    .hud-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 12px;
+        margin: 15px 0;
+    }
+    
+    /* Auspex HUD Card */
+    .hud-card-auspex {
+        background-color: rgba(10, 20, 10, 0.75);
+        border: 1px solid #4A7C2C;
+        border-radius: 4px;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        backdrop-filter: blur(4px);
+        box-shadow: 0 0 10px rgba(74, 124, 44, 0.2);
+        min-height: 100px;
+    }
+    
+    .hud-label-auspex {
+        color: #8FD14F;
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 0.8em;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+        letter-spacing: 1px;
+    }
+    
+    .hud-value-auspex {
+        color: #fff;
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 1.6em;
+        font-weight: bold;
+        text-shadow: 0 0 8px #5DA153;
+        line-height: 1.2;
+    }
+    
+    .hud-sub-auspex {
+        color: #fff !important; 
+        font-size: 0.75em;
+        margin-top: 5px;
+        font-weight: 500;
+        font-family: 'Share Tech Mono', monospace;
+        opacity: 0.9;
+    }
+
+    /* Inspiration HUD Card */
+    .hud-card-inspiration {
+        background-color: rgba(30, 10, 35, 0.75);
+        border: 1px solid #8B4FA8;
+        border-radius: 8px;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        backdrop-filter: blur(4px);
+        box-shadow: 0 0 15px rgba(139, 79, 168, 0.2);
+        min-height: 100px;
+    }
+    
+    .hud-label-inspiration {
+        color: #D4A5FF;
+        font-family: 'Raleway', sans-serif;
+        font-size: 0.8em;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+        letter-spacing: 1px;
+    }
+    
+    .hud-value-inspiration {
+        color: #fff;
+        font-family: 'Raleway', sans-serif;
+        font-size: 1.6em;
+        font-weight: bold;
+        text-shadow: 0 0 10px #A97BC4;
+        line-height: 1.2;
+    }
+    
+    .hud-sub-inspiration {
+        color: #fff !important; 
+        font-size: 0.75em;
+        margin-top: 5px;
+        font-weight: 500;
+        font-family: 'Raleway', sans-serif;
+        opacity: 0.9;
+    }
+
+    /* ========================================================================
+       3. UNIFIED BUTTON GEOMETRY (PREVENTS UNEVEN SIZES/CUTOFFS)
+       ======================================================================== */
+    /* Target ALL actionable buttons: regular, download, and link buttons */
+    .stButton>button, 
+    .stDownloadButton>button, 
+    .stLinkButton>a {
+        box-sizing: border-box !important;
+        width: 100% !important;
+        min-height: 60px !important;       /* Increased for 2-line comfort */
+        height: auto !important;           /* Allow growing if text wraps */
+        font-weight: bold !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;    /* Reduced from 2px to fit more text */
+        font-size: 16px !important;        /* Reduced from 20px to prevent cutoff */
+        white-space: normal !important;    /* Allow text to wrap! Critical for mobile */
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        padding: 8px 12px !important;      /* Consistent padding */
+        line-height: 1.1 !important;       /* Tight line height for wrapped text */
+        display: flex !important;          /* Flexbox alignment */
+        align-items: center !important;    /* Vertically center text */
+        justify-content: center !important;/* Horizontally center text */
+        text-align: center !important;
+        transition: all 0.3s ease !important;
+        border-radius: 4px !important;
+    }
+    
+    /* Popover Button Targeting - Explicit Container Width Force */
+    div[data-testid="stPopover"] {
+        width: 100% !important;
+    }
+    
+    div[data-testid="stPopover"] > button {
+        box-sizing: border-box !important;
+        width: 100% !important;
+        min-height: 60px !important;
+        height: auto !important;
+        font-weight: bold !important;
+        text-transform: uppercase !important;
+        font-size: 16px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 4px !important;
+        padding: 8px 12px !important;
+        line-height: 1.1 !important;
+    }
+
+    /* Mobile Media Query for extra small screens */
+    @media (max-width: 640px) {
+        .stButton>button, 
+        .stDownloadButton>button, 
+        .stLinkButton>a,
+        div[data-testid="stPopover"] > button {
+            font-size: 14px !important;   /* Smaller font on mobile */
+            letter-spacing: 0.5px !important;
+            min-height: 64px !important;   /* Taller touch target/wrapping room */
+            padding: 4px 8px !important;
+        }
+    }
+
+
+    /* ========================================================================
+       STRICT THEME ISOLATION USING MARKERS
+       We look for a parent tab-panel that contains the unique marker class.
        ======================================================================== */
 
+    /* --- AUSPEX THEME (GREEN - TACTICAL) --- */
+    
+    /* Overlay: CRT Scanlines */
+    div[data-baseweb="tab-panel"]:has(.auspex-marker)::before {
+        content: " ";
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+        z-index: 0;
+        background-size: 100% 3px, 3px 100%;
+        pointer-events: none;
+    }
+
+    /* Hazard Stripe Progress Bar */
+    div[data-baseweb="tab-panel"]:has(.auspex-marker) .stProgress > div > div {
+        background-color: #5DA153 !important;
+        background-image: repeating-linear-gradient(
+            -45deg,
+            #4A7C2C,
+            #4A7C2C 10px,
+            #1a2e1a 10px,
+            #1a2e1a 20px
+        ) !important;
+        box-shadow: 0 0 10px #5DA153;
+    }
+
+    /* Terminal Inputs */
+    div[data-baseweb="tab-panel"]:has(.auspex-marker) input,
+    div[data-baseweb="tab-panel"]:has(.auspex-marker) .stSelectbox > div > div {
+        background-color: #050a05 !important;
+        color: #5DA153 !important;
+        border: 1px solid #4A7C2C !important;
+        font-family: 'Share Tech Mono', monospace !important;
+    }
+
+    /* Buttons (Green) */
+    div[data-baseweb="tab-panel"]:has(.auspex-marker) button[kind="primary"] {
+        background-color: #1a2e1a !important; 
+        color: #5DA153 !important; 
+        border: 1px solid #5DA153 !important;
+        box-shadow: none !important;
+        font-family: 'Share Tech Mono', monospace !important;
+    }
+    div[data-baseweb="tab-panel"]:has(.auspex-marker) button[kind="primary"]:hover {
+        background-color: #5DA153 !important;
+        color: #000 !important;
+        box-shadow: 0 0 15px #5DA153 !important;
+    }
+    /* Target all button types in Auspex */
+    div[data-baseweb="tab-panel"]:has(.auspex-marker) .stButton > button,
+    div[data-baseweb="tab-panel"]:has(.auspex-marker) .stDownloadButton > button,
+    div[data-baseweb="tab-panel"]:has(.auspex-marker) .stLinkButton > a,
+    div[data-baseweb="tab-panel"]:has(.auspex-marker) div[data-testid="stPopover"] > button,
+    div[data-baseweb="tab-panel"]:has(.auspex-marker) div[data-testid="stPopover"] button {
+        background-color: #1a2e1a !important;
+        color: #5DA153 !important;
+        border: 1px solid #5DA153 !important;
+        font-family: 'Share Tech Mono', monospace !important;
+        text-decoration: none !important;
+    }
+    div[data-baseweb="tab-panel"]:has(.auspex-marker) .stButton > button:hover,
+    div[data-baseweb="tab-panel"]:has(.auspex-marker) .stDownloadButton > button:hover,
+    div[data-baseweb="tab-panel"]:has(.auspex-marker) .stLinkButton > a:hover,
+    div[data-baseweb="tab-panel"]:has(.auspex-marker) div[data-testid="stPopover"] > button:hover,
+    div[data-baseweb="tab-panel"]:has(.auspex-marker) div[data-testid="stPopover"] button:hover {
+        border-color: #00FF00 !important;
+        color: #00FF00 !important;
+        box-shadow: 0 0 10px rgba(93, 161, 83, 0.4) !important;
+    }
+    div[data-baseweb="tab-panel"]:has(.auspex-marker) hr {
+        background: linear-gradient(90deg, transparent 0%, #5DA153 50%, transparent 100%) !important;
+        height: 2px !important;
+        border: none !important;
+    }
+
+
+    /* --- INSPIRATION THEME (PURPLE - COSMIC) --- */
+
+    /* Overlay: Cosmic Nebula */
+    div[data-baseweb="tab-panel"]:has(.inspiration-marker)::before {
+        content: " ";
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background: radial-gradient(circle at 20% 30%, rgba(107, 45, 124, 0.08) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 70%, rgba(60, 20, 80, 0.08) 0%, transparent 50%);
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    /* Warp Energy Progress Bar */
+    div[data-baseweb="tab-panel"]:has(.inspiration-marker) .stProgress > div > div {
+        background: linear-gradient(90deg, #3A1545, #6B2D7C, #A97BC4, #6B2D7C) !important;
+        background-size: 200% 100% !important;
+        animation: warpFlow 3s ease infinite !important;
+        box-shadow: 0 0 12px rgba(169, 123, 196, 0.5);
+    }
+    @keyframes warpFlow {
+        0% {background-position: 0% 50%}
+        50% {background-position: 100% 50%}
+        100% {background-position: 0% 50%}
+    }
+
+    /* Navigational Console Inputs */
+    div[data-baseweb="tab-panel"]:has(.inspiration-marker) input,
+    div[data-baseweb="tab-panel"]:has(.inspiration-marker) .stSelectbox > div > div {
+        background-color: #1a0a20 !important;
+        color: #D4A5FF !important;
+        border: 1px solid #6B2D7C !important;
+        font-family: 'Raleway', sans-serif !important;
+    }
+
+    /* Buttons (Purple) */
+    div[data-baseweb="tab-panel"]:has(.inspiration-marker) button[kind="primary"] {
+        background: linear-gradient(135deg, #6B2D7C 0%, #3A1545 100%) !important;
+        color: #A97BC4 !important;
+        border: 2px solid #8B4FA8 !important;
+        font-family: 'Raleway', sans-serif !important;
+        text-shadow: none !important;
+    }
+    div[data-baseweb="tab-panel"]:has(.inspiration-marker) button[kind="primary"]:hover {
+        background: linear-gradient(135deg, #8B4FA8 0%, #A97BC4 100%) !important;
+        color: #FFFFFF !important;
+        border-color: #D4A5FF !important;
+        box-shadow: 0 0 20px rgba(212, 165, 255, 0.4) !important;
+    }
+    div[data-baseweb="tab-panel"]:has(.inspiration-marker) .stButton > button,
+    div[data-baseweb="tab-panel"]:has(.inspiration-marker) .stDownloadButton > button,
+    div[data-baseweb="tab-panel"]:has(.inspiration-marker) .stLinkButton > a,
+    div[data-baseweb="tab-panel"]:has(.inspiration-marker) div[data-testid="stPopover"] > button,
+    div[data-baseweb="tab-panel"]:has(.inspiration-marker) div[data-testid="stPopover"] button {
+        background: linear-gradient(135deg, #4A1545 0%, #2D0D35 100%) !important;
+        color: #D4A5FF !important;
+        border: 1px solid #6B2D7C !important;
+        font-family: 'Raleway', sans-serif !important;
+        text-decoration: none !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    div[data-baseweb="tab-panel"]:has(.inspiration-marker) .stButton > button:hover,
+    div[data-baseweb="tab-panel"]:has(.inspiration-marker) .stDownloadButton > button:hover,
+    div[data-baseweb="tab-panel"]:has(.inspiration-marker) .stLinkButton > a:hover,
+    div[data-baseweb="tab-panel"]:has(.inspiration-marker) div[data-testid="stPopover"] > button:hover,
+    div[data-baseweb="tab-panel"]:has(.inspiration-marker) div[data-testid="stPopover"] button:hover {
+        border-color: #A97BC4 !important;
+        color: #FFF !important;
+        box-shadow: 0 0 10px rgba(169, 123, 196, 0.3) !important;
+    }
+    div[data-baseweb="tab-panel"]:has(.inspiration-marker) hr {
+        background: linear-gradient(90deg, transparent 0%, #A97BC4 50%, transparent 100%) !important;
+        height: 2px !important;
+        border: none !important;
+    }
+
+    /* Custom Purple Success Box */
+    .inspiration-success-box {
+        padding: 1rem;
+        border-radius: 0.5rem;
+        background-color: rgba(107, 45, 124, 0.15);
+        border-left: 5px solid #A97BC4;
+        color: #D4A5FF;
+        margin-bottom: 1rem;
+        font-family: 'Raleway', sans-serif;
+    }
+
+    /* === UPLOAD BOXES (Common) === */
     .auspex-upload-box,
     .inspiration-upload-box {
         position: relative !important;
@@ -242,7 +619,7 @@ st.markdown("""
     .auspex-upload-box {
         min-height: 220px;
         border: 3px dashed #4A7C2C;
-        border-radius: 6px;  /* Sharp corners */
+        border-radius: 6px;
         background: linear-gradient(135deg, 
             rgba(45, 80, 22, 0.12) 0%, 
             rgba(26, 48, 16, 0.25) 100%);
@@ -291,7 +668,7 @@ st.markdown("""
     .inspiration-upload-box {
         min-height: 220px;
         border: 3px dashed #6B2D7C;
-        border-radius: 18px;  /* Rounded corners */
+        border-radius: 18px;
         background: linear-gradient(135deg, 
             rgba(107, 45, 124, 0.12) 0%, 
             rgba(58, 21, 69, 0.25) 100%);
@@ -336,18 +713,65 @@ st.markdown("""
         margin-top: 10px;
     }
 
-    /* === STREAMLIT FILE UPLOADER OVERLAY - EXPANDED CLICK ZONE === */
-    div[data-testid="stFileUploader"] {
+    /* === STREAMLIT FILE UPLOADER OVERLAY (STRICTLY SCOPED) === */
+    
+    /* 1. Auspex Uploader Scoping */
+    div[data-baseweb="tab-panel"]:has(.auspex-marker) div[data-testid="stFileUploader"] {
         position: relative !important;
-        margin-top: -360px !important; 
-        height: 360px !important;
+        margin-top: -300px !important;
+        height: 300px !important;
         width: 100% !important;
-        z-index: 99999 !important;
+        z-index: 5 !important;
         opacity: 0 !important;
         pointer-events: auto !important;
         cursor: pointer !important;
         overflow: hidden !important;
+    }
+    
+    div[data-baseweb="tab-panel"]:has(.auspex-marker) input[type="file"] {
         display: block !important;
+        position: absolute !important;
+        top: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        opacity: 0 !important;
+        cursor: pointer !important;
+        z-index: 6 !important;
+    }
+
+    /* 2. Inspiration Uploader Scoping */
+    div[data-baseweb="tab-panel"]:has(.inspiration-marker) div[data-testid="stFileUploader"] {
+        position: relative !important;
+        margin-top: -300px !important; /* Reduced height */
+        height: 300px !important;
+        width: 100% !important;
+        z-index: 5 !important; /* Reduced Z-index */
+        opacity: 0 !important;
+        pointer-events: auto !important;
+        cursor: pointer !important;
+        overflow: hidden !important;
+    }
+    
+    div[data-baseweb="tab-panel"]:has(.inspiration-marker) input[type="file"] {
+        display: block !important;
+        position: absolute !important;
+        top: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        opacity: 0 !important;
+        cursor: pointer !important;
+        z-index: 6 !important;
+    }
+    
+    /* Common cleanup */
+    div[data-testid="stFileUploader"] button {
+        pointer-events: none !important; 
     }
 
     section[data-testid="stFileUploaderDropzone"] {
@@ -369,24 +793,6 @@ st.markdown("""
         justify-content: center !important;
     }
 
-    input[type="file"] {
-        display: block !important;
-        position: absolute !important;
-        top: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        left: 0 !important;
-        width: 100% !important;
-        height: 100% !important;
-        opacity: 0 !important;
-        cursor: pointer !important;
-        z-index: 100000 !important;
-    }
-    
-    div[data-testid="stFileUploader"] button {
-        pointer-events: none !important; 
-    }
-
     /* Mobile-first responsive design */
     .main .block-container {
         padding-top: 2rem;
@@ -394,290 +800,17 @@ st.markdown("""
         max-width: 100%;
     }
     
-    /* Touch-friendly buttons - Tactical Green */
-    .stButton>button {
-        width: 100%;
-        min-height: 50px;
-        background-color: #1a2e1a; 
-        color: #5DA153; 
-        border: 1px solid #5DA153;
-        font-family: 'Share Tech Mono', monospace; 
-        font-weight: bold;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        font-size: 20px;
-        transition: all 0.3s ease;
-    }
-    
-    .stButton>button:hover {
-        background-color: #5DA153;
-        color: #000;
-        border-color: #00FF00;
-        box-shadow: 0 0 15px #5DA153;
+    /* CODE BLOCK (HEX CODE) STYLING */
+    .stCode {
+        margin-top: -5px !important;
     }
 
-        /* ========================================================================
-       TAB-SPECIFIC ACTION BUTTONS - WORKING VERSION
-       ======================================================================== */
-
-    /* BASE BUTTON STYLING - All buttons full width */
-    .stButton > button {
-        width: 100% !important;
-        height: 48px !important;
-        font-size: 0.9em !important;
-        font-weight: 600 !important;
-        letter-spacing: 0.5px !important;
-        text-transform: uppercase !important;
-        white-space: nowrap !important;
-        border-radius: 6px !important;
-        padding: 0 16px !important;
-    }
-
-    /* AUSPEX TAB - GREEN THEME */
-    .auspex-tab-container .stButton > button,
-    .auspex-tab-container button[kind="primary"],
-    .auspex-tab-container button[kind="secondary"] {
-        background: linear-gradient(135deg, #2D5016 0%, #1A3010 100%) !important;
-        color: #6B9F3E !important;
-        border: 2px solid #4A7C2C !important;
-    }
-
-    .auspex-tab-container .stButton > button:hover,
-    .auspex-tab-container button:hover {
-        background: linear-gradient(135deg, #4A7C2C 0%, #6B9F3E 100%) !important;
-        color: #000000 !important;
-        border-color: #8FD14F !important;
-        box-shadow: 0 0 30px rgba(143, 209, 79, 0.4) !important;
-        transform: translateY(-2px) !important;
-    }
-
-    /* AUSPEX SUCCESS MESSAGES */
-    .auspex-tab-container .stSuccess {
-        background-color: rgba(74, 124, 44, 0.15) !important;
-        border-left: 4px solid #6B9F3E !important;
-        color: #8FD14F !important;
-    }
-
-    /* AUSPEX EXPANDER */
-    .auspex-tab-container .streamlit-expanderHeader {
-        border-color: #4A7C2C !important;
-    }
-
-    /* INSPIRATION TAB - PURPLE THEME */
-    /* Target all buttons inside inspiration container */
-    .inspiration-tab-container .stButton > button,
-    .inspiration-tab-container button[kind="primary"],
-    .inspiration-tab-container button[kind="secondary"] {
-        background: linear-gradient(135deg, #6B2D7C 0%, #3A1545 100%) !important;
-        color: #A97BC4 !important;
-        border: 2px solid #8B4FA8 !important;
-        font-family: 'Raleway', sans-serif !important;
-    }
-
-    .inspiration-tab-container .stButton > button:hover,
-    .inspiration-tab-container button:hover {
-        background: linear-gradient(135deg, #8B4FA8 0%, #A97BC4 100%) !important;
-        color: #FFFFFF !important;
-        border-color: #D4A5FF !important;
-        box-shadow: 0 0 40px rgba(212, 165, 255, 0.4) !important;
-    }
-
-    /* INSPIRATION SUCCESS MESSAGES */
-    .inspiration-tab-container .stSuccess {
-        background-color: rgba(107, 45, 124, 0.15) !important;
-        border-left: 4px solid #A97BC4 !important;
-        color: #D4A5FF !important;
-    }
-
-    /* INSPIRATION EXPANDER */
-    .inspiration-tab-container .streamlit-expanderHeader {
-        border-color: #6B2D7C !important;
-    }
-
-    /* === FALLBACK: Default GREEN for any unscoped buttons === */
-    button[kind="primary"]:not(.inspiration-tab-container *) {
-        background: linear-gradient(135deg, #2D5016 0%, #1A3010 100%) !important;
-        color: #6B9F3E !important;
-        border: 2px solid #4A7C2C !important;
-    }
-
-    /* === EXPANDERS (Shopping Cart) === */
-    .streamlit-expanderHeader {
-        font-family: 'Share Tech Mono', monospace !important;
-        background-color: #1a1a1a !important;
-        border: 2px solid #4A7C2C !important;
-        border-radius: 6px !important;
-        padding: 14px !important;
-    }
-
-    .streamlit-expanderHeader:hover {
-        background-color: #252525 !important;
-        border-color: #6B9F3E !important;
-        box-shadow: 0 2px 8px rgba(107, 159, 62, 0.3) !important;
-    }
-
-    /* SUCCESS MESSAGES - Default GREEN */
-    .stSuccess {
-        background-color: rgba(74, 124, 44, 0.15) !important;
-        border-left: 4px solid #6B9F3E !important;
-        color: #8FD14F !important;
-    }
-
-    .stSuccess svg {
-        color: #6B9F3E !important;
-    }
-
-
-    /* === DIVIDERS (HR) === */
-    /* Default GREEN dividers */
-    hr {
-        border: none !important;
-        height: 2px !important;
-        background: linear-gradient(90deg, 
-            transparent 0%, 
-            #6B9F3E 50%, 
-            transparent 100%) !important;
-    }
-
-    /* AUSPEX GREEN dividers */
-    .auspex-tab-container hr {
-        background: linear-gradient(90deg, 
-            transparent 0%, 
-            #6B9F3E 50%, 
-            transparent 100%) !important;
-    }
-
-    /* INSPIRATION PURPLE dividers */
-    .inspiration-tab-container hr {
-        background: linear-gradient(90deg, 
-            transparent 0%, 
-            #A97BC4 50%, 
-            transparent 100%) !important;
-    }
-
-    /* === METRICS === */
-    /* Default GREEN metrics */
-    [data-testid="stMetricValue"] {
-        color: #6B9F3E !important;
-    }
-
-    /* AUSPEX GREEN metrics */
-    .auspex-tab-container [data-testid="stMetricValue"] {
-        color: #6B9F3E !important;
-    }
-
-    /* INSPIRATION PURPLE metrics */
-    .inspiration-tab-container [data-testid="stMetricValue"] {
-        color: #A97BC4 !important;
-    }
-
-    /* === INFO MESSAGES === */
-    /* Default GREEN info */
-    .stInfo {
-        background-color: rgba(74, 124, 44, 0.1) !important;
-        border-left: 4px solid #6B9F3E !important;
-    }
-
-    /* AUSPEX GREEN info */
-    .auspex-tab-container .stInfo {
-        background-color: rgba(74, 124, 44, 0.1) !important;
-        border-left: 4px solid #6B9F3E !important;
-    }
-
-    /* INSPIRATION PURPLE info */
-    .inspiration-tab-container .stInfo {
-        background-color: rgba(107, 45, 124, 0.1) !important;
-        border-left: 4px solid #A97BC4 !important;
-    }
-
-
-    /* SUCCESS MESSAGES - GREEN default */
-    .stSuccess {
-        background-color: rgba(74, 124, 44, 0.15) !important;
-        border-left: 4px solid #6B9F3E !important;
-    }
-
-    /* EXPANDER - GREEN default */
-    .streamlit-expanderHeader {
-        border-color: #4A7C2C !important;
-    }
-
-        /* Headers - High Gothic Style */
+    /* Headers - High Gothic Style */
     h1, h2, h3, h4 {
         font-family: 'Cinzel', serif !important;
         font-weight: 700 !important;
         letter-spacing: 0px;
         text-transform: uppercase;
-    }
-    
-    /* Improved expander styling */
-    .streamlit-expanderHeader {
-        font-family: 'Share Tech Mono', monospace !important;
-        font-size: 16px !important;
-        background-color: #1a1a1a !important;
-        border: 1px solid #333 !important;
-        border-radius: 6px !important;
-        padding: 14px !important;
-        transition: all 0.2s ease !important;
-    }
-    
-    .streamlit-expanderHeader:hover {
-        background-color: #252525 !important;
-        border-color: #5DA153 !important;
-        box-shadow: 0 2px 8px rgba(93, 161, 83, 0.2) !important;
-    }
-    
-    /* Gradient dividers */
-    hr {
-        border: none !important;
-        height: 2px !important;
-        background: linear-gradient(90deg, 
-            transparent 0%, 
-            #5DA153 50%, 
-            transparent 100%) !important;
-        margin: 2.5rem 0 !important;
-    }
-    
-    /* Enhanced metric cards */
-    [data-testid="stMetricValue"] {
-        font-size: 2.2em !important;
-        color: #5DA153 !important;
-        font-family: 'Share Tech Mono', monospace !important;
-        text-shadow: 0 0 8px rgba(93, 161, 83, 0.3);
-    }
-    
-    /* Loading spinner colour */
-    .stSpinner > div {
-        border-top-color: #5DA153 !important;
-    }
-    
-    /* Enhanced success messages */
-    .element-container .stSuccess {
-        background-color: rgba(93, 161, 83, 0.15) !important;
-        border-left: 4px solid #5DA153 !important;
-        padding: 12px !important;
-        border-radius: 4px !important;
-    }
-
-    /* Global text enhancement */
-    p, li {
-        font-family: sans-serif;
-    }
-    
-    /* Mobile improvements */
-    @media (max-width: 768px) {
-        .stButton>button {
-            font-size: 16px !important;
-            padding: 14px !important;
-        }
-        
-        .palette-box {
-            height: 90px !important;
-        }
-        
-        [data-testid="stMetricValue"] {
-            font-size: 1.8em !important;
-        }
     }
     </style>
 """, unsafe_allow_html=True)
@@ -722,6 +855,9 @@ if 'feedback_logger' not in st.session_state:
 if 'analytics' not in st.session_state:
     st.session_state.analytics = SimpleAnalytics()
 
+if 'shopping_cart' not in st.session_state:
+    st.session_state.shopping_cart = ShoppingCart()
+
 if 'show_correction_form' not in st.session_state:
     st.session_state.show_correction_form = False
 
@@ -756,17 +892,16 @@ if 'inspiration_source_type' not in st.session_state:
 
 with st.sidebar:
     st.header("🌍 Sector / Region")
-    # DEFINED HERE - needed for ShoppingCart
     region_option = st.selectbox(
         "Select Supply Drop Zone:",
         options=list(Affiliate.REGIONS.keys()),
         index=1,  # Default to UK
+        key="region_selector",
         help="Determines affiliate logistics"
     )
     
     st.divider()
     
-    # === NEW GLOBAL PREFERENCE SELECTOR ===
     st.header("🎨 Logistics Preference")
     global_brand_pref = st.selectbox(
         "Preferred Paint Brand:",
@@ -799,16 +934,15 @@ with st.sidebar:
         gamma_val = st.slider("Gain Adjustment", 0.5, 2.0, 1.0, 0.1)
     
     st.divider()
-    # UPDATED: Correct Ko-fi Link
-    st.markdown("[![Ko-fi](https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColour=white)](https://ko-fi.com/schemestealer)")
+    # KO-FI LINK
+    st.markdown("[![Ko-fi](https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/schemestealer)")
+    st.caption("☕ Buy me a recaf if SchemeStealer helped you!")
     
     # SECRET ADMIN DOWNLOADER
     st.divider()
     with st.expander("🔐 Admin Console"):
         if st.button("📥 Download Feedback Logs"):
             try:
-                # Note: This checks the local file which might be empty if we rely only on GSheets
-                # But the Enhanced logger still keeps track if configured to do so, or GSheets is primary
                 with open('feedback_logs/feedback.jsonl', 'r') as f:
                     st.download_button(
                         label="Save Log File",
@@ -818,12 +952,16 @@ with st.sidebar:
                     )
             except FileNotFoundError:
                 st.error("No feedback data found yet.")
+    
+    st.divider()
+    debug_mode = st.toggle("🛠️ DEBUG MODE", value=False)
 
 # ============================================================================
 # SHOPPING CART PERSISTENCE (LocalStorage Sync)
 # ============================================================================
 
 # 1. On load, check for cart data passed via query param (from JS reload)
+# NOTE: Removed explicit clear() to avoid refresh loops that snap back tabs
 if 'cart_data' in st.query_params:
     try:
         cart_items = json.loads(st.query_params['cart_data'])
@@ -833,34 +971,26 @@ if 'cart_data' in st.query_params:
         # Populate cart if it's empty but data came from URL
         if not st.session_state.shopping_cart.cart_items and cart_items:
             st.session_state.shopping_cart.cart_items = cart_items
-            # Clear the query param to clean URL
-            st.query_params.clear()
+            # Don't clear immediately to allow stability
     except Exception as e:
         logger.error(f"Failed to restore cart: {e}")
 
-# 2. Ensure cart exists
+# 2. Ensure cart exists (Safe check)
 if 'shopping_cart' not in st.session_state:
     st.session_state.shopping_cart = ShoppingCart(region_option)
 
-# 3. Inject JS to sync cart to LocalStorage (NO RELOADS - fixes page jump issue)
+# 3. Inject JS to sync cart to LocalStorage
 st.components.v1.html(
     f"""
     <script>
         const currentCart = {get_cart_state_as_json()};
-        
-        // SAVE: Update LocalStorage with current session state
         if (currentCart.length > 0) {{
             localStorage.setItem('schemestealer_cart', JSON.stringify(currentCart));
         }}
-        
-        // LOAD: On first visit only, log cart data but DON'T force reload
-        // This prevents the page jump when uploading files
         const savedCart = localStorage.getItem('schemestealer_cart');
-        
         if (currentCart.length === 0 && savedCart && savedCart !== '[]') {{
             console.log('Cart data found in localStorage:', savedCart);
-            // Cart restoration happens naturally via Streamlit query params
-            // NO FORCED RELOAD - this was causing the page jump bug
+            // Cart restoration via query params happens naturally
         }}
     </script>
     """,
@@ -883,38 +1013,50 @@ def show_smart_disclaimer(recipes: List[dict], quality_score: int):
     """Show context-aware disclaimer based on scan results"""
     warnings = []
     
-    # Check for small details
     small_details = [r for r in recipes if r.get('is_detail') and r['dominance'] < 2.0]
     if len(small_details) > 0:
         warnings.append("🔎 **Tiny Details Alert**: We detected some very small details "
                        f"({len(small_details)} colours <2%). These may be approximate. "
-                       "Focus on the major armor panels for best accuracy.")
+                       "Focus on the major armour panels for best accuracy.")
     
-    # Check for warm metal confusion risk
     warm_metals = [r for r in recipes if any(m in r['family'] for m in ['Gold', 'Bronze', 'Brown', 'Rust'])]
     if len(warm_metals) >= 2:
         warnings.append("⚠️ **Warm Metals Note**: Multiple warm tones detected (gold/bronze/brown). "
                        "If these look similar, check the reticle images to verify placement.")
     
-    # Check for photo quality
     if quality_score < 70:
         warnings.append("📸 **Photo Quality**: Your image quality is fair. "
                        "For best results, try better lighting and hold your phone steady.")
     
     if warnings:
         st.info("**👁️ Quick Heads Up:**\n\n" + "\n\n".join(warnings))
+# ============================================================================
+# TAB STATE PERSISTENCE
+# ============================================================================
 
+# Track active tab to prevent snap-back on first interaction
+if 'active_tab_index' not in st.session_state:
+    st.session_state.active_tab_index = 0  # Default to first tab
+
+# Check URL fragment for tab selection (allows deep linking)
+if 'tab' in st.query_params:
+    tab_param = st.query_params['tab']
+    if tab_param == 'inspiration':
+        st.session_state.active_tab_index = 1
+    elif tab_param == 'scanner':
+        st.session_state.active_tab_index = 0
 # Tabs for Main Scan and Inspiration Mode
-# UPDATED: More balanced tab names
-tab1, tab2 = st.tabs(["🧬 AUSPEX SCAN", "🌌 VISUAL ARCHIVES"])
+tab1, tab2 = st.tabs(["⚙️ MINI SCANNER", "🌌 IDEA ENGINE"])
 
 # ============================================================================
 # TAB 1: AUSPEX SCAN (Miniature Scanner)
 # ============================================================================
 
 with tab1:
+    # MARKER FOR CSS ISOLATION (Critical: Must be first element in tab)
+    st.markdown('<span class="auspex-marker"></span>', unsafe_allow_html=True)
+    
     st.markdown('<div class="auspex-tab-container">', unsafe_allow_html=True)
-    # === BIG HEADER ===
     st.markdown("""
         <h2 style='
             color: #6B9F3E; 
@@ -936,44 +1078,29 @@ with tab1:
             font-family: "Share Tech Mono", monospace;
             letter-spacing: 1px;
         '>
-            Scan Target • Identify Paints • The Emperor Protects
+            Upload Miniature • Analyse Colours • Knowledge is Power
         </p>
     """, unsafe_allow_html=True)
     
-    # === COMBINED COLLAPSIBLE INFO ===
     with st.expander("💡 New to SchemeStealer? Quick Guide", expanded=False):
         st.markdown("""
         ### 👋 **Welcome to SchemeStealer!**
         
         **How it works:**
         1. Upload a photo of your painted miniature
-        2. AI analyses the colours (10 seconds)
+        2. The Machine Spirit analyses the colours (10 seconds)
         3. Get exact paint matches from 3 brands
         4. Shop for the paints you need
         
         ---
         
         ### 📸 **Photo Tips for Best Results:**
-        
-        **Lighting:**
         - ✅ Use natural daylight or bright white LED
         - ❌ Avoid yellow indoor lighting
-        - ❌ Avoid harsh shadows or glare
-        
-        **Camera:**
-        - ✅ Hold phone steady (or use timer)
-        - ✅ Focus on the miniature
-        - ❌ Don't use flash
-        
-        **Composition:**
         - ✅ Fill the frame with your miniature
         - ✅ Plain background (white/black/grey)
-        - ❌ Avoid cluttered backgrounds
-        
-        **Pro Tip:** Take photo from 45° angle for best depth perception!
         """)
     
-    # === CUSTOM UPLOAD BOX ===
     st.markdown("""
     <div class="auspex-upload-box">
         <div class="upload-icon">⚙️</div>
@@ -983,7 +1110,6 @@ with tab1:
     </div>
     """, unsafe_allow_html=True)
 
-    # === STREAMLIT UPLOADER (Invisible overlay) ===
     uploaded_file = st.file_uploader(
         "Upload Miniature",
         type=["jpg", "jpeg", "png"],
@@ -993,511 +1119,403 @@ with tab1:
     )
 
     if uploaded_file is not None:
-        # Mark as visited after interaction
         st.session_state.first_visit = False
-        
-        # Initialize raw_img to None to ensure safe cleanup
         raw_img = None
         
         try:
-            # Load image
             file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
             raw_img = cv2.imdecode(file_bytes, 1)
-            raw_img = cv2.cvtColor(raw_img, cv2.COLOR_BGR2RGB)
             
-            # Compress for mobile if needed
-            if Mobile.AUTO_COMPRESS_IMAGES:
-                raw_img = compress_image_for_mobile(raw_img, Mobile.COMPRESSED_IMAGE_WIDTH)
-            
-            # Photo quality check
-            st.subheader("📊 Signal Quality Assessment")
-            quality_report = st.session_state.photo_processor.process_and_assess(raw_img)
-            feedback = st.session_state.photo_processor.generate_quality_feedback_ui(quality_report)
-            
-            # Display quality score
-            quality_class = f"quality-{quality_report.quality_level.lower()}"
-            st.markdown(
-                f"<span class='{quality_class}'>{feedback['emoji']} {feedback['message']}</span>",
-                unsafe_allow_html=True
-            )
-            
-            # Show enhanced preview
-            preview = quality_report.enhanced_image
-            if gamma_val != 1.0:
-                from utils.helpers import adjust_gamma
-                preview = adjust_gamma(preview, gamma=gamma_val)
-            st.image(preview, caption="Enhanced Visual Feed")
-            
-            st.divider()
-            
-            if not quality_report.can_process:
-                st.error("⚠️ **Signal too degraded for logic engines.**")
+            if raw_img is None:
+                st.error("⚠️ **Could not decode image.** Please upload a valid JPG or PNG file.")
             else:
-                # === ENHANCED SCAN BUTTON LOGIC ===
-                # UPDATED: Centered button
-                if st.button("🧬 INITIATE AUSPEX SCAN", type="primary", key="btn_auspex", use_container_width=True):
-                    # Create progress display containers
-                    status_text = st.empty()
-                    progress_bar = st.empty()
-                    
-                    try:
-                        # START TIMER
-                        start_time = time.time()
+                raw_img = cv2.cvtColor(raw_img, cv2.COLOR_BGR2RGB)
+                
+                if Mobile.AUTO_COMPRESS_IMAGES:
+                    raw_img = compress_image_for_mobile(raw_img, Mobile.COMPRESSED_IMAGE_WIDTH)
+                
+                st.subheader("📊 Signal Quality Assessment")
+                quality_report = st.session_state.photo_processor.process_and_assess(raw_img)
+                feedback = st.session_state.photo_processor.generate_quality_feedback_ui(quality_report)
+                
+                quality_class = f"quality-{quality_report.quality_level.lower()}"
+                st.markdown(
+                    f"<span class='{quality_class}'>{feedback['emoji']} {feedback['message']}</span>",
+                    unsafe_allow_html=True
+                )
+                
+                preview = quality_report.enhanced_image
+                if gamma_val != 1.0:
+                    from utils.helpers import adjust_gamma
+                    preview = adjust_gamma(preview, gamma=gamma_val)
+                st.image(preview, caption="Enhanced Visual Feed")
+                
+                st.divider()
+                
+                if not quality_report.can_process:
+                    st.error("⚠️ **Signal too degraded for logic engines.**")
+                else:
+                    # BUTTON: Auspex Scan (Forced Green by CSS)
+                    if st.button("🧬 INITIATE AUSPEX SCAN", type="primary", key="btn_auspex", use_container_width=True):
+                        status_text = st.empty()
+                        progress_bar = st.empty()
                         
-                        def update_progress(stage_key, progress_pct):
-                            """Update progress with stage-appropriate thematic message"""
-                            msg = AuspexText.get_stage_msg(stage_key)
-                            status_text.markdown(f"### ⚙️ {msg}")
-                            progress_bar.progress(progress_pct / 100, text=f"{progress_pct}%")
-                        
-                        # Stage 1: Initialize (0-10%)
-                        update_progress('initializing', 5)
-                        time.sleep(0.2)
-                        
-                        # Stage 2: Preprocessing (10-25%)
-                        update_progress('preprocessing', 15)
-                        time.sleep(0.2)
-                        
-                        # Stage 3: Background removal (25-45%) - only if needed
-                        if mode_key == "mini":
-                            update_progress('background_removal', 35)
+                        try:
+                            start_time = time.time()
+                            
+                            def update_progress(stage_key, progress_pct):
+                                msg = AuspexText.get_stage_msg(stage_key)
+                                status_text.markdown(f"### ⚙️ {msg}")
+                                progress_bar.progress(progress_pct / 100, text=f"{progress_pct}%")
+                            
+                            update_progress('initializing', 5)
                             time.sleep(0.2)
-                        
-                        # Stage 4: Base detection (45-55%) - only if needed
-                        if mode_key == "mini" and remove_base:
-                            update_progress('base_detection', 50)
+                            
+                            update_progress('preprocessing', 15)
                             time.sleep(0.2)
-                        
-                        # Stage 5: Colour extraction (55-75%) - MAIN WORK HAPPENS HERE
-                        update_progress('color_extraction', 65)
-                        
-                        # Run actual analysis
-                        recipes, debug_img, quality_dict = st.session_state.engine.analyze_miniature(
-                            raw_img,
-                            mode=mode_key,
-                            remove_base=remove_base,
-                            use_awb=use_awb,
-                            sat_boost=1.3 if use_sat else 1.0,
-                            detect_details=detect_details
-                        )
-                        
-                        # Stage 6: Metallic detection (75-85%)
-                        update_progress('metallic_detection', 80)
-                        time.sleep(0.2)
-                        
-                        # Stage 7: Paint matching (85-95%)
-                        update_progress('paint_matching', 90)
-                        time.sleep(0.2)
-                        
-                        # Stage 8: Finalizing (95-100%)
-                        update_progress('finalizing', 98)
-                        time.sleep(0.2)
-                        
-                        # Complete!
-                        progress_bar.progress(100)
-                        
-                        # Success message
-                        success_msg = random.choice(AuspexText.SUCCESS_MESSAGES)
-                        status_text.success(f"✅ {success_msg}")
-                        time.sleep(0.5)
-                        
-                        # Clear progress displays
-                        status_text.empty()
-                        progress_bar.empty()
-                        
-                        processing_time = time.time() - start_time
-                        
-                        # Continue with existing logging code...
-                        if recipes:
-                            # Sanitize for logs (recipes now contain ML features like numpy arrays)
-                            log_recipes = []
-                            for r in recipes:
-                                r_copy = r.copy()
-                                if 'reticle' in r_copy: del r_copy['reticle']
-                                # Convert numpy arrays to lists for JSON serialization
-                                for k, v in r_copy.items():
-                                    if isinstance(v, np.ndarray):
-                                        r_copy[k] = v.tolist()
-                                log_recipes.append(r_copy)
-
-                            scan_id = st.session_state.feedback_logger.log_scan({
-                                'image_size': raw_img.shape,
-                                'quality_score': quality_report.score,
-                                'recipes': log_recipes,  # Now includes lab, hsv, chroma, position!
-                                'mode': mode_key,
-                                'brands': Affiliate.SUPPORTED_BRANDS,
-                                'processing_time': processing_time
-                            })
-                            st.session_state.current_scan_id = scan_id
-                            st.session_state.processing_time = processing_time
-                            st.session_state.analytics.track_scan(
+                            
+                            if mode_key == "mini":
+                                update_progress('background_removal', 35)
+                                time.sleep(0.2)
+                            
+                            if mode_key == "mini" and remove_base:
+                                update_progress('base_detection', 50)
+                                time.sleep(0.2)
+                            
+                            update_progress('color_extraction', 65)
+                            
+                            recipes, debug_img, quality_dict = st.session_state.engine.analyze_miniature(
+                                raw_img,
                                 mode=mode_key,
-                                num_colors=len(recipes),
-                                quality_score=quality_report.score
+                                remove_base=remove_base,
+                                use_awb=use_awb,
+                                sat_boost=1.3 if use_sat else 1.0,
+                                detect_details=detect_details
                             )
-                        
-                        # Save results to session state
-                        st.session_state.scan_results = recipes
-                        st.session_state.scan_quality = quality_report
-                        
-                    except Exception as e:
-                        status_text.error(f"❌ {random.choice(AuspexText.ERROR_MESSAGES)}")
-                        progress_bar.empty()
-                        st.error(f"⚠️ Cogitator Error: {str(e)}")
-                        logger.error(f"Analysis error: {e}", exc_info=True)
-
-                # === DISPLAY LOGIC (RUNS IF RESULTS EXIST IN STATE) ===
-                if st.session_state.scan_results:
-                    recipes = st.session_state.scan_results
-                    quality_score = st.session_state.scan_quality.score
-                    
-                    if not recipes:
-                        st.warning("❌ No pigmentation detected.")
-                    else:
-                        st.success(f"✅ Cogitator Analysis Successful - {len(recipes)} Pigment Patterns Found")
-                        
-                        # Show processing time
-                        if 'processing_time' in st.session_state and st.session_state.processing_time > 0:
-                            st.caption(f"⏳ Analysis completed in {st.session_state.processing_time:.2f} seconds")
-                        
-                        # Add summary metrics
-                        st.markdown("---")
-                        col1, col2, col3, col4 = st.columns(4)
-
-                        major_colours = [r for r in recipes if not r.get('is_detail', False)]
-                        detail_colours = [r for r in recipes if r.get('is_detail', False)]
-                        metallic_count = sum(1 for r in recipes if 'Metal' in r['family'] or 'Gold' in r['family'] or 'Silver' in r['family'])
-
-                        with col1:
-                            st.metric(
-                                "Colours Detected",
-                                len(recipes),
-                                delta=f"{len(detail_colours)} details" if detail_colours else None
-                            )
-
-                        with col2:
-                            st.metric(
-                                "Metallic Colours",
-                                metallic_count
-                            )
-
-                        with col3:
-                            st.metric(
-                                "Photo Quality",
-                                f"{quality_score}/100",
-                                delta="Excellent" if quality_score > 80 else ("Good" if quality_score > 60 else "Fair")
-                            )
-
-                        with col4:
-                            total_paints_needed = len(major_colours) * 2  # Base + highlight for major colours
-                            st.metric(
-                                "Est. Paints",
-                                f"{total_paints_needed}+ bottles"
-                            )
-
-                        st.markdown("---")
-
-                        show_smart_disclaimer(recipes, quality_score)
-                        
-                        # ===== LIVE PALETTE PREVIEW STRIP =====
-                        st.markdown("### 🎨 Your Colour Scheme Preview")
-                        
-                        # Create proportional colour bar (No spaces at start of lines!)
-                        palette_html = "<div style='display: flex; height: 80px; border-radius: 12px; overflow: hidden; border: 3px solid #333; box-shadow: 0 4px 12px rgba(0,0,0,0.4); margin: 16px 0;'>"
-                        
-                        # Calculate total coverage for proportions
-                        display_recipes = recipes[:6]  # Show up to 6 colours
-                        total_coverage = sum([r['dominance'] for r in display_recipes])
-                        
-                        for recipe in display_recipes:
-                            rgb = recipe['rgb_preview']
-                            colour_css = f"rgb({rgb[0]},{rgb[1]},{rgb[2]})"
-                            width_pct = (recipe['dominance'] / total_coverage) * 100
                             
-                            # Choose text colour based on background brightness
-                            brightness = sum(rgb) / 3
-                            text_color = '#000' if brightness > 128 else '#fff'
-                            text_shadow = '#fff' if brightness < 128 else '#000'
+                            update_progress('metallic_detection', 80)
+                            time.sleep(0.2)
                             
-                            # No indentation in the f-string to prevent code block rendering
-                            palette_html += f"<div style='background: {colour_css}; width: {width_pct}%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: {text_color}; text-shadow: 0 0 3px {text_shadow}; padding: 8px; font-family: \"Share Tech Mono\", monospace; transition: all 0.2s; cursor: pointer;' onmouseover='this.style.transform=\"scale(1.05)\"; this.style.zIndex=\"10\";' onmouseout='this.style.transform=\"scale(1)\"; this.style.zIndex=\"1\";'><div style='font-size: 1.2em; font-weight: bold;'>{recipe['dominance']:.0f}%</div><div style='font-size: 0.85em;'>{recipe['family']}</div></div>"
-                        
-                        palette_html += "</div>"
-                        st.markdown(palette_html, unsafe_allow_html=True)
-                        
-                        # Add caption
-                        if len(recipes) > 6:
-                            st.caption(f"**Showing top 6 of {len(recipes)} detected colours**")
-                        
-                        st.markdown("---")
-                        
-                        # ===== DETAILED RECIPES =====
-                        st.markdown("### ✨ Sacred Formulations")
-                        
-                        selected_paints = []
-                        
-                        for idx, recipe in enumerate(recipes):
-                            is_detail = recipe.get('is_detail', False)
-                            rgb = recipe['rgb_preview']
+                            update_progress('paint_matching', 90)
+                            time.sleep(0.2)
                             
-                            header = f"{recipe['family']} ({recipe['dominance']:.1f}%)"
-                            if is_detail: header = "⭐ " + header
+                            update_progress('finalizing', 98)
+                            time.sleep(0.2)
+                            progress_bar.progress(100)
                             
-                            # Determine brand index from global preference
-                            try:
-                                brand_index = Affiliate.SUPPORTED_BRANDS.index(global_brand_pref)
-                            except ValueError:
-                                brand_index = 0
+                            success_msg = random.choice(AuspexText.SUCCESS_MESSAGES)
+                            status_text.success(f"✅ {success_msg}")
+                            time.sleep(0.5)
                             
-                            # Expander with EMOJI instead of HTML (Fixes "span" text showing up)
-                            with st.expander(f"🎨 {header}", expanded=(idx < 3 and not is_detail)):
+                            status_text.empty()
+                            progress_bar.empty()
+                            
+                            processing_time = time.time() - start_time
+                            
+                            if recipes:
+                                log_recipes = []
+                                for r in recipes:
+                                    r_copy = r.copy()
+                                    if 'reticle' in r_copy: del r_copy['reticle']
+                                    for k, v in r_copy.items():
+                                        if isinstance(v, np.ndarray):
+                                            r_copy[k] = v.tolist()
+                                    log_recipes.append(r_copy)
+
+                                scan_id = st.session_state.feedback_logger.log_scan({
+                                    'image_size': raw_img.shape,
+                                    'quality_score': quality_report.score,
+                                    'recipes': log_recipes,
+                                    'mode': mode_key,
+                                    'brands': Affiliate.SUPPORTED_BRANDS,
+                                    'processing_time': processing_time
+                                })
+                                st.session_state.current_scan_id = scan_id
+                                st.session_state.processing_time = processing_time
+                                st.session_state.analytics.track_scan(
+                                    mode=mode_key,
+                                    num_colors=len(recipes),
+                                    quality_score=quality_report.score
+                                )
+                            
+                            st.session_state.scan_results = recipes
+                            st.session_state.scan_quality = quality_report
+                            
+                        except Exception as e:
+                            status_text.error(f"❌ {random.choice(AuspexText.ERROR_MESSAGES)}")
+                            progress_bar.empty()
+                            st.error(f"⚠️ Cogitator Error: {str(e)}")
+                            logger.error(f"Analysis error: {e}", exc_info=True)
+
+                    # === DISPLAY LOGIC ===
+                    if st.session_state.scan_results:
+                        recipes = st.session_state.scan_results
+                        quality_score = st.session_state.scan_quality.score
+                        
+                        if not recipes:
+                            st.warning("❌ No pigmentation detected.")
+                        else:
+                            st.success(f"✅ Cogitator Analysis Successful - {len(recipes)} Pigment Patterns Found")
+                            
+                            if 'processing_time' in st.session_state and st.session_state.processing_time > 0:
+                                st.caption(f"⏳ Analysis completed in {st.session_state.processing_time:.2f} seconds")
+                            
+                            st.markdown("---")
+                            
+                            # === NEW: TACTICAL HUD GRID (Replaces old st.metric columns) ===
+                            major_colours = [r for r in recipes if not r.get('is_detail', False)]
+                            detail_colours = [r for r in recipes if r.get('is_detail', False)]
+                            metallic_count = sum(1 for r in recipes if 'Metal' in r['family'] or 'Gold' in r['family'] or 'Silver' in r['family'])
+                            total_paints_needed = len(major_colours) * 2
+
+                            # Determine Quality Text
+                            q_text = "Excellent" if quality_score > 80 else ("Good" if quality_score > 60 else "Fair")
+                            
+                            # Determine Details Text
+                            details_text = f"{len(detail_colours)} details" if detail_colours else "No details"
+
+                            st.markdown(f"""
+                            <div class="hud-grid">
+                                <div class="hud-card-auspex">
+                                    <div class="hud-label-auspex">COLOURS DETECTED</div>
+                                    <div class="hud-value-auspex">{len(recipes)}</div>
+                                    <div class="hud-sub-auspex">{details_text}</div>
+                                </div>
+                                <div class="hud-card-auspex">
+                                    <div class="hud-label-auspex">METALLICS</div>
+                                    <div class="hud-value-auspex">{metallic_count}</div>
+                                    <div class="hud-sub-auspex">Pigments</div>
+                                </div>
+                                <div class="hud-card-auspex">
+                                    <div class="hud-label-auspex">SIGNAL QUALITY</div>
+                                    <div class="hud-value-auspex">{quality_score}%</div>
+                                    <div class="hud-sub-auspex">{q_text}</div>
+                                </div>
+                                <div class="hud-card-auspex">
+                                    <div class="hud-label-auspex">EST. PAINTS</div>
+                                    <div class="hud-value-auspex">{total_paints_needed}+</div>
+                                    <div class="hud-sub-auspex">Bottles</div>
+                                </div>
+                            </div>
+                            """, unsafe_allow_html=True)
+
+                            st.markdown("---")
+                            show_smart_disclaimer(recipes, quality_score)
+                            
+                            # === REVISED PALETTE: EQUAL WIDTH DATA CHIPS ===
+                            st.markdown("### 🎨 Your Colour Scheme Preview")
+                            # We use flex:1 to ensure equal width for all chips, ensuring visibility of small details
+                            palette_html = "<div style='display: flex; height: 80px; border-radius: 12px; overflow: hidden; border: 3px solid #333; box-shadow: 0 4px 12px rgba(0,0,0,0.4); margin: 16px 0;'>"
+                            display_recipes = recipes[:8] # Show up to 8
+                            
+                            for recipe in display_recipes:
+                                rgb = recipe['rgb_preview']
+                                colour_css = f"rgb({rgb[0]},{rgb[1]},{rgb[2]})"
+                                # CHANGED: removed width_pct logic, used flex: 1 for equal width
+                                brightness = sum(rgb) / 3
+                                text_color = '#000' if brightness > 128 else '#fff'
+                                # Reduced glow effect for clarity (text-shadow: 0 0 1px)
+                                text_shadow = '#fff' if brightness < 128 else '#000'
+                                palette_html += f"<div style='flex: 1; background: {colour_css}; display: flex; flex-direction: column; align-items: center; justify-content: center; color: {text_color}; text-shadow: 0 0 1px {text_shadow}; padding: 4px; border-right: 1px solid rgba(0,0,0,0.2); font-family: \"Share Tech Mono\", monospace; transition: all 0.2s; cursor: pointer;' onmouseover='this.style.flex=\"1.5\";' onmouseout='this.style.flex=\"1\";'><div style='font-size: 1.1em; font-weight: bold;'>{recipe['dominance']:.0f}%</div><div style='font-size: 0.7em; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 100%;'>{recipe['family']}</div></div>"
+                            palette_html += "</div>"
+                            st.markdown(palette_html, unsafe_allow_html=True)
+                            
+                            if len(recipes) > 8:
+                                st.caption(f"**Showing top 8 of {len(recipes)} detected colours**")
+                            
+                            st.markdown("---")
+                            
+                            # ===== DETAILED RECIPES (UPDATED WITH HEX COPY) =====
+                            st.markdown("### ✨ Sacred Formulations")
+                            
+                            for idx, recipe in enumerate(recipes):
+                                is_detail = recipe.get('is_detail', False)
+                                header = f"{recipe['family']} ({recipe['dominance']:.1f}%)"
+                                if is_detail: header = "⭐ " + header
                                 
-                                # === ROW 1: Reticle Toggle + Brand Selector ===
-                                col_toggle, col_brand = st.columns([1, 2])
+                                try:
+                                    brand_index = Affiliate.SUPPORTED_BRANDS.index(global_brand_pref)
+                                except ValueError:
+                                    brand_index = 0
                                 
-                                with col_toggle:
-                                    show_location = st.checkbox(
-                                        "📍 Show location",
-                                        value=(idx < 2 and not is_detail),  # First 2 major colours ON
-                                        key=f"show_loc_{idx}",
-                                        help="View where this colour appears on the miniature"
-                                    )
-                                
-                                with col_brand:
-                                    selected_brand = st.selectbox(
-                                        "Preferred brand:", 
-                                        options=Affiliate.SUPPORTED_BRANDS, 
-                                        index=brand_index, 
-                                        key=f"brand_select_{idx}"
-                                    )
-                                
-                                # === ROW 2: Reticle Image (if toggled ON) ===
-                                if show_location:
-                                    st.image(
-                                        recipe['reticle'], 
-                                        caption=f"Areas containing {recipe['family']} ({recipe['dominance']:.1f}%)",
-                                        use_container_width=True
-                                    )
-                                    st.caption("💡 Coloured border shows detected regions")
-                                    st.markdown("---")
-                                
-                                # === ROW 3: Paint Recommendations ===
-                                st.markdown("**🎨 Recommended Paints:**")
-                                st.markdown("")  # Spacing
-                                
-                                # Base Paint
-                                base_match = recipe['base'].get(selected_brand)
-                                if base_match:
-                                    col1, col2 = st.columns([3, 1])
+                                with st.expander(f"🎨 {header}", expanded=(idx < 3 and not is_detail)):
+                                    col_toggle, col_brand = st.columns([1, 2])
+                                    with col_toggle:
+                                        show_location = st.checkbox("📍 Show location", value=(idx < 2 and not is_detail), key=f"show_loc_{idx}")
+                                    with col_brand:
+                                        selected_brand = st.selectbox("Preferred brand:", options=Affiliate.SUPPORTED_BRANDS, index=brand_index, key=f"brand_select_{idx}")
                                     
-                                    with col1:
-                                        url = get_affiliate_link(selected_brand, base_match['name'], region_option)
-                                        st.markdown(f"🛡️ **Base:** [{base_match['name']}]({url})")
+                                    if show_location:
+                                        st.image(recipe['reticle'], caption=f"Areas containing {recipe['family']} ({recipe['dominance']:.1f}%)", use_container_width=True)
+                                        st.caption("💡 Coloured border shows detected regions")
+                                        st.markdown("---")
                                     
-                                    with col2:
-                                        if st.button("➕", key=f"add_b_{idx}", help="Add to List"):
-                                            st.session_state.shopping_cart.add_paint(selected_brand, base_match['name'])
-                                            st.rerun()
-                                
-                                # Highlight Paint
-                                high_match = recipe['highlight'].get(selected_brand)
-                                if high_match:
-                                    col1, col2 = st.columns([3, 1])
+                                    st.markdown("**🎨 Recommended Paints:**")
                                     
-                                    with col1:
-                                        url = get_affiliate_link(selected_brand, high_match['name'], region_option)
-                                        st.markdown(f"✨ **Highlight:** [{high_match['name']}]({url})")
+                                    # Function to render a paint row with Hex Copy
+                                    def render_paint_row(label, paint, icon, unique_key):
+                                        if paint:
+                                            c_info, c_hex, c_add = st.columns([4, 2, 1])
+                                            with c_info:
+                                                url = get_affiliate_link(selected_brand, paint['name'], region_option)
+                                                st.markdown(f"{icon} **{label}:** [{paint['name']}]({url})")
+                                            with c_hex:
+                                                # Clickable copy hex code
+                                                if 'hex' in paint:
+                                                    st.code(paint['hex'], language=None)
+                                                else:
+                                                    st.caption("No Hex")
+                                            with c_add:
+                                                # Safe cart update
+                                                def add_to_cart_action(cart):
+                                                    cart.add_paint(selected_brand, paint['name'])
+                                                
+                                                if st.button("➕", key=unique_key, help="Add to List"):
+                                                    safe_session_update('shopping_cart', add_to_cart_action)
+                                                    st.rerun()
+
+                                    # Base Paint
+                                    base_match = recipe['base'].get(selected_brand)
+                                    render_paint_row("Base", base_match, "🛡️", f"add_b_{idx}")
                                     
-                                    with col2:
-                                        if st.button("➕", key=f"add_h_{idx}", help="Add to List"):
-                                            st.session_state.shopping_cart.add_paint(selected_brand, high_match['name'])
-                                            st.rerun()
-                                
-                                # Shade/Wash Paint
-                                shade_match = recipe['shade'].get(selected_brand)
-                                if shade_match:
-                                    col1, col2 = st.columns([3, 1])
+                                    # Highlight Paint
+                                    high_match = recipe['highlight'].get(selected_brand)
+                                    render_paint_row("Highlight", high_match, "✨", f"add_h_{idx}")
                                     
+                                    # Shade Paint
+                                    shade_match = recipe['shade'].get(selected_brand)
                                     shade_icon = "💧" if recipe['shade_type'] == 'wash' else "🌑"
-                                    shade_label = "Wash" if recipe['shade_type'] == 'wash' else "Shade"
+                                    render_paint_row("Wash" if recipe['shade_type'] == 'wash' else "Shade", shade_match, shade_icon, f"add_s_{idx}")
+                                    
+                                    # Quick Add Buttons
+                                    st.markdown("---")
+                                    col1, col2 = st.columns(2)
                                     
                                     with col1:
-                                        url = get_affiliate_link(selected_brand, shade_match['name'], region_option)
-                                        st.markdown(f"{shade_icon} **{shade_label}:** [{shade_match['name']}]({url})")
+                                        def add_all_action(cart):
+                                            if base_match: cart.add_paint(selected_brand, base_match['name'])
+                                            if high_match: cart.add_paint(selected_brand, high_match['name'])
+                                            if shade_match: cart.add_paint(selected_brand, shade_match['name'])
+
+                                        if st.button("➕ Add All 3 Layers", key=f"quick_all_{idx}", use_container_width=True):
+                                            safe_session_update('shopping_cart', add_all_action)
+                                            st.rerun()
                                     
                                     with col2:
-                                        if st.button("➕", key=f"add_s_{idx}", help="Add to List"):
-                                            st.session_state.shopping_cart.add_paint(selected_brand, shade_match['name'])
-                                            st.rerun()
-                                
-                                # === ROW 4: Quick Add Buttons ===
-                                st.markdown("---")
-                                st.markdown("**⚡ Quick Actions:**")
-                                
-                                col1, col2 = st.columns(2)
-                                
-                                with col1:
-                                    if st.button(
-                                        "➕ Add All 3 Layers", 
-                                        key=f"quick_all_{idx}",
-                                        use_container_width=True,
-                                        help="Add base, highlight, and shade all at once"
-                                    ):
-                                        if base_match: st.session_state.shopping_cart.add_paint(selected_brand, base_match['name'])
-                                        if high_match: st.session_state.shopping_cart.add_paint(selected_brand, high_match['name'])
-                                        if shade_match: st.session_state.shopping_cart.add_paint(selected_brand, shade_match['name'])
-                                        st.rerun()
-                                
-                                with col2:
-                                    if st.button(
-                                        "➕ Base Only",
-                                        key=f"quick_base_{idx}",
-                                        use_container_width=True,
-                                        help="Add just the base paint"
-                                    ):
-                                        if base_match: 
-                                            st.session_state.shopping_cart.add_paint(selected_brand, base_match['name'])
+                                        def add_base_action(cart):
+                                            if base_match: cart.add_paint(selected_brand, base_match['name'])
+
+                                        if st.button("➕ Base Only", key=f"quick_base_{idx}", use_container_width=True):
+                                            safe_session_update('shopping_cart', add_base_action)
                                             st.rerun()
 
-                        # === QUICK ACTIONS & FEEDBACK (RESTORED) ===
-                        st.divider()
-                        st.markdown("### 📋 Quick Actions")
-                        col_qa1, col_qa2, col_qa3 = st.columns(3)
-                        
-                        # Generate list text
-                        all_paints = []
-                        for recipe in recipes:
-                            # Try preferred brand, fallback to first available
-                            base = recipe['base'].get(global_brand_pref)
-                            if not base:
-                                for b in Affiliate.SUPPORTED_BRANDS:
-                                    if recipe['base'].get(b):
-                                        base = recipe['base'][b]
-                                        break
-                            if base:
-                                all_paints.append(f"{recipe['family']}: {base['name']}")
-                        
-                        paint_list_text = "\n".join(all_paints)
-
-                        with col_qa1:
-                            st.download_button(
-                                "📥 Download List",
-                                paint_list_text,
-                                file_name=f"paint_list_{datetime.now().strftime('%Y%m%d')}.txt",
-                                mime="text/plain",
-                                use_container_width=True
-                            )
-
-                        with col_qa2:
-                            if st.button("📋 Copy List", use_container_width=True):
-                                st.code(paint_list_text, language=None)
-
-                        with col_qa3:
-                            if st.button("🔗 Share Results", use_container_width=True):
-                                colours_text = ", ".join([r['family'] for r in recipes[:3]])
-                                st.info(f"Share this: Analysed my miniature with SchemeStealer! Colours: {colours_text}")
-
-                        # === FEEDBACK SYSTEM ===
-                        st.markdown("### 📊 How Did We Do?")
-                        col_fb1, col_fb2, col_fb3 = st.columns([1, 1, 2])
-                        
-                        with col_fb1:
-                            if st.button("👍 Accurate", use_container_width=True):
-                                scan_id = st.session_state.get('current_scan_id')
-                                if scan_id: 
-                                    st.session_state.feedback_logger.log_feedback(scan_id, 'thumbs_up', rating=5)
-                                st.success("Thanks! 🎉")
-                        
-                        with col_fb2:
-                            if st.button("👎 Needs Work", use_container_width=True):
-                                st.session_state.show_correction_form = True
-                                st.rerun()
-                                
-                        if st.session_state.get('show_correction_form', False):
+                            # === QUICK ACTIONS (REVISED: 2 Buttons + Popover) ===
                             st.divider()
-                            with st.expander("🔧 Help Us Improve", expanded=True):
-                                st.markdown("**Your corrections train our AI!** Be as specific as possible.")
-                                
-                                issues = st.multiselect(
-                                    "What went wrong?", 
-                                    [
-                                        "Wrong colour family (e.g. called Gold when it's Brown)",
-                                        "Missed small details or trim",
-                                        "Wrong paint brand match",
-                                        "Base wasn't removed properly",
-                                        "Detected metallic when it's not",
-                                        "Didn't detect metallic when it is"
-                                    ]
+                            st.markdown("### 📋 Quick Actions")
+                            
+                            # Prepare Data
+                            all_paints = []
+                            for recipe in recipes:
+                                base = recipe['base'].get(global_brand_pref)
+                                if not base:
+                                    for b in Affiliate.SUPPORTED_BRANDS:
+                                        if recipe['base'].get(b):
+                                            base = recipe['base'][b]
+                                            break
+                                if base:
+                                    all_paints.append(f"{recipe['family']}: {base['name']}")
+                            paint_list_text = "\n".join(all_paints)
+                            
+                            # Row 1: Download & Copy (Equal Width)
+                            row1_col1, row1_col2 = st.columns(2)
+                            with row1_col1:
+                                st.download_button(
+                                    "📥 Download List",
+                                    paint_list_text,
+                                    file_name=f"paint_list_{datetime.now().strftime('%Y%m%d')}.txt",
+                                    mime="text/plain",
+                                    use_container_width=True
                                 )
-                                
-                                expected_colours = st.text_area(
-                                    "What should the colours be?",
-                                    placeholder="e.g. 'Gold not Brown' or 'Missed the silver trim'",
-                                    help="Be specific - this helps train the AI!"
-                                )
-                                
-                                comments = st.text_area(
-                                    "Any other details?",
-                                    placeholder="e.g. lighting conditions, photo quality, etc."
-                                )
-                                
-                                # Optional email for follow-up
-                                user_email = st.text_input(
-                                    "Email (optional - for follow-up on your feedback)",
-                                    placeholder="your@email.com"
-                                )
-                                
-                                col_a, col_b = st.columns([1, 1])
-                                with col_a:
-                                    if st.button("✅ Submit Correction", use_container_width=True, type="primary"):
-                                        scan_id = st.session_state.get('current_scan_id')
-                                        if scan_id and expected_colours:
-                                            st.session_state.feedback_logger.log_feedback(
-                                                scan_id=scan_id,
-                                                feedback_type='correction',
-                                                rating=2,
-                                                issues=issues,
-                                                expected_colours=expected_colours,
-                                                comments=comments,
-                                                user_email=user_email if user_email else None
-                                            )
-                                            st.success("✅ Thank you! Your correction helps train the AI! 🧠")
-                                            st.balloons()
+                            with row1_col2:
+                                if st.button("📋 Copy List", use_container_width=True):
+                                    st.code(paint_list_text, language=None)
+                            
+                            # Row 2: Smart Share Popover (Full Width)
+                            colours_text = ", ".join([r['family'] for r in recipes[:3]])
+                            share_text = f"I scanned my mini with SchemeStealer! Found: {colours_text}. Check it out!"
+                            encoded_text = urllib.parse.quote(share_text)
+                            
+                            with st.popover("📤 Share Results", use_container_width=True):
+                                st.markdown("### Share via:")
+                                st.link_button("✖️ X (Twitter)", f"https://twitter.com/intent/tweet?text={encoded_text}", use_container_width=True)
+                                st.link_button("💬 WhatsApp", f"https://wa.me/?text={encoded_text}", use_container_width=True)
+                                st.link_button("👽 Reddit", f"https://www.reddit.com/submit?title=SchemeStealer%20Scan&text={encoded_text}", use_container_width=True)
+                                st.link_button("📧 Email", f"mailto:?subject=My%20Paint%20Scheme&body={encoded_text}", use_container_width=True)
+
+
+                            # === FEEDBACK (REVISED EQUAL WIDTH) ===
+                            st.divider()
+                            st.markdown("### 📊 How Did We Do?")
+                            col_fb1, col_fb2 = st.columns(2) # Changed to 2 equal columns
+                            
+                            with col_fb1:
+                                if st.button("👍 Accurate", use_container_width=True):
+                                    scan_id = st.session_state.get('current_scan_id')
+                                    if scan_id: st.session_state.feedback_logger.log_feedback(scan_id, 'thumbs_up', rating=5)
+                                    st.success("Thanks! 🎉")
+                            
+                            with col_fb2:
+                                if st.button("👎 Needs Work", use_container_width=True):
+                                    st.session_state.show_correction_form = True
+                                    st.rerun()
+                            
+                            # Correction Form Logic (unchanged but using safe naming)
+                            if st.session_state.get('show_correction_form', False):
+                                st.divider()
+                                with st.expander("🔧 Help Us Improve", expanded=True):
+                                    st.markdown("**Your corrections train the Machine Spirit!** Be as specific as possible.")
+                                    issues = st.multiselect("What went wrong?", ["Wrong colour family", "Missed small details", "Wrong paint brand match", "Base wasn't removed properly", "Detected metallic incorrectly"])
+                                    expected_colours = st.text_area("What should the colours be?", placeholder="e.g. 'Gold not Brown'")
+                                    comments = st.text_area("Any other details?")
+                                    user_email = st.text_input("Email (optional)")
+                                    
+                                    col_a, col_b = st.columns(2)
+                                    with col_a:
+                                        if st.button("✅ Submit Correction", use_container_width=True, type="primary"):
+                                            scan_id = st.session_state.get('current_scan_id')
+                                            if scan_id and expected_colours:
+                                                st.session_state.feedback_logger.log_feedback(scan_id, 'correction', rating=2, issues=issues, expected_colours=expected_colours, comments=comments, user_email=user_email)
+                                                st.success("✅ Thank you! The Machine Spirit learns from your wisdom! 🧠")
+                                                st.session_state.show_correction_form = False
+                                                st.rerun()
+                                    with col_b:
+                                        if st.button("Cancel", use_container_width=True):
                                             st.session_state.show_correction_form = False
                                             st.rerun()
-                                        elif not expected_colours:
-                                            st.error("Please tell us what the colours should be!")
-                                
-                                with col_b:
-                                    if st.button("Cancel", use_container_width=True):
-                                        st.session_state.show_correction_form = False
-                                        st.rerun()
 
         except Exception as e:
             st.error(f"❌ Failed to load image: {str(e)}")
             logger.error(f"Image load error: {e}", exc_info=True)
         finally:
-            # MEMORY CLEANUP
             cleanup_opencv_image(raw_img)
 
-    else:
-        pass
-
-    # === DISPLAY PAINT LIST (Collapsed at bottom) ===
     st.divider()
-    render_paint_list_ui()
+    # FIXED: Pass unique suffix for Tab 1
+    render_paint_list_ui(key_suffix="auspex")
+
+    st.markdown('</div>', unsafe_allow_html=True)
+    # Render footer inside tab to inherit green theme
+    render_footer(theme="green")
 
 # ============================================================================
-# TAB 2: INSPIRATION PROTOCOLS (COMPLETE REDESIGN)
+# TAB 2: INSPIRATION PROTOCOLS
 # ============================================================================
-
-    st.markdown('</div>', unsafe_allow_html=True)  # Close auspex wrapper
 
 with tab2:
+    # MARKER FOR CSS ISOLATION (Critical: Must be first element in tab)
+    st.markdown('<span class="inspiration-marker"></span>', unsafe_allow_html=True)
+    
     st.markdown('<div class="inspiration-tab-container">', unsafe_allow_html=True)
-
-
-    # === BIG HEADER ===
     st.markdown("""
         <h2 style='
             color: #A97BC4; 
@@ -1509,7 +1527,7 @@ with tab2:
             text-transform: uppercase;
             letter-spacing: 4px;
         '>
-            🌌 VISUAL ARCHIVES
+            🌌 IDEA ENGINE
         </h2>
         <p style='
             text-align: center; 
@@ -1524,31 +1542,16 @@ with tab2:
         </p>
     """, unsafe_allow_html=True)
     
-    # === COLLAPSIBLE INFO (with moved text) ===
     with st.expander("💡 Inspiration Ideas & Tips", expanded=False):
         st.markdown("""
         Perfect for creating custom army schemes inspired by nature, movies, or your favourite art.
         
-        ---
-        
         **Great sources for colour schemes:**
-        - 🌅 Landscapes & nature (sunsets, forests, oceans)
-        - 🎨 Artwork & paintings (your favourite pieces)
-        - 🎬 Movie stills (sci-fi, fantasy scenes)
-        - 🏛️ Architecture & buildings
-        - 🦋 Animals & creatures (poison dart frogs, birds of paradise)
-        - 🍕 Food (yes, really! Pizza Necrons, anyone?)
-        - 🎮 Video game screenshots
-        - 🌸 Flowers and plants
-        
-        **Pro Tips:**
-        - Look for images with 3-5 distinct, contrasting colours
-        - High contrast = striking schemes
-        - Complementary colours = visual interest
-        - Analogous colours = harmonious schemes
+        - 🌅 Landscapes & nature
+        - 🎨 Artwork & paintings
+        - 🎬 Movie stills
         """)
     
-    # === CUSTOM UPLOAD BOX ===
     st.markdown("""
     <div class="inspiration-upload-box">
         <div class="upload-icon">🌌</div>
@@ -1558,505 +1561,275 @@ with tab2:
     </div>
     """, unsafe_allow_html=True)
 
-    # === STREAMLIT UPLOADER (Invisible overlay) ===
+    def handle_inspiration_upload():
+        """Callback to handle file upload without triggering tab reset"""
+        # This empty callback prevents Streamlit from resetting tab on first upload
+        pass
+
     uploaded_inspiration = st.file_uploader(
         "Upload Inspiration Image",
         type=["jpg", "jpeg", "png"],
         key="uploader_inspiration",
         help="Upload any inspiration image",
-        label_visibility="collapsed"
+        label_visibility="collapsed",
+        on_change=handle_inspiration_upload  # ← This prevents tab reset!
     )
 
     if uploaded_inspiration is not None:
-        # Initialise raw_img for cleanup
         raw_img = None
-        
         try:
-            # Load image
             file_bytes = np.asarray(bytearray(uploaded_inspiration.read()), dtype=np.uint8)
             raw_img = cv2.imdecode(file_bytes, 1)
             raw_img = cv2.cvtColor(raw_img, cv2.COLOR_BGR2RGB)
             if Mobile.AUTO_COMPRESS_IMAGES:
                 raw_img = compress_image_for_mobile(raw_img, Mobile.COMPRESSED_IMAGE_WIDTH)
             
-            # Show original image
             st.markdown("#### 🖼️ Your Inspiration Source")
             st.image(raw_img, use_container_width=True, caption="Original image")
             
-            # === NEW: Source Type Selector ===
             st.markdown("**📂 What type of image is this?**")
-            st.caption("Helps us improve colour extraction for different sources")
-            
-            source_type = st.selectbox(
-                "Image Type:",
-                [
-                    "🌅 Landscape/Nature",
-                    "🎨 Artwork/Painting", 
-                    "🎬 Movie/Game Screenshot",
-                    "🏛️ Architecture",
-                    "🦋 Animal/Creature",
-                    "🍕 Food",
-                    "🌸 Flowers/Plants",
-                    "📸 Photography",
-                    "🎮 Other"
-                ],
-                index=0,
-                key="inspiration_source_type_select",
-                help="Select the type that best matches your inspiration image"
+            @st.fragment
+            def source_type_selector():
+                """Fragment to prevent selectbox from triggering full rerun"""
+                return st.selectbox(
+                "Image Type:", 
+                ["🌅 Landscape/Nature", "🎨 Artwork/Painting", "🎬 Movie/Game Screenshot", 
+                "🏛️ Architecture", "🦋 Animal/Creature", "🍕 Food", "🌸 Flowers/Plants", 
+                "📸 Photography", "🎮 Other"], 
+                index=0, 
+                key="inspiration_source_type_select"
             )
             
-            # Store source type
-            st.session_state.inspiration_source_type = source_type
-            
             st.markdown("---")
-            
-            # Wrap button in div for custom styling
             st.markdown('<div class="inspiration-tab-content"><div class="inspiration-action-button">', unsafe_allow_html=True)
-            # UPDATED: Centered button
             search_clicked = st.button("🎨 EXTRACT COLOUR PALETTE", type="primary", key="btn_inspiration", use_container_width=True)
             st.markdown('</div></div>', unsafe_allow_html=True)
             
             if search_clicked:
-                with st.spinner("Analyzing colour harmonies..."):
-                    recipes, _, _ = st.session_state.engine.analyze_miniature(
-                        raw_img, 
-                        mode="scene", 
-                        remove_base=False, 
-                        use_awb=False, 
-                        sat_boost=1.0, 
-                        detect_details=False
-                    )
+                # === NEW LOADING BAR FOR INSPIRATION ===
+                status_text = st.empty()
+                progress_bar = st.empty()
+                
+                try:
+                    def update_insp_progress(stage_key, progress_pct):
+                        msg = AuspexText.get_stage_msg(stage_key)
+                        status_text.markdown(f"### 🔮 {msg}")
+                        progress_bar.progress(progress_pct / 100, text=f"{progress_pct}%")
+
+                    update_insp_progress('initializing', 10)
+                    time.sleep(0.3)
+                    
+                    update_insp_progress('preprocessing', 30)
+                    time.sleep(0.3)
+                    
+                    update_insp_progress('color_extraction', 60)
+                    
+                    recipes, _, _ = st.session_state.engine.analyze_miniature(raw_img, mode="scene", remove_base=False, use_awb=False, sat_boost=1.0, detect_details=False)
+                    
+                    update_insp_progress('finalizing', 90)
+                    time.sleep(0.3)
+                    progress_bar.progress(100)
+                    status_text.empty()
+                    progress_bar.empty()
                     
                     if not recipes:
                         st.warning("⚠️ Couldn't extract distinct colours. Try an image with more colour variety!")
                     else:
-                        st.success(f"✅ Extracted {len(recipes)} colours from your inspiration!")
-                        
-                        # SAVE RESULTS to session state to handle reruns
                         st.session_state.inspiration_results = recipes
                         
-                        # === NEW: LOG INSPIRATION SCAN ===
                         try:
-                            # Sanitize recipes for logging (remove numpy arrays and images)
                             log_recipes = []
                             for r in recipes:
                                 r_copy = r.copy()
-                                # Remove non-serializable data
-                                if 'reticle' in r_copy:
-                                    del r_copy['reticle']
+                                if 'reticle' in r_copy: del r_copy['reticle']
                                 if 'rgb_preview' in r_copy and isinstance(r_copy['rgb_preview'], np.ndarray):
                                     r_copy['rgb_preview'] = r_copy['rgb_preview'].tolist()
-                                if 'pixel_indices' in r_copy:
-                                    del r_copy['pixel_indices']
+                                if 'pixel_indices' in r_copy: del r_copy['pixel_indices']
                                 log_recipes.append(r_copy)
                             
-                            # Log to Google Sheets
                             inspiration_scan_id = st.session_state.feedback_logger.log_scan({
                                 'mode': 'inspiration',
-                                'source_type': st.session_state.inspiration_source_type,
+                                'source_type': st.session_state.get('inspiration_source_type_select', 'Unknown'),
                                 'image_size': raw_img.shape,
                                 'recipes': log_recipes,
                                 'num_colours': len(recipes),
                                 'brands': Affiliate.SUPPORTED_BRANDS
                             })
-                            
-                            # Store scan ID for feedback
                             st.session_state.current_inspiration_scan_id = inspiration_scan_id
-                            
-                            # Track in analytics
-                            st.session_state.analytics.track_scan(
-                                mode='inspiration',
-                                num_colors=len(recipes),
-                                quality_score=100  # No quality check for inspiration mode
-                            )
-                            
-                            logger.info(f"Logged inspiration scan: {inspiration_scan_id}, source: {st.session_state.inspiration_source_type}")
-                            
+                            st.session_state.analytics.track_scan(mode='inspiration', num_colors=len(recipes), quality_score=100)
                         except Exception as e:
                             logger.error(f"Failed to log inspiration scan: {e}", exc_info=True)
-                            # Don't show error to user - logging is non-critical
+                except Exception as e:
+                    status_text.error(f"❌ Error processing image: {str(e)}")
+                    logger.error(f"Inspiration error: {e}", exc_info=True)
             
-            # === DISPLAY LOGIC FOR INSPIRATION ===
-            # Run this whenever results exist in session state (handles reruns)
             if st.session_state.inspiration_results:
                 recipes = st.session_state.inspiration_results
-                        
-                # ===== BIG BEAUTIFUL PALETTE DISPLAY (NO RETICLES!) =====
+                
+                # Custom Success Message for Purple Theme
+                st.markdown(f"""
+                    <div class="inspiration-success-box">
+                        ✅ <b>IDEA ENGINE synchronised</b><br>
+                        {len(recipes)} pigment patterns extracted from visual data.
+                    </div>
+                """, unsafe_allow_html=True)
+
+                st.markdown("---")
+                
+                # === NEW: INSPIRATION HUD GRID (Replaces old logic if any, creates consistency) ===
+                # Note: Inspiration mode has less metadata (no quality score from engine), so we adapt.
+                # We'll show: Colours, Primary Mood, Source Type, Est Paints.
+                
+                total_paints_insp = len(recipes) * 3 # Base, layer, shade
+                primary_mood = recipes[0]['family'] if recipes else "Unknown"
+
+                st.markdown(f"""
+                <div class="hud-grid">
+                    <div class="hud-card-inspiration">
+                        <div class="hud-label-inspiration">COLOURS EXTRACTED</div>
+                        <div class="hud-value-inspiration">{len(recipes)}</div>
+                        <div class="hud-sub-inspiration">Harmonies Found</div>
+                    </div>
+                    <div class="hud-card-inspiration">
+                        <div class="hud-label-inspiration">PRIMARY MOOD</div>
+                        <div class="hud-value-inspiration" style="font-size: 1.2em; margin-top: 5px;">{primary_mood}</div>
+                        <div class="hud-sub-inspiration">Dominant Tone</div>
+                    </div>
+                    <div class="hud-card-inspiration">
+                        <div class="hud-label-inspiration">SOURCE DATA</div>
+                        <div class="hud-value-inspiration" style="font-size: 1.0em; margin-top: 8px;">{st.session_state.get('inspiration_source_type_select', 'ðŸŒ… Landscape/Nature').split(' ')[1] if ' ' in st.session_state.get('inspiration_source_type_select', 'ðŸŒ… Landscape/Nature') else 'Image'}</div>
+                        <div class="hud-sub-inspiration">Classification</div>
+                    </div>
+                    <div class="hud-card-inspiration">
+                        <div class="hud-label-inspiration">EST. PAINTS</div>
+                        <div class="hud-value-inspiration">{total_paints_insp}</div>
+                        <div class="hud-sub-inspiration">Bottles Needed</div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+
                 st.markdown("---")
                 st.markdown("### 🎨 Your Custom Colour Palette")
                 
-                # Show up to 5 colours in nice big swatches
+                # === REVERTED TO VERTICAL CARDS (Original Inspiration Look) ===
                 num_colours = min(len(recipes), 5)
                 cols = st.columns(num_colours)
-                
                 for idx, recipe in enumerate(recipes[:5]):
                     with cols[idx]:
                         rgb = recipe['rgb_preview']
                         colour_css = f"rgb({rgb[0]},{rgb[1]},{rgb[2]})"
-                        
-                        # Big beautiful colour swatch (NO RETICLE!)
-                        st.markdown(f"""
-                            <div style='
-                                background: {colour_css};
-                                height: 130px;
-                                border-radius: 12px;
-                                border: 3px solid #333;
-                                box-shadow: 
-                                    0 6px 16px rgba(0,0,0,0.5),
-                                    inset 0 -4px 8px rgba(0,0,0,0.3);
-                                margin-bottom: 12px;
-                                transition: transform 0.2s;
-                            ' onmouseover='this.style.transform="scale(1.05)"' 
-                               onmouseout='this.style.transform="scale(1)"'>
-                            </div>
-                        """, unsafe_allow_html=True)
-                        
-                        # Colour info
-                        st.markdown(f"""
-                            <div style='text-align: center;'>
-                                <p style='font-weight: bold; font-size: 1.15em; margin-bottom: 4px; color: #ddd;'>
-                                    {recipe['family']}
-                                </p>
-                                <p style='color: #888; font-size: 0.95em;'>
-                                    {recipe['dominance']:.0f}% of image
-                                </p>
-                            </div>
-                        """, unsafe_allow_html=True)
+                        # Simple vertical card style
+                        st.markdown(f"<div style='background: {colour_css}; height: 130px; border-radius: 12px; border: 3px solid #333; margin-bottom: 12px;'></div>", unsafe_allow_html=True)
+                        st.markdown(f"<div style='text-align: center;'><p style='font-weight: bold; margin-bottom: 4px;'>{recipe['family']}</p><p style='color: #888; font-size: 0.9em;'>{recipe['dominance']:.0f}%</p></div>", unsafe_allow_html=True)
                 
                 st.markdown("---")
-                
-                # ===== USAGE SUGGESTIONS =====
-                st.markdown("### 💡 How to Use This Scheme")
-                
-                col1, col2 = st.columns(2)
-                
-                with col1:
-                    st.markdown("**🎨 Suggested Colour Roles:**")
-                    if len(recipes) >= 3:
-                        st.markdown(f"""
-                        - **🛡️ Primary Armor:** {recipes[0]['family']} ({recipes[0]['dominance']:.0f}%)
-                        - **👕 Secondary/Cloth:** {recipes[1]['family']} ({recipes[1]['dominance']:.0f}%)
-                        - **⚔️ Accent/Weapons:** {recipes[2]['family']} ({recipes[2]['dominance']:.0f}%)
-                        """)
-                        if len(recipes) >= 4:
-                            st.markdown(f"- **✨ Details/Trim:** {recipes[3]['family']} ({recipes[3]['dominance']:.0f}%)")
-                        if len(recipes) >= 5:
-                            st.markdown(f"- **👁️ Eyes/Gems:** {recipes[4]['family']} ({recipes[4]['dominance']:.0f}%)")
-                    else:
-                        st.info("💡 Upload an image with more distinct colours for better suggestions!")
-                
-                with col2:
-                    st.markdown("**🎬 Example Applications:**")
-                    st.markdown("""
-                    - Space Marines chapter colours
-                    - Chaos warband theme
-                    - Necron dynasty scheme
-                    - Tau sept colours
-                    - Eldar craftworld
-                    - Ork klan warpaint
-                    - Terrain colour palette
-                    - Display base theme
-                    """)
-                
-                st.markdown("---")
-                
-                # ===== PAINT RECOMMENDATIONS (SIMPLIFIED) =====
                 st.markdown("### 🛡️ Paint Recommendations")
-                st.caption(f"Showing matches for: **{global_brand_pref}** (Change in Sidebar)")
-                
-                # Use global preference
                 preferred_brand = global_brand_pref
                 
-                # Show paints in expandable sections
                 for idx, recipe in enumerate(recipes):
                     rgb = recipe['rgb_preview']
                     colour_css = f"rgb({rgb[0]},{rgb[1]},{rgb[2]})"
                     
-                    # Use simple emoji instead of HTML for title to avoid parsing errors
-                    with st.expander(
-                        f"🎨 {recipe['family']} ({recipe['dominance']:.0f}%)",
-                        expanded=(idx == 0)  # First colour expanded by default
-                    ):
+                    with st.expander(f"🎨 {recipe['family']} ({recipe['dominance']:.0f}%)", expanded=(idx == 0)):
                         col_swatch, col_paints = st.columns([1, 2])
-                        
                         with col_swatch:
-                            # Big swatch instead of messy reticle
-                            st.markdown(f"""
-                                <div style='
-                                    background: linear-gradient(135deg, 
-                                        {colour_css} 0%, 
-                                        {colour_css} 60%, 
-                                        rgba(0,0,0,0.4) 100%);
-                                    height: 160px;
-                                    border-radius: 10px;
-                                    border: 3px solid #333;
-                                    display: flex;
-                                    align-items: center;
-                                    justify-content: center;
-                                    font-size: 3em;
-                                    box-shadow: inset 0 -3px 6px rgba(0,0,0,0.3);
-                                '>
-                                    🎨
-                                </div>
-                            """, unsafe_allow_html=True)
-                            
-                            st.caption(f"Represents {recipe['dominance']:.0f}% of your image")
+                            st.markdown(f"<div style='background: linear-gradient(135deg, {colour_css} 0%, {colour_css} 60%, rgba(0,0,0,0.4) 100%); height: 160px; border-radius: 10px; border: 3px solid #333; display: flex; align-items: center; justify-content: center; font-size: 3em;'>🎨</div>", unsafe_allow_html=True)
                         
                         with col_paints:
                             st.markdown(f"**{preferred_brand} Paint Matches:**")
-                            st.markdown("")  # Spacing
                             
+                            # Helper to render row with hex copy
+                            def render_insp_row(label, paint, icon):
+                                if paint:
+                                    c_info, c_hex = st.columns([4, 2])
+                                    with c_info:
+                                        url = get_affiliate_link(preferred_brand, paint['name'], region_option)
+                                        st.markdown(f"{icon} **{label}:** [{paint['name']}]({url})")
+                                    with c_hex:
+                                        if 'hex' in paint:
+                                            st.code(paint['hex'], language=None)
+                                        else:
+                                            st.caption("-")
+
                             # Base
                             base = recipe['base'].get(preferred_brand)
-                            if base:
-                                url = get_affiliate_link(preferred_brand, base['name'], region_option)
-                                st.markdown(f"🛡️ **Base:** [{base['name']}]({url})")
+                            render_insp_row("Base", base, "🛡️")
                             
                             # Highlight
                             highlight = recipe['highlight'].get(preferred_brand)
-                            if highlight:
-                                url = get_affiliate_link(preferred_brand, highlight['name'], region_option)
-                                st.markdown(f"✨ **Highlight:** [{highlight['name']}]({url})")
+                            render_insp_row("Highlight", highlight, "✨")
                             
                             # Shade
                             shade = recipe['shade'].get(preferred_brand)
-                            if shade:
-                                url = get_affiliate_link(preferred_brand, shade['name'], region_option)
-                                shade_icon = "💧" if recipe['shade_type'] == 'wash' else "🌑"
-                                st.markdown(f"{shade_icon} **Shade:** [{shade['name']}]({url})")
-                            
-                            st.markdown("---")
-                            
-                            # Show other brands (NO NESTED EXPANDER)
-                            st.markdown("**🔍 Alternatives:**")
-                            for brand in Affiliate.SUPPORTED_BRANDS:
-                                if brand != preferred_brand:
-                                    base_alt = recipe['base'].get(brand)
-                                    if base_alt:
-                                        st.caption(f"**{brand}:** {base_alt['name']}")
+                            render_insp_row("Shade", shade, "💧" if recipe['shade_type'] == 'wash' else "🌑")
                 
-                # ===== EXPORT & SHARE =====
+                # === RESTORED SOCIAL BUTTONS FOR INSPIRATION (2 Buttons + Popover) ===
                 st.markdown("---")
                 st.markdown("### 💾 Save & Share Your Palette")
                 
-                col1, col2, col3 = st.columns(3)
-                
-                with col1:
-                    # Palette summary
-                    palette_text = "MY CUSTOM COLOUR SCHEME\n"
-                    palette_text += f"Generated: {datetime.now().strftime('%Y-%m-%d')}\n\n"
-                    palette_text += "COLOURS:\n"
-                    for r in recipes:
-                        palette_text += f"- {r['family']}: {r['dominance']:.0f}%\n"
-                    
+                # Prepare data
+                palette_text = "MY CUSTOM COLOUR SCHEME\n"
+                palette_text += f"Generated: {datetime.now().strftime('%Y-%m-%d')}\n"
+                for r in recipes:
+                    palette_text += f"- {r['family']} ({r['dominance']:.0f}%)\n"
+
+                # Row 1: Download & Copy
+                row1_col1, row1_col2 = st.columns(2)
+                with row1_col1:
                     st.download_button(
-                        "📥 Download Palette",
-                        palette_text,
-                        file_name=f"colour_palette_{datetime.now().strftime('%Y%m%d')}.txt",
+                        "📥 Download", 
+                        palette_text, 
+                        file_name="palette.txt",
                         mime="text/plain",
                         use_container_width=True
                     )
-                
-                with col2:
-                    # Shopping list
-                    paint_list = f"{preferred_brand} Shopping List:\n\n"
-                    for r in recipes:
-                        base = r['base'].get(preferred_brand)
-                        if base:
-                            paint_list += f"▫ {base['name']}\n"
-                    
-                    st.download_button(
-                        "🛒 Shopping List",
-                        paint_list,
-                        file_name=f"{preferred_brand.lower()}_paints.txt",
-                        mime="text/plain",
-                        use_container_width=True
-                    )
-                
-                with col3:
-                    if st.button("🔗 Share on Social", use_container_width=True):
-                        colours_text = ", ".join([r['family'] for r in recipes[:3]])
-                        share_text = f"Created a custom colour scheme with SchemeStealer! 🎨\nColours: {colours_text}"
-                        st.info(f"**Copy to share:**\n\n{share_text}")
+                with row1_col2:
+                    if st.button("📋 Copy List", key="insp_copy", use_container_width=True):
+                        st.code(palette_text, language=None)
 
-                # === NEW: INSPIRATION FEEDBACK SECTION ===
+                # Row 2: Share Popover
+                share_text_insp = f"Check out this paint scheme I made with SchemeStealer! Extracted from {st.session_state.get('inspiration_source_type_select', 'inspiration')}."
+                encoded_text_insp = urllib.parse.quote(share_text_insp)
+                
+                with st.popover("📤 Share Results", use_container_width=True):
+                    st.markdown("### Share via:")
+                    st.link_button("✖️ X (Twitter)", f"https://twitter.com/intent/tweet?text={encoded_text_insp}", use_container_width=True)
+                    st.link_button("💬 WhatsApp", f"https://wa.me/?text={encoded_text_insp}", use_container_width=True)
+                    st.link_button("👽 Reddit", f"https://www.reddit.com/submit?title=SchemeStealer%20Palette&text={encoded_text_insp}", use_container_width=True)
+                    st.link_button("📧 Email", f"mailto:?subject=My%20Paint%20Scheme&body={encoded_text_insp}", use_container_width=True)
+
+
+                # Feedback Section
                 st.markdown("---")
-                st.markdown("### 📊 How Did We Do?")
-                st.caption("Your feedback helps us improve colour extraction for different image types!")
-                
-                col1, col2, col3 = st.columns(3)
-                
+                col1, col2 = st.columns(2)
                 with col1:
-                    if st.button(
-                        "👍 Accurate Colours", 
-                        use_container_width=True, 
-                        key="insp_thumbs_up",
-                        help="These colours match my image well"
-                    ):
-                        scan_id = st.session_state.get('current_inspiration_scan_id')
-                        if scan_id:
-                            try:
-                                st.session_state.feedback_logger.log_feedback(
-                                    scan_id,
-                                    'thumbs_up',
-                                    rating=5,
-                                    comments=f"Source: {st.session_state.get('inspiration_source_type', 'Unknown')}"
-                                )
-                                st.success("Thanks for the feedback! 🎉")
-                                logger.info(f"Positive feedback for inspiration scan {scan_id}")
-                            except Exception as e:
-                                logger.error(f"Failed to log feedback: {e}")
-                                st.error("Couldn't save feedback, but noted!")
-                
+                     if st.button("👍 Good Match", key="insp_up", use_container_width=True):
+                         st.success("Feedback Recorded!")
                 with col2:
-                    if st.button(
-                        "👎 Colours Off", 
-                        use_container_width=True, 
-                        key="insp_thumbs_down",
-                        help="The detected colours don't match well"
-                    ):
-                        st.session_state.show_inspiration_correction = True
-                        st.rerun()
-                
-                with col3:
-                    if st.button(
-                        "💡 Suggest Use", 
-                        use_container_width=True, 
-                        key="insp_suggest",
-                        help="Tell us how you'd use this scheme"
-                    ):
-                        st.session_state.show_inspiration_suggestion = True
-                        st.rerun()
+                     if st.button("👎 Poor Match", key="insp_down", use_container_width=True):
+                         st.session_state.show_inspiration_correction = True
+                         st.rerun()
 
-                # === CORRECTION FORM ===
-                if st.session_state.get('show_inspiration_correction', False):
-                    st.markdown("---")
-                    with st.expander("✏️ Tell us what's wrong", expanded=True):
-                        st.markdown("**What issues did you notice with the colour extraction?**")
-                        
-                        issues = st.multiselect(
-                            "Select all that apply:",
-                            [
-                                "Missed a dominant colour",
-                                "Detected background instead of subject",
-                                "Too many similar colours",
-                                "Colours don't match the image",
-                                "Wrong colour names/families",
-                                "Picked up shadows/highlights as colours",
-                                "Other issue"
-                            ],
-                            key="insp_issues"
-                        )
-                        
-                        comments = st.text_area(
-                            "What colours should have been detected?",
-                            key="insp_comments",
-                            placeholder="E.g., 'Should have found the bright orange sunset, not the gray clouds' or 'Missed the vibrant purple flowers'",
-                            help="Specific feedback helps us improve!"
-                        )
-                        
-                        col_a, col_b = st.columns([1, 1])
-                        
-                        with col_a:
-                            if st.button("✅ Submit Feedback", key="insp_submit", use_container_width=True):
-                                scan_id = st.session_state.get('current_inspiration_scan_id')
-                                if scan_id and (issues or comments):
-                                    try:
-                                        # Formatting source info into comments
-                                        full_comments = f"Source Type: {st.session_state.get('inspiration_source_type')}\n{comments}"
-                                        
-                                        st.session_state.feedback_logger.log_feedback(
-                                            scan_id,
-                                            'correction',
-                                            rating=2,
-                                            issues=issues,
-                                            comments=full_comments
-                                        )
-                                        st.success("Feedback submitted! This helps us improve! 🙏")
-                                        logger.info(f"Correction feedback for inspiration scan {scan_id}: {issues}")
-                                        st.session_state.show_inspiration_correction = False
-                                        st.rerun()
-                                    except Exception as e:
-                                        logger.error(f"Failed to log correction: {e}")
-                                        st.error("Couldn't save feedback, but we noted the issue!")
-                                else:
-                                    st.warning("Please select at least one issue or add a comment")
-                        
-                        with col_b:
-                            if st.button("❌ Cancel", key="insp_cancel", use_container_width=True):
-                                st.session_state.show_inspiration_correction = False
-                                st.rerun()
-                
-                # === SUGGESTION FORM ===
-                if st.session_state.get('show_inspiration_suggestion', False):
-                    st.markdown("---")
-                    with st.expander("💭 Share how you'd use this scheme", expanded=True):
-                        st.markdown("**We'd love to know what you'd paint with these colours!**")
-                        
-                        use_case = st.text_area(
-                            "Your army/project idea:",
-                            placeholder="E.g., 'Perfect for my Chaos Space Marines!' or 'Would use this for my Necron dynasty' or 'Great for terrain bases'",
-                            key="insp_use_case",
-                            help="Your ideas help other users discover great schemes!"
-                        )
-                        
-                        col_a, col_b = st.columns([1, 1])
-                        
-                        with col_a:
-                            if st.button("✅ Share Idea", key="insp_share", use_container_width=True):
-                                scan_id = st.session_state.get('current_inspiration_scan_id')
-                                if scan_id and use_case:
-                                    try:
-                                        st.session_state.feedback_logger.log_feedback(
-                                            scan_id,
-                                            'usage_suggestion',
-                                            rating=4,
-                                            comments=f"Use case: {use_case} | Source: {st.session_state.get('inspiration_source_type')}"
-                                        )
-                                        st.success("Thanks for sharing your creativity! 💡")
-                                        logger.info(f"Usage suggestion for inspiration scan {scan_id}")
-                                        st.session_state.show_inspiration_suggestion = False
-                                        st.rerun()
-                                    except Exception as e:
-                                        logger.error(f"Failed to log suggestion: {e}")
-                                        st.error("Couldn't save suggestion, but we noted it!")
-                                else:
-                                    st.warning("Please share your idea before submitting")
-                        
-                        with col_b:
-                            if st.button("❌ Cancel", key="insp_cancel_suggest", use_container_width=True):
-                                st.session_state.show_inspiration_suggestion = False
-                                st.rerun()
-                
-                st.markdown("---")
-                        
         except Exception as e:
             st.error(f"❌ Error processing image: {str(e)}")
             logger.error(f"Inspiration error: {e}", exc_info=True)
-            st.info("💡 Try a different image or check that the file isn't corrupted.")
         finally:
-            # MEMORY CLEANUP
             cleanup_opencv_image(raw_img)
 
-    else:
-        pass
-
-    # === DISPLAY PAINT LIST (Collapsed at bottom) ===
     st.divider()
-    render_paint_list_ui()
+    # FIXED: Pass unique suffix for Tab 2
+    render_paint_list_ui(key_suffix="insp")
 
     st.markdown('</div>', unsafe_allow_html=True)
-# ============================================================================
-# FOOTER
-# ============================================================================
-
-st.divider()
-st.markdown(f"""
-<div style='text-align: center; color: #666; font-size: 0.8em; font-family: monospace;'>
-    {APP_NAME} v{APP_VERSION} | 
-    Sanctioned by the Mechanicus | 
-    <a href='mailto:schemestealer@gmail.com?subject=SchemeStealer%20Feedback' style='color: #5DA153; text-decoration: none;'>
-        Transmit Astropathic Feedback
-    </a>
-</div>
-""", unsafe_allow_html=True)
+    # Render footer inside tab to inherit purple theme
+    render_footer(theme="purple")
+    # === ADDED DEBUG OUTPUT AT THE VERY END ===
+    if debug_mode:
+        st.divider()
+        st.error("🛠️ DEBUG MODE ACTIVE")
+        st.write(f"**Session ID:** {st.session_state.get('current_scan_id', 'N/A')}")
+        st.write(f"**Last Run:** {datetime.now()}")
+        st.write("**Session State:**")
+        st.json(st.session_state)
+        st.write("**Query Params:**")
+        st.write(st.query_params)
