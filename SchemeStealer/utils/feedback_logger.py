@@ -30,14 +30,14 @@ class EnhancedGSheetsLogger:
         self.feedback_sheet = None
         
         try:
-            # print("🔧 Connecting to Google Sheets...")
+            # print("ðŸ”§ Connecting to Google Sheets...")
             
             # Validate secrets exist
             if "gcp_service_account" not in st.secrets:
-                print("❌ ERROR: 'gcp_service_account' not in secrets!")
+                print("â Œ ERROR: 'gcp_service_account' not in secrets!")
                 return
             if "gsheets" not in st.secrets:
-                print("❌ ERROR: 'gsheets' not in secrets!")
+                print("â Œ ERROR: 'gsheets' not in secrets!")
                 return
             
             # Create credentials
@@ -64,10 +64,10 @@ class EnhancedGSheetsLogger:
             self._setup_headers()
             
             self.connected = True
-            # print("✅ Enhanced logger connected successfully!")
+            # print("âœ… Enhanced logger connected successfully!")
             
         except Exception as e:
-            print(f"❌ Could not connect to Google Sheets: {e}")
+            print(f"â Œ Could not connect to Google Sheets: {e}")
             self.connected = False
     
     def _get_or_create_sheet(self, name: str):
@@ -75,7 +75,7 @@ class EnhancedGSheetsLogger:
         try:
             return self.spreadsheet.worksheet(name)
         except gspread.WorksheetNotFound:
-            print(f"📄 Creating new sheet: {name}")
+            print(f"ðŸ“„ Creating new sheet: {name}")
             return self.spreadsheet.add_worksheet(
                 title=name, 
                 rows=1000, 
@@ -101,9 +101,9 @@ class EnhancedGSheetsLogger:
                     'Image_Height',
                     'Thumbs_Up'
                 ]])
-                print("✅ Scans sheet headers set")
+                print("âœ… Scans sheet headers set")
         except Exception as e:
-            print(f"⚠️ Could not set Scans headers: {e}")
+            print(f"âš ï¸  Could not set Scans headers: {e}")
         
         # Sheet 2: Color_Features (ML training data - MOST IMPORTANT!)
         try:
@@ -130,9 +130,9 @@ class EnhancedGSheetsLogger:
                     'Confusion_Notes',
                     'Confidence'
                 ]])
-                print("✅ Color_Features sheet headers set")
+                print("âœ… Color_Features sheet headers set")
         except Exception as e:
-            print(f"⚠️ Could not set Color_Features headers: {e}")
+            print(f"âš ï¸  Could not set Color_Features headers: {e}")
         
         # Sheet 3: Feedback (User corrections)
         try:
@@ -148,9 +148,9 @@ class EnhancedGSheetsLogger:
                     'Rating',
                     'User_Email'
                 ]])
-                print("✅ Feedback sheet headers set")
+                print("âœ… Feedback sheet headers set")
         except Exception as e:
-            print(f"⚠️ Could not set Feedback headers: {e}")
+            print(f"âš ï¸  Could not set Feedback headers: {e}")
     
     @retry(
         stop=stop_after_attempt(3),
@@ -176,7 +176,7 @@ class EnhancedGSheetsLogger:
             scan_id for linking feedback
         """
         if not self.connected:
-            # print("⚠️ Skipping log (offline)")
+            # print("âš ï¸  Skipping log (offline)")
             return "offline"
         
         # Generate unique scan ID
@@ -212,7 +212,7 @@ class EnhancedGSheetsLogger:
             ]
             
             self._append_row_with_retry(self.scans_sheet, scan_row)
-            print(f"✅ Logged scan {scan_id} to Scans sheet")
+            print(f"âœ… Logged scan {scan_id} to Scans sheet")
             
             # Log detailed color features (ML DATA!)
             self._log_color_features(scan_id, recipes)
@@ -220,7 +220,7 @@ class EnhancedGSheetsLogger:
             return scan_id
             
         except Exception as e:
-            print(f"❌ Error logging scan: {e}")
+            print(f"â Œ Error logging scan: {e}")
             return "error"
     
     def _log_color_features(self, scan_id: str, recipes: List[Dict]):
@@ -297,10 +297,10 @@ class EnhancedGSheetsLogger:
                 self._append_row_with_retry(self.features_sheet, feature_row)
                 
             except Exception as e:
-                print(f"⚠️ Could not log color {idx}: {e}")
+                print(f"âš ï¸  Could not log color {idx}: {e}")
                 continue
         
-        print(f"✅ Logged {len(recipes)} colors to Color_Features sheet")
+        print(f"âœ… Logged {len(recipes)} colors to Color_Features sheet")
     
     def log_feedback(self, scan_id: str, feedback_type: str,
                      rating: Optional[int] = None,
@@ -321,7 +321,7 @@ class EnhancedGSheetsLogger:
             user_email: Optional email for follow-up
         """
         if not self.connected:
-            print("⚠️ Skipping feedback log (offline)")
+            print("âš ï¸  Skipping feedback log (offline)")
             return
         
         try:
@@ -340,7 +340,7 @@ class EnhancedGSheetsLogger:
             ]
             
             self._append_row_with_retry(self.feedback_sheet, feedback_row)
-            print(f"✅ Logged feedback {feedback_id}")
+            print(f"âœ… Logged feedback {feedback_id}")
             
             # Update Color_Features with corrections
             if feedback_type in ['correction', 'thumbs_down'] and expected_colors:
@@ -359,7 +359,7 @@ class EnhancedGSheetsLogger:
             # self._send_email_notification(feedback_type, scan_id, comments)
             
         except Exception as e:
-            print(f"❌ Error logging feedback: {e}")
+            print(f"â Œ Error logging feedback: {e}")
     
     def _update_color_corrections(self, scan_id: str, expected_colors: str, 
                                   thumbs_up: bool, comments: Optional[str] = None):
@@ -384,10 +384,10 @@ class EnhancedGSheetsLogger:
                     confidence = 5 if thumbs_up else 2
                     self.features_sheet.update(f'V{row_num}', str(confidence))  # Confidence
             
-            print(f"✅ Updated corrections for scan {scan_id}")
+            print(f"âœ… Updated corrections for scan {scan_id}")
                     
         except Exception as e:
-            print(f"⚠️ Could not update corrections: {e}")
+            print(f"âš ï¸  Could not update corrections: {e}")
     
     def _update_scan_thumbs(self, scan_id: str, thumbs_up: bool):
         """Update the Thumbs_Up column in Scans sheet"""
@@ -400,10 +400,10 @@ class EnhancedGSheetsLogger:
                     self.scans_sheet.update(f'K{row_num}', value)
                     break
             
-            print(f"✅ Updated thumbs for scan {scan_id}")
+            print(f"âœ… Updated thumbs for scan {scan_id}")
                     
         except Exception as e:
-            print(f"⚠️ Could not update thumbs: {e}")
+            print(f"âš ï¸  Could not update thumbs: {e}")
     
     def get_stats(self) -> Dict:
         """Get logging statistics for admin dashboard"""
@@ -435,7 +435,7 @@ class EnhancedGSheetsLogger:
                 'satisfaction_rate': satisfaction
             }
         except Exception as e:
-            print(f"⚠️ Could not get stats: {e}")
+            print(f"âš ï¸  Could not get stats: {e}")
             return {
                 'total_scans': 0,
                 'total_feedback': 0,

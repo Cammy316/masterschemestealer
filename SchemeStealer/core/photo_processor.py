@@ -79,7 +79,7 @@ class PhotoProcessor:
         # 4. Color cast detection (beyond white balance)
         if self._has_severe_color_cast(img):
             score -= PhotoQuality.COLOR_CAST_PENALTY
-            warnings.append("🎨 Strong color cast detected")
+            warnings.append("🎨 Strong colour cast detected")
             logger.warning("Severe color cast detected")
         
         # 5. Determine quality level
@@ -239,28 +239,28 @@ class PhotoProcessor:
         if report.quality_level == 'Excellent':
             return {
                 'emoji': '✅',
-                'color': 'green',
+                'colour': 'green',
                 'message': f'Photo Quality: Excellent ({report.score}/100)',
                 'show_details': False
             }
         elif report.quality_level == 'Good':
             return {
                 'emoji': '👍',
-                'color': 'blue',
+                'colour': 'blue',
                 'message': f'Photo Quality: Good ({report.score}/100)',
                 'show_details': len(report.warnings) > 0
             }
         elif report.quality_level == 'Fair':
             return {
                 'emoji': '⚠️',
-                'color': 'orange',
+                'colour': 'orange',
                 'message': f'Photo Quality: Fair ({report.score}/100)',
                 'show_details': True
             }
         else:
             return {
                 'emoji': '❌',
-                'color': 'red',
+                'colour': 'red',
                 'message': f'Photo Quality: Poor ({report.score}/100)',
                 'show_details': True
             }

@@ -136,13 +136,19 @@ class SimpleAnalytics:
         events = []
         cutoff_date = datetime.now().timestamp() - (days * 24 * 60 * 60)
         
-        with open(self.log_path, 'r') as f:
-            for line in f:
-                event = json.loads(line)
-                event_time = datetime.fromisoformat(event['timestamp']).timestamp()
-                
-                if event_time >= cutoff_date:
-                    events.append(event)
+        try:
+            with open(self.log_path, 'r') as f:
+                for line in f:
+                    try:
+                        event = json.loads(line)
+                        event_time = datetime.fromisoformat(event['timestamp']).timestamp()
+                        
+                        if event_time >= cutoff_date:
+                            events.append(event)
+                    except (json.JSONDecodeError, ValueError):
+                        continue
+        except Exception:
+            pass
         
         # Calculate metrics
         scans = [e for e in events if e['event'] == 'scan_completed']
@@ -153,8 +159,14 @@ class SimpleAnalytics:
         
         avg_colors = 0
         if scans:
-            colors_list = [s['properties'].get('num_colors', 0) for s in scans]
-            avg_colors = sum(colors_list) / len(colors_list)
+            # Handle both spellings for backward compatibility, prioritize 'num_colors'
+            colors_list = []
+            for s in scans:
+                props = s.get('properties', {})
+                colors_list.append(props.get('num_colors', props.get('num_colours', 0)))
+                
+            if colors_list:
+                avg_colors = sum(colors_list) / len(colors_list)
         
         conversion_rate = (total_conversions / total_scans * 100) if total_scans > 0 else 0
         

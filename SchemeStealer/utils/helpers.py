@@ -85,12 +85,12 @@ def get_affiliate_link(brand: str, paint_name: str, region_key: str) -> str:
     return f"https://www.{domain}/s?k={encoded_query}&tag={tag}"
 
 
-def calculate_color_distance_rgb(color1: np.ndarray, color2: np.ndarray) -> float:
+def calculate_color_distance_rgb(colour1: np.ndarray, colour2: np.ndarray) -> float:
     """
     Simple Euclidean distance in RGB space
     Used for quick similarity checks
     """
-    return np.linalg.norm(color1 - color2)
+    return np.linalg.norm(colour1 - colour2)
 
 
 def hex_to_rgb(hex_str: str) -> np.ndarray:

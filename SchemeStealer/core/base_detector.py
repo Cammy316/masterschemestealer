@@ -235,9 +235,9 @@ class BaseDetector:
                 (img_hsv[:, :, 2] >= hsv_min[2]) & (img_hsv[:, :, 2] <= hsv_max[2])
             ], axis=0)
             
-            color_pixels = np.sum(in_range)
-            if color_pixels > 0:
-                logger.debug(f"Found {color_pixels} {color_name} pixels")
+            colour_pixels = np.sum(in_range)
+            if colour_pixels > 0:
+                logger.debug(f"Found {colour_pixels} {color_name} pixels")
             
             base_color_mask |= in_range
         

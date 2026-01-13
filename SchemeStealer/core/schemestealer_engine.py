@@ -16,7 +16,7 @@ from config import ColorDetection, Affiliate
 from core.photo_processor import PhotoProcessor
 from core.base_detector import BaseDetector
 from core.color_engine import (
-    Paint, ShadeTypeAnalyzer, 
+    Paint, ShadeTypeAnalyser, 
     PaintMatcher, VisualizationEngine
 )
 from core.smart_color_system import SmartColorExtractor 
@@ -146,7 +146,7 @@ class SchemeStealerEngine:
             
             # Extract layers for paint matching
             layers = self._extract_layers(color_data)
-            shade_type = ShadeTypeAnalyzer.determine_shade_type(
+            shade_type = ShadeTypeAnalyser.determine_shade_type(
                 color_data, color_data.get('brightness_std', 30), family
             )
 
