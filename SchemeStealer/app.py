@@ -251,9 +251,9 @@ st.markdown("""
     @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600&display=swap');
 
-    /* ========================================================================
-       1. THE COGITATOR SCROLLBAR (GLOBAL & DYNAMIC)
-       ======================================================================== */
+/* ========================================================================
+    1. THE COGITATOR SCROLLBAR (GLOBAL & DYNAMIC)
+ ======================================================================== */
     ::-webkit-scrollbar {
         width: 10px;
         height: 10px;
@@ -274,10 +274,13 @@ st.markdown("""
         background: #000;
     }
 
-    /* DYNAMIC OVERRIDE: WHEN INSPIRATION TAB (2nd Tab) IS SELECTED 
-       We use :has() to detect if the 2nd button in the tablist is aria-selected="true"
-    */
-    :root:has(div[role="tablist"] button:nth-of-type(2)[aria-selected="true"]) ::-webkit-scrollbar-thumb {
+    /* DYNAMIC OVERRIDE: WHEN INSPIRATION TAB (2nd Tab) IS SELECTED */
+    /* Target the root when the 2nd tab (Inspiration) is active */
+    /* We look for the aria-selected="true" on the tab containing "IDEA ENGINE" */
+    
+    /* This complex selector checks if the tab list has the second tab selected */
+    /* Note: :has() support is required (Chrome/Edge/Safari/FF) */
+    body:has(div[data-baseweb="tab-list"] button:nth-of-type(2)[aria-selected="true"]) ::-webkit-scrollbar-thumb {
         background: linear-gradient(180deg, #8B4FA8 0%, #3A1545 100%) !important;
         border: 1px solid #2D0D35 !important;
     }
