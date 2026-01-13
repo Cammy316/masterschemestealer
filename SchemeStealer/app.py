@@ -1587,7 +1587,7 @@ with tab2:
     # === CUSTOM UPLOAD BOX ===
     st.markdown("""
     <div class="inspiration-upload-box">
-        <div class="upload-icon">🌌</div>
+        <div class="upload-icon">🌀</div>
         <div class="upload-main-text">CLICK TO UPLOAD</div>
         <div class="upload-sub-text">Drag and drop or click to open cosmic portal</div>
         <div class="upload-file-types">Any image • JPG, JPEG, PNG • Max 10MB</div>
