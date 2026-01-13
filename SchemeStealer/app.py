@@ -1166,7 +1166,7 @@ if 'tab' in st.query_params:
     elif tab_param == 'scanner':
         st.session_state.active_tab_index = 0
 # Tabs for Main Scan and Inspiration Mode
-tab1, tab2 = st.tabs(["⚙️ MINI SCANNER", "🌀 IDEA ENGINE"])
+tab1, tab2 = st.tabs(["⚙️ MINI SCANNER", "🌌 IDEA ENGINE"])
 
 # ============================================================================
 # TAB 1: AUSPEX SCAN (Miniature Scanner)
@@ -1668,7 +1668,7 @@ with tab2:
             text-transform: uppercase;
             letter-spacing: 4px;
         '>
-            🌀 IDEA ENGINE
+            🌌 IDEA ENGINE
         </h2>
         <p style='
             text-align: center; 
@@ -1695,7 +1695,7 @@ with tab2:
     
     st.markdown("""
     <div class="inspiration-upload-box">
-        <div class="upload-icon">🌌</div>
+        <div class="upload-icon">🌀</div>
         <div class="upload-main-text">CLICK TO UPLOAD</div>
         <div class="upload-sub-text">Drag and drop or click to open cosmic portal</div>
         <div class="upload-file-types">Any image • JPG, JPEG, PNG • Max 10MB</div>
@@ -1812,7 +1812,7 @@ with tab2:
                 # Custom Success Message for Purple Theme
                 st.markdown(f"""
                     <div class="inspiration-success-box">
-                        🌀 <b>IDEA ENGINE SYNCHRONISED</b><br>
+                        🎇 <b>IDEA ENGINE SYNCHRONISED</b><br>
                         {len(recipes)} pigment patterns extracted from visual data.
                     </div>
                 """, unsafe_allow_html=True)
