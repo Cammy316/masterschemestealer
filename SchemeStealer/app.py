@@ -1166,7 +1166,7 @@ if 'tab' in st.query_params:
     elif tab_param == 'scanner':
         st.session_state.active_tab_index = 0
 # Tabs for Main Scan and Inspiration Mode
-tab1, tab2 = st.tabs(["⚙️ MINI SCANNER", "🌌 IDEA ENGINE"])
+tab1, tab2 = st.tabs(["⚙️ MINI SCANNER", "🌀 IDEA ENGINE"])
 
 # ============================================================================
 # TAB 1: AUSPEX SCAN (Miniature Scanner)
