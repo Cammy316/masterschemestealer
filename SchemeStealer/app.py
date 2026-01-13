@@ -668,8 +668,10 @@ st.markdown("""
     @media (max-width: 768px) {
         /* Fix Title Wrapping */
         h1 {
-            font-size: 2.5rem !important; /* Make title smaller on mobile */
-            white-space: nowrap !important; /* Force single line */
+            font-size: 8vw !important; /* Scales with screen width (approx 30-35px) */
+            white-space: normal !important; /* Allow text to wrap naturally */
+            line-height: 1.2 !important; /* Prevent gaps if it wraps */
+            text-align: center !important;
         }
 
         .stButton>button {
@@ -685,6 +687,7 @@ st.markdown("""
             font-size: 1.8em !important;
         }
     }
+
     </style>
 """, unsafe_allow_html=True)
 
