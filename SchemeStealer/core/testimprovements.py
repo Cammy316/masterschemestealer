@@ -14,9 +14,9 @@ from pathlib import Path
 sys.path.append('/mnt/project')
 
 from core.base_detector import BaseDetector
-from core.color_engine import ColorAnalyzer
-from skimage import color
-import colorsys
+from core.colour_engine import ColourAnalyser
+from skimage import colour
+import coloursys
 
 
 def test_base_detector():
@@ -87,15 +87,15 @@ def test_gunmetal_detection():
     
     # Test Case A: Dark grey cloth (should be NON-metallic)
     dark_grey_cloth_rgb = np.array([[50, 50, 50]] * 100).astype(np.uint8)  # v=0.20, s=0.0
-    dark_grey_cloth_hsv = cv2.cvtColor(
+    dark_grey_cloth_hsv = cv2.cvtColour(
         dark_grey_cloth_rgb.reshape(-1, 1, 3), 
-        cv2.COLOR_RGB2HSV
+        cv2.COLOUR_RGB2HSV
     ).reshape(-1, 3).astype(float)
     dark_grey_cloth_hsv[:, 0] /= 180.0
     dark_grey_cloth_hsv[:, 1] /= 255.0
     dark_grey_cloth_hsv[:, 2] /= 255.0
     
-    result_cloth = ColorAnalyzer.detect_metallic(dark_grey_cloth_hsv, dark_grey_cloth_rgb)
+    result_cloth = ColourAnalyser.detect_metallic(dark_grey_cloth_hsv, dark_grey_cloth_rgb)
     
     print(f"\nTest A: Dark Grey Cloth")
     print(f"  RGB: {dark_grey_cloth_rgb[0]}")
@@ -113,9 +113,9 @@ def test_gunmetal_detection():
     # Test Case B: Actual gunmetal (should be metallic)
     # Leadbelcher hex: #888D8F -> RGB(136, 141, 143) -> v=0.56, s=0.05
     gunmetal_rgb = np.array([[136, 141, 143]] * 100).astype(np.uint8)
-    gunmetal_hsv = cv2.cvtColor(
+    gunmetal_hsv = cv2.cvtColour(
         gunmetal_rgb.reshape(-1, 1, 3),
-        cv2.COLOR_RGB2HSV
+        cv2.COLOUR_RGB2HSV
     ).reshape(-1, 3).astype(float)
     gunmetal_hsv[:, 0] /= 180.0
     gunmetal_hsv[:, 1] /= 255.0
@@ -126,15 +126,15 @@ def test_gunmetal_detection():
     gunmetal_rgb_varied[::2] = [160, 165, 167]  # Highlights
     gunmetal_rgb_varied[1::2] = [100, 105, 107]  # Shadows
     
-    gunmetal_hsv_varied = cv2.cvtColor(
+    gunmetal_hsv_varied = cv2.cvtColour(
         gunmetal_rgb_varied.reshape(-1, 1, 3),
-        cv2.COLOR_RGB2HSV
+        cv2.COLOUR_RGB2HSV
     ).reshape(-1, 3).astype(float)
     gunmetal_hsv_varied[:, 0] /= 180.0
     gunmetal_hsv_varied[:, 1] /= 255.0
     gunmetal_hsv_varied[:, 2] /= 255.0
     
-    result_gunmetal = ColorAnalyzer.detect_metallic(gunmetal_hsv_varied, gunmetal_rgb_varied)
+    result_gunmetal = ColourAnalyser.detect_metallic(gunmetal_hsv_varied, gunmetal_rgb_varied)
     
     print(f"\nTest B: Actual Gunmetal (Leadbelcher)")
     print(f"  RGB: {gunmetal_rgb[0]}")
@@ -161,11 +161,11 @@ def test_warm_metal_separation():
     
     # Test Case A: Gold (Retributor Armour hex: #C69843)
     gold_rgb = np.array([198, 152, 67]) / 255.0
-    gold_lab = color.rgb2lab(np.array([[gold_rgb]]))[0][0]
-    gold_hsv = np.array(colorsys.rgb_to_hsv(*gold_rgb))
+    gold_lab = colour.rgb2lab(np.array([[gold_rgb]]))[0][0]
+    gold_hsv = np.array(coloursys.rgb_to_hsv(*gold_rgb))
     gold_chroma = np.sqrt(gold_lab[1]**2 + gold_lab[2]**2)
     
-    family_gold, conf_gold = ColorAnalyzer.classify_color_family(
+    family_gold, conf_gold = ColourAnalyser.classify_colour_family(
         gold_hsv[0], gold_hsv[1], gold_hsv[2], 
         gold_chroma, is_metallic=True, lab=gold_lab
     )
@@ -185,11 +185,11 @@ def test_warm_metal_separation():
     
     # Test Case B: Bronze (Balthasar Gold hex: #784F33)
     bronze_rgb = np.array([120, 79, 51]) / 255.0
-    bronze_lab = color.rgb2lab(np.array([[bronze_rgb]]))[0][0]
-    bronze_hsv = np.array(colorsys.rgb_to_hsv(*bronze_rgb))
+    bronze_lab = colour.rgb2lab(np.array([[bronze_rgb]]))[0][0]
+    bronze_hsv = np.array(coloursys.rgb_to_hsv(*bronze_rgb))
     bronze_chroma = np.sqrt(bronze_lab[1]**2 + bronze_lab[2]**2)
     
-    family_bronze, conf_bronze = ColorAnalyzer.classify_color_family(
+    family_bronze, conf_bronze = ColourAnalyser.classify_colour_family(
         bronze_hsv[0], bronze_hsv[1], bronze_hsv[2],
         bronze_chroma, is_metallic=True, lab=bronze_lab
     )
@@ -208,11 +208,11 @@ def test_warm_metal_separation():
     
     # Test Case C: Brown leather (Leather Brown hex: #5E4231)
     brown_rgb = np.array([94, 66, 49]) / 255.0
-    brown_lab = color.rgb2lab(np.array([[brown_rgb]]))[0][0]
-    brown_hsv = np.array(colorsys.rgb_to_hsv(*brown_rgb))
+    brown_lab = colour.rgb2lab(np.array([[brown_rgb]]))[0][0]
+    brown_hsv = np.array(coloursys.rgb_to_hsv(*brown_rgb))
     brown_chroma = np.sqrt(brown_lab[1]**2 + brown_lab[2]**2)
     
-    family_brown, conf_brown = ColorAnalyzer.classify_color_family(
+    family_brown, conf_brown = ColourAnalyser.classify_colour_family(
         brown_hsv[0], brown_hsv[1], brown_hsv[2],
         brown_chroma, is_metallic=False, lab=brown_lab
     )
@@ -255,12 +255,12 @@ def test_texture_analysis():
     # Test Case A: Smooth flat paint (low edge density)
     smooth_img = np.ones((20, 20, 3), dtype=np.uint8) * 128  # Flat grey
     smooth_rgb = smooth_img.reshape(-1, 3)
-    smooth_hsv = cv2.cvtColor(smooth_img, cv2.COLOR_RGB2HSV).reshape(-1, 3).astype(float)
+    smooth_hsv = cv2.cvtColour(smooth_img, cv2.COLOUR_RGB2HSV).reshape(-1, 3).astype(float)
     smooth_hsv[:, 0] /= 180.0
     smooth_hsv[:, 1] /= 255.0
     smooth_hsv[:, 2] /= 255.0
     
-    result_smooth = ColorAnalyzer.detect_metallic(smooth_hsv, smooth_rgb)
+    result_smooth = ColourAnalyser.detect_metallic(smooth_hsv, smooth_rgb)
     
     print(f"\nTest A: Smooth Flat Paint")
     print(f"  Texture signal: {result_smooth['signals'].get('texture', False)}")
@@ -279,12 +279,12 @@ def test_texture_analysis():
     textured_img = np.clip(textured_img.astype(int) + noise, 0, 255).astype(np.uint8)
     
     textured_rgb = textured_img.reshape(-1, 3)
-    textured_hsv = cv2.cvtColor(textured_img, cv2.COLOR_RGB2HSV).reshape(-1, 3).astype(float)
+    textured_hsv = cv2.cvtColour(textured_img, cv2.COLOUR_RGB2HSV).reshape(-1, 3).astype(float)
     textured_hsv[:, 0] /= 180.0
     textured_hsv[:, 1] /= 255.0
     textured_hsv[:, 2] /= 255.0
     
-    result_textured = ColorAnalyzer.detect_metallic(textured_hsv, textured_rgb)
+    result_textured = ColourAnalyser.detect_metallic(textured_hsv, textured_rgb)
     
     print(f"\nTest B: Textured Metallic (with scratches)")
     print(f"  Texture signal: {result_textured['signals'].get('texture', False)}")

@@ -100,7 +100,7 @@ class ColorAnalyzer:
             elif v > 0.75: return ('Off-White/Bone', 0.85)
             elif v > 0.60: 
                 return ('Grey', 0.90)
-            elif v > 0.15: 
+            elif v > 0.08: 
                 return ('Gunmetal/Grey', 0.85) 
             else: return ('Black', 0.95)
 
@@ -326,10 +326,10 @@ class ColorAnalyzer:
 
 
 # ============================================================================
-# SHADE TYPE ANALYZER (unchanged)
+# SHADE TYPE ANALYSER (unchanged)
 # ============================================================================
 
-class ShadeTypeAnalyzer:
+class ShadeTypeAnalyser:
     """Determine wash vs paint for shading"""
     
     @staticmethod
