@@ -1668,7 +1668,7 @@ with tab2:
             text-transform: uppercase;
             letter-spacing: 4px;
         '>
-            🌌 IDEA ENGINE
+            🌀 IDEA ENGINE
         </h2>
         <p style='
             text-align: center; 
@@ -1812,7 +1812,7 @@ with tab2:
                 # Custom Success Message for Purple Theme
                 st.markdown(f"""
                     <div class="inspiration-success-box">
-                        ✅ <b>IDEA ENGINE synchronised</b><br>
+                        🌀 <b>IDEA ENGINE SYNCHRONISED</b><br>
                         {len(recipes)} pigment patterns extracted from visual data.
                     </div>
                 """, unsafe_allow_html=True)
