@@ -1812,7 +1812,7 @@ with tab2:
                 # Custom Success Message for Purple Theme
                 st.markdown(f"""
                     <div class="inspiration-success-box">
-                        🎇 <b>IDEA ENGINE SYNCHRONISED</b><br>
+                        🤖 <b>IDEA ENGINE SYNCHRONISED</b><br>
                         {len(recipes)} pigment patterns extracted from visual data.
                     </div>
                 """, unsafe_allow_html=True)
