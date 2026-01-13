@@ -429,6 +429,70 @@ st.markdown("""
             padding: 4px 8px !important;
         }
     }
+    @media (max-width: 640px) {
+    .stButton>button, 
+    .stDownloadButton>button, 
+    .stLinkButton>a,
+    div[data-testid="stPopover"] > button {
+        font-size: 14px !important;
+        letter-spacing: 0.5px !important;
+        min-height: 64px !important;
+        padding: 4px 8px !important;
+        white-space: normal !important;  /* Allow wrapping */
+        line-height: 1.3 !important;  /* Tighter line spacing */
+        word-break: break-word !important;  /* Break long words */
+    }
+    
+    /* Make titles responsive */
+    h1, [data-testid="stHeader"] h1 {
+        font-size: clamp(1.5rem, 8vw, 2.5rem) !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+    
+    h2 {
+        font-size: clamp(1.2rem, 6vw, 1.8rem) !important;
+    }
+    
+    h3 {
+        font-size: clamp(1rem, 5vw, 1.5rem) !important;
+    }
+    
+    /* Prevent expander text wrapping issues */
+    .streamlit-expanderHeader {
+        white-space: normal !important;
+        word-wrap: break-word !important;
+    }
+    
+    /* Make sure metrics don't overflow */
+    [data-testid="stMetricValue"] {
+        font-size: clamp(1rem, 5vw, 1.5rem) !important;
+    }
+    
+    /* Reduce padding on small screens */
+    .block-container {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+}
+
+/* Extra small screens (iPhone SE, etc) */
+@media (max-width: 375px) {
+    .stButton>button {
+        font-size: 12px !important;
+        padding: 6px 4px !important;
+        min-height: 56px !important;
+    }
+    
+    h1 {
+        font-size: 1.3rem !important;
+    }
+    
+    h2 {
+        font-size: 1.1rem !important;
+    }
+}        
 
 
     /* ========================================================================
@@ -642,26 +706,33 @@ st.markdown("""
     .auspex-upload-box .upload-main-text {
         color: #6B9F3E;
         font-family: 'Share Tech Mono', monospace;
-        font-size: 1.4em;
+        font-size: clamp(1rem, 4vw, 1.4em);  /* ← ADDED: Responsive */
         font-weight: bold;
         text-transform: uppercase;
-        letter-spacing: 3px;
+        letter-spacing: clamp(1px, 0.5vw, 3px);  /* ← ADDED: Responsive */
         margin-bottom: 12px;
         text-shadow: 0 0 8px rgba(107, 159, 62, 0.3);
+        white-space: normal;  /* ← ADDED: Allow wrapping */
+        text-align: center;  /* ← ADDED: Center text */
+        word-break: break-word;  /* ← ADDED: Break long words */
     }
 
     .auspex-upload-box .upload-sub-text {
         color: #8FD14F;
         font-family: 'Share Tech Mono', monospace;
-        font-size: 1em;
-        letter-spacing: 1px;
+        font-size: clamp(0.75rem, 3vw, 1em);  /* ← ADDED: Responsive */
+        letter-spacing: clamp(0.5px, 0.3vw, 1px);  /* ← ADDED: Responsive */
+        white-space: normal;  /* ← ADDED: Allow wrapping */
+        text-align: center;  /* ← ADDED: Center text */
     }
 
     .auspex-upload-box .upload-file-types {
         color: #6B7C5F;
         font-family: 'Share Tech Mono', monospace;
-        font-size: 0.85em;
+        font-size: clamp(0.7rem, 2.5vw, 0.85em);  /* ← ADDED: Responsive */
         margin-top: 10px;
+        white-space: normal;  /* ← ADDED: Allow wrapping */
+        text-align: center;  /* ← ADDED: Center text */
     }
 
     /* === INSPIRATION UPLOAD BOX === */
@@ -691,26 +762,33 @@ st.markdown("""
     .inspiration-upload-box .upload-main-text {
         color: #A97BC4;
         font-family: 'Raleway', sans-serif;
-        font-size: 1.4em;
+        font-size: clamp(1rem, 4vw, 1.4em);  /* ← ADDED: Responsive */
         font-weight: 600;
-        letter-spacing: 2px;
+        letter-spacing: clamp(1px, 0.5vw, 2px);  /* ← ADDED: Responsive */
         margin-bottom: 12px;
         text-shadow: 0 0 10px rgba(169, 123, 196, 0.3);
+        white-space: normal;  /* ← ADDED: Allow wrapping */
+        text-align: center;  /* ← ADDED: Center text */
+        word-break: break-word;  /* ← ADDED: Break long words */
     }
 
     .inspiration-upload-box .upload-sub-text {
         color: #D4A5FF;
         font-family: 'Raleway', sans-serif;
-        font-size: 1em;
-        letter-spacing: 0.5px;
+        font-size: clamp(0.75rem, 3vw, 1em);  /* ← ADDED: Responsive */
+        letter-spacing: clamp(0.3px, 0.2vw, 0.5px);  /* ← ADDED: Responsive */
         font-weight: 300;
+        white-space: normal;  /* ← ADDED: Allow wrapping */
+        text-align: center;  /* ← ADDED: Center text */
     }
 
     .inspiration-upload-box .upload-file-types {
         color: #8B7E8B;
         font-family: 'Raleway', sans-serif;
-        font-size: 0.85em;
+        font-size: clamp(0.7rem, 2.5vw, 0.85em);  /* ← ADDED: Responsive */
         margin-top: 10px;
+        white-space: normal;  /* ← ADDED: Allow wrapping */
+        text-align: center;  /* ← ADDED: Center text */
     }
 
     /* === STREAMLIT FILE UPLOADER OVERLAY (STRICTLY SCOPED) === */
@@ -1002,7 +1080,23 @@ st.components.v1.html(
 # HEADER
 # ============================================================================
 
-st.title(f"{APP_ICON} {APP_NAME}")
+# Mobile-responsive title with text scaling
+st.markdown(f"""
+<h1 style='
+    font-family: "Cinzel", serif;
+    font-size: clamp(1.5rem, 8vw, 2.5rem);  /* Responsive sizing */
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 0;
+    padding: 0.5rem 0;
+    white-space: nowrap;  /* Prevent wrapping */
+    overflow: hidden;
+    text-overflow: ellipsis;  /* Add ... if too long */
+'>
+    {APP_ICON} {APP_NAME}
+</h1>
+""", unsafe_allow_html=True)
 st.caption(f"v{APP_VERSION} // M42 Pattern Paint Cogitator")
 
 # ============================================================================
@@ -1316,7 +1410,28 @@ with tab1:
                                 text_color = '#000' if brightness > 128 else '#fff'
                                 # Reduced glow effect for clarity (text-shadow: 0 0 1px)
                                 text_shadow = '#fff' if brightness < 128 else '#000'
-                                palette_html += f"<div style='flex: 1; background: {colour_css}; display: flex; flex-direction: column; align-items: center; justify-content: center; color: {text_color}; text-shadow: 0 0 1px {text_shadow}; padding: 4px; border-right: 1px solid rgba(0,0,0,0.2); font-family: \"Share Tech Mono\", monospace; transition: all 0.2s; cursor: pointer;' onmouseover='this.style.flex=\"1.5\";' onmouseout='this.style.flex=\"1\";'><div style='font-size: 1.1em; font-weight: bold;'>{recipe['dominance']:.0f}%</div><div style='font-size: 0.7em; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 100%;'>{recipe['family']}</div></div>"
+                                palette_html += f"""<div style='
+                                    flex: 1; 
+                                    background: {colour_css}; 
+                                    display: flex; 
+                                    flex-direction: column; 
+                                    align-items: center; 
+                                    justify-content: center; 
+                                    color: {text_color}; 
+                                    text-shadow: 0 0 1px {text_shadow}; 
+                                    padding: 4px; 
+                                    border-right: 1px solid rgba(0,0,0,0.2); 
+                                    font-family: "Share Tech Mono", monospace; 
+                                    transition: all 0.2s; 
+                                    cursor: pointer;
+                                    min-width: 40px;  /* Prevent too narrow on mobile */
+                                    font-size: clamp(0.7rem, 2vw, 0.9rem);  /* Responsive font */
+                                ' 
+                                onmouseover='this.style.flex="1.5";' 
+                                onmouseout='this.style.flex="1";'>
+                                    <div style='font-size: 1.1em; font-weight: bold;'>{recipe['dominance']:.0f}%</div>
+                                    <div style='font-size: 0.7em; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 100%;'>{recipe['family']}</div>
+                                </div>"""
                             palette_html += "</div>"
                             st.markdown(palette_html, unsafe_allow_html=True)
                             
@@ -1554,7 +1669,7 @@ with tab2:
     
     st.markdown("""
     <div class="inspiration-upload-box">
-        <div class="upload-icon">🌀</div>
+        <div class="upload-icon">🌌</div>
         <div class="upload-main-text">CLICK TO UPLOAD</div>
         <div class="upload-sub-text">Drag and drop or click to open cosmic portal</div>
         <div class="upload-file-types">Any image • JPG, JPEG, PNG • Max 10MB</div>
@@ -1592,13 +1707,15 @@ with tab2:
             def source_type_selector():
                 """Fragment to prevent selectbox from triggering full rerun"""
                 return st.selectbox(
-                "Image Type:", 
-                ["🌅 Landscape/Nature", "🎨 Artwork/Painting", "🎬 Movie/Game Screenshot", 
-                "🏛️ Architecture", "🦋 Animal/Creature", "🍕 Food", "🌸 Flowers/Plants", 
-                "📸 Photography", "🎮 Other"], 
-                index=0, 
-                key="inspiration_source_type_select"
-            )
+                    "Image Type:", 
+                    ["🌅 Landscape/Nature", "🎨 Artwork/Painting", "🎬 Movie/Game Screenshot", 
+                    "🏛️ Architecture", "🦋 Animal/Creature", "🍕 Food", "🌸 Flowers/Plants", 
+                    "📸 Photography", "🎮 Other"], 
+                    index=0, 
+                    key="inspiration_source_type_select"
+                )
+            
+            source_type = source_type_selector()
             
             st.markdown("---")
             st.markdown('<div class="inspiration-tab-content"><div class="inspiration-action-button">', unsafe_allow_html=True)
