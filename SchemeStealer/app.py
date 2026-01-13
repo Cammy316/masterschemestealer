@@ -1230,13 +1230,20 @@ with tab1:
     </div>
     """, unsafe_allow_html=True)
 
+    # Define a callback to handle upload state
+    def handle_auspex_upload():
+        """Callback to lock in the file upload before state reset"""
+        pass
+
     uploaded_file = st.file_uploader(
         "Upload Miniature",
         type=["jpg", "jpeg", "png"],
         key="uploader_auspex",
         help="Upload miniature for analysis",
-        label_visibility="collapsed"
+        label_visibility="collapsed",
+        on_change=handle_auspex_upload  # <--- CRITICAL ADDITION
     )
+
 
     if uploaded_file is not None:
         st.session_state.first_visit = False
