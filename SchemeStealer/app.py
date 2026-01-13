@@ -427,72 +427,75 @@ st.markdown("""
             letter-spacing: 0.5px !important;
             min-height: 64px !important;   /* Taller touch target/wrapping room */
             padding: 4px 8px !important;
+            white-space: normal !important;  /* Allow wrapping */
+            line-height: 1.3 !important;  /* Tighter line spacing */
+            word-break: break-word !important;  /* Break long words */
+        }
+        
+        /* Make titles responsive - ADAPTIVE SINGLE LINE */
+        h1, [data-testid="stHeader"] h1 {
+            /* Force single line, but shrink font aggressively to fit */
+            white-space: nowrap !important;
+            overflow: visible !important;
+            font-size: clamp(1.0rem, 5.5vw, 2.5rem) !important; /* Aggressive shrink */
+        }
+        
+        h2 {
+            font-size: clamp(1.2rem, 6vw, 1.8rem) !important;
+        }
+        
+        h3 {
+            font-size: clamp(1rem, 5vw, 1.5rem) !important;
+        }
+        
+        /* Prevent expander text wrapping issues */
+        .streamlit-expanderHeader {
+            white-space: normal !important;
+            word-wrap: break-word !important;
+        }
+        
+        /* Make sure metrics don't overflow */
+        [data-testid="stMetricValue"] {
+            font-size: clamp(1rem, 5vw, 1.5rem) !important;
+        }
+        
+        /* Reduce padding on small screens */
+        .block-container {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+        
+        /* Fix Upload Box Padding on Mobile */
+        .auspex-upload-box, 
+        .inspiration-upload-box {
+            padding: 1.5rem 1rem !important; /* Reduced padding for mobile centering */
+            min-height: 180px !important;
+        }
+        
+        .auspex-upload-box .upload-main-text,
+        .inspiration-upload-box .upload-main-text {
+            font-size: 1.1rem !important;
+            width: 100% !important;
+            text-align: center !important;
         }
     }
-    @media (max-width: 640px) {
-    .stButton>button, 
-    .stDownloadButton>button, 
-    .stLinkButton>a,
-    div[data-testid="stPopover"] > button {
-        font-size: 14px !important;
-        letter-spacing: 0.5px !important;
-        min-height: 64px !important;
-        padding: 4px 8px !important;
-        white-space: normal !important;  /* Allow wrapping */
-        line-height: 1.3 !important;  /* Tighter line spacing */
-        word-break: break-word !important;  /* Break long words */
-    }
-    
-    /* Make titles responsive */
-    h1, [data-testid="stHeader"] h1 {
-        font-size: clamp(1.5rem, 8vw, 2.5rem) !important;
-        white-space: nowrap !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-    }
-    
-    h2 {
-        font-size: clamp(1.2rem, 6vw, 1.8rem) !important;
-    }
-    
-    h3 {
-        font-size: clamp(1rem, 5vw, 1.5rem) !important;
-    }
-    
-    /* Prevent expander text wrapping issues */
-    .streamlit-expanderHeader {
-        white-space: normal !important;
-        word-wrap: break-word !important;
-    }
-    
-    /* Make sure metrics don't overflow */
-    [data-testid="stMetricValue"] {
-        font-size: clamp(1rem, 5vw, 1.5rem) !important;
-    }
-    
-    /* Reduce padding on small screens */
-    .block-container {
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
-    }
-}
 
-/* Extra small screens (iPhone SE, etc) */
-@media (max-width: 375px) {
-    .stButton>button {
-        font-size: 12px !important;
-        padding: 6px 4px !important;
-        min-height: 56px !important;
-    }
-    
-    h1 {
-        font-size: 1.3rem !important;
-    }
-    
-    h2 {
-        font-size: 1.1rem !important;
-    }
-}        
+    /* Extra small screens (iPhone SE, etc) */
+    @media (max-width: 375px) {
+        .stButton>button {
+            font-size: 12px !important;
+            padding: 6px 4px !important;
+            min-height: 56px !important;
+        }
+        
+        h1 {
+            font-size: 1.1rem !important;
+        }
+        
+        h2 {
+            font-size: 1.0rem !important;
+        }
+    }        
 
 
     /* ========================================================================
@@ -1080,24 +1083,34 @@ st.components.v1.html(
 # HEADER
 # ============================================================================
 
-# Mobile-responsive title with text scaling
+# Mobile-responsive title with text scaling (UPDATED FOR NO WRAPPING AND CENTERING)
 st.markdown(f"""
 <h1 style='
     font-family: "Cinzel", serif;
-    font-size: clamp(1.5rem, 8vw, 2.5rem);  /* Responsive sizing */
+    font-size: clamp(1.2rem, 5.5vw, 2.5rem);  /* Aggressive scaling */
     text-align: center;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     margin: 0;
     padding: 0.5rem 0;
-    white-space: nowrap;  /* Prevent wrapping */
-    overflow: hidden;
-    text-overflow: ellipsis;  /* Add ... if too long */
+    white-space: nowrap;  /* Force single line */
+    overflow: visible;    /* Prevent clipping */
+    line-height: 1.2;
+    width: 100%;
 '>
     {APP_ICON} {APP_NAME}
 </h1>
+<div style='
+    text-align: center; 
+    width: 100%; 
+    font-size: clamp(0.7rem, 2.5vw, 1rem);
+    color: #888;
+    margin-top: -5px;
+    font-family: "Share Tech Mono", monospace;
+'>
+    v{APP_VERSION} // M42 Pattern Paint Cogitator
+</div>
 """, unsafe_allow_html=True)
-st.caption(f"v{APP_VERSION} // M42 Pattern Paint Cogitator")
 
 # ============================================================================
 # HELPER FUNCTIONS
