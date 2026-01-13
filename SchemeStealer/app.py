@@ -252,13 +252,15 @@ st.markdown("""
     @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600&display=swap');
 
     /* ========================================================================
-       1. THE COGITATOR SCROLLBAR (GLOBAL)
+       1. THE COGITATOR SCROLLBAR (GLOBAL & DYNAMIC)
        ======================================================================== */
     ::-webkit-scrollbar {
         width: 10px;
         height: 10px;
         background: #0e0e0e;
     }
+    
+    /* DEFAULT (AUSPEX) GREEN SCROLLBAR */
     ::-webkit-scrollbar-thumb {
         background: linear-gradient(180deg, #4A7C2C 0%, #1a2e1a 100%);
         border-radius: 5px;
@@ -270,6 +272,14 @@ st.markdown("""
     }
     ::-webkit-scrollbar-corner {
         background: #000;
+    }
+
+    /* DYNAMIC OVERRIDE: WHEN INSPIRATION TAB (2nd Tab) IS SELECTED 
+       We use :has() to detect if the 2nd button in the tablist is aria-selected="true"
+    */
+    :root:has(div[role="tablist"] button:nth-of-type(2)[aria-selected="true"]) ::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #8B4FA8 0%, #3A1545 100%) !important;
+        border: 1px solid #2D0D35 !important;
     }
     
     /* ========================================================================
