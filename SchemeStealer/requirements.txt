@@ -1,13 +1,14 @@
 # SchemeStealer v2.6 - Enhanced ML Logging
 # Core Dependencies
-streamlit==1.52.2
-opencv-python-headless==4.9.0.80
-numpy==1.26.3
-scikit-learn==1.4.0
+streamlit==1.31.0
+opencv-python-headless
+numpy
+scikit-learn
 scikit-image==0.22.0
 rembg==2.0.56
 pillow==10.2.0
 scipy==1.12.0
+colormath>=3.0.0
 
 # Google Sheets Integration
 gspread==5.12.0 
