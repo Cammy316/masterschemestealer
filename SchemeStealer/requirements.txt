@@ -1,6 +1,6 @@
 # SchemeStealer v2.6 - Enhanced ML Logging
 # Core Dependencies
-streamlit==1.31.0
+streamlit
 opencv-python-headless
 numpy
 scikit-learn
