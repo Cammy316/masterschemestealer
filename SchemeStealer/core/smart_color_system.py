@@ -1,8 +1,7 @@
 """
-Smart Perceptual Color Clustering System
+Smart Perceptual Color Clustering System - FINAL VERSION WITH ALL FIXES
 No more HSV threshold hell - uses perceptual science instead
 """
-
 import numpy as np
 import cv2
 from sklearn.cluster import DBSCAN, KMeans
@@ -17,19 +16,21 @@ from utils.logging_config import logger
 class SmartColorExtractor:
     """
     Intelligent color extraction that adapts to each image
-    No hardcoded thresholds - uses perceptual clustering
+    WITH COMPLETE FIX SUITE FOR WARHAMMER MINIATURES
     """
     
     def __init__(self):
-        self.min_cluster_size = 0.03  # 3% minimum (adaptive)
-        self.detail_threshold = 0.05  # 5% maximum for details
+        self.min_cluster_size = 0.03
+        self.detail_threshold = 0.05
+        
+        # Configurable thresholds
+        self.SHADOW_V_THRESHOLD = 0.10
+        self.GOLD_CHROMA_THRESHOLD = 22
+        self.DETAIL_BASE_THRESHOLD = 3.0
     
     def extract_colors(self, img_rgb: np.ndarray, mask: np.ndarray) -> List[Dict]:
-        """
-        Main extraction pipeline - fully adaptive
-        Returns both major colors and details in one pass
-        """
-        logger.info("Starting smart color extraction")
+        """Main extraction pipeline - fully adaptive"""
+        logger.info("Starting smart color extraction (FINAL VERSION)")
         
         # Get valid pixels
         pixels_rgb = img_rgb[mask]
@@ -44,8 +45,8 @@ class SmartColorExtractor:
             pixels_rgb.reshape(-1, 1, 3) / 255.0
         ).reshape(-1, 3)
         
-        # ===== STEP 1: Initial clustering in LAB space =====
-        n_initial_clusters = 10
+        # STEP 1: Initial clustering in LAB space
+        n_initial_clusters = self._determine_optimal_k(n_pixels)
         logger.info(f"Initial clustering into {n_initial_clusters} clusters...")
         
         kmeans = KMeans(n_clusters=n_initial_clusters, n_init=10, random_state=42)
@@ -57,7 +58,7 @@ class SmartColorExtractor:
             size = np.sum(cluster_mask)
             coverage = (size / n_pixels) * 100
             
-            if size < 10:  # Skip tiny clusters
+            if size < 10:
                 continue
             
             cluster_pixels_rgb = pixels_rgb[cluster_mask]
@@ -85,55 +86,87 @@ class SmartColorExtractor:
                 'pixel_indices': np.where(cluster_mask)[0]
             })
         
-        # ===== STEP 2: Perceptual merging =====
+        # STEP 2: Perceptual merging
         merged_clusters = self._merge_perceptually_similar(initial_clusters, pixels_lab)
         
-        # ===== STEP 3: Classify Families FIRST (Before splitting detail/major) =====
-        # We classify early so we can deduplicate based on names
+        # STEP 3: Classify Families WITH spatial shadow detection
         for cluster in merged_clusters:
-            family = self._classify_family_ensemble(cluster)
-            cluster['family'] = family
+            if self._is_likely_shadow(cluster, merged_clusters):
+                cluster['family'] = "Shadow"
+                cluster['confidence'] = 0.30
+                logger.info(f"Cluster marked as shadow: coverage={cluster['coverage']:.1f}%")
+            else:
+                family, confidence = self._classify_family_ensemble_weighted(cluster, merged_clusters)
+                cluster['family'] = family
+                cluster['confidence'] = confidence
         
-        # ===== STEP 4: Deduplicate Families =====
-        # This merges "Red" + "Red" into a single "Red" cluster using robust dict grouping
+        # Filter out shadows
+        merged_clusters = [c for c in merged_clusters if c['family'] != "Shadow"]
+        logger.info(f"After shadow filtering: {len(merged_clusters)} clusters remain")
+        
+        # STEP 4: Deduplicate Families
         deduplicated_clusters = self._deduplicate_by_family(merged_clusters)
         
-        # ===== STEP 5: Classify Major vs Detail =====
+        # STEP 5: Classify Major vs Detail WITH confidence filtering
         major_colors = []
         detail_colors = []
         
         for cluster in deduplicated_clusters:
             coverage = cluster['coverage']
+            cluster_chroma = cluster.get('chroma', 0)
+            confidence = cluster.get('confidence', 1.0)
             
-            # Revised Threshold Logic
+            # Filter very low confidence
+            if confidence < 0.20:
+                logger.info(f"Filtering low confidence: {cluster['family']} (conf={confidence:.2f})")
+                continue
+            
+            # Adaptive threshold
             num_colors = len(deduplicated_clusters)
             if num_colors <= 3:
-                base_threshold = 3.0 # Few colors -> lower bar (3%)
+                base_threshold = 2.0
             else:
-                base_threshold = 5.0 # Normal -> standard bar (5%)
-                
+                base_threshold = self.DETAIL_BASE_THRESHOLD
+            
+            # High-chroma details
+            if cluster_chroma > 40:
+                base_threshold = 1.5
+                logger.debug(f"High-chroma detail: chroma={cluster_chroma:.1f}")
+            
             if coverage >= base_threshold:
                 cluster['is_detail'] = False
                 major_colors.append(cluster)
-            elif coverage >= 0.2:  # Min detail size (0.2%)
+            elif coverage >= 0.2:
+                cluster['is_detail'] = True
+                if self._is_unique_from_majors(cluster, major_colors):
+                    detail_colors.append(cluster)
+            elif coverage >= 0.5 and cluster_chroma > 50:
+                logger.info(f"Preserving micro-detail: {cluster['family']} ({coverage:.1f}%)")
                 cluster['is_detail'] = True
                 if self._is_unique_from_majors(cluster, major_colors):
                     detail_colors.append(cluster)
         
         logger.info(f"Final: {len(major_colors)} major + {len(detail_colors)} details")
         for c in major_colors + detail_colors:
-             logger.info(f"  {c['family']}: {c['coverage']:.1f}% (detail={c.get('is_detail', False)})")
+             logger.info(f"  {c['family']}: {c['coverage']:.1f}% (conf={c.get('confidence', 1.0):.2f})")
 
         return major_colors + detail_colors
-
+    
+    def _determine_optimal_k(self, n_pixels: int) -> int:
+        """Adaptive K based on image complexity"""
+        if n_pixels < 5000:
+            return 8
+        elif n_pixels < 20000:
+            return 10
+        elif n_pixels < 50000:
+            return 12
+        else:
+            return 15
+    
     def _deduplicate_by_family(self, clusters: List[Dict]) -> List[Dict]:
-        """
-        Merge clusters that share the exact same family name.
-        Uses dictionary grouping for guaranteed merging.
-        """
+        """Merge clusters that share the exact same family name"""
         if not clusters: return []
         
-        # Group clusters by their family name
         groups = {}
         for c in clusters:
             fam = c['family']
@@ -147,17 +180,17 @@ class SmartColorExtractor:
             if len(group) == 1:
                 final_clusters.append(group[0])
             else:
-                # We have duplicates! Merge them.
                 logger.info(f"Deduplicating {len(group)} clusters of family '{fam}'")
                 combined = self._combine_clusters(group)
-                combined['family'] = fam  # Ensure name persists
+                combined['family'] = fam
+                combined['confidence'] = np.mean([c.get('confidence', 1.0) for c in group])
                 final_clusters.append(combined)
-                
-        # Sort by size descending
+        
         final_clusters.sort(key=lambda x: x['coverage'], reverse=True)
         return final_clusters
 
     def _merge_perceptually_similar(self, clusters: List[Dict], pixels_lab: np.ndarray) -> List[Dict]:
+        """Merge perceptually similar clusters using deltaE"""
         if len(clusters) <= 1: return clusters
         
         n = len(clusters)
@@ -196,6 +229,7 @@ class SmartColorExtractor:
         return merged
     
     def _combine_clusters(self, clusters: List[Dict]) -> Dict:
+        """Combine multiple clusters into one"""
         total_coverage = sum(c['coverage'] for c in clusters)
         weights = np.array([c['coverage'] for c in clusters])
         weights = weights / weights.sum()
@@ -216,17 +250,67 @@ class SmartColorExtractor:
         }
     
     def _is_unique_from_majors(self, detail: Dict, majors: List[Dict]) -> bool:
+        """Chroma-aware uniqueness checking"""
         if not majors: return True
         detail_lab = detail['median_lab']
+        detail_chroma = detail.get('chroma', 0)
         
         for major in majors:
             major_lab = major['median_lab']
-            dist = color.deltaE_ciede2000(np.array([[detail_lab]]), np.array([[major_lab]]))[0][0]
-            threshold = 20.0 - (detail['coverage'] * 2)
-            if dist < threshold: return False
+            dist = color.deltaE_ciede2000(
+                np.array([[detail_lab]]), 
+                np.array([[major_lab]])
+            )[0][0]
+            
+            # Chroma-aware threshold
+            if detail_chroma > 40:
+                threshold = 25.0
+            elif detail_chroma > 25:
+                threshold = 20.0
+            else:
+                threshold = 15.0
+            
+            threshold -= (detail['coverage'] * 1.5)
+            threshold = max(threshold, 10.0)
+            
+            if dist < threshold: 
+                return False
         return True
     
-    def _classify_family_ensemble(self, cluster: Dict) -> str:
+    def _is_likely_shadow(self, cluster: Dict, all_clusters: List[Dict]) -> bool:
+        """Detect if a dark cluster is likely a shadow"""
+        coverage = cluster['coverage']
+        hsv = cluster['median_hsv']
+        v = hsv[2]
+        
+        if coverage > 5.0:
+            return False
+        
+        if v > 0.20 or v < 0.05:
+            return False
+        
+        cluster_lab = cluster['median_lab']
+        
+        for other in all_clusters:
+            if other == cluster:
+                continue
+            
+            other_lab = other['median_lab']
+            other_v = other['median_hsv'][2]
+            
+            deltaE = color.deltaE_ciede2000(
+                np.array([[cluster_lab]]), 
+                np.array([[other_lab]])
+            )[0][0]
+            
+            if deltaE < 40 and other_v > v + 0.20:
+                logger.info(f"Shadow detected: similar to {other.get('family', 'unknown')}")
+                return True
+        
+        return False
+    
+    def _classify_family_ensemble_weighted(self, cluster: Dict, all_clusters: List[Dict] = None) -> Tuple[str, float]:
+        """Weighted ensemble voting - LAB is most reliable"""
         hsv = cluster['median_hsv']
         chroma = cluster['chroma']
         lab = cluster['median_lab']
@@ -234,62 +318,232 @@ class SmartColorExtractor:
         s, v = hsv[1], hsv[2]
         
         votes = []
-        votes.append(self._classify_by_hue(h_deg, s, v, chroma))
-        votes.append(self._classify_by_lab_quadrant(lab, v))
-        votes.append(self._classify_by_nearest_named_color(cluster['median_rgb']))
+        
+        # Vote 1: HSV-based (weighted by saturation)
+        hue_vote = self._classify_by_hue(h_deg, s, v, chroma)
+        hue_weight = int((s * 20) if s > 0.2 else 5)
+        votes.extend([hue_vote] * hue_weight)
+        
+        # Vote 2: LAB-based (always highly weighted)
+        lab_vote = self._classify_by_lab_quadrant(lab, v)
+        lab_weight = 30
+        votes.extend([lab_vote] * lab_weight)
+        
+        # Vote 3: Named color (moderate weight)
+        named_vote = self._classify_by_nearest_named_color(cluster['median_rgb'])
+        named_weight = 10
+        votes.extend([named_vote] * named_weight)
         
         from collections import Counter
         vote_counts = Counter(votes)
+        winner, count = vote_counts.most_common(1)[0]
+        confidence = count / len(votes)
         
-        # Priority check: If any method voted "Blue" and the result is "Grey",
-        # check if it's a desaturated blue case.
-        if "Blue" in votes and vote_counts.most_common(1)[0][0] == "Grey":
-             # Force Blue if saturation is decent (e.g. > 5% for pale blue hair)
-             if s > 0.05: return "Blue"
-
-        return vote_counts.most_common(1)[0][0]
+        # Special case: Blue detection
+        if "Blue" in votes and winner == "Grey" and s > 0.05:
+            return "Blue", 0.70
+        
+        logger.debug(f"Ensemble: {winner} (conf={confidence:.2f})")
+        
+        return winner, confidence
     
     def _classify_by_hue(self, h_deg: float, s: float, v: float, chroma: float) -> str:
-        # 1. Achromatic Check with Blue exception
+        """
+        HSV-based classification with COMPLETE FIX SUITE
+        ALL 7 COLOR FAMILY EXCEPTIONS APPLIED
+        """
+        # Define all special hue ranges
         is_blue_range = 180 < h_deg < 260
-        min_sat = 0.05 if is_blue_range else 0.10
+        is_green_range = 70 < h_deg < 170
+        is_purple_range = 270 < h_deg < 320
         
-        if s < min_sat or chroma < 5: 
+        # Adjust minimum saturation for families that desaturate easily
+        if is_blue_range or is_green_range or is_purple_range:
+            min_sat = 0.05
+        else:
+            min_sat = 0.10
+        
+        # ===== ACHROMATIC CHECK WITH ALL EXCEPTIONS =====
+        if s < min_sat or chroma < 5:
+            # EXCEPTION 1: Desaturated blues (Ultramarines, Space Wolves)
+            if is_blue_range and s > 0.05 and chroma > 3:
+                return "Blue"
+            
+            # EXCEPTION 2: Desaturated greens (Dark Angels, Salamanders, Death Guard, Orks)
+            if is_green_range and s > 0.06 and chroma > 4:
+                return "Green"
+            
+            # EXCEPTION 3: Desaturated purples (Emperor's Children, Drukhari)
+            if is_purple_range and s > 0.05 and chroma > 3:
+                return "Purple"
+            
+            # Standard achromatic
             if v > 0.90: return "White"
-            elif v < 0.15: return "Black"
+            elif v < self.SHADOW_V_THRESHOLD: return "Black"
+            elif v < 0.20 and chroma < 3: return "Shadow"
             else: return "Grey"
         
-        # 2. Chromatic Logic
+        # ===== CHROMATIC CLASSIFICATION =====
+        
+        # RED ZONE (0-30° and 330-360°)
         if h_deg < 30 or h_deg > 330:
-            # IMPROVED: Red vs Leather Brown separation
-            if h_deg < 20 and s < 0.6 and v < 0.4: return "Brown" # Leather range
-            if s < 0.5 and v > 0.8: return "Pink" # Pastel Pink
-            if h_deg > 300: return "Magenta"      # Deep Pink/Magenta
-            return "Red"                          # Standard Red
+            # Warm gold detection (20-30°)
+            if 20 < h_deg < 30 and v > 0.50 and chroma > 25 and s > 0.40:
+                return "Gold"
             
+            # Red vs Brown - USE CHROMA (FIX #8)
+            if h_deg < 20:
+                if chroma < 15:
+                    return "Brown"  # Low chroma = brown (leather)
+                elif s < 0.6 and v < 0.4:
+                    return "Brown"  # Dark desaturated = brown
+                else:
+                    return "Red"  # High chroma = dark red (Blood Angels)
+            
+            # Pink detection - RELAXED (FIX #7)
+            if s > 0.35 and v > 0.55:
+                return "Pink"
+            elif s < 0.5 and v > 0.8:
+                return "Pink"
+            
+            # Magenta
+            if h_deg > 300:
+                return "Magenta"
+            
+            return "Red"
+        
+        # GOLD/BRONZE/BROWN ZONE (30-70°)
         elif h_deg < 70:
-            return "Gold" if chroma > 30 else "Brown"
-        elif h_deg < 160:
-            return "Green"
-        elif h_deg < 250:
+            # Improved gold detection
+            if chroma > self.GOLD_CHROMA_THRESHOLD and v > 0.45 and s > 0.35:
+                if v > 0.70 and s > 0.60:
+                    return "Gold"
+                elif v > 0.50:
+                    return "Gold"
+                else:
+                    return "Bronze"
+            else:
+                return "Brown"
+        
+        # YELLOW ZONE (70-95°) - EXPANDED (FIX #9)
+        elif h_deg < 95:
+            if s > 0.50 and v > 0.65:
+                return "Yellow"
+            elif s > 0.30 and v > 0.75:
+                return "Yellow"  # Pale yellow
+            else:
+                return "Bone"
+        
+        # GREEN ZONE (95-170°)
+        elif h_deg < 170:
+            # Cyan disambiguation (FIX #6)
+            if 165 < h_deg < 180 and chroma > 25:
+                return "Cyan"  # High chroma cyan
+            else:
+                return "Green"
+        
+        # CYAN ZONE (170-190°) - STRICT RANGE
+        elif h_deg < 190:
+            return "Cyan"
+        
+        # BLUE ZONE (190-260°) - Starts later to avoid cyan
+        elif h_deg < 260:
             return "Blue"
-        elif h_deg < 330:
+        
+        # PURPLE ZONE (260-320°)
+        elif h_deg < 320:
             return "Purple" if v < 0.6 else "Pink"
+        
+        # MAGENTA ZONE (320-330°)
+        elif h_deg < 330:
+            return "Magenta"
         
         return "Unknown"
     
     def _classify_by_lab_quadrant(self, lab: np.ndarray, v: float) -> str:
-        L, a, b = lab
-        if abs(a) < 5 and abs(b) < 5: return "Grey"
+            L, a, b = lab
+            
+            # Check for gold signature FIRST (already exists, but strengthen it)
+            if self._is_gold_in_lab(lab):
+                return "Gold"
+            
+            # Check for cyan signature
+            if self._is_cyan_in_lab(lab):
+                return "Cyan"
+            
+            # Check for pink signature
+            if self._is_pink_in_lab(lab):
+                return "Pink"
+            
+            if abs(a) < 5 and abs(b) < 5: 
+                return "Grey"
+            
+            if a > abs(b): 
+                return "Pink" if L > 75 else "Red"
+            elif a < -abs(b): 
+                return "Green"
+            elif b > abs(a):
+                # IMPROVED: More nuanced gold vs yellow
+                if b > 25 and L > 50:  # Strong yellow component, bright
+                    if a > -5:  # Even slightly red = gold
+                        return "Gold"
+                    else:
+                        return "Yellow"  # True yellow (no red)
+                else:
+                    return "Yellow" if a < 0 else "Gold"
+            elif b < -abs(a): 
+                return "Blue"
+            
+            return "Unknown"
+    
+    def _is_gold_in_lab(self, lab: np.ndarray) -> bool:
+            '''
+            Gold detection in LAB space
+            
+            Gold signature:
+            - L: 50-85 (bright but not white)
+            - a: -8 to 20 (can be slightly green to moderately red)
+            - b: 25+ (STRONG yellow component)
+            '''
+            L, a, b_val = lab
+            
+            is_gold = (
+                50 < L < 85 and
+                -8 < a < 20 and  # RELAXED: Allow slight green tint
+                b_val > 25  # RELAXED: Catch darker golds too
+            )
+            
+            if is_gold:
+                logger.debug(f"LAB gold detected: L={L:.1f}, a={a:.1f}, b={b_val:.1f}")
+            
+            return is_gold
+    
+    def _is_cyan_in_lab(self, lab: np.ndarray) -> bool:
+        """Cyan detection in LAB space (FIX #6)"""
+        L, a, b_val = lab
         
-        if a > abs(b): return "Pink" if L > 75 else "Red" # Pink is generally lighter
-        elif a < -abs(b): return "Green"
-        elif b > abs(a): return "Gold" if a > 0 else "Yellow"
-        elif b < -abs(a): return "Blue"
+        # Cyan: a < 0 (green-ish) AND b < -10 (blue-ish)
+        is_cyan = (a < -5 and b_val < -10 and L > 40)
         
-        return "Unknown"
+        if is_cyan:
+            logger.debug(f"LAB cyan detected: L={L:.1f}, a={a:.1f}, b={b_val:.1f}")
+        
+        return is_cyan
+    
+    def _is_pink_in_lab(self, lab: np.ndarray) -> bool:
+        """Pink detection in LAB space (FIX #7)"""
+        L, a, b_val = lab
+        
+        # Pink: High L (light), high a (red), moderate b
+        is_pink = (L > 60 and a > 20 and b_val > -5)
+        
+        if is_pink:
+            logger.debug(f"LAB pink detected: L={L:.1f}, a={a:.1f}, b={b_val:.1f}")
+        
+        return is_pink
     
     def _classify_by_nearest_named_color(self, rgb: np.ndarray) -> str:
+        """Classify by distance to named colors"""
         named_colors = {
             'Pink': [255, 192, 203],
             'Red': [255, 0, 0],
@@ -304,11 +558,14 @@ class SmartColorExtractor:
             'Grey': [128, 128, 128],
             'Black': [0, 0, 0]
         }
+        
         min_dist = float('inf')
         nearest = "Unknown"
+        
         for name, ref_rgb in named_colors.items():
             dist = np.linalg.norm(rgb - np.array(ref_rgb))
             if dist < min_dist:
                 min_dist = dist
                 nearest = name
+        
         return nearest
