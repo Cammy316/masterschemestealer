@@ -96,7 +96,7 @@ export default function MiniscanResultsPage() {
                   <ReticleReveal
                     colorName={color.family || 'Color'}
                     colorHex={color.hex}
-                    reticleImage={currentScan.reticleImages?.[index]}
+                    reticleImage={color.reticle ? `data:image/jpeg;base64,${color.reticle}` : undefined}
                     originalImage={currentScan.imageData}
                   />
 

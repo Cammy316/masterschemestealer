@@ -71,35 +71,50 @@ export function ReticleReveal({
         )}
 
         <div className="flex items-center justify-center gap-3 relative z-10">
-          {/* Icon */}
+          {/* Icon - Targeting reticle instead of emoji */}
           <motion.div
             animate={{
-              rotate: isRevealed ? 180 : 0,
+              rotate: isRevealed ? 0 : 360,
               scale: isRevealed ? 1.1 : 1,
             }}
             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-            className="text-2xl"
+            className="flex-shrink-0"
           >
-            {isRevealed ? '📍' : '🔍'}
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke={isRevealed ? 'var(--cogitator-green)' : 'var(--brass)'}
+              strokeWidth="2"
+            >
+              <circle cx="12" cy="12" r="9" opacity="0.5" />
+              <circle cx="12" cy="12" r="5" />
+              <circle cx="12" cy="12" r="1" fill={isRevealed ? 'var(--cogitator-green)' : 'var(--brass)'} />
+              <line x1="12" y1="3" x2="12" y2="7" />
+              <line x1="12" y1="17" x2="12" y2="21" />
+              <line x1="3" y1="12" x2="7" y2="12" />
+              <line x1="17" y1="12" x2="21" y2="12" />
+            </svg>
           </motion.div>
 
           {/* Text */}
-          <div className="flex flex-col items-start">
+          <div className="flex flex-col items-start flex-1">
             <span
-              className="font-bold text-base cyber-text"
+              className="font-bold text-base cyber-text text-shadow"
               style={{
                 color: isRevealed ? 'var(--cogitator-green)' : 'var(--brass)',
               }}
             >
-              {isRevealed ? '◆ LOCATION ACTIVE ◆' : '◆ REVEAL LOCATION ◆'}
+              {isRevealed ? '◇ LOCATION ACTIVE ◇' : '◇ REVEAL LOCATION ◇'}
             </span>
             <span
-              className="text-xs font-medium"
+              className="text-xs font-medium tech-text"
               style={{
                 color: isRevealed ? 'var(--cogitator-green-dim)' : 'var(--text-secondary)',
               }}
             >
-              {isRevealed ? 'Auspex scan complete' : 'Activate cogitator scan'}
+              {isRevealed ? 'Target acquired' : 'Tap to activate scan'}
             </span>
           </div>
 
@@ -107,7 +122,7 @@ export function ReticleReveal({
           <motion.div
             animate={{ rotate: isRevealed ? 180 : 0 }}
             transition={{ duration: 0.3 }}
-            className="ml-auto"
+            className="flex-shrink-0"
             style={{
               color: isRevealed ? 'var(--cogitator-green)' : 'var(--brass)',
             }}
@@ -228,13 +243,23 @@ export function ReticleReveal({
                   </div>
                 ) : (
                   /* Fallback if no reticle image */
-                  <div className="p-8 text-center">
-                    <div className="text-4xl mb-4">⚠️</div>
-                    <p className="text-cogitator-green-dim text-sm">
-                      AUSPEX DATA UNAVAILABLE
+                  <div className="p-8 text-center textured" style={{
+                    background: 'linear-gradient(135deg, #1a1500 0%, #0d0a00 100%)',
+                    border: '1px solid rgba(255, 170, 0, 0.3)',
+                    borderLeft: '3px solid #ffaa00',
+                    borderRadius: '8px'
+                  }}>
+                    {/* Warning icon - stylized skull instead of emoji */}
+                    <div className="mb-4 flex justify-center">
+                      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ffaa00" strokeWidth="1.5">
+                        <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                    </div>
+                    <p className="text-warning text-sm font-bold cyber-text text-shadow mb-1">
+                      ◆ AUSPEX DATA UNAVAILABLE ◆
                     </p>
-                    <p className="text-text-tertiary text-xs mt-2">
-                      Scan did not generate location data
+                    <p className="text-text-tertiary text-xs tech-text">
+                      Location mapping failed during analysis
                     </p>
                   </div>
                 )}

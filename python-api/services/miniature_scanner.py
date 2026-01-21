@@ -9,6 +9,7 @@ import logging
 from typing import Dict, List, Any
 import base64
 import io
+import cv2
 
 from core.schemestealer_engine import SchemeStealerEngine
 
@@ -101,13 +102,40 @@ class MiniatureScannerService:
                 int(rgb[0]), int(rgb[1]), int(rgb[2])
             )
 
-            # Add color
+            # Encode reticle image as base64 if available
+            reticle_base64 = None
+            if 'reticle' in recipe and recipe['reticle'] is not None:
+                try:
+                    reticle_img = recipe['reticle']
+                    # Convert numpy array to JPEG bytes
+                    if isinstance(reticle_img, np.ndarray):
+                        # Ensure it's in BGR format for cv2
+                        if len(reticle_img.shape) == 3:
+                            if reticle_img.shape[2] == 4:  # RGBA
+                                reticle_bgr = cv2.cvtColor(reticle_img, cv2.COLOR_RGBA2BGR)
+                            else:  # RGB
+                                reticle_bgr = cv2.cvtColor(reticle_img, cv2.COLOR_RGB2BGR)
+                        else:
+                            # Grayscale
+                            reticle_bgr = reticle_img
+
+                        # Encode as JPEG (smaller than PNG, good for base64)
+                        encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 85]
+                        _, buffer = cv2.imencode('.jpg', reticle_bgr, encode_param)
+                        reticle_base64 = base64.b64encode(buffer).decode('utf-8')
+                        logger.debug(f"Encoded reticle image ({len(reticle_base64)} bytes)")
+                except Exception as e:
+                    logger.warning(f"Failed to encode reticle for {hex_color}: {e}")
+                    reticle_base64 = None
+
+            # Add color with reticle data
             colors.append({
                 'rgb': [int(rgb[0]), int(rgb[1]), int(rgb[2])],
                 'lab': [float(lab[0]), float(lab[1]), float(lab[2])],
                 'hex': hex_color,
                 'percentage': float(recipe.get('dominance', 0)),
                 'family': recipe.get('family', 'Unknown'),
+                'reticle': reticle_base64,  # ✅ Include reticle data
             })
 
             # Extract paint recommendations from base matches
