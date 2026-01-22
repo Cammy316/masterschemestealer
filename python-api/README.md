@@ -1,144 +1,202 @@
 # SchemeSteal FastAPI Backend
 
-Python microservice for color detection and paint matching.
+FastAPI microservice for color detection and paint matching for miniature painters.
 
-## Features
+**Status**: ✅ **FULLY REFACTORED** - No Streamlit dependencies, production-ready
 
-- **Miniature Scanning** (`/api/scan/miniature`): Scans painted miniatures with background removal
-- **Inspiration Mode** (`/api/scan/inspiration`): Extracts color palettes from any image (no background removal)
-- **Paint Database** (`/api/paints`): Access to 167 paints from major brands
+---
 
-## Setup
+## 🚀 Quick Start
 
-1. **Create virtual environment**:
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
+### 1. Install Dependencies
 
-2. **Install dependencies**:
 ```bash
 pip install -r requirements.txt
 ```
 
-3. **Run the server**:
+### 2. Start the Server
+
 ```bash
+# Development mode (with auto-reload)
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
+# OR use the Python script
 python main.py
 ```
 
-Or use uvicorn directly:
+### 3. Open the Docs
+
+Visit `http://localhost:8000/docs` for interactive Swagger UI documentation
+
+---
+
+## 📁 Project Structure
+
+```
+python-api/
+├── main.py                      # FastAPI app entry point
+├── config.py                    # Configuration & thresholds
+├── paints.json                  # Paint database (149 paints)
+├── requirements.txt             # Python dependencies
+│
+├── core/                        # Core color detection logic (NO Streamlit)
+│   ├── schemestealer_engine.py  # Main scanning engine
+│   ├── smart_color_system.py    # Color extraction with ensemble voting
+│   ├── color_engine.py          # Paint matching with Delta-E
+│   ├── photo_processor.py       # Image preprocessing & quality checks
+│   ├── base_detector.py         # Base/platform detection
+│   └── visualization.py         # Visualization utilities
+│
+├── services/                    # FastAPI service layer
+│   ├── miniature_scanner.py     # Miniscan service (WITH bg removal)
+│   └── inspiration_scanner.py   # Inspiration service (NO bg removal)
+│
+└── utils/                       # Utility functions (NO Streamlit)
+    ├── helpers.py               # Image processing helpers
+    ├── logging_config.py        # Logging configuration
+    └── analytics.py             # Analytics tracking
+```
+
+---
+
+## 🎯 API Endpoints
+
+### Health Check
 ```bash
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
+GET /
+```
+Returns API status and version.
+
+**Example:**
+```bash
+curl http://localhost:8000/
 ```
 
-The API will be available at `http://localhost:8000`
-
-## API Endpoints
-
-### GET /
-Health check endpoint
-
-### GET /api/paints
-Get all paints from the database
-
-**Response**:
+**Response:**
 ```json
 {
-  "paints": [
-    {
-      "name": "Macragge Blue",
-      "brand": "Citadel",
-      "hex": "#0D407F",
-      "type": "paint"
-    }
-  ]
+  "status": "ok",
+  "message": "SchemeSteal API is running",
+  "version": "1.0.0"
 }
 ```
 
-### POST /api/scan/miniature
-Scan a painted miniature (with background removal)
+---
 
-**Request**: Multipart form data with `file` field
-**Response**:
-```json
-{
-  "mode": "miniature",
-  "colors": [
-    {
-      "rgb": [13, 64, 127],
-      "lab": [27.5, 18.2, -47.3],
-      "hex": "#0D407F",
-      "percentage": 45.2,
-      "family": "Blue"
-    }
-  ],
-  "paints": [
-    {
-      "name": "Macragge Blue",
-      "brand": "Citadel",
-      "hex": "#0D407F",
-      "type": "paint",
-      "deltaE": 0.8,
-      "rgb": [13, 64, 127],
-      "lab": [27.5, 18.2, -47.3]
-    }
-  ],
-  "metadata": {
-    "color_count": 3,
-    "paint_count": 4,
-    "background_removed": true
-  }
-}
+### Get All Paints
+```bash
+GET /api/paints
+```
+Returns the complete paint database.
+
+---
+
+### Scan Miniature (Miniscan Mode)
+```bash
+POST /api/scan/miniature
+```
+Scan a painted miniature with background removal.
+
+**Features:**
+- ✅ Background removal using rembg
+- ✅ Detects 3-5 dominant colors on the miniature
+- ✅ Returns paint recommendations with Delta-E scores
+
+**Example:**
+```bash
+curl -X POST "http://localhost:8000/api/scan/miniature" \
+  -F "file=@space_marine.jpg"
 ```
 
-### POST /api/scan/inspiration
-Extract color palette from any image (no background removal)
+---
 
-**Request**: Multipart form data with `file` field
-**Response**: Same format as `/api/scan/miniature` but with more colors (5-8 instead of 3-5)
-
-### POST /api/feedback
-Submit user feedback about scan accuracy
-
-**Request**:
-```json
-{
-  "scan_id": "scan-123",
-  "rating": 4,
-  "comment": "Good match!"
-}
+### Scan Inspiration (Inspiration Mode)
+```bash
+POST /api/scan/inspiration
 ```
+Extract color palette from any image (NO background removal).
 
-## Architecture
+**Features:**
+- ❌ NO background removal (analyzes entire image)
+- ✅ Detects 5-8 dominant colors
+- ✅ Returns paint recommendations for each color
 
-- **FastAPI**: Modern Python web framework
-- **rembg**: Background removal (miniature mode only)
-- **OpenCV + scikit-learn**: Image processing and color clustering
-- **Smart Color System**: Perceptual color detection from existing codebase
+---
 
-## Key Differences: Miniscan vs Inspiration
+## 🔬 Color Detection Algorithm
+
+The backend uses sophisticated color detection from the original Streamlit app:
+
+### Key Features
+
+1. **Dual Color Space Analysis**: HSV and LAB with ensemble voting
+2. **Hue-Range Exceptions**: Handles desaturated colors correctly
+3. **Achromatic Detection**: Prevents grey/black/white misclassifications
+4. **Background Removal**: rembg for miniature isolation (Miniscan only)
+5. **Dominant Color Extraction**: K-means clustering with coverage ranking
+6. **Paint Matching**: Delta-E distance in LAB color space
+
+### Accuracy
+- **Target**: ~37% correct classification for primary armor colors
+- **Benchmark**: Matches original Streamlit app accuracy
+
+---
+
+## 🔍 Key Differences: Miniscan vs Inspiration
 
 | Feature | Miniscan | Inspiration |
 |---------|----------|-------------|
-| Background Removal | ✅ Yes (rembg) | ❌ No |
-| Target Input | Painted miniatures | Any image |
-| Color Count | 3-5 colors | 5-8 colors |
-| Use Case | "What paints are on this mini?" | "I want to paint using these colors" |
+| **Background Removal** | ✅ YES (rembg) | ❌ NO (full image) |
+| **Color Count** | 3-5 colors | 5-8 colors |
+| **Use Case** | "What paints are on this mini?" | "I want these colors!" |
+| **Processing** | isolate → detect → match | extract → match |
 
-## Development
+---
 
-The core color detection logic is in:
-- `core/schemestealer_engine.py` - Main scanning engine
-- `core/smart_color_system.py` - Color extraction
-- `core/color_engine.py` - Paint matching
-- `services/miniature_scanner.py` - Miniature scan service (with bg removal)
-- `services/inspiration_scanner.py` - Inspiration scan service (no bg removal)
+## 📦 Dependencies
 
-## CORS Configuration
+All dependencies in `requirements.txt` (NO Streamlit):
 
-The API allows requests from:
-- `http://localhost:3000` (Next.js dev server)
-- `http://localhost:3001`
-- `http://127.0.0.1:3000`
+```
+fastapi==0.115.0              # Web framework
+uvicorn[standard]==0.32.0     # ASGI server
+python-multipart==0.0.16      # File upload support
+opencv-python==4.10.0.84      # Image processing
+numpy==1.26.4                 # Numerical operations
+Pillow==11.0.0                # Image manipulation
+rembg==2.0.59                 # Background removal
+scikit-learn==1.5.2           # K-means clustering
+scikit-image==0.24.0          # Color space conversions
+scipy==1.14.1                 # Delta-E calculations
+python-dotenv==1.0.1          # Environment variables
+```
 
-Update `main.py` to add additional origins if needed.
+---
+
+## ✅ Refactor Completed
+
+This backend has been **completely refactored** from the original Streamlit app:
+
+### What Was Removed:
+- ❌ All Streamlit imports and dependencies
+- ❌ Session state management
+- ❌ Shopping cart logic (frontend handles this)
+- ❌ Feedback logger with Google Sheets
+
+### What Was Kept:
+- ✅ All core color detection algorithms
+- ✅ Dual color space analysis (HSV + LAB)
+- ✅ Hue-range exceptions
+- ✅ Paint matching with Delta-E
+- ✅ Background removal with rembg
+
+### What Was Added:
+- ✅ FastAPI REST API endpoints
+- ✅ Swagger UI documentation
+- ✅ CORS support for frontend
+- ✅ Proper error handling
+- ✅ Production-ready structure
+
+---
+
+Built with ❤️ for the Warhammer and miniature painting community

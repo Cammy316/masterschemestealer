@@ -17,13 +17,19 @@ export function ShoppingCart() {
 
   if (cart.length === 0) {
     return (
-      <div className="text-center py-12">
-        <div className="text-6xl mb-4">🛒</div>
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">
-          Your cart is empty
+      <div className="text-center py-12 textured">
+        <div className="flex justify-center mb-4">
+          <svg width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" strokeWidth="1.5" opacity="0.5">
+            <rect x="3" y="8" width="18" height="13" rx="1" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M3 13h18M3 17h18" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M8 8V6a4 4 0 0 1 8 0v2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+        <h3 className="text-xl font-semibold text-brass mb-2 gothic-text text-shadow">
+          Supply Requisition Empty
         </h3>
-        <p className="text-gray-600">
-          Scan a miniature or find inspiration to add paints to your cart
+        <p className="text-text-secondary tech-text">
+          Scan a miniature or find inspiration to add paints
         </p>
       </div>
     );
@@ -108,8 +114,8 @@ function CartItem({ item, onRemove, onUpdateQuantity }: CartItemProps) {
   };
 
   const modeIcons = {
-    miniature: '🎨',
-    inspiration: '✨',
+    miniature: '◆',
+    inspiration: '✦',
   };
 
   return (
