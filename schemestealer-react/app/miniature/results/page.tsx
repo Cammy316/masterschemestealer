@@ -56,7 +56,7 @@ export default function MiniscanResultsPage() {
             animate={{ opacity: [0.5, 1, 0.5] }}
             transition={{ duration: 2, repeat: Infinity }}
           >
-            ⚙ COGITATOR STATUS: ANALYSIS COMPLETE ⚙
+            ◆ COGITATOR STATUS: ANALYSIS COMPLETE ◆
           </motion.div>
         </motion.div>
 
@@ -69,8 +69,8 @@ export default function MiniscanResultsPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              <div className="gothic-frame rounded-lg p-1">
-                <div className="bg-dark-gothic rounded-lg p-4">
+              <div className="gothic-frame rounded-lg p-1 depth-3">
+                <div className="bg-dark-gothic rounded-lg p-4 textured">
                   {/* Color Header */}
                   <div className="flex items-center gap-4 mb-4">
                     <div
@@ -102,8 +102,8 @@ export default function MiniscanResultsPage() {
 
                   {/* Paint Recommendations for this color */}
                   {currentScan.recommendedPaints && currentScan.recommendedPaints.length > 0 && (
-                    <div className="mt-6">
-                      <h4 className="text-sm font-bold auspex-text mb-3 gothic-text">
+                    <div className="mt-6 p-4 rounded-lg border border-cogitator-green/20 bg-cogitator-green/5 depth-1">
+                      <h4 className="text-sm font-bold auspex-text mb-3 gothic-text text-center text-shadow-sm">
                         ◆ SACRED FORMULATIONS ◆
                       </h4>
                       <div className="space-y-2">
@@ -131,7 +131,7 @@ export default function MiniscanResultsPage() {
         >
           <motion.button
             onClick={handleScanAnother}
-            className="w-full py-4 px-6 rounded-lg border-2 border-cogitator-green bg-dark-gothic touch-target"
+            className="w-full py-4 px-6 rounded-lg border-2 border-cogitator-green bg-dark-gothic touch-target textured"
             whileHover={{
               boxShadow: '0 0 20px var(--cogitator-green-glow)',
               scale: 1.02,
@@ -139,7 +139,9 @@ export default function MiniscanResultsPage() {
             whileTap={{ scale: 0.98 }}
           >
             <div className="flex items-center justify-center gap-3">
-              <span className="text-2xl">🔄</span>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--cogitator-green)" strokeWidth="2">
+                <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
               <span className="auspex-text font-bold cyber-text">
                 INITIATE NEW SCAN
               </span>
@@ -148,7 +150,7 @@ export default function MiniscanResultsPage() {
 
           <motion.button
             onClick={() => router.push('/cart')}
-            className="w-full py-4 px-6 rounded-lg border-2 border-brass bg-dark-gothic touch-target"
+            className="w-full py-4 px-6 rounded-lg border-2 border-brass bg-dark-gothic touch-target textured"
             whileHover={{
               boxShadow: '0 0 15px var(--brass)',
               scale: 1.02,
@@ -156,7 +158,11 @@ export default function MiniscanResultsPage() {
             whileTap={{ scale: 0.98 }}
           >
             <div className="flex items-center justify-center gap-3">
-              <span className="text-2xl">🛒</span>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" strokeWidth="2">
+                <rect x="3" y="8" width="18" height="13" rx="1" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M3 13h18M3 17h18" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M8 8V6a4 4 0 0 1 8 0v2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
               <span className="text-brass font-bold cyber-text">
                 VIEW SUPPLY REQUISITION
               </span>
@@ -164,22 +170,50 @@ export default function MiniscanResultsPage() {
           </motion.button>
         </motion.div>
 
-        {/* Info card */}
+        {/* Cogitator Report - Enhanced parchment panel */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.6 }}
         >
-          <div className="parchment-bg rounded-lg p-4 text-sm">
-            <h3 className="font-bold mb-2 text-void-black gothic-text text-center">
-              ⚙ COGITATOR REPORT ⚙
-            </h3>
-            <ul className="space-y-1 text-void-black/80 tech-text text-xs">
-              <li>• Background removed via servo-skull image processing</li>
-              <li>• {currentScan.detectedColors.length} dominant color signatures identified</li>
-              <li>• {currentScan.recommendedPaints?.length || 0} paint formulations matched from sacred archives</li>
-              <li>• Delta-E (ΔE) indicates color purity rating (lower = more accurate)</li>
-              <li>• Tap "REVEAL LOCATION" buttons to view color placement on miniature</li>
+          <div className="parchment-bg rounded-lg p-5 text-sm depth-2 border-2 border-brass/30">
+            <div className="flex items-center justify-center gap-2 mb-3">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--void-black)" strokeWidth="2" opacity="0.7">
+                <circle cx="12" cy="12" r="3" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M12 1v6m0 6v6M1 12h6m6 0h6" strokeLinecap="round" strokeLinejoin="round" />
+                <circle cx="12" cy="12" r="10" strokeLinecap="round" strokeLinejoin="round" opacity="0.4" />
+              </svg>
+              <h3 className="font-bold text-void-black gothic-text text-center text-base">
+                COGITATOR REPORT
+              </h3>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--void-black)" strokeWidth="2" opacity="0.7">
+                <circle cx="12" cy="12" r="3" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M12 1v6m0 6v6M1 12h6m6 0h6" strokeLinecap="round" strokeLinejoin="round" />
+                <circle cx="12" cy="12" r="10" strokeLinecap="round" strokeLinejoin="round" opacity="0.4" />
+              </svg>
+            </div>
+            <div className="w-16 h-px bg-void-black/30 mx-auto mb-3" />
+            <ul className="space-y-2 text-void-black/90 tech-text text-xs leading-relaxed">
+              <li className="flex items-start gap-2">
+                <span className="text-void-black/60 flex-shrink-0">►</span>
+                <span>Background removed via servo-skull image processing</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-void-black/60 flex-shrink-0">►</span>
+                <span>{currentScan.detectedColors.length} dominant color signatures identified</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-void-black/60 flex-shrink-0">►</span>
+                <span>{currentScan.recommendedPaints?.length || 0} paint formulations matched from sacred archives</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-void-black/60 flex-shrink-0">►</span>
+                <span>Delta-E (ΔE) indicates color purity rating (lower = more accurate)</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-void-black/60 flex-shrink-0">►</span>
+                <span>Tap "REVEAL LOCATION" to view color placement on miniature</span>
+              </li>
             </ul>
           </div>
         </motion.div>
