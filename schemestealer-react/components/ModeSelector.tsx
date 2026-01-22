@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
 import type { ScanMode } from '@/lib/types';
+import { GrimdarkSkullIcon } from '@/components/icons/GrimdarkSkull';
 
 export function ModeSelector() {
   const router = useRouter();
@@ -34,43 +35,36 @@ export function ModeSelector() {
       />
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center flex-1 px-4 py-8">
-        {/* Header */}
+      <div className="relative z-10 flex flex-col items-center justify-center flex-1 px-3 py-4">
+        {/* Header - Compact and Responsive */}
         <motion.div
-          className="text-center mb-8"
+          className="text-center mb-4"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
           <motion.h1
-            className="text-4xl md:text-5xl font-bold gothic-text mb-3 header-text"
+            className="font-bold gothic-text mb-1 header-text responsive-header"
             style={{
               color: 'var(--imperial-gold)',
-              letterSpacing: '0.15em',
             }}
           >
-            ═══ SCHEMESTEAL ═══
+            ═══ SCHEMESTEALER ═══
           </motion.h1>
           <motion.p
-            className="text-brass/70 tech-text text-sm"
+            className="text-brass/70 tech-text responsive-label"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.6 }}
           >
             Machine Spirit Initialized
           </motion.p>
-
-          {/* Blinking cursor effect */}
-          <motion.span
-            className="inline-block w-2 h-4 bg-cogitator-green ml-1"
-            animate={{ opacity: [1, 0, 1] }}
-            transition={{ duration: 1, repeat: Infinity }}
-          />
         </motion.div>
 
-        {/* Mission Select Cards - Two Column Layout */}
+        {/* Mission Select Cards - Side by side on ALL screens including mobile */}
         <motion.div
-          className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-4 mb-6"
+          className="w-full flex gap-3 mb-4"
+          style={{ maxHeight: '70vh' }}
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.4, duration: 0.5 }}
@@ -78,7 +72,7 @@ export function ModeSelector() {
           {/* Miniscan Card - Left */}
           <motion.button
             onClick={() => handleModeSelect('miniature')}
-            className="group relative rounded-xl overflow-hidden touch-target textured"
+            className="group relative rounded-xl overflow-hidden touch-target textured flex-1"
             style={{
               background: 'linear-gradient(135deg, #0d1a0d 0%, #1a2a1a 100%)',
               border: '1px solid rgba(0, 255, 65, 0.3)',
@@ -99,71 +93,34 @@ export function ModeSelector() {
               }}
             />
 
-            <div className="relative z-10 p-6 md:p-8 flex flex-col items-center min-h-[320px] justify-between">
+            <div className="relative z-10 p-4 flex flex-col items-center justify-center h-full">
               {/* Icon */}
-              <motion.div
-                className="mb-4"
-                whileHover={{
-                  filter: 'drop-shadow(0 0 20px var(--cogitator-green))',
-                  scale: 1.1,
-                }}
-                transition={{ duration: 0.3 }}
-              >
-                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="var(--cogitator-green)" strokeWidth="1.5">
-                  <path d="M12 2C8 2 5 5 5 9c0 2.5 1 4 2 5v3h10v-3c1-1 2-2.5 2-5 0-4-3-7-7-7z" strokeLinecap="round" strokeLinejoin="round" />
-                  <circle cx="9" cy="10" r="1.5" fill="var(--cogitator-green)" />
-                  <circle cx="15" cy="10" r="1.5" fill="var(--cogitator-green)" />
-                  <path d="M8 17h8v2c0 1-1 2-2 2h-4c-1 0-2-1-2-2v-2z" strokeLinecap="round" strokeLinejoin="round" />
-                  <circle cx="12" cy="6" r="0.5" fill="var(--brass)" />
-                  <path d="M9 14h6" strokeLinecap="round" />
-                </svg>
-              </motion.div>
+              <div className="mb-3">
+                <GrimdarkSkullIcon className="w-16 h-16" />
+              </div>
 
               {/* Title */}
-              <div className="text-center mb-4">
-                <h2 className="text-2xl font-bold gothic-text mb-2 text-shadow" style={{ color: 'var(--cogitator-green)' }}>
-                  MINISCAN
-                </h2>
-                <h3 className="text-lg font-semibold gothic-text mb-3" style={{ color: 'var(--brass)' }}>
-                  PROTOCOL
-                </h3>
-                <p className="text-sm text-cogitator-green-dim tech-text leading-relaxed">
-                  Identify paint colors on completed miniatures
-                </p>
-              </div>
+              <h2 className="responsive-section-title font-bold gothic-text mb-1 text-shadow" style={{ color: 'var(--cogitator-green)' }}>
+                MINISCAN
+              </h2>
+              <p className="text-cogitator-green/60 responsive-label mb-2">PROTOCOL</p>
 
-              {/* Features */}
-              <div className="w-full space-y-2 text-left mb-4">
-                <div className="flex items-start gap-2 text-xs text-white/70 tech-text">
-                  <span className="text-cogitator-green">◆</span>
-                  <span>Scan painted models</span>
-                </div>
-                <div className="flex items-start gap-2 text-xs text-white/70 tech-text">
-                  <span className="text-cogitator-green">◆</span>
-                  <span>Detect 3-5 key colors</span>
-                </div>
-                <div className="flex items-start gap-2 text-xs text-white/70 tech-text">
-                  <span className="text-cogitator-green">◆</span>
-                  <span>Match to paint brands</span>
-                </div>
-              </div>
+              <p className="text-gray-400 responsive-label text-center mb-3 leading-relaxed">
+                Identify paints on your miniatures
+              </p>
 
-              {/* Action indicator */}
-              <motion.div
-                className="w-full py-2 px-4 rounded border border-cogitator-green/50 bg-cogitator-green/5"
-                whileHover={{ backgroundColor: 'rgba(0, 255, 65, 0.1)' }}
-              >
-                <span className="text-cogitator-green font-bold cyber-text text-sm">
-                  ► INITIATE SCAN
+              <div className="px-3 py-2 border border-cogitator-green/50 rounded responsive-label">
+                <span className="text-cogitator-green font-semibold cyber-text">
+                  INITIATE SCAN
                 </span>
-              </motion.div>
+              </div>
             </div>
           </motion.button>
 
           {/* Inspiration Card - Right */}
           <motion.button
             onClick={() => handleModeSelect('inspiration')}
-            className="group relative rounded-xl overflow-hidden touch-target textured"
+            className="group relative rounded-xl overflow-hidden touch-target textured flex-1"
             style={{
               background: 'linear-gradient(135deg, #1a0d1a 0%, #2a1a2a 100%)',
               border: '1px solid rgba(139, 92, 246, 0.3)',
@@ -193,68 +150,32 @@ export function ModeSelector() {
               }}
             />
 
-            <div className="relative z-10 p-6 md:p-8 flex flex-col items-center min-h-[320px] justify-between">
+            <div className="relative z-10 p-4 flex flex-col items-center justify-center h-full">
               {/* Icon */}
-              <motion.div
-                className="mb-4"
-                whileHover={{
-                  filter: 'drop-shadow(0 0 20px var(--warp-purple))',
-                  scale: 1.1,
-                }}
-                transition={{ duration: 0.3 }}
-              >
-                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="var(--warp-purple-light)" strokeWidth="1.5">
+              <div className="mb-3">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--warp-purple-light)" strokeWidth="1.5">
                   <path d="M12 2c5.5 0 10 4.5 10 10s-4.5 10-10 10S2 17.5 2 12 6.5 2 12 2z" opacity="0.3" strokeLinecap="round" strokeLinejoin="round" />
                   <path d="M12 6c3.3 0 6 2.7 6 6s-2.7 6-6 6-6-2.7-6-6 2.7-6 6-6z" opacity="0.5" strokeLinecap="round" strokeLinejoin="round" />
                   <circle cx="12" cy="12" r="3" strokeLinecap="round" strokeLinejoin="round" />
                   <circle cx="12" cy="12" r="1" fill="var(--warp-purple-light)" />
                 </svg>
-              </motion.div>
+              </div>
 
               {/* Title */}
-              <div className="text-center mb-4">
-                <h2 className="text-2xl font-bold gothic-text mb-2 text-shadow" style={{ color: 'var(--warp-purple-light)' }}>
-                  INSPIRATION
-                </h2>
-                <h3 className="text-lg font-semibold gothic-text mb-3" style={{ color: 'var(--warp-pink)' }}>
-                  PROTOCOL
-                </h3>
-                <p className="text-sm text-warp-purple-light/70 tech-text leading-relaxed">
-                  Extract colors from any image or artwork
-                </p>
-              </div>
+              <h2 className="responsive-section-title font-bold gothic-text mb-1 text-shadow" style={{ color: 'var(--warp-purple-light)' }}>
+                INSPIRATION
+              </h2>
+              <p className="text-purple-400/60 responsive-label mb-2">PROTOCOL</p>
 
-              {/* Features */}
-              <div className="w-full space-y-2 text-left mb-4">
-                <div className="flex items-start gap-2 text-xs text-white/70 tech-text">
-                  <span className="text-warp-purple-light">✦</span>
-                  <span>Capture any inspiration</span>
-                </div>
-                <div className="flex items-start gap-2 text-xs text-white/70 tech-text">
-                  <span className="text-warp-purple-light">✦</span>
-                  <span>Extract color palette</span>
-                </div>
-                <div className="flex items-start gap-2 text-xs text-white/70 tech-tech">
-                  <span className="text-warp-purple-light">✦</span>
-                  <span>Find matching paints</span>
-                </div>
-              </div>
+              <p className="text-gray-400 responsive-label text-center mb-3 leading-relaxed">
+                Extract colors from any image
+              </p>
 
-              {/* Action indicator */}
-              <motion.div
-                className="w-full py-2 px-4 rounded"
-                style={{
-                  border: '1px solid rgba(139, 92, 246, 0.5)',
-                  background: 'rgba(139, 92, 246, 0.05)',
-                }}
-                whileHover={{
-                  background: 'rgba(139, 92, 246, 0.1)',
-                }}
-              >
-                <span className="text-warp-purple-light font-bold cyber-text text-sm">
-                  ► CHANNEL WARP
+              <div className="px-3 py-2 border border-purple-500/50 rounded responsive-label">
+                <span className="text-purple-400 font-semibold cyber-text">
+                  CHANNEL WARP
                 </span>
-              </motion.div>
+              </div>
             </div>
           </motion.button>
         </motion.div>
@@ -266,11 +187,8 @@ export function ModeSelector() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8, duration: 0.6 }}
         >
-          <p className="text-xs text-brass/50 tech-text mb-2">
-            ──── SELECT YOUR PROTOCOL ────
-          </p>
-          <p className="text-xs text-text-tertiary tech-text">
-            Advanced chromatic analysis for miniature painters
+          <p className="responsive-label text-gray-500 tech-text">
+            SELECT YOUR PROTOCOL
           </p>
         </motion.div>
       </div>

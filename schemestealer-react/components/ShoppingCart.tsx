@@ -19,71 +19,71 @@ export function ShoppingCart() {
     return (
       <div className="text-center py-12 textured">
         <div className="flex justify-center mb-4">
-          <svg width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" strokeWidth="1.5" opacity="0.5">
-            <rect x="3" y="8" width="18" height="13" rx="1" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M3 13h18M3 17h18" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M8 8V6a4 4 0 0 1 8 0v2" strokeLinecap="round" strokeLinejoin="round" />
+          {/* Munitorum crate icon */}
+          <svg width="96" height="96" viewBox="0 0 64 64" fill="none">
+            <rect x="8" y="16" width="48" height="40" rx="2" fill="#2a2010" stroke="#8B7355" strokeWidth="2" />
+            <line x1="8" y1="28" x2="56" y2="28" stroke="#8B7355" strokeWidth="1" />
+            <line x1="8" y1="40" x2="56" y2="40" stroke="#8B7355" strokeWidth="1" />
+            <circle cx="32" cy="36" r="8" fill="#1a1508" stroke="#8B7355" strokeWidth="1" />
+            <text x="32" y="40" textAnchor="middle" fill="#8B7355" fontSize="10">☠</text>
+            <circle cx="12" cy="20" r="2" fill="#8B7355" />
+            <circle cx="52" cy="20" r="2" fill="#8B7355" />
+            <circle cx="12" cy="52" r="2" fill="#8B7355" />
+            <circle cx="52" cy="52" r="2" fill="#8B7355" />
+            <path d="M24 12 L24 16 M40 12 L40 16" stroke="#8B7355" strokeWidth="2" />
+            <path d="M24 12 Q32 8 40 12" stroke="#8B7355" strokeWidth="2" fill="none" />
           </svg>
         </div>
-        <h3 className="text-xl font-semibold text-brass mb-2 gothic-text text-shadow">
-          Supply Requisition Empty
+        <h3 className="responsive-section-title font-semibold text-amber-500 mb-2 gothic-text text-shadow">
+          SUPPLY REQUISITION EMPTY
         </h3>
-        <p className="text-text-secondary tech-text">
-          Scan a miniature or find inspiration to add paints
+        <p className="text-gray-500 tech-text responsive-label">
+          No items awaiting requisition
+        </p>
+        <p className="text-gray-500 mt-2 responsive-label">
+          Scan a miniature or channel the warp to add paints
         </p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Shopping Cart</h2>
-          <p className="text-sm text-gray-600">
-            {totalItems} {totalItems === 1 ? 'item' : 'items'} in your cart
-          </p>
-        </div>
-        {cart.length > 0 && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={clearCart}
-          >
-            Clear All
-          </Button>
-        )}
-      </div>
-
+    <div className="space-y-4">
+      {/* Item list styled as military manifest */}
       <div className="space-y-3">
-        {cart.map((item) => (
+        {cart.map((item, index) => (
           <CartItem
             key={getPaintId(item.paint)}
             item={item}
+            index={index}
             onRemove={() => removeFromCart(getPaintId(item.paint))}
             onUpdateQuantity={(qty) => updateQuantity(getPaintId(item.paint), qty)}
           />
         ))}
       </div>
 
-      {/* Summary */}
-      <Card variant="elevated" padding="lg" className="bg-blue-50">
-        <div className="space-y-3">
-          <div className="flex justify-between items-center">
-            <span className="font-semibold text-gray-900">Total Paints:</span>
-            <span className="text-xl font-bold text-blue-600">{totalItems}</span>
-          </div>
-
-          <div className="pt-3 border-t border-blue-200">
-            <p className="text-xs text-gray-600 mb-3">
-              Note: This is a shopping list. Prices and purchasing options coming soon!
-            </p>
-            <Button variant="primary" size="lg" fullWidth disabled>
-              Export List (Coming Soon)
-            </Button>
-          </div>
+      {/* Approval stamp area */}
+      <div className="mt-6 p-4 border-2 border-dashed border-amber-900/30 rounded text-center">
+        <div className="text-amber-500/40 responsive-label tracking-wider mb-2">
+          ADMINISTRATUM USE ONLY
         </div>
-      </Card>
+        <div className="text-amber-600 font-bold tracking-[0.2em] responsive-section-title">
+          PENDING REQUISITION
+        </div>
+        <div className="text-amber-500/50 responsive-label mt-2">
+          {totalItems} ITEM{totalItems !== 1 ? 'S' : ''} TOTAL
+        </div>
+      </div>
+
+      {/* Clear all button */}
+      {cart.length > 0 && (
+        <button
+          onClick={clearCart}
+          className="w-full py-3 px-4 border border-red-500/30 bg-red-950/20 rounded responsive-label text-red-500/80 hover:bg-red-950/40 hover:border-red-500/50 transition-colors"
+        >
+          ✕ CLEAR REQUISITION
+        </button>
+      )}
     </div>
   );
 }
@@ -98,11 +98,12 @@ interface CartItemProps {
     quantity: number;
     addedFrom?: 'miniature' | 'inspiration';
   };
+  index: number;
   onRemove: () => void;
   onUpdateQuantity: (quantity: number) => void;
 }
 
-function CartItem({ item, onRemove, onUpdateQuantity }: CartItemProps) {
+function CartItem({ item, index, onRemove, onUpdateQuantity }: CartItemProps) {
   const handleIncrement = () => {
     onUpdateQuantity(item.quantity + 1);
   };
@@ -119,61 +120,59 @@ function CartItem({ item, onRemove, onUpdateQuantity }: CartItemProps) {
   };
 
   return (
-    <Card variant="outlined" padding="none">
-      <div className="flex items-center p-4 space-x-4">
-        {/* Color swatch */}
-        <div
-          className="w-12 h-12 rounded-lg shadow-sm border border-gray-200 flex-shrink-0"
-          style={{ backgroundColor: item.paint.hex }}
-        />
+    <div className="flex items-center gap-3 p-3 border border-amber-900/20 bg-black/30 rounded">
+      {/* Manifest number */}
+      <div className="text-amber-500/50 font-mono responsive-label">
+        [{String(index + 1).padStart(2, '0')}]
+      </div>
 
-        {/* Paint info */}
-        <div className="flex-1 min-w-0">
-          <h4 className="font-semibold text-gray-900 truncate">
-            {item.paint.name}
-          </h4>
-          <p className="text-sm text-gray-600">{item.paint.brand}</p>
-          {item.addedFrom && (
-            <p className="text-xs text-gray-500 mt-1">
-              {modeIcons[item.addedFrom]} From {item.addedFrom === 'miniature' ? 'Miniscan' : 'Inspiration'}
-            </p>
-          )}
+      {/* Color swatch */}
+      <div
+        className="w-8 h-8 rounded border border-amber-900/30 flex-shrink-0"
+        style={{ backgroundColor: item.paint.hex }}
+      />
+
+      {/* Paint info */}
+      <div className="flex-1 min-w-0">
+        <div className="text-amber-100 font-semibold responsive-label truncate">
+          {item.paint.name}
         </div>
-
-        {/* Quantity controls */}
-        <div className="flex items-center space-x-2 flex-shrink-0">
-          <button
-            onClick={handleDecrement}
-            disabled={item.quantity <= 1}
-            className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 active:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
-          >
-            <span className="text-lg font-semibold">−</span>
-          </button>
-
-          <span className="w-8 text-center font-semibold text-gray-900">
-            {item.quantity}
-          </span>
-
-          <button
-            onClick={handleIncrement}
-            className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 active:bg-gray-300 flex items-center justify-center transition-colors"
-          >
-            <span className="text-lg font-semibold">+</span>
-          </button>
+        <div className="text-amber-500/60 responsive-label">
+          {item.paint.brand} {item.addedFrom && `• ${modeIcons[item.addedFrom]}`}
         </div>
+      </div>
 
-        {/* Remove button */}
+      {/* Quantity controls */}
+      <div className="flex items-center gap-2 flex-shrink-0">
         <button
-          onClick={onRemove}
-          className="flex-shrink-0 text-red-600 hover:text-red-700 active:text-red-800 p-2"
-          aria-label="Remove item"
+          onClick={handleDecrement}
+          disabled={item.quantity <= 1}
+          className="w-7 h-7 rounded bg-amber-900/20 hover:bg-amber-900/40 active:bg-amber-900/60 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-colors border border-amber-900/30"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-          </svg>
+          <span className="text-amber-500 font-semibold">−</span>
+        </button>
+
+        <span className="w-6 text-center font-semibold text-amber-500 responsive-label">
+          {item.quantity}
+        </span>
+
+        <button
+          onClick={handleIncrement}
+          className="w-7 h-7 rounded bg-amber-900/20 hover:bg-amber-900/40 active:bg-amber-900/60 flex items-center justify-center transition-colors border border-amber-900/30"
+        >
+          <span className="text-amber-500 font-semibold">+</span>
         </button>
       </div>
-    </Card>
+
+      {/* Remove button */}
+      <button
+        onClick={onRemove}
+        className="flex-shrink-0 text-red-500/70 hover:text-red-500 p-2"
+        aria-label="Remove item"
+      >
+        ✕
+      </button>
+    </div>
   );
 }
 

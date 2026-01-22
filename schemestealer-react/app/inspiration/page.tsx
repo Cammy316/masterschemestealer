@@ -62,9 +62,9 @@ export default function InspirationPage() {
   }
 
   return (
-    <div className="min-h-screen pb-24 void-bg">
+    <div className="min-h-screen pb-24 void-bg overflow-x-hidden">
       {/* Starfield background */}
-      <div className="starfield-bg fixed inset-0 pointer-events-none" />
+      <div className="starfield-bg fixed inset-0 pointer-events-none overflow-hidden" />
 
       {/* Header */}
       <motion.div
@@ -97,7 +97,7 @@ export default function InspirationPage() {
 
       {/* Warp Portal - THE HERO */}
       <motion.div
-        className="relative"
+        className="relative overflow-hidden"
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.7, delay: 0.2 }}
