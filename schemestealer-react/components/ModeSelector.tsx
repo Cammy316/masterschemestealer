@@ -26,6 +26,16 @@ export function ModeSelector() {
       {/* Subtle starfield background */}
       <div className="starfield-bg fixed inset-0 opacity-30" />
 
+      {/* Scan line overlay */}
+      <div className="absolute inset-0 opacity-10 pointer-events-none">
+        <div
+          className="absolute w-full h-0.5 bg-gradient-to-r from-transparent via-amber-500 to-transparent"
+          style={{
+            animation: 'scan-line 8s linear infinite',
+          }}
+        />
+      </div>
+
       {/* Vignette effect */}
       <div
         className="fixed inset-0 pointer-events-none"
@@ -36,6 +46,20 @@ export function ModeSelector() {
 
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center justify-center flex-1 px-3 py-4">
+        {/* System Status Indicator */}
+        <motion.div
+          className="mb-2 text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+        >
+          <div className="inline-block px-3 py-1 border border-green-500/30 rounded-full bg-black/50">
+            <span className="text-green-500 text-xs font-mono tracking-wider">
+              {'>'} MACHINE SPIRIT STATUS: <span className="text-green-400">ACTIVE</span>
+            </span>
+          </div>
+        </motion.div>
+
         {/* Header - Compact and Responsive */}
         <motion.div
           className="text-center mb-4"
@@ -44,12 +68,14 @@ export function ModeSelector() {
           transition={{ duration: 0.6 }}
         >
           <motion.h1
-            className="font-bold gothic-text mb-1 header-text responsive-header"
+            className="font-bold gothic-text mb-1 header-text responsive-header flex items-center justify-center gap-2"
             style={{
               color: 'var(--imperial-gold)',
             }}
           >
-            ═══ SCHEMESTEALER ═══
+            <span className="text-amber-500/80">⚙</span>
+            <span>═══ SCHEMESTEALER ═══</span>
+            <span className="text-amber-500/80">⚙</span>
           </motion.h1>
           <motion.p
             className="text-brass/70 tech-text responsive-label"
@@ -57,7 +83,7 @@ export function ModeSelector() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.6 }}
           >
-            Machine Spirit Initialized
+            Chromatic Analysis & Pattern Recognition System
           </motion.p>
         </motion.div>
 
@@ -75,7 +101,7 @@ export function ModeSelector() {
             className="group relative rounded-xl overflow-hidden touch-target textured flex-1"
             style={{
               background: 'linear-gradient(135deg, #0d1a0d 0%, #1a2a1a 100%)',
-              border: '1px solid rgba(0, 255, 65, 0.3)',
+              border: '2px solid rgba(0, 255, 65, 0.3)',
             }}
             whileHover={{
               scale: 1.02,
@@ -85,11 +111,31 @@ export function ModeSelector() {
             whileTap={{ scale: 0.98 }}
             transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           >
+            {/* Corner brackets */}
+            <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-green-500 pointer-events-none" />
+            <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-green-500 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-green-500 pointer-events-none" />
+            <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-green-500 pointer-events-none" />
+
             {/* Scanline effect on hover */}
             <motion.div
               className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100"
               style={{
                 background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 255, 65, 0.03) 2px, rgba(0, 255, 65, 0.03) 4px)',
+              }}
+            />
+
+            {/* Pulse ring animation on hover */}
+            <motion.div
+              className="absolute inset-0 rounded-xl border-2 border-green-500 opacity-0 group-hover:opacity-100 pointer-events-none"
+              animate={{
+                scale: [1, 1.05, 1],
+                opacity: [0, 0.5, 0],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: 'easeInOut',
               }}
             />
 
@@ -123,7 +169,7 @@ export function ModeSelector() {
             className="group relative rounded-xl overflow-hidden touch-target textured flex-1"
             style={{
               background: 'linear-gradient(135deg, #1a0d1a 0%, #2a1a2a 100%)',
-              border: '1px solid rgba(139, 92, 246, 0.3)',
+              border: '2px solid rgba(139, 92, 246, 0.3)',
             }}
             whileHover={{
               scale: 1.02,
@@ -133,6 +179,12 @@ export function ModeSelector() {
             whileTap={{ scale: 0.98 }}
             transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           >
+            {/* Corner brackets */}
+            <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-purple-500 pointer-events-none" />
+            <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-purple-500 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-purple-500 pointer-events-none" />
+            <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-purple-500 pointer-events-none" />
+
             {/* Ethereal shimmer on hover */}
             <motion.div
               className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100"
@@ -145,6 +197,20 @@ export function ModeSelector() {
               }}
               transition={{
                 duration: 3,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            />
+
+            {/* Pulse ring animation on hover */}
+            <motion.div
+              className="absolute inset-0 rounded-xl border-2 border-purple-500 opacity-0 group-hover:opacity-100 pointer-events-none"
+              animate={{
+                scale: [1, 1.05, 1],
+                opacity: [0, 0.5, 0],
+              }}
+              transition={{
+                duration: 2,
                 repeat: Infinity,
                 ease: 'easeInOut',
               }}
