@@ -36,36 +36,65 @@ export function Navigation() {
           {/* Home */}
           <NavLink
             href="/"
-            icon="🏠"
+            icon={
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" strokeLinecap="round" strokeLinejoin="round" />
+                <polyline points="9 22 9 12 15 12 15 22" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            }
             label="Home"
             isActive={pathname === '/'}
             theme="neutral"
           />
 
-          {/* Miniscan - Cogitator theme */}
+          {/* Miniscan - Cogitator theme with servo-skull icon */}
           <NavLink
             href="/miniature"
-            icon="💀"
+            icon={
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                {/* Simplified skull shape */}
+                <path d="M12 2C8 2 5 5 5 9c0 2.5 1 4 2 5v3h10v-3c1-1 2-2.5 2-5 0-4-3-7-7-7z" strokeLinecap="round" strokeLinejoin="round" />
+                {/* Eye sockets */}
+                <circle cx="9" cy="10" r="1.5" fill="currentColor" />
+                <circle cx="15" cy="10" r="1.5" fill="currentColor" />
+                {/* Jaw */}
+                <path d="M8 17h8v2c0 1-1 2-2 2h-4c-1 0-2-1-2-2v-2z" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            }
             label="Miniscan"
             isActive={isActive('/miniature')}
             theme="cogitator"
           />
 
-          {/* Inspiration - Warp theme */}
+          {/* Inspiration - Warp theme with vortex icon */}
           <NavLink
             href="/inspiration"
-            icon="✧"
+            icon={
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                {/* Spiral/vortex shape */}
+                <path d="M12 2c5.5 0 10 4.5 10 10s-4.5 10-10 10S2 17.5 2 12 6.5 2 12 2z" opacity="0.3" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M12 6c3.3 0 6 2.7 6 6s-2.7 6-6 6-6-2.7-6-6 2.7-6 6-6z" opacity="0.5" strokeLinecap="round" strokeLinejoin="round" />
+                <circle cx="12" cy="12" r="3" strokeLinecap="round" strokeLinejoin="round" />
+                <circle cx="12" cy="12" r="1" fill="currentColor" />
+              </svg>
+            }
             label="Inspiration"
             isActive={isActive('/inspiration')}
             theme="warp"
           />
 
-          {/* Cart - Brass/neutral theme */}
+          {/* Cart - Brass/neutral theme with crate icon */}
           <NavLink
             href="/cart"
             icon={
               <div className="relative">
-                <span className="text-2xl">🛒</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  {/* Supply crate shape */}
+                  <rect x="3" y="8" width="18" height="13" rx="1" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M3 13h18M3 17h18" strokeLinecap="round" strokeLinejoin="round" />
+                  {/* Handle */}
+                  <path d="M8 8V6a4 4 0 0 1 8 0v2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
                 {cartCount > 0 && (
                   <motion.div
                     className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold"

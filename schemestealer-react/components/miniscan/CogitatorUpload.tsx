@@ -34,19 +34,28 @@ export function CogitatorUpload({ onFileSelect, onCameraActivate, disabled = fal
       {/* Gothic frame container */}
       <div className="gothic-frame rounded-lg p-1">
         <div className="bg-dark-gothic rounded-lg p-8">
-          {/* Skull icon with glow */}
+          {/* Servo-skull icon with glow */}
           <motion.div
-            className="text-6xl text-center mb-4"
+            className="flex justify-center mb-4"
             animate={{
-              textShadow: [
-                '0 0 10px var(--cogitator-green-glow)',
-                '0 0 20px var(--cogitator-green-glow)',
-                '0 0 10px var(--cogitator-green-glow)',
+              filter: [
+                'drop-shadow(0 0 10px var(--cogitator-green))',
+                'drop-shadow(0 0 20px var(--cogitator-green))',
+                'drop-shadow(0 0 10px var(--cogitator-green))',
               ],
             }}
             transition={{ duration: 2, repeat: Infinity }}
           >
-            💀
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--cogitator-green)" strokeWidth="1.5">
+              {/* Servo-skull design */}
+              <path d="M12 2C8 2 5 5 5 9c0 2.5 1 4 2 5v3h10v-3c1-1 2-2.5 2-5 0-4-3-7-7-7z" strokeLinecap="round" strokeLinejoin="round" />
+              <circle cx="9" cy="10" r="1.5" fill="var(--cogitator-green)" />
+              <circle cx="15" cy="10" r="1.5" fill="var(--cogitator-green)" />
+              <path d="M8 17h8v2c0 1-1 2-2 2h-4c-1 0-2-1-2-2v-2z" strokeLinecap="round" strokeLinejoin="round" />
+              {/* Mechanical details */}
+              <circle cx="12" cy="6" r="0.5" fill="var(--brass)" />
+              <path d="M9 14h6" strokeLinecap="round" />
+            </svg>
           </motion.div>
 
           {/* Title */}
@@ -71,7 +80,10 @@ export function CogitatorUpload({ onFileSelect, onCameraActivate, disabled = fal
               whileTap={disabled ? {} : { scale: 0.98 }}
             >
               <div className="flex items-center justify-center gap-3">
-                <span className="text-2xl">📸</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" strokeLinecap="round" strokeLinejoin="round" />
+                  <circle cx="12" cy="13" r="4" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
                 <span className="auspex-text font-bold cyber-text">
                   ACTIVATE PICT-CAPTURE
                 </span>
@@ -98,7 +110,11 @@ export function CogitatorUpload({ onFileSelect, onCameraActivate, disabled = fal
               whileTap={disabled ? {} : { scale: 0.98 }}
             >
               <div className="flex items-center justify-center gap-3">
-                <span className="text-2xl">📁</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" strokeLinecap="round" strokeLinejoin="round" />
+                  <line x1="12" y1="11" x2="12" y2="17" strokeLinecap="round" />
+                  <line x1="9" y1="14" x2="15" y2="14" strokeLinecap="round" />
+                </svg>
                 <span className="text-brass font-bold cyber-text">
                   UPLOAD FROM ARCHIVE
                 </span>
