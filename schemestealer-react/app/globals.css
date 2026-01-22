@@ -1,26 +1,509 @@
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Cinzel:wght@400;600;700&family=Orbitron:wght@400;500;700;900&display=swap');
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ========================================
+     MINISCAN / COGITATOR THEME (Imperial)
+     ======================================== */
+  --cogitator-green: #00FF41;
+  --cogitator-green-dim: #00AA2A;
+  --cogitator-green-dark: #007A1F;
+  --cogitator-green-glow: rgba(0, 255, 65, 0.3);
+  --cogitator-green-glow-strong: rgba(0, 255, 65, 0.6);
+
+  --brass: #B8860B;
+  --brass-dark: #8B6508;
+  --bronze: #CD7F32;
+  --bronze-dark: #A0601D;
+  --imperial-gold: #FFD700;
+  --imperial-gold-dark: #BFA000;
+
+  --parchment: #F5E6D3;
+  --parchment-dark: #E6D4BB;
+  --dark-gothic: #1a1a1a;
+  --void-black: #0d0d0d;
+  --charcoal: #2a2a2a;
+
+  /* ========================================
+     INSPIRATION / WARP THEME (Chaos)
+     ======================================== */
+  --warp-purple: #8B5CF6;
+  --warp-purple-dark: #6D28D9;
+  --warp-purple-light: #A78BFA;
+  --warp-pink: #EC4899;
+  --warp-pink-light: #F472B6;
+  --warp-teal: #14B8A6;
+  --warp-teal-light: #2DD4BF;
+
+  --ethereal-glow: rgba(139, 92, 246, 0.4);
+  --ethereal-glow-strong: rgba(139, 92, 246, 0.7);
+  --void-blue: #0f0f23;
+  --starfield: #1a1a2e;
+  --cosmic-purple: #1e1b4b;
+
+  /* ========================================
+     SHARED COLORS
+     ======================================== */
+  --success: #22C55E;
+  --warning: #EAB308;
+  --error: #EF4444;
+  --info: #3B82F6;
+
+  --text-primary: #FFFFFF;
+  --text-secondary: #9CA3AF;
+  --text-tertiary: #6B7280;
+
+  /* ========================================
+     SPACING & SIZING
+     ======================================== */
+  --min-touch-target: 44px;
+  --nav-height: 64px;
+  --border-radius-sm: 4px;
+  --border-radius: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+
+  /* ========================================
+     Z-INDEX LAYERS
+     ======================================== */
+  --z-modal: 1000;
+  --z-nav: 100;
+  --z-overlay: 50;
+  --z-dropdown: 10;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Custom fonts for W40K theme */
+  --font-gothic: 'Cinzel', serif;
+  --font-tech: 'Rajdhani', sans-serif;
+  --font-cyber: 'Orbitron', sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ========================================
+   BASE STYLES
+   ======================================== */
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: var(--void-black);
+  color: var(--text-primary);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========================================
+   TYPOGRAPHY
+   ======================================== */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+}
+
+.gothic-text {
+  font-family: 'Cinzel', serif;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.tech-text {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.cyber-text {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+/* ========================================
+   PROFESSIONAL POLISH - TEXTURE & DEPTH
+   ======================================== */
+
+/* Subtle noise texture for depth */
+.textured {
+  position: relative;
+}
+
+.textured::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  border-radius: inherit;
+}
+
+/* Improved text readability with shadows */
+.text-shadow-sm {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.text-shadow {
+  text-shadow:
+    0 0 10px currentColor,
+    0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.text-shadow-lg {
+  text-shadow:
+    0 0 10px currentColor,
+    0 0 20px currentColor,
+    0 4px 8px rgba(0, 0, 0, 0.9);
+}
+
+/* Glow text for important elements */
+.glow-text {
+  text-shadow:
+    0 0 5px currentColor,
+    0 0 20px currentColor,
+    0 0 40px currentColor;
+}
+
+/* Header text with depth */
+.header-text {
+  text-shadow:
+    0 0 10px currentColor,
+    0 2px 4px rgba(0, 0, 0, 0.8);
+  letter-spacing: 0.1em;
+}
+
+/* Container depth with subtle shadows */
+.depth-1 {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.depth-2 {
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    inset 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.depth-3 {
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.5),
+    inset 0 0 30px rgba(0, 0, 0, 0.3);
+}
+
+/* ========================================
+   COGITATOR / AUSPEX EFFECTS
+   ======================================== */
+
+.auspex-glow {
+  text-shadow:
+    0 0 10px var(--cogitator-green-glow),
+    0 0 20px var(--cogitator-green-glow),
+    0 0 30px var(--cogitator-green-glow);
+}
+
+.auspex-text {
+  color: var(--cogitator-green);
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  text-shadow: 0 0 10px var(--cogitator-green-glow);
+}
+
+.scanline {
+  position: relative;
+  overflow: hidden;
+}
+
+.scanline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--cogitator-green),
+    transparent
+  );
+  animation: scanline-move 3s linear infinite;
+  pointer-events: none;
+  z-index: 10;
+}
+
+@keyframes scanline-move {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(100vh); }
+}
+
+.crt-flicker {
+  animation: crt-flicker 0.1s infinite;
+}
+
+@keyframes crt-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.98; }
+}
+
+.gothic-frame {
+  position: relative;
+  border: 2px solid var(--brass);
+  background: linear-gradient(
+    135deg,
+    var(--brass-dark) 0%,
+    var(--bronze) 50%,
+    var(--brass-dark) 100%
+  );
+  padding: 2px;
+}
+
+.gothic-frame::before,
+.gothic-frame::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--imperial-gold);
+}
+
+.gothic-frame::before {
+  top: -2px;
+  left: -2px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.gothic-frame::after {
+  bottom: -2px;
+  right: -2px;
+  border-left: none;
+  border-top: none;
+}
+
+.parchment-bg {
+  background: linear-gradient(
+    to bottom,
+    var(--parchment),
+    var(--parchment-dark)
+  );
+  color: var(--void-black);
+}
+
+/* ========================================
+   WARP / CHAOS EFFECTS
+   ======================================== */
+
+.ethereal-glow {
+  box-shadow:
+    0 0 20px var(--ethereal-glow),
+    0 0 40px var(--ethereal-glow),
+    inset 0 0 20px var(--ethereal-glow);
+}
+
+.warp-text {
+  color: var(--warp-purple-light);
+  font-family: 'Cinzel', serif;
+  text-shadow:
+    0 0 10px var(--ethereal-glow),
+    0 0 20px var(--ethereal-glow);
+}
+
+.warp-gradient {
+  background: linear-gradient(
+    135deg,
+    var(--warp-purple) 0%,
+    var(--warp-pink) 50%,
+    var(--warp-teal) 100%
+  );
+}
+
+.warp-border {
+  border: 2px solid transparent;
+  background-image:
+    linear-gradient(var(--void-blue), var(--void-blue)),
+    linear-gradient(135deg, var(--warp-purple), var(--warp-pink), var(--warp-teal));
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+
+.void-bg {
+  background: radial-gradient(
+    circle at center,
+    var(--starfield) 0%,
+    var(--void-blue) 50%,
+    #000000 100%
+  );
+}
+
+.starfield-bg {
+  background: var(--starfield);
+  position: relative;
+}
+
+.starfield-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(2px 2px at 20% 30%, white, transparent),
+    radial-gradient(2px 2px at 60% 70%, white, transparent),
+    radial-gradient(1px 1px at 50% 50%, white, transparent),
+    radial-gradient(1px 1px at 80% 10%, white, transparent),
+    radial-gradient(2px 2px at 90% 60%, white, transparent),
+    radial-gradient(1px 1px at 33% 80%, white, transparent);
+  background-size: 200% 200%;
+  animation: starfield-twinkle 4s ease-in-out infinite;
+  opacity: 0.5;
+}
+
+@keyframes starfield-twinkle {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+}
+
+/* ========================================
+   LOADING ANIMATIONS
+   ======================================== */
+
+.servo-skull-spin {
+  animation: servo-skull-spin 2s linear infinite;
+}
+
+@keyframes servo-skull-spin {
+  0% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(90deg) scale(1.1); }
+  50% { transform: rotate(180deg) scale(1); }
+  75% { transform: rotate(270deg) scale(0.9); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+.warp-vortex {
+  animation: warp-vortex 3s ease-in-out infinite;
+}
+
+@keyframes warp-vortex {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+    filter: blur(0px);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.2);
+    filter: blur(2px);
+  }
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+
+.touch-target {
+  min-width: var(--min-touch-target);
+  min-height: var(--min-touch-target);
+}
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 10px currentColor;
+    opacity: 1;
+  }
+  50% {
+    box-shadow: 0 0 20px currentColor;
+    opacity: 0.8;
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 640px) {
+  body {
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+
+.focus-visible:focus {
+  outline: 2px solid var(--cogitator-green);
+  outline-offset: 2px;
+}
+
+.focus-visible-warp:focus {
+  outline: 2px solid var(--warp-purple);
+  outline-offset: 2px;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

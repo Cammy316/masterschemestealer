@@ -8,9 +8,7 @@ from PIL import Image
 import logging
 from typing import Dict, List, Any
 
-from core.smart_color_system import SmartColorExtractor
-from core.color_engine import Paint, PaintMatcher
-import json
+from core.schemestealer_engine import SchemeStealerEngine
 
 logger = logging.getLogger(__name__)
 
@@ -26,25 +24,7 @@ class InspirationScannerService:
     def __init__(self, paint_db_path: str = 'paints.json'):
         """Initialize the scanner with paint database"""
         logger.info("Initializing Inspiration Scanner Service")
-
-        # Load paint database
-        with open(paint_db_path, 'r') as f:
-            paint_data = json.load(f)
-
-        self.paint_db = []
-        for p in paint_data:
-            paint = Paint(
-                name=p['name'],
-                brand=p['brand'],
-                hex=p['hex'],
-                type=p.get('type', 'paint')
-            )
-            paint.compute_properties()
-            self.paint_db.append(paint)
-
-        self.color_extractor = SmartColorExtractor()
-        self.paint_matcher = PaintMatcher(self.paint_db)
-
+        self.engine = SchemeStealerEngine(paint_db_path=paint_db_path)
         logger.info("Inspiration Scanner Service ready")
 
     def scan(self, image: Image.Image) -> Dict[str, Any]:
@@ -62,47 +42,26 @@ class InspirationScannerService:
         """
         try:
             # Convert PIL to numpy array (RGB)
-            img_rgb = np.array(image)
+            img_rgb = np.array(image.convert('RGB'))
 
-            # Create full mask (no background removal for inspiration mode)
-            mask = np.ones(img_rgb.shape[:2], dtype=bool)
-
-            # Extract colors using smart color system
             logger.info("Extracting color palette from inspiration image...")
-            detected_colors = self.color_extractor.extract_colors(img_rgb, mask)
 
-            # Limit to top 5-8 colors by coverage
-            detected_colors = sorted(
-                detected_colors,
-                key=lambda x: x['coverage'],
-                reverse=True
-            )[:8]
+            # Call the engine's analyze_miniature method
+            # mode="inspiration" disables background removal
+            recipes, _, quality_report = self.engine.analyze_miniature(
+                img_np=img_rgb,
+                mode="inspiration",  # NO background removal
+                remove_base=False,
+                use_awb=True,
+                sat_boost=1.2,
+                detect_details=False,  # Don't need detail detection for inspiration
+                brands=['Citadel', 'Vallejo', 'Army Painter']  # Use main brands
+            )
 
-            # Get paint recommendations for each color
-            logger.info(f"Finding paint matches for {len(detected_colors)} colors...")
-            paint_recommendations = []
+            logger.info(f"Detected {len(recipes)} colors")
 
-            for color in detected_colors:
-                # Get top 2 matches for each detected color
-                matches = self.paint_matcher.find_closest_paints(
-                    color['median_lab'],
-                    top_n=2
-                )
-                paint_recommendations.extend(matches)
-
-            # Remove duplicates and limit total recommendations
-            seen_paints = set()
-            unique_paints = []
-            for paint in paint_recommendations:
-                paint_key = f"{paint['brand']}-{paint['name']}"
-                if paint_key not in seen_paints:
-                    seen_paints.add(paint_key)
-                    unique_paints.append(paint)
-
-            paint_recommendations = unique_paints[:12]  # Limit to top 12 paints
-
-            # Format results
-            result = self._format_results(detected_colors, paint_recommendations)
+            # Format results for API response
+            result = self._format_results(recipes, mode='inspiration')
 
             return result
 
@@ -110,46 +69,94 @@ class InspirationScannerService:
             logger.error(f"Inspiration scan failed: {str(e)}", exc_info=True)
             raise
 
-    def _format_results(self, colors: List[Dict], paints: List[Dict]) -> Dict[str, Any]:
-        """Format scan results for API response"""
-        formatted_colors = []
-        formatted_paints = []
+    def _format_results(self, recipes: List[Dict], mode: str) -> Dict[str, Any]:
+        """
+        Format scan results for API response
 
-        # Format colors
-        for color_data in colors:
-            rgb = color_data['median_rgb']
-            lab = color_data['median_lab']
+        Args:
+            recipes: List of recipe dictionaries from engine
+            mode: 'miniature' or 'inspiration'
+
+        Returns:
+            Formatted API response
+        """
+        colors = []
+        paints = []
+        seen_paints = set()
+
+        for recipe in recipes:
+            # Extract color info
+            rgb = recipe.get('rgb', recipe.get('rgb_preview', [0, 0, 0]))
+            if isinstance(rgb, np.ndarray):
+                rgb = rgb.tolist()
+
+            lab = recipe.get('lab', [0, 0, 0])
+            if isinstance(lab, np.ndarray):
+                lab = lab.tolist()
+
+            # Create hex from RGB
             hex_color = '#{:02x}{:02x}{:02x}'.format(
                 int(rgb[0]), int(rgb[1]), int(rgb[2])
             )
 
-            formatted_colors.append({
+            # Add color
+            colors.append({
                 'rgb': [int(rgb[0]), int(rgb[1]), int(rgb[2])],
                 'lab': [float(lab[0]), float(lab[1]), float(lab[2])],
                 'hex': hex_color,
-                'percentage': float(color_data['coverage']),
-                'family': color_data.get('family', 'Unknown'),
+                'percentage': float(recipe.get('dominance', 0)),
+                'family': recipe.get('family', 'Unknown'),
             })
 
-        # Format paints
-        for paint_data in paints:
-            formatted_paints.append({
-                'name': paint_data['name'],
-                'brand': paint_data['brand'],
-                'hex': paint_data['hex'],
-                'type': paint_data.get('type', 'paint'),
-                'deltaE': float(paint_data.get('delta_e', 0)),
-                'rgb': [int(paint_data['rgb'][0]), int(paint_data['rgb'][1]), int(paint_data['rgb'][2])],
-                'lab': [float(paint_data['lab'][0]), float(paint_data['lab'][1]), float(paint_data['lab'][2])],
-            })
+            # Extract paint recommendations from base matches
+            base_matches = recipe.get('base', {})
+            for brand, match_data in base_matches.items():
+                if match_data:
+                    paint_key = f"{brand}-{match_data['name']}"
+                    if paint_key not in seen_paints:
+                        seen_paints.add(paint_key)
+
+                        # Get paint RGB from hex
+                        paint_hex = match_data['hex']
+                        paint_rgb = self._hex_to_rgb(paint_hex)
+                        paint_lab = self._rgb_to_lab(paint_rgb)
+
+                        # Calculate Delta-E (simplified - using Euclidean distance in LAB)
+                        delta_e = np.sqrt(sum((paint_lab[i] - lab[i])**2 for i in range(3)))
+
+                        paints.append({
+                            'name': match_data['name'],
+                            'brand': brand,
+                            'hex': paint_hex,
+                            'type': match_data.get('type', 'paint'),
+                            'deltaE': float(delta_e),
+                            'rgb': paint_rgb,
+                            'lab': paint_lab,
+                        })
+
+        # Limit results - more colors for inspiration mode
+        colors = colors[:8]  # Top 8 colors for inspiration
+        paints = paints[:15]  # Top 15 paint recommendations
 
         return {
-            'mode': 'inspiration',
-            'colors': formatted_colors,
-            'paints': formatted_paints,
+            'mode': mode,
+            'colors': colors,
+            'paints': paints,
             'metadata': {
-                'color_count': len(formatted_colors),
-                'paint_count': len(formatted_paints),
+                'color_count': len(colors),
+                'paint_count': len(paints),
                 'background_removed': False,
             }
         }
+
+    def _hex_to_rgb(self, hex_color: str) -> List[int]:
+        """Convert hex color to RGB"""
+        hex_color = hex_color.lstrip('#')
+        return [int(hex_color[i:i+2], 16) for i in (0, 2, 4)]
+
+    def _rgb_to_lab(self, rgb: List[int]) -> List[float]:
+        """Convert RGB to LAB (simplified)"""
+        from skimage import color as sk_color
+        rgb_norm = np.array(rgb) / 255.0
+        lab = sk_color.rgb2lab(np.array([[rgb_norm]]))[0][0]
+        return [float(lab[0]), float(lab[1]), float(lab[2])]
