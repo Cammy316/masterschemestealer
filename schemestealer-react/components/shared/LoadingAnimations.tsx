@@ -68,12 +68,19 @@ function ServoSkullLoading({ phrase }: { phrase: string }) {
         <div className="relative flex flex-col items-center">
           {/* Skull icon (servo-skull effect) */}
           <motion.div
-            className="text-9xl mb-8 servo-skull-spin"
+            className="mb-8 servo-skull-spin"
             style={{
               filter: 'drop-shadow(0 0 20px var(--cogitator-green-glow))',
             }}
           >
-            💀
+            <svg width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="var(--cogitator-green)" strokeWidth="1.5">
+              <path d="M12 2C8 2 5 5 5 9c0 2.5 1 4 2 5v3h10v-3c1-1 2-2.5 2-5 0-4-3-7-7-7z" strokeLinecap="round" strokeLinejoin="round" />
+              <circle cx="9" cy="10" r="1.5" fill="var(--cogitator-green)" />
+              <circle cx="15" cy="10" r="1.5" fill="var(--cogitator-green)" />
+              <path d="M8 17h8v2c0 1-1 2-2 2h-4c-1 0-2-1-2-2v-2z" strokeLinecap="round" strokeLinejoin="round" />
+              <circle cx="12" cy="6" r="0.5" fill="var(--brass)" />
+              <path d="M9 14h6" strokeLinecap="round" />
+            </svg>
           </motion.div>
 
           {/* Spinning cog behind skull */}
