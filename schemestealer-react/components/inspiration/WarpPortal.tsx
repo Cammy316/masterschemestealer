@@ -1,6 +1,6 @@
 /**
- * Warp Portal - Swirling magical portal for Inspiration mode
- * The centerpiece hero component with layered animations
+ * Warp Portal - True vortex portal with dark center for Inspiration mode
+ * Redesigned to look like an actual portal being pulled into the void
  */
 
 'use client';
@@ -17,94 +17,51 @@ interface WarpPortalProps {
 export function WarpPortal({ onActivate, isActive = false, disabled = false }: WarpPortalProps) {
   const portalRef = useRef<HTMLButtonElement>(null);
 
-  // Generate 250 realistic stars with varying sizes
-  const stars = React.useMemo(() => {
-    return [...Array(250)].map((_, i) => {
-      const size = Math.random() < 0.7 ? 1 : Math.random() < 0.9 ? 1.5 : 2;
-      return {
-        id: i,
-        x: Math.random() * 100,
-        y: Math.random() * 100,
-        size,
-        opacity: 0.3 + Math.random() * 0.7,
-        twinkleDuration: 2 + Math.random() * 4,
-        twinkleDelay: Math.random() * 3,
-      };
-    });
-  }, []);
-
-  // Generate 25 floating particles that drift toward portal center
+  // Generate particles being drawn toward center
   const particles = React.useMemo(() => {
-    return [...Array(25)].map((_, i) => {
-      const angle = (Math.PI * 2 * i) / 25;
-      const distance = 150 + Math.random() * 200;
+    return [...Array(12)].map((_, i) => {
+      const angle = (Math.PI * 2 * i) / 12;
+      const distance = 45; // percentage from center
       return {
         id: i,
-        startX: 50 + Math.cos(angle) * (distance / 5),
-        startY: 50 + Math.sin(angle) * (distance / 5),
-        size: 1 + Math.random() * 2,
-        duration: 4 + Math.random() * 3,
-        delay: Math.random() * 5,
+        startX: 50 + Math.cos(angle) * distance,
+        startY: 50 + Math.sin(angle) * distance,
+        delay: i * 0.25,
       };
     });
   }, []);
 
   return (
-    <div className="relative flex items-center justify-center min-h-[400px] py-8">
-      {/* Realistic starfield - 250+ individual stars */}
+    <div className="relative flex items-center justify-center min-h-[400px] py-8 overflow-hidden">
+      {/* Realistic starfield background - constrained within container */}
       <div className="absolute inset-0 rounded-2xl overflow-hidden bg-void-black">
-        {stars.map((star) => (
-          <motion.div
-            key={star.id}
-            className="absolute rounded-full bg-white"
-            style={{
-              left: `${star.x}%`,
-              top: `${star.y}%`,
-              width: `${star.size}px`,
-              height: `${star.size}px`,
-            }}
-            animate={{
-              opacity: [star.opacity * 0.3, star.opacity, star.opacity * 0.3],
-              scale: [0.8, 1, 0.8],
-            }}
-            transition={{
-              duration: star.twinkleDuration,
-              repeat: Infinity,
-              delay: star.twinkleDelay,
-              ease: 'easeInOut',
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Enhanced floating particles - drift toward portal center */}
-      <div className="absolute inset-0 pointer-events-none">
-        {particles.map((particle) => (
-          <motion.div
-            key={particle.id}
-            className="absolute rounded-full"
-            style={{
-              left: `${particle.startX}%`,
-              top: `${particle.startY}%`,
-              width: `${particle.size}px`,
-              height: `${particle.size}px`,
-              background: 'radial-gradient(circle, rgba(255,255,255,0.9), rgba(139,92,246,0.4))',
-              boxShadow: '0 0 6px rgba(255,255,255,0.6)',
-            }}
-            animate={{
-              x: [`0%`, `${(50 - particle.startX) * 3}%`],
-              y: [`0%`, `${(50 - particle.startY) * 3}%`],
-              opacity: [0, 0.8, 0],
-              scale: [0.5, 1.2, 0],
-            }}
-            transition={{
-              duration: particle.duration,
-              repeat: Infinity,
-              delay: particle.delay,
-              ease: 'easeIn',
-            }}
-          />
-        ))}
+        {[...Array(100)].map((_, i) => {
+          const size = Math.random() < 0.7 ? 1 : Math.random() < 0.9 ? 1.5 : 2;
+          const x = 10 + Math.random() * 80; // Keep stars away from edges
+          const y = 10 + Math.random() * 80;
+          return (
+            <motion.div
+              key={i}
+              className="absolute rounded-full bg-white"
+              style={{
+                left: `${x}%`,
+                top: `${y}%`,
+                width: `${size}px`,
+                height: `${size}px`,
+              }}
+              animate={{
+                opacity: [0.3, 0.8, 0.3],
+                scale: [0.8, 1, 0.8],
+              }}
+              transition={{
+                duration: 2 + Math.random() * 3,
+                repeat: Infinity,
+                delay: Math.random() * 3,
+                ease: 'easeInOut',
+              }}
+            />
+          );
+        })}
       </div>
 
       {/* Main portal button */}
@@ -112,149 +69,186 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false }: W
         ref={portalRef}
         onClick={onActivate}
         disabled={disabled}
-        className="relative w-64 h-64 rounded-full focus:outline-none focus-visible-warp disabled:opacity-50 disabled:cursor-not-allowed"
+        className="relative w-72 h-72 rounded-full focus:outline-none focus-visible-warp disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
         whileHover={{ scale: disabled ? 1 : 1.05 }}
         whileTap={{ scale: disabled ? 1 : 0.95 }}
         animate={{
           filter: isActive ? 'brightness(1.5)' : 'brightness(1)',
         }}
       >
-        {/* Outer ring - slow rotation */}
+        {/* Layer 1: Outer glow */}
+        <div className="absolute inset-0 rounded-full bg-purple-600/20 blur-3xl animate-pulse" />
+
+        {/* Layer 2: Outer swirl ring - conic gradient */}
         <motion.div
-          className="absolute inset-0 rounded-full opacity-40"
+          className="absolute inset-0 rounded-full"
           style={{
-            background: 'conic-gradient(from 0deg, var(--warp-purple), var(--warp-pink), var(--warp-teal), var(--warp-purple))',
-            filter: 'blur(20px)',
+            background: `conic-gradient(
+              from 0deg,
+              transparent 0deg,
+              rgba(139, 92, 246, 0.4) 30deg,
+              rgba(236, 72, 153, 0.3) 90deg,
+              rgba(20, 184, 166, 0.3) 150deg,
+              transparent 180deg,
+              rgba(139, 92, 246, 0.4) 210deg,
+              rgba(236, 72, 153, 0.3) 270deg,
+              rgba(20, 184, 166, 0.3) 330deg,
+              transparent 360deg
+            )`,
           }}
           animate={{ rotate: 360 }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: 'linear',
-          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
         />
 
-        {/* Middle ring - counter rotation */}
+        {/* Layer 3: Middle swirl - counter rotation */}
         <motion.div
-          className="absolute inset-8 rounded-full opacity-60"
+          className="absolute inset-8 rounded-full"
           style={{
-            background: 'conic-gradient(from 180deg, var(--warp-teal), var(--warp-purple), var(--warp-pink), var(--warp-teal))',
-            filter: 'blur(15px)',
+            background: `conic-gradient(
+              from 180deg,
+              rgba(139, 92, 246, 0.6) 0deg,
+              rgba(168, 85, 247, 0.5) 60deg,
+              rgba(236, 72, 153, 0.5) 120deg,
+              rgba(139, 92, 246, 0.6) 180deg,
+              rgba(168, 85, 247, 0.5) 240deg,
+              rgba(236, 72, 153, 0.5) 300deg,
+              rgba(139, 92, 246, 0.6) 360deg
+            )`,
           }}
           animate={{ rotate: -360 }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: 'linear',
-          }}
+          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
         />
 
-        {/* Inner ring - fast rotation */}
+        {/* Layer 4: Inner swirl - faster */}
         <motion.div
-          className="absolute inset-16 rounded-full opacity-70"
+          className="absolute inset-16 rounded-full"
           style={{
-            background: 'radial-gradient(circle, var(--warp-purple), var(--warp-pink))',
-            filter: 'blur(10px)',
+            background: `conic-gradient(
+              from 90deg,
+              rgba(192, 132, 252, 0.7) 0deg,
+              rgba(236, 72, 153, 0.6) 90deg,
+              rgba(192, 132, 252, 0.7) 180deg,
+              rgba(236, 72, 153, 0.6) 270deg,
+              rgba(192, 132, 252, 0.7) 360deg
+            )`,
           }}
           animate={{ rotate: 360 }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: 'linear',
-          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
         />
 
-        {/* Pulsing core */}
-        <motion.div
-          className="absolute inset-20 rounded-full"
+        {/* Layer 5: Event Horizon - Dark center void */}
+        <div
+          className="absolute inset-24 rounded-full"
           style={{
-            background: 'radial-gradient(circle, rgba(255,255,255,0.9), var(--warp-purple-light), transparent)',
-          }}
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.6, 1, 0.6],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
-
-        {/* Ripple effect on hover */}
-        <motion.div
-          className="absolute inset-0 rounded-full border-2 border-white"
-          initial={{ scale: 0.8, opacity: 0 }}
-          whileHover={{
-            scale: [0.8, 1.2],
-            opacity: [0, 0.5, 0],
-          }}
-          transition={{
-            duration: 1.5,
-            repeat: Infinity,
+            background: `radial-gradient(
+              circle,
+              #000000 0%,
+              #0a0010 30%,
+              #1a0030 60%,
+              rgba(139, 92, 246, 0.4) 100%
+            )`,
+            boxShadow: `
+              inset 0 0 30px 10px rgba(0, 0, 0, 0.8),
+              inset 0 0 60px 20px rgba(0, 0, 0, 0.6)
+            `,
           }}
         />
 
-        {/* Center content */}
+        {/* Layer 6: Spiral arms overlay (SVG) */}
+        <motion.svg
+          className="absolute inset-4 w-[calc(100%-2rem)] h-[calc(100%-2rem)]"
+          viewBox="0 0 200 200"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+        >
+          <defs>
+            <linearGradient id="spiralGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="rgba(139, 92, 246, 0.6)" />
+              <stop offset="50%" stopColor="rgba(236, 72, 153, 0.4)" />
+              <stop offset="100%" stopColor="rgba(139, 92, 246, 0.2)" />
+            </linearGradient>
+          </defs>
+          {/* Spiral arm paths - creates the "being pulled in" effect */}
+          <path
+            d="M100,100 Q120,80 140,85 T160,100 Q155,120 140,130 T100,140 Q80,135 70,120 T60,100 Q65,80 80,70 T100,60"
+            fill="none"
+            stroke="url(#spiralGradient)"
+            strokeWidth="2"
+            opacity="0.5"
+          />
+          <path
+            d="M100,100 Q80,120 60,115 T40,100 Q45,80 60,70 T100,60 Q120,65 130,80 T140,100 Q135,120 120,130 T100,140"
+            fill="none"
+            stroke="url(#spiralGradient)"
+            strokeWidth="2"
+            opacity="0.5"
+          />
+        </motion.svg>
+
+        {/* Layer 7: Center text */}
         <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
-          <motion.div
-            className="text-center px-4"
-            animate={{
-              y: [0, -5, 0],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: 'easeInOut',
+          <span
+            className="text-white text-xl font-bold tracking-[0.2em] drop-shadow-lg responsive-section-title"
+            style={{
+              textShadow: `
+                0 0 10px rgba(255, 255, 255, 0.9),
+                0 0 20px rgba(139, 92, 246, 0.8),
+                0 0 40px rgba(139, 92, 246, 0.6),
+                0 0 60px rgba(139, 92, 246, 0.4)
+              `,
             }}
           >
-            <div className="warp-text text-xl font-bold mb-2 gothic-text drop-shadow-lg">
-              {isActive ? 'CHANNELING...' : 'TOUCH THE VEIL'}
-            </div>
-            <div className="text-xs text-white/70 font-medium">
-              {isActive ? 'The Warp Stirs' : 'Enter the Immaterium'}
-            </div>
-          </motion.div>
+            {isActive ? 'CHANNELING...' : 'TOUCH THE VEIL'}
+          </span>
+          <span
+            className="text-purple-200 mt-2 tracking-wider responsive-label"
+            style={{
+              textShadow: `
+                0 0 10px rgba(192, 132, 252, 0.8),
+                0 0 20px rgba(139, 92, 246, 0.6)
+              `,
+            }}
+          >
+            {isActive ? 'The Warp Stirs' : 'Enter the Immaterium'}
+          </span>
         </div>
 
-        {/* Energy bolts */}
-        {!disabled && (
-          <>
-            {[...Array(6)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute w-0.5 h-12 bg-gradient-to-b from-transparent via-white to-transparent"
-                style={{
-                  left: '50%',
-                  top: '50%',
-                  transformOrigin: 'top center',
-                }}
-                animate={{
-                  rotate: [i * 60, i * 60 + 360],
-                  opacity: [0, 1, 0],
-                  scaleY: [0, 1, 0],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  delay: i * 0.3,
-                  ease: 'easeInOut',
-                }}
-              />
-            ))}
-          </>
-        )}
+        {/* Particle effects - being drawn toward center */}
+        <div className="absolute inset-0 overflow-hidden rounded-full pointer-events-none">
+          {particles.map((particle) => (
+            <motion.div
+              key={particle.id}
+              className="absolute w-1 h-1 bg-purple-300 rounded-full"
+              style={{
+                left: `${particle.startX}%`,
+                top: `${particle.startY}%`,
+              }}
+              animate={{
+                left: '50%',
+                top: '50%',
+                opacity: [0.8, 0],
+                scale: [1, 0],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                delay: particle.delay,
+                ease: "easeIn",
+              }}
+            />
+          ))}
+        </div>
       </motion.button>
 
       {/* Instruction text */}
       {!isActive && (
         <motion.div
-          className="absolute bottom-8 left-0 right-0 text-center"
+          className="absolute bottom-8 left-0 right-0 text-center px-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
         >
-          <p className="text-sm text-white/60 font-medium px-4">
+          <p className="responsive-label text-white/60 font-medium">
             Upload an image or take a photo to extract its chromatic essence
           </p>
         </motion.div>

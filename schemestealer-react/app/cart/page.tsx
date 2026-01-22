@@ -49,22 +49,62 @@ export default function CartPage() {
   const merchants = AFFILIATE_MERCHANTS[selectedRegion] || AFFILIATE_MERCHANTS.global;
 
   return (
-    <div className="min-h-screen pb-24 pt-8 px-4" style={{ background: 'var(--void-black)' }}>
+    <div
+      className="min-h-screen pb-24 pt-8 px-4"
+      style={{
+        background: `
+          radial-gradient(circle at 20px 20px, #2a2a2a 2px, transparent 2px),
+          radial-gradient(circle at 60px 20px, #2a2a2a 2px, transparent 2px),
+          radial-gradient(circle at 20px 60px, #2a2a2a 2px, transparent 2px),
+          radial-gradient(circle at 60px 60px, #2a2a2a 2px, transparent 2px),
+          linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%)
+        `,
+        backgroundSize: '80px 80px, 80px 80px, 80px 80px, 80px 80px, 100% 100%',
+      }}
+    >
       <div className="max-w-2xl mx-auto space-y-6">
-        {/* Header */}
+        {/* Header - Military Munitorum Style */}
         <motion.div
-          className="text-center"
+          className="text-center border-b border-amber-900/30 pb-4"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className="text-3xl font-bold gothic-text mb-2 text-brass">
-            ⚙ SUPPLY REQUISITION ⚙
-          </h1>
-          <p className="text-brass/70 tech-text text-sm">
-            Your compiled paint formulations for acquisition
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <svg className="w-8 h-8 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="3" y="8" width="18" height="13" rx="1" />
+              <path d="M3 13h18M3 17h18M8 8V6a4 4 0 0 1 8 0v2" />
+            </svg>
+            <h1 className="responsive-header font-bold gothic-text text-amber-500">
+              SUPPLY REQUISITION
+            </h1>
+            <svg className="w-8 h-8 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="3" y="8" width="18" height="13" rx="1" />
+              <path d="M3 13h18M3 17h18M8 8V6a4 4 0 0 1 8 0v2" />
+            </svg>
+          </div>
+          <p className="text-amber-500/60 tech-text responsive-label">
+            Departmento Munitorum - Paint Division
           </p>
         </motion.div>
+
+        {/* Manifest header - only show if cart has items */}
+        {cart.length > 0 && (
+          <motion.div
+            className="border border-amber-900/30 bg-amber-950/20 p-3 rounded"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+          >
+            <div className="flex justify-between text-amber-500/80 text-sm font-mono">
+              <span>MANIFEST #{Date.now().toString().slice(-6)}</span>
+              <span>ITEMS: {cart.length}</span>
+            </div>
+            <div className="text-amber-500/50 text-xs mt-1">
+              STATUS: AWAITING APPROVAL
+            </div>
+          </motion.div>
+        )}
 
         {/* Main Cart Display */}
         <ShoppingCart />

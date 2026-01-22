@@ -1,5 +1,5 @@
 /**
- * API client for SchemeSteal backend
+ * API client for SchemeStealer backend
  */
 
 import type { ScanResult, Color, Paint } from './types';
