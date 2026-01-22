@@ -1,5 +1,5 @@
 """
-FastAPI backend for SchemeSteal
+FastAPI backend for SchemeStealer
 Provides color detection endpoints for both Miniscan and Inspiration modes
 """
 
@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="SchemeSteal API",
+    title="SchemeStealer API",
     description="Color detection and paint matching for miniature painters",
     version="1.0.0"
 )
@@ -38,6 +38,8 @@ app.add_middleware(
         "http://localhost:3000",
         "http://127.0.0.1:3000",
         "http://localhost:3001",
+        "http://192.168.0.95:3000",  # Allow network access from frontend
+        "*",  # Allow all origins for testing (remove in production)
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -54,7 +56,7 @@ async def root():
     """Health check endpoint"""
     return {
         "status": "ok",
-        "message": "SchemeSteal API is running",
+        "message": "SchemeStealer API is running",
         "version": "1.0.0"
     }
 

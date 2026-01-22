@@ -1,6 +1,7 @@
 /**
  * Navigation component - W40K themed bottom navigation bar
  * Dynamic theming based on active route (Cogitator/Warp/Neutral)
+ * Hides on scroll down, shows on scroll up for better UX
  */
 
 'use client';
@@ -10,10 +11,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
+import { useScrollDirection } from '@/hooks/useScrollDirection';
 
 export function Navigation() {
   const pathname = usePathname();
   const cartItems = useAppStore((state) => state.cart);
+  const { scrollDirection, isAtTop } = useScrollDirection();
 
   // Don't show nav on home page
   if (pathname === '/') {
@@ -23,12 +26,22 @@ export function Navigation() {
   const isActive = (path: string) => pathname === path || pathname.startsWith(path);
   const cartCount = cartItems.length;
 
+  // Show nav when: at top, scrolling up, or not scrolling
+  const isVisible = isAtTop || scrollDirection === 'up' || scrollDirection === null;
+
   return (
-    <nav
+    <motion.nav
       className="fixed bottom-0 left-0 right-0 bg-dark-gothic shadow-lg z-50 safe-area-bottom"
       style={{
         borderTop: '1px solid var(--brass)',
         boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.5)',
+      }}
+      animate={{
+        y: isVisible ? 0 : '100%',
+      }}
+      transition={{
+        duration: 0.3,
+        ease: 'easeInOut',
       }}
     >
       <div className="max-w-2xl mx-auto px-2">
@@ -118,7 +131,7 @@ export function Navigation() {
           />
         </div>
       </div>
-    </nav>
+    </motion.nav>
   );
 }
 

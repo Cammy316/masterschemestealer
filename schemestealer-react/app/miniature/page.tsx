@@ -62,9 +62,24 @@ export default function MiniscanPage() {
   }
 
   return (
-    <div className="min-h-screen pb-24 pt-8 px-4" style={{ background: 'var(--void-black)' }}>
-      {/* Scanline overlay */}
-      <div className="scanline" />
+    <div className="min-h-screen pb-24 pt-8 px-4 cogitator-screen" style={{ background: 'var(--void-black)' }}>
+      {/* Targeting brackets - corner overlays */}
+      <div className="fixed inset-4 pointer-events-none z-20">
+        {/* Top Left */}
+        <div className="absolute top-0 left-0 w-8 h-8 border-l-2 border-t-2 border-green-500/30" />
+        {/* Top Right */}
+        <div className="absolute top-0 right-0 w-8 h-8 border-r-2 border-t-2 border-green-500/30" />
+        {/* Bottom Left */}
+        <div className="absolute bottom-20 left-0 w-8 h-8 border-l-2 border-b-2 border-green-500/30" />
+        {/* Bottom Right */}
+        <div className="absolute bottom-20 right-0 w-8 h-8 border-r-2 border-b-2 border-green-500/30" />
+      </div>
+
+      {/* Status readout corner */}
+      <div className="fixed top-6 right-4 text-green-500/40 text-xs font-mono z-20 pointer-events-none">
+        <div>SIG: 98.2%</div>
+        <div>RNG: OPTM</div>
+      </div>
 
       {/* Header */}
       <motion.div
