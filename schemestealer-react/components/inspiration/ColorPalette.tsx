@@ -14,7 +14,7 @@ interface ColorPaletteProps {
   title?: string;
 }
 
-export function ColorPalette({ colors, title = '🎨 EXTRACTED ESSENCE' }: ColorPaletteProps) {
+export function ColorPalette({ colors, title = '◆ EXTRACTED ESSENCE ◆' }: ColorPaletteProps) {
   if (!colors || colors.length === 0) {
     return null;
   }

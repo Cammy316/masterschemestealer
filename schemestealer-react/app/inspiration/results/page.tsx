@@ -45,8 +45,8 @@ export default function InspirationResultsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className="text-3xl font-bold gothic-text mb-2 warp-text">
-            ✧ ESSENCE EXTRACTED ✧
+          <h1 className="text-3xl font-bold gothic-text mb-2 warp-text text-shadow-lg">
+            ◆ ESSENCE EXTRACTED ◆
           </h1>
           <p className="text-warp-purple-light tech-text">
             {currentScan.detectedColors.length} chromatic signatures manifested from the Immaterium
@@ -56,7 +56,7 @@ export default function InspirationResultsPage() {
             animate={{ opacity: [0.5, 1, 0.5] }}
             transition={{ duration: 2, repeat: Infinity }}
           >
-            ✦ WARP EXTRACTION COMPLETE ✦
+            ◆ WARP EXTRACTION COMPLETE ◆
           </motion.div>
         </motion.div>
 
@@ -94,11 +94,11 @@ export default function InspirationResultsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <div className="warp-border rounded-2xl p-1">
-              <div className="bg-dark-gothic rounded-xl p-6">
+            <div className="warp-border rounded-2xl p-1 depth-3">
+              <div className="bg-dark-gothic rounded-xl p-6 textured">
                 <ColorPalette
                   colors={currentScan.detectedColors}
-                  title="🎨 EXTRACTED ESSENCE"
+                  title="◆ EXTRACTED ESSENCE ◆"
                 />
               </div>
             </div>
@@ -112,10 +112,10 @@ export default function InspirationResultsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
-            <div className="warp-border rounded-2xl p-1">
-              <div className="bg-dark-gothic rounded-xl p-6">
-                <h3 className="text-xl font-bold warp-text gothic-text mb-4 text-center">
-                  ✧ MATERIAL FORMULATIONS ✧
+            <div className="warp-border rounded-2xl p-1 depth-2">
+              <div className="bg-dark-gothic rounded-xl p-6 textured">
+                <h3 className="text-xl font-bold warp-text gothic-text mb-4 text-center text-shadow">
+                  ◆ MATERIAL FORMULATIONS ◆
                 </h3>
                 <p className="text-center text-sm text-warp-purple-light/70 mb-6">
                   Paints from the material realm to manifest this essence
@@ -140,7 +140,7 @@ export default function InspirationResultsPage() {
         >
           <motion.button
             onClick={handleScanAnother}
-            className="w-full py-4 px-6 rounded-lg relative overflow-hidden touch-target warp-border"
+            className="w-full py-4 px-6 rounded-lg relative overflow-hidden touch-target warp-border textured"
             style={{
               background: 'linear-gradient(135deg, var(--warp-purple-dark), var(--warp-pink))',
             }}
@@ -168,7 +168,9 @@ export default function InspirationResultsPage() {
             />
 
             <div className="flex items-center justify-center gap-3 relative z-10">
-              <span className="text-2xl">✦</span>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
               <span className="warp-text font-bold cyber-text text-base">
                 CHANNEL THE WARP AGAIN
               </span>
@@ -177,7 +179,7 @@ export default function InspirationResultsPage() {
 
           <motion.button
             onClick={() => router.push('/cart')}
-            className="w-full py-4 px-6 rounded-lg border-2 border-warp-teal bg-dark-gothic touch-target"
+            className="w-full py-4 px-6 rounded-lg border-2 border-warp-teal bg-dark-gothic touch-target textured"
             whileHover={{
               boxShadow: '0 0 20px var(--warp-teal)',
               scale: 1.02,
@@ -185,7 +187,11 @@ export default function InspirationResultsPage() {
             whileTap={{ scale: 0.98 }}
           >
             <div className="flex items-center justify-center gap-3">
-              <span className="text-2xl">🛒</span>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--warp-teal)" strokeWidth="2">
+                <rect x="3" y="8" width="18" height="13" rx="1" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M3 13h18M3 17h18" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M8 8V6a4 4 0 0 1 8 0v2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
               <span className="text-warp-teal font-bold cyber-text">
                 VIEW REQUISITIONS
               </span>
@@ -199,26 +205,39 @@ export default function InspirationResultsPage() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.6 }}
         >
-          <div className="warp-border rounded-lg p-1">
-            <div className="bg-cosmic-purple rounded-lg p-4 text-sm">
-              <h3 className="font-bold mb-3 text-warp-purple-light gothic-text text-center">
-                ✧ PALETTE GUIDANCE ✧
-              </h3>
-              <ul className="space-y-2 text-white/80 tech-text text-xs">
+          <div className="warp-border rounded-lg p-1 depth-2">
+            <div className="bg-cosmic-purple rounded-lg p-5 text-sm textured">
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--warp-purple-light)" strokeWidth="2" opacity="0.7">
+                  <circle cx="12" cy="12" r="3" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M12 1v6m0 6v6M1 12h6m6 0h6" strokeLinecap="round" strokeLinejoin="round" />
+                  <circle cx="12" cy="12" r="10" strokeLinecap="round" strokeLinejoin="round" opacity="0.4" />
+                </svg>
+                <h3 className="font-bold text-warp-purple-light gothic-text text-center">
+                  PALETTE GUIDANCE
+                </h3>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--warp-purple-light)" strokeWidth="2" opacity="0.7">
+                  <circle cx="12" cy="12" r="3" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M12 1v6m0 6v6M1 12h6m6 0h6" strokeLinecap="round" strokeLinejoin="round" />
+                  <circle cx="12" cy="12" r="10" strokeLinecap="round" strokeLinejoin="round" opacity="0.4" />
+                </svg>
+              </div>
+              <div className="w-16 h-px bg-warp-purple-light/30 mx-auto mb-3" />
+              <ul className="space-y-2 text-white/90 tech-text text-xs leading-relaxed">
                 <li className="flex items-start gap-2">
-                  <span className="text-warp-purple-light">✦</span>
+                  <span className="text-warp-purple-light/70 flex-shrink-0">►</span>
                   <span>These {currentScan.detectedColors.length} colors form a harmonious scheme</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-warp-pink">✦</span>
+                  <span className="text-warp-pink/70 flex-shrink-0">►</span>
                   <span>Dominant colors (higher %) for primary areas</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-warp-teal">✦</span>
+                  <span className="text-warp-teal/70 flex-shrink-0">►</span>
                   <span>Accent colors for details and highlights</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-warp-purple-light">✦</span>
+                  <span className="text-warp-purple-light/70 flex-shrink-0">►</span>
                   <span>Delta-E (ΔE) shows paint accuracy (lower = closer match)</span>
                 </li>
               </ul>

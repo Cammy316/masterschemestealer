@@ -74,7 +74,7 @@ export default function InspirationPage() {
         transition={{ duration: 0.5 }}
       >
         <h1 className="text-3xl font-bold gothic-text mb-2 warp-text">
-          ✧ INSPIRATION PROTOCOL ✧
+          ◆ INSPIRATION PROTOCOL ◆
         </h1>
         <p className="text-warp-purple-light text-sm gothic-text">
           Extract chromatic essence from the Immaterium
@@ -91,7 +91,7 @@ export default function InspirationPage() {
           }}
           transition={{ duration: 3, repeat: Infinity }}
         >
-          ✧ THE WARP AWAITS ✧
+          ◆ THE WARP AWAITS ◆
         </motion.div>
       </motion.div>
 
@@ -126,21 +126,23 @@ export default function InspirationPage() {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
         >
-          <div className="warp-border rounded-lg p-1">
-            <div className="bg-void-blue rounded-lg p-4">
+          <div className="warp-border rounded-lg p-1 depth-2">
+            <div className="bg-void-blue rounded-lg p-4 textured">
               <div className="flex items-center gap-3">
-                <motion.span
-                  className="text-3xl"
+                <motion.div
                   animate={{ rotate: [0, 10, -10, 0] }}
                   transition={{ duration: 0.5, repeat: 3 }}
+                  className="flex-shrink-0"
                 >
-                  ⚠️
-                </motion.span>
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--warp-pink)" strokeWidth="2">
+                    <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </motion.div>
                 <div>
-                  <div className="text-warp-pink font-bold gothic-text text-sm mb-1">
-                    ✧ WARP ANOMALY ✧
+                  <div className="text-warp-pink font-bold gothic-text text-sm mb-1 text-shadow-sm">
+                    ◆ WARP ANOMALY ◆
                   </div>
-                  <p className="text-warp-purple-light/80 text-xs font-medium">{error}</p>
+                  <p className="text-warp-purple-light/80 text-xs font-medium leading-relaxed">{error}</p>
                 </div>
               </div>
             </div>
@@ -163,7 +165,7 @@ export default function InspirationPage() {
           }}
         >
           <h3 className="font-bold mb-2 text-white gothic-text text-center">
-            ✧ CHANNELING GUIDANCE ✧
+            ◆ CHANNELING GUIDANCE ◆
           </h3>
           <ul className="space-y-1 text-white/80 text-xs font-medium">
             <li>• Upload any image: artwork, sunsets, photographs, landscapes</li>
@@ -174,31 +176,6 @@ export default function InspirationPage() {
         </div>
       </motion.div>
 
-      {/* Floating runes decoration */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        {[...Array(6)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute text-4xl opacity-10"
-            style={{
-              left: `${20 + i * 15}%`,
-              top: `${30 + (i % 3) * 20}%`,
-            }}
-            animate={{
-              y: [0, -20, 0],
-              opacity: [0.05, 0.15, 0.05],
-              rotate: [0, 10, -10, 0],
-            }}
-            transition={{
-              duration: 4 + i,
-              repeat: Infinity,
-              delay: i * 0.5,
-            }}
-          >
-            {['✦', '✧', '✪', '✫', '✬', '✭'][i]}
-          </motion.div>
-        ))}
-      </div>
     </div>
   );
 }
