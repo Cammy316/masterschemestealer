@@ -10,12 +10,15 @@ import { Card } from './ui/Card';
 import { Button } from './ui/Button';
 import { formatDeltaE, getMatchQuality, getPaintId } from '@/lib/utils';
 import { useAppStore } from '@/lib/store';
+import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
 
 interface PaintCardProps {
   paint: Paint;
   onAddToCart?: (paint: Paint) => void;
   showAddButton?: boolean;
   inCart?: boolean;
+  detectedColorHex?: string; // The original detected color this paint matches
+  mode?: 'miniature' | 'inspiration';
 }
 
 export function PaintCard({
@@ -23,9 +26,13 @@ export function PaintCard({
   onAddToCart,
   showAddButton = true,
   inCart = false,
+  detectedColorHex,
+  mode,
 }: PaintCardProps) {
   const { addToCart, currentMode, currentScan } = useAppStore();
   const matchQuality = getMatchQuality(paint.deltaE);
+  const { copied: copiedDetected, copyToClipboard: copyDetected } = useCopyToClipboard(2000);
+  const { copied: copiedPaint, copyToClipboard: copyPaint } = useCopyToClipboard(2000);
 
   const handleAddToCart = () => {
     if (onAddToCart) {
@@ -70,6 +77,29 @@ export function PaintCard({
             </div>
           )}
         </div>
+
+        {/* Copy buttons */}
+        {detectedColorHex && (
+          <div className="flex flex-col gap-1">
+            {/* Copy detected color */}
+            <button
+              onClick={() => copyDetected(detectedColorHex)}
+              className="px-2 py-1 rounded text-xs font-semibold bg-gray-700 hover:bg-gray-600 text-white transition-colors min-w-[70px]"
+              title="Copy detected color hex"
+            >
+              {copiedDetected ? '✓ Copied' : 'Copy Match'}
+            </button>
+
+            {/* Copy paint hex */}
+            <button
+              onClick={() => copyPaint(paint.hex)}
+              className="px-2 py-1 rounded text-xs font-semibold bg-gray-700 hover:bg-gray-600 text-white transition-colors min-w-[70px]"
+              title="Copy paint hex"
+            >
+              {copiedPaint ? '✓ Copied' : 'Copy Paint'}
+            </button>
+          </div>
+        )}
 
         {/* Add to cart button */}
         {showAddButton && (

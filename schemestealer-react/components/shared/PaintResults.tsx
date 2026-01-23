@@ -9,6 +9,7 @@ import { useMemo } from 'react';
 import { useAppStore } from '@/lib/store';
 import type { Paint } from '@/lib/types';
 import { motion } from 'framer-motion';
+import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
 
 interface PaintResultsProps {
   colorName: string;
@@ -127,48 +128,15 @@ export function PaintResults({
           {/* Paint list */}
           <div className="space-y-2">
             {brand.paints.map((paint, index) => (
-              <motion.div
+              <PaintItemWithCopy
                 key={index}
-                className="flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg hover:bg-gray-800 transition-colors"
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.05, duration: 0.2 }}
-              >
-                {/* Paint swatch */}
-                <div
-                  className="w-12 h-12 rounded-md shadow-md border border-gray-700 flex-shrink-0"
-                  style={{ backgroundColor: paint.hex }}
-                />
-
-                {/* Paint info */}
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-white truncate">
-                    {paint.name}
-                  </p>
-                  <p className="text-xs text-gray-400">{paint.brand}</p>
-                </div>
-
-                {/* Delta-E badge */}
-                {paint.deltaE !== undefined && (
-                  <div
-                    className={`px-3 py-1 rounded-full ${themeColors.bg} bg-opacity-20 border ${themeColors.border}`}
-                  >
-                    <span className={`text-sm font-mono ${themeColors.header}`}>
-                      ΔE: {paint.deltaE.toFixed(1)}
-                    </span>
-                  </div>
-                )}
-
-                {/* Add to cart button */}
-                <motion.button
-                  className={`px-4 py-2 rounded-lg ${themeColors.bg} text-white font-semibold text-sm hover:opacity-90 transition-opacity`}
-                  onClick={() => handleAddToCart(paint)}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  Add
-                </motion.button>
-              </motion.div>
+                paint={paint}
+                detectedColorHex={colorHex}
+                mode={mode}
+                onAddToCart={handleAddToCart}
+                themeColors={themeColors}
+                index={index}
+              />
             ))}
           </div>
         </motion.div>
@@ -181,6 +149,93 @@ export function PaintResults({
           <p className="text-sm mt-2">Try selecting "All Brands" above.</p>
         </div>
       )}
+    </motion.div>
+  );
+}
+
+/**
+ * Individual paint item with copy functionality
+ */
+function PaintItemWithCopy({
+  paint,
+  detectedColorHex,
+  mode,
+  onAddToCart,
+  themeColors,
+  index,
+}: {
+  paint: Paint;
+  detectedColorHex: string;
+  mode: 'miniature' | 'inspiration';
+  onAddToCart: (paint: Paint) => void;
+  themeColors: any;
+  index: number;
+}) {
+  const { copied: copiedDetected, copyToClipboard: copyDetected } = useCopyToClipboard(2000);
+  const { copied: copiedPaint, copyToClipboard: copyPaint } = useCopyToClipboard(2000);
+
+  return (
+    <motion.div
+      className="flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg hover:bg-gray-800 transition-colors"
+      initial={{ opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: index * 0.05, duration: 0.2 }}
+    >
+      {/* Paint swatch */}
+      <div
+        className="w-12 h-12 rounded-md shadow-md border border-gray-700 flex-shrink-0"
+        style={{ backgroundColor: paint.hex }}
+      />
+
+      {/* Paint info */}
+      <div className="flex-1 min-w-0">
+        <p className="font-semibold text-white truncate">
+          {paint.name}
+        </p>
+        <p className="text-xs text-gray-400">{paint.brand}</p>
+      </div>
+
+      {/* Delta-E badge */}
+      {paint.deltaE !== undefined && (
+        <div
+          className={`px-3 py-1 rounded-full ${themeColors.bg} bg-opacity-20 border ${themeColors.border}`}
+        >
+          <span className={`text-sm font-mono ${themeColors.header}`}>
+            ΔE: {paint.deltaE.toFixed(1)}
+          </span>
+        </div>
+      )}
+
+      {/* Copy buttons */}
+      <div className="flex flex-col gap-1">
+        {/* Copy detected color */}
+        <button
+          onClick={() => copyDetected(detectedColorHex)}
+          className="px-2 py-1 rounded text-xs font-semibold bg-gray-700 hover:bg-gray-600 text-white transition-colors min-w-[70px]"
+          title="Copy detected color hex"
+        >
+          {copiedDetected ? '✓ Copied' : 'Copy Match'}
+        </button>
+
+        {/* Copy paint hex */}
+        <button
+          onClick={() => copyPaint(paint.hex)}
+          className="px-2 py-1 rounded text-xs font-semibold bg-gray-700 hover:bg-gray-600 text-white transition-colors min-w-[70px]"
+          title="Copy paint hex"
+        >
+          {copiedPaint ? '✓ Copied' : 'Copy Paint'}
+        </button>
+      </div>
+
+      {/* Add to cart button */}
+      <motion.button
+        className={`px-4 py-2 rounded-lg ${themeColors.bg} text-white font-semibold text-sm hover:opacity-90 transition-opacity`}
+        onClick={() => onAddToCart(paint)}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        Add
+      </motion.button>
     </motion.div>
   );
 }

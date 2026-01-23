@@ -8,6 +8,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { copyForDiscord } from '@/lib/clipboard';
+import { generateShareImage } from '@/lib/shareImageGenerator';
 
 interface ShareModalProps {
   data: {
@@ -23,6 +24,7 @@ export function ShareModal({ data, onClose }: ShareModalProps) {
   const [generatingImage, setGeneratingImage] = useState(false);
   const [shareableImageUrl, setShareableImageUrl] = useState<string | null>(null);
   const [copySuccess, setCopySuccess] = useState(false);
+  const [imageSize, setImageSize] = useState<'instagram' | 'hd'>('instagram');
 
   const theme = data.type === 'miniscan'
     ? { primary: 'green', accent: '#00FF66', border: 'border-green-500/50', text: 'text-green-500' }
@@ -63,6 +65,42 @@ export function ShareModal({ data, onClose }: ShareModalProps) {
       setCopySuccess(true);
       setTimeout(() => setCopySuccess(false), 2000);
     }
+  };
+
+  const handleGenerateImage = async () => {
+    setGeneratingImage(true);
+
+    try {
+      const imageUrl = await generateShareImage({
+        mode: data.type === 'miniscan' ? 'miniature' : 'inspiration',
+        data: {
+          colors: data.colors.map(c => ({
+            hex: c.hex,
+            name: c.name,
+            percentage: c.percentage,
+          })),
+          imageUrl: data.imageUrl,
+          paints: data.paints,
+        },
+        size: imageSize,
+      });
+
+      setShareableImageUrl(imageUrl);
+    } catch (error) {
+      console.error('Failed to generate image:', error);
+      alert('Failed to generate share image. Please try again.');
+    } finally {
+      setGeneratingImage(false);
+    }
+  };
+
+  const handleDownload = () => {
+    if (!shareableImageUrl) return;
+
+    const link = document.createElement('a');
+    link.href = shareableImageUrl;
+    link.download = `schemestealer-${data.type}-${Date.now()}.png`;
+    link.click();
   };
 
   return (
@@ -150,6 +188,94 @@ export function ShareModal({ data, onClose }: ShareModalProps) {
             <span className="mr-2">{copySuccess ? '✓' : '🔗'}</span>
             {copySuccess ? 'Link Copied!' : 'Copy Link'}
           </motion.button>
+
+          {/* Image generation section */}
+          <div className="border-t-2 border-gray-700 pt-6 mt-6">
+            <h3 className={`text-sm ${theme.text} mb-3 font-bold text-center`}>
+              Generate Share Image
+            </h3>
+
+            {/* Size selector */}
+            <div className="flex gap-3 mb-4">
+              <button
+                onClick={() => setImageSize('instagram')}
+                className={`flex-1 px-4 py-2 rounded-lg font-semibold transition-all responsive-body ${
+                  imageSize === 'instagram'
+                    ? `${theme.primary === 'green' ? 'bg-green-600' : 'bg-purple-600'} text-white`
+                    : 'bg-gray-800 text-gray-400 hover:text-white'
+                }`}
+              >
+                Instagram (1080x1080)
+              </button>
+              <button
+                onClick={() => setImageSize('hd')}
+                className={`flex-1 px-4 py-2 rounded-lg font-semibold transition-all responsive-body ${
+                  imageSize === 'hd'
+                    ? `${theme.primary === 'green' ? 'bg-green-600' : 'bg-purple-600'} text-white`
+                    : 'bg-gray-800 text-gray-400 hover:text-white'
+                }`}
+              >
+                HD (1920x1080)
+              </button>
+            </div>
+
+            {/* Generate button */}
+            {!shareableImageUrl && (
+              <motion.button
+                onClick={handleGenerateImage}
+                disabled={generatingImage}
+                className={`w-full ${theme.primary === 'green' ? 'bg-green-600 hover:bg-green-700' : 'bg-purple-600 hover:bg-purple-700'} text-white font-bold py-3 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed responsive-body`}
+                whileHover={{ scale: generatingImage ? 1 : 1.02 }}
+                whileTap={{ scale: generatingImage ? 1 : 0.98 }}
+              >
+                {generatingImage ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <span className="animate-spin">⚙️</span>
+                    Generating...
+                  </span>
+                ) : (
+                  <span>🖼️ Generate Share Image</span>
+                )}
+              </motion.button>
+            )}
+
+            {/* Preview and download */}
+            {shareableImageUrl && (
+              <motion.div
+                className="space-y-4"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <div className="border-2 border-gray-700 rounded-lg overflow-hidden">
+                  <img
+                    src={shareableImageUrl}
+                    alt="Share preview"
+                    className="w-full h-auto"
+                  />
+                </div>
+
+                <div className="flex gap-3">
+                  <motion.button
+                    onClick={handleDownload}
+                    className={`flex-1 ${theme.primary === 'green' ? 'bg-green-600 hover:bg-green-700' : 'bg-purple-600 hover:bg-purple-700'} text-white font-bold py-3 rounded-lg transition-all responsive-body`}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    ⬇️ Download Image
+                  </motion.button>
+
+                  <motion.button
+                    onClick={() => setShareableImageUrl(null)}
+                    className="px-6 py-3 rounded-lg bg-gray-700 hover:bg-gray-600 text-white font-semibold transition-all responsive-body"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    Regenerate
+                  </motion.button>
+                </div>
+              </motion.div>
+            )}
+          </div>
         </motion.div>
       </motion.div>
     </AnimatePresence>

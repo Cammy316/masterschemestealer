@@ -98,11 +98,12 @@ export function ColorSwatch({ color, index, onCopy, mode = 'inspiration' }: Colo
         />
 
         <div className="relative p-6">
-          {/* Color swatch with flash effect */}
+          {/* Color swatch with flash effect - now clickable */}
           <div className="relative mb-4 group">
-            <motion.div
-              className={`w-full h-32 rounded-lg shadow-xl transition-all duration-300 ${
-                copied ? `ring-4 ${themeColors.glow}` : ''
+            <motion.button
+              onClick={handleCopy}
+              className={`w-full h-32 rounded-lg shadow-xl transition-all duration-300 cursor-pointer ${
+                copied ? `ring-4 ${themeColors.glow} animate-pulse-once` : ''
               }`}
               style={{
                 backgroundColor: color.hex,
@@ -110,6 +111,7 @@ export function ColorSwatch({ color, index, onCopy, mode = 'inspiration' }: Colo
               }}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
+              title={`Click to copy ${color.hex}`}
             />
 
             {/* Flash effect when copied */}
@@ -134,39 +136,10 @@ export function ColorSwatch({ color, index, onCopy, mode = 'inspiration' }: Colo
               </span>
             </div>
 
-            <div className="flex items-center justify-between gap-2">
-              <code className={`text-sm font-mono ${themeColors.text} flex-1`}>
-                {color.hex}
+            <div className="flex items-center justify-center gap-2">
+              <code className={`text-sm font-mono ${themeColors.text} font-semibold transition-all duration-200`}>
+                {copied ? '✓ Copied' : color.hex}
               </code>
-
-              {/* Copy button - appears on hover/tap */}
-              <motion.button
-                onClick={handleCopy}
-                className={`px-3 py-1 rounded text-xs font-semibold transition-colors ${
-                  copied
-                    ? `${themeColors.glow.replace('ring-', 'bg-')} text-white`
-                    : `${themeColors.textDim} hover:${themeColors.text} hover:bg-white/10`
-                }`}
-                initial={{ opacity: 0, x: 10 }}
-                animate={{
-                  opacity: isHovered ? 1 : 0,
-                  x: isHovered ? 0 : 10,
-                }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {copied ? (
-                  <>
-                    <span className="mr-1">✓</span>
-                    Copied
-                  </>
-                ) : (
-                  <>
-                    <span className="mr-1">📋</span>
-                    Copy
-                  </>
-                )}
-              </motion.button>
             </div>
 
             {/* RGB values */}
