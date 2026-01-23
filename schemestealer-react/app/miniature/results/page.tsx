@@ -10,6 +10,8 @@ import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { ReticleReveal } from '@/components/miniscan/ReticleReveal';
 import { PaintList } from '@/components/PaintCard';
+import { BrandFilter } from '@/components/shared/BrandFilter';
+import { PaintResults } from '@/components/shared/PaintResults';
 import { motion } from 'framer-motion';
 
 export default function MiniscanResultsPage() {
@@ -60,6 +62,22 @@ export default function MiniscanResultsPage() {
           </motion.div>
         </motion.div>
 
+        {/* Brand Filter */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <div className="gothic-frame rounded-lg p-1 depth-2">
+            <div className="bg-dark-gothic rounded-lg p-4 textured">
+              <h3 className="text-sm font-bold auspex-text mb-3 gothic-text text-center">
+                ◆ BRAND PREFERENCES ◆
+              </h3>
+              <BrandFilter mode="miniature" />
+            </div>
+          </div>
+        </motion.div>
+
         {/* Detected Colors with ReticleReveal */}
         <div className="space-y-6">
           {currentScan.detectedColors.map((color, index) => (
@@ -101,7 +119,16 @@ export default function MiniscanResultsPage() {
                   />
 
                   {/* Paint Recommendations for this color */}
-                  {currentScan.recommendedPaints && currentScan.recommendedPaints.length > 0 && (
+                  {color.paintMatches ? (
+                    <div className="mt-6">
+                      <PaintResults
+                        colorName={color.family || 'Color'}
+                        colorHex={color.hex}
+                        paintMatches={color.paintMatches}
+                        mode="miniature"
+                      />
+                    </div>
+                  ) : currentScan.recommendedPaints && currentScan.recommendedPaints.length > 0 ? (
                     <div className="mt-6 p-4 rounded-lg border border-cogitator-green/20 bg-cogitator-green/5 depth-1">
                       <h4 className="text-sm font-bold auspex-text mb-3 gothic-text text-center text-shadow-sm">
                         ◆ SACRED FORMULATIONS ◆
@@ -115,7 +142,7 @@ export default function MiniscanResultsPage() {
                         />
                       </div>
                     </div>
-                  )}
+                  ) : null}
                 </div>
               </div>
             </motion.div>

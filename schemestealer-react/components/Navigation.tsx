@@ -16,36 +16,80 @@ import { useScrollDirection } from '@/hooks/useScrollDirection';
 export function Navigation() {
   const pathname = usePathname();
   const cartItems = useAppStore((state) => state.cart);
-  const { scrollDirection, isAtTop } = useScrollDirection();
+  const { scrollDirection, isAtTop, isNearBottom } = useScrollDirection();
 
-  // Don't show nav on home page
-  if (pathname === '/') {
-    return null;
-  }
+  const [isHovered, setIsHovered] = React.useState(false);
+  const [revealedByTap, setRevealedByTap] = React.useState(false);
+  const tapTimerRef = React.useRef<NodeJS.Timeout | null>(null);
 
   const isActive = (path: string) => pathname === path || pathname.startsWith(path);
   const cartCount = cartItems.length;
 
-  // Show nav when: at top, scrolling up, or not scrolling
-  const isVisible = isAtTop || scrollDirection === 'up' || scrollDirection === null;
+  // Enhanced visibility logic
+  const isVisible =
+    isAtTop || // Always visible at top
+    isNearBottom || // Always visible near bottom
+    scrollDirection === 'up' || // Show when scrolling up
+    scrollDirection === null || // Show when not scrolling
+    isHovered || // Show when hovered
+    revealedByTap; // Show when tapped
+
+  // Handle tap anywhere on screen to reveal nav
+  React.useEffect(() => {
+    const handleTap = (e: TouchEvent | MouseEvent) => {
+      // Only trigger if nav is currently hidden
+      if (!isVisible && !isAtTop && !isNearBottom) {
+        setRevealedByTap(true);
+
+        // Clear existing timer
+        if (tapTimerRef.current) {
+          clearTimeout(tapTimerRef.current);
+        }
+
+        // Hide after 5 seconds
+        tapTimerRef.current = setTimeout(() => {
+          setRevealedByTap(false);
+        }, 5000);
+      }
+    };
+
+    document.addEventListener('touchstart', handleTap);
+    document.addEventListener('click', handleTap);
+
+    return () => {
+      document.removeEventListener('touchstart', handleTap);
+      document.removeEventListener('click', handleTap);
+      if (tapTimerRef.current) {
+        clearTimeout(tapTimerRef.current);
+      }
+    };
+  }, [isVisible, isAtTop, isNearBottom]);
+
+  // Don't show nav on home page - check AFTER all hooks are called
+  if (pathname === '/') {
+    return null;
+  }
 
   return (
-    <motion.nav
-      className="fixed bottom-0 left-0 right-0 bg-dark-gothic shadow-lg z-50 safe-area-bottom"
-      style={{
-        borderTop: '1px solid var(--brass)',
-        boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.5)',
-      }}
-      animate={{
-        y: isVisible ? 0 : '100%',
-      }}
-      transition={{
-        duration: 0.3,
-        ease: 'easeInOut',
-      }}
-    >
-      <div className="max-w-2xl mx-auto px-2">
-        <div className="flex items-center justify-around h-16">
+    <>
+      <motion.nav
+        className="fixed bottom-0 left-0 right-0 bg-dark-gothic shadow-lg z-50 safe-area-bottom"
+        style={{
+          borderTop: '1px solid var(--brass)',
+          boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.5)',
+        }}
+        animate={{
+          y: isVisible ? 0 : '100%',
+        }}
+        transition={{
+          duration: 0.3,
+          ease: 'easeInOut',
+        }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <div className="max-w-2xl mx-auto px-2">
+          <div className="flex items-center justify-around h-16">
           {/* Home */}
           <NavLink
             href="/"
@@ -131,7 +175,51 @@ export function Navigation() {
           />
         </div>
       </div>
-    </motion.nav>
+      </motion.nav>
+
+      {/* Visual indicator when nav is hidden - tap to reveal hint */}
+      {!isVisible && !isAtTop && (
+        <motion.div
+          className="fixed bottom-2 left-1/2 z-40 pointer-events-none"
+          style={{
+            transform: 'translateX(-50%)',
+          }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          transition={{ duration: 0.3, delay: 0.5 }}
+        >
+          <motion.div
+            className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-800/90 border border-gray-600/50"
+            animate={{
+              boxShadow: [
+                '0 0 10px rgba(156, 163, 175, 0.3)',
+                '0 0 20px rgba(156, 163, 175, 0.5)',
+                '0 0 10px rgba(156, 163, 175, 0.3)',
+              ],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          >
+            <motion.div
+              className="w-1.5 h-1.5 rounded-full bg-gray-400"
+              animate={{
+                scale: [1, 1.3, 1],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            />
+            <span className="text-xs text-gray-400 font-medium">Tap to show menu</span>
+          </motion.div>
+        </motion.div>
+      )}
+    </>
   );
 }
 
