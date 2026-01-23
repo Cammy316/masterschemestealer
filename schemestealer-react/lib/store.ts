@@ -18,6 +18,7 @@ export const useAppStore = create<AppStore>()(
       isLoading: false,
       error: null,
       offlineMode: false,
+      preferredBrands: ['all'], // Default to showing all brands
 
       // Mode and scan actions
       setMode: (mode: ScanMode) => set({ currentMode: mode, error: null }),
@@ -115,14 +116,18 @@ export const useAppStore = create<AppStore>()(
 
       // Offline mode
       setOfflineMode: (enabled: boolean) => set({ offlineMode: enabled }),
+
+      // Brand preferences
+      setPreferredBrands: (brands: string[]) => set({ preferredBrands: brands }),
     }),
     {
       name: 'schemestealer-storage', // LocalStorage key
       partialize: (state) => ({
-        // Only persist cart, scan history (without images), and offline mode preference
+        // Only persist cart, scan history (without images), offline mode, and brand preferences
         cart: state.cart,
         scanHistory: state.scanHistory,
         offlineMode: state.offlineMode,
+        preferredBrands: state.preferredBrands,
       }),
     }
   )
