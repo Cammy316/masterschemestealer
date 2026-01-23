@@ -71,18 +71,19 @@ export function ColorSwatch({ hex, name, percentage, rgb, mode, index }: ColorSw
             }}
           />
 
-          {/* Color info */}
+          {/* Color info - IMPROVED READABILITY */}
           <div className="space-y-1">
             <div className="flex items-center justify-between">
               <h3 className={`text-base font-bold ${themeColors.text}`}>{name}</h3>
-              <span className="text-xs text-gray-500">{percentage}%</span>
+              {/* REMOVED: percentage display from swatch */}
             </div>
             <div>
               <code className={`text-sm font-mono ${themeColors.text}`}>
                 {copied ? '✓ Copied' : hex}
               </code>
             </div>
-            <div className="text-xs text-gray-500 font-mono">
+            {/* RGB values - lighter color for readability */}
+            <div className="text-xs text-gray-400 font-mono">
               RGB: {rgb.join(', ')}
             </div>
           </div>

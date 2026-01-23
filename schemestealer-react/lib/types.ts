@@ -30,7 +30,8 @@ export interface Paint {
   name: string;
   brand: string;
   hex: string;
-  type: string;
+  type: string; // base, layer, shade, highlight
+  category?: string; // paint, shade
   rgb?: [number, number, number];
   lab?: [number, number, number];
   deltaE?: number; // Distance from detected color (when used as a match)

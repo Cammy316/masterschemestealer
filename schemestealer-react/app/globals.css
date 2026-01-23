@@ -133,6 +133,15 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: 0.1em;
 }
 
+/* Custom font utilities for Miniscan and Inspiration modes */
+.font-imperial {
+  font-family: var(--font-cinzel), serif;
+}
+
+.font-warp {
+  font-family: var(--font-philosopher), serif;
+}
+
 /* ========================================
    RESPONSIVE TYPOGRAPHY UTILITIES
    All text must be responsive and never wrap awkwardly
@@ -628,6 +637,11 @@ h1, h2, h3, h4, h5, h6 {
   animation: swatch-enter 0.5s ease-out both;
 }
 
+/* Shimmer animation for paint cards */
+.shimmer-animation {
+  animation: shimmer 3s infinite;
+}
+
 /* Flash effect when copied */
 @keyframes flash-copy {
   0% { opacity: 0; }
@@ -653,6 +667,42 @@ h1, h2, h3, h4, h5, h6 {
 
 .energy-pulse-animation {
   animation: energy-pulse 2s ease-in-out infinite;
+}
+
+/* Flash effect when copied */
+@keyframes flash-copy {
+  0% { opacity: 0; }
+  50% { opacity: 0.6; }
+  100% { opacity: 0; }
+}
+
+.flash-animation {
+  animation: flash-copy 0.4s ease-out;
+}
+
+/* Energy pulse for bottom glow */
+@keyframes energy-pulse {
+  0%, 100% {
+    opacity: 0.6;
+    height: 4px;
+  }
+  50% {
+    opacity: 1;
+    height: 6px;
+  }
+}
+
+.energy-pulse-animation {
+  animation: energy-pulse 2s ease-in-out infinite;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .shimmer-animation,
+  .color-swatch-enter,
+  .energy-pulse-animation {
+    animation: none !important;
+  }
 }
 
 /* ========================================
