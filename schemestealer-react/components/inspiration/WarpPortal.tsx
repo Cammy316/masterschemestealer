@@ -404,26 +404,47 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
             </filter>
           </defs>
 
-          {spiralPaths.map((spiral, index) => (
-            <motion.path
-              key={index}
-              d={spiral.path}
-              fill="none"
-              stroke={index % 2 === 0 ? 'url(#spiralGradient1)' : 'url(#spiralGradient2)'}
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              opacity={spiral.opacity}
-              filter="url(#spiralGlow)"
-              animate={{ rotate: index % 2 === 0 ? 360 : -360 }}
-              transition={{
-                duration: spiral.duration,
-                repeat: Infinity,
-                ease: "linear",
-                repeatType: "loop"
-              }}
-              style={{ originX: '50%', originY: '50%' }}
-            />
-          ))}
+          {spiralPaths.map((spiral, index) => {
+            // Calculate path length for stroke animation
+            const pathLength = 1000; // Approximate length
+
+            return (
+              <motion.path
+                key={index}
+                d={spiral.path}
+                fill="none"
+                stroke={index % 2 === 0 ? 'url(#spiralGradient1)' : 'url(#spiralGradient2)'}
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                opacity={spiral.opacity}
+                filter="url(#spiralGlow)"
+                strokeDasharray={pathLength}
+                animate={{
+                  strokeDashoffset: [pathLength, 0],
+                  rotate: index % 2 === 0 ? 360 : -360,
+                  scale: [1, 0.8, 1]
+                }}
+                transition={{
+                  strokeDashoffset: {
+                    duration: spiral.duration * 0.8,
+                    repeat: Infinity,
+                    ease: "linear",
+                  },
+                  rotate: {
+                    duration: spiral.duration,
+                    repeat: Infinity,
+                    ease: "linear",
+                  },
+                  scale: {
+                    duration: spiral.duration * 0.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }
+                }}
+                style={{ originX: '50%', originY: '50%' }}
+              />
+            );
+          })}
         </svg>
 
         {/* Canvas particle system with trails */}

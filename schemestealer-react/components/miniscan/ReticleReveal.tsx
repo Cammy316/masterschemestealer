@@ -14,6 +14,7 @@ interface ReticleRevealProps {
   colorHex: string;
   reticleImage?: string; // Base64 or URL from backend
   originalImage?: string;
+  reticlePositions?: Array<{ x: number; y: number }>; // Positions to draw client-side reticles
 }
 
 export function ReticleReveal({
@@ -21,13 +22,83 @@ export function ReticleReveal({
   colorHex,
   reticleImage,
   originalImage,
+  reticlePositions,
 }: ReticleRevealProps) {
   const [isRevealed, setIsRevealed] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [scanComplete, setScanComplete] = useState(false);
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);
+  const imageRef = React.useRef<HTMLImageElement>(null);
 
   const handleReveal = () => {
     setIsRevealed(!isRevealed);
+    if (!isRevealed) {
+      setScanComplete(false); // Reset scan when revealing
+    }
   };
+
+  // Draw reticles on canvas when using client-side rendering
+  React.useEffect(() => {
+    if (!imageLoaded || !reticlePositions || !canvasRef.current || !imageRef.current) return;
+
+    const canvas = canvasRef.current;
+    const img = imageRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Set canvas size to match image
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+
+    // Draw the original image
+    ctx.drawImage(img, 0, 0);
+
+    // Draw 20px reticles at each position
+    reticlePositions.forEach(pos => {
+      const x = pos.x * img.naturalWidth;
+      const y = pos.y * img.naturalHeight;
+      const size = 20;
+      const halfSize = size / 2;
+
+      ctx.save();
+      ctx.translate(x, y);
+
+      // Outer pulsing ring (we'll use CSS animation for pulse)
+      ctx.strokeStyle = colorHex;
+      ctx.lineWidth = 2;
+      ctx.globalAlpha = 0.8;
+      ctx.beginPath();
+      ctx.arc(0, 0, halfSize, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Center dot
+      ctx.fillStyle = colorHex;
+      ctx.globalAlpha = 1;
+      ctx.beginPath();
+      ctx.arc(0, 0, 3, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Crosshair lines
+      ctx.strokeStyle = colorHex;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      // Top
+      ctx.moveTo(0, -halfSize);
+      ctx.lineTo(0, -halfSize + 6);
+      // Bottom
+      ctx.moveTo(0, halfSize);
+      ctx.lineTo(0, halfSize - 6);
+      // Left
+      ctx.moveTo(-halfSize, 0);
+      ctx.lineTo(-halfSize + 6, 0);
+      // Right
+      ctx.moveTo(halfSize, 0);
+      ctx.lineTo(halfSize - 6, 0);
+      ctx.stroke();
+
+      ctx.restore();
+    });
+  }, [imageLoaded, reticlePositions, colorHex]);
 
   return (
     <div className="space-y-3">
@@ -169,46 +240,112 @@ export function ReticleReveal({
           >
             <div className="gothic-frame rounded-lg overflow-hidden bg-dark-gothic">
               <div className="bg-dark-gothic p-1">
-                {reticleImage ? (
+                {(reticleImage || (originalImage && reticlePositions)) ? (
                   <div className="relative">
                     {/* Loading skeleton */}
                     {!imageLoaded && (
                       <div className="absolute inset-0 bg-charcoal animate-pulse rounded" />
                     )}
 
-                    {/* Main reticle image with reveal animation */}
-                    <motion.img
-                      src={reticleImage}
-                      alt={`Location of ${colorName} on miniature`}
-                      className="w-full rounded"
-                      initial={{ scale: 1.1, filter: 'blur(10px)', opacity: 0 }}
-                      animate={{
-                        scale: imageLoaded ? 1 : 1.1,
-                        filter: imageLoaded ? 'blur(0px)' : 'blur(10px)',
-                        opacity: imageLoaded ? 1 : 0,
-                      }}
-                      transition={{
-                        duration: 0.6,
-                        ease: [0.43, 0.13, 0.23, 0.96],
-                      }}
-                      onLoad={() => setImageLoaded(true)}
-                    />
-
-                    {/* Scanning overlay effect */}
-                    {imageLoaded && (
-                      <motion.div
-                        className="absolute inset-0 pointer-events-none"
-                        initial={{ y: '-100%' }}
-                        animate={{ y: '100%' }}
+                    {/* Main image with reveal animation */}
+                    {reticlePositions && originalImage ? (
+                      <>
+                        {/* Hidden image for canvas drawing */}
+                        <img
+                          ref={imageRef}
+                          src={originalImage}
+                          alt={`Source miniature`}
+                          className="hidden"
+                          onLoad={() => setImageLoaded(true)}
+                        />
+                        {/* Canvas with client-side reticles */}
+                        <motion.canvas
+                          ref={canvasRef}
+                          className="w-full rounded"
+                          initial={{ scale: 1.1, filter: 'blur(10px)', opacity: 0 }}
+                          animate={{
+                            scale: imageLoaded ? 1 : 1.1,
+                            filter: imageLoaded ? 'blur(0px)' : 'blur(10px)',
+                            opacity: imageLoaded ? 1 : 0,
+                          }}
+                          transition={{
+                            duration: 0.6,
+                            ease: [0.43, 0.13, 0.23, 0.96],
+                          }}
+                        />
+                      </>
+                    ) : (
+                      /* Backend reticle image */
+                      <motion.img
+                        src={reticleImage}
+                        alt={`Location of ${colorName} on miniature`}
+                        className="w-full rounded"
+                        initial={{ scale: 1.1, filter: 'blur(10px)', opacity: 0 }}
+                        animate={{
+                          scale: imageLoaded ? 1 : 1.1,
+                          filter: imageLoaded ? 'blur(0px)' : 'blur(10px)',
+                          opacity: imageLoaded ? 1 : 0,
+                        }}
                         transition={{
-                          duration: 1.5,
-                          ease: 'linear',
+                          duration: 0.6,
+                          ease: [0.43, 0.13, 0.23, 0.96],
                         }}
-                        style={{
-                          background: 'linear-gradient(to bottom, transparent, var(--cogitator-green-glow-strong), transparent)',
-                          height: '30%',
-                        }}
+                        onLoad={() => setImageLoaded(true)}
                       />
+                    )}
+
+                    {/* Enhanced scanning overlay effect - Full sweep with multiple passes */}
+                    {imageLoaded && !scanComplete && (
+                      <>
+                        {/* Main scan bar */}
+                        <motion.div
+                          className="absolute inset-0 pointer-events-none"
+                          initial={{ y: '-100%' }}
+                          animate={{ y: '100%' }}
+                          transition={{
+                            duration: 2,
+                            ease: [0.65, 0, 0.35, 1], // Ease in-out cubic
+                          }}
+                          onAnimationComplete={() => setScanComplete(true)}
+                          style={{
+                            background: 'linear-gradient(to bottom, transparent 0%, rgba(0, 255, 136, 0.1) 20%, rgba(0, 255, 136, 0.6) 50%, rgba(0, 255, 136, 0.1) 80%, transparent 100%)',
+                            height: '40%',
+                            boxShadow: '0 0 40px rgba(0, 255, 136, 0.8)',
+                          }}
+                        />
+                        {/* Secondary scan line - thin bright line */}
+                        <motion.div
+                          className="absolute left-0 right-0 pointer-events-none"
+                          initial={{ top: '-2px' }}
+                          animate={{ top: '100%' }}
+                          transition={{
+                            duration: 2,
+                            ease: [0.65, 0, 0.35, 1],
+                          }}
+                          style={{
+                            height: '2px',
+                            background: 'rgba(0, 255, 136, 1)',
+                            boxShadow: '0 0 20px rgba(0, 255, 136, 1), 0 0 40px rgba(0, 255, 136, 0.6)',
+                          }}
+                        />
+                        {/* Scan grid overlay that fades in */}
+                        <motion.div
+                          className="absolute inset-0 pointer-events-none"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: [0, 0, 0.3, 0] }}
+                          transition={{
+                            duration: 2,
+                            times: [0, 0.3, 0.7, 1],
+                          }}
+                          style={{
+                            backgroundImage: `
+                              linear-gradient(rgba(0, 255, 136, 0.1) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 255, 136, 0.1) 1px, transparent 1px)
+                            `,
+                            backgroundSize: '20px 20px',
+                          }}
+                        />
+                      </>
                     )}
 
                     {/* Corner indicators */}
@@ -266,7 +403,7 @@ export function ReticleReveal({
               </div>
 
               {/* Info footer */}
-              {reticleImage && imageLoaded && (
+              {(reticleImage || (originalImage && reticlePositions)) && imageLoaded && (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
