@@ -10,8 +10,8 @@ import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { ReticleReveal } from '@/components/miniscan/ReticleReveal';
 import { PaintList } from '@/components/PaintCard';
-import { BrandFilter } from '@/components/shared/BrandFilter';
-import { PaintResults } from '@/components/shared/PaintResults';
+import { ColorPaintResults } from '@/components/ColorPaintResults';
+import { transformToRecipeStructure } from '@/lib/recipeTransform';
 import { ShareButton } from '@/components/ShareButton';
 import { ShareModal } from '@/components/ShareModal';
 import { motion } from 'framer-motion';
@@ -65,22 +65,6 @@ export default function MiniscanResultsPage() {
           </motion.div>
         </motion.div>
 
-        {/* Brand Filter */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <div className="gothic-frame rounded-lg p-1 depth-2">
-            <div className="bg-dark-gothic rounded-lg p-4 textured">
-              <h3 className="text-sm font-bold auspex-text mb-3 gothic-text text-center">
-                ◆ BRAND PREFERENCES ◆
-              </h3>
-              <BrandFilter mode="miniature" />
-            </div>
-          </div>
-        </motion.div>
-
         {/* Detected Colors with ReticleReveal */}
         <div className="space-y-6">
           {currentScan.detectedColors.map((color, index) => (
@@ -92,27 +76,6 @@ export default function MiniscanResultsPage() {
             >
               <div className="gothic-frame rounded-lg p-1 depth-3">
                 <div className="bg-dark-gothic rounded-lg p-4 textured">
-                  {/* Color Header */}
-                  <div className="flex items-center gap-4 mb-4">
-                    <div
-                      className="w-16 h-16 rounded-lg border-2 border-cogitator-green auspex-glow flex-shrink-0"
-                      style={{ backgroundColor: color.hex }}
-                    />
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-xl font-bold auspex-text gothic-text truncate">
-                        {color.family || 'UNKNOWN'}
-                      </h3>
-                      <div className="flex flex-wrap gap-2 mt-1">
-                        <span className="text-sm text-cogitator-green-dim tech-text">
-                          Coverage: {color.percentage?.toFixed(1)}%
-                        </span>
-                        <span className="text-sm text-brass tech-text">
-                          {color.hex}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
                   {/* RETICLE REVEAL - THE MAGIC MOMENT */}
                   <ReticleReveal
                     colorName={color.family || 'Color'}
@@ -121,13 +84,14 @@ export default function MiniscanResultsPage() {
                     originalImage={currentScan.imageData}
                   />
 
-                  {/* Paint Recommendations for this color */}
+                  {/* Paint Recipe Results */}
                   {color.paintMatches ? (
                     <div className="mt-6">
-                      <PaintResults
-                        colorName={color.family || 'Color'}
+                      <ColorPaintResults
+                        colorName={color.family || 'UNKNOWN'}
                         colorHex={color.hex}
-                        paintMatches={color.paintMatches}
+                        colorPercentage={color.percentage || 0}
+                        paintsByBrand={transformToRecipeStructure(color.paintMatches)}
                         mode="miniature"
                       />
                     </div>

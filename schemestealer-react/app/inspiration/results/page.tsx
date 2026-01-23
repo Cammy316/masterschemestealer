@@ -11,8 +11,8 @@ import { motion } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
 import { ColorPalette } from '@/components/inspiration/ColorPalette';
 import { PaintList } from '@/components/PaintCard';
-import { BrandFilter } from '@/components/shared/BrandFilter';
-import { PaintResults } from '@/components/shared/PaintResults';
+import { ColorPaintResults } from '@/components/ColorPaintResults';
+import { transformToRecipeStructure } from '@/lib/recipeTransform';
 import { ShareButton } from '@/components/ShareButton';
 import { ShareModal } from '@/components/ShareModal';
 
@@ -92,22 +92,6 @@ export default function InspirationResultsPage() {
           </motion.div>
         )}
 
-        {/* Brand Filter */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-        >
-          <div className="warp-border rounded-lg p-1 depth-2">
-            <div className="bg-dark-gothic rounded-lg p-4 textured">
-              <h3 className="text-sm font-bold warp-text mb-3 gothic-text text-center">
-                ◆ BRAND PREFERENCES ◆
-              </h3>
-              <BrandFilter mode="inspiration" />
-            </div>
-          </div>
-        </motion.div>
-
         {/* Color Palette - The main feature */}
         {currentScan.detectedColors.length > 0 && (
           <motion.div
@@ -140,10 +124,11 @@ export default function InspirationResultsPage() {
             >
               <div className="warp-border rounded-2xl p-1 depth-2">
                 <div className="bg-dark-gothic rounded-xl p-6 textured">
-                  <PaintResults
+                  <ColorPaintResults
                     colorName={color.family || `Color ${index + 1}`}
                     colorHex={color.hex}
-                    paintMatches={color.paintMatches}
+                    colorPercentage={color.percentage || 0}
+                    paintsByBrand={transformToRecipeStructure(color.paintMatches)}
                     mode="inspiration"
                   />
                 </div>
