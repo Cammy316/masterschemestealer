@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Navigation } from "@/components/Navigation";
+import { Inter, Cinzel, Philosopher } from 'next/font/google';
+
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
+const cinzel = Cinzel({ subsets: ['latin'], weight: ['400', '700'], variable: '--font-cinzel' });
+const philosopher = Philosopher({ subsets: ['latin'], weight: ['400', '700'], variable: '--font-philosopher' });
 
 export const metadata: Metadata = {
   title: "SchemeStealer - Paint Color Detection for Miniatures",
@@ -16,8 +21,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="antialiased bg-gray-50 font-sans">
+    <html lang="en" className={`${inter.variable} ${cinzel.variable} ${philosopher.variable}`}>
+      <body className={`${inter.className} antialiased bg-gray-50`}>
         <Navigation />
         <main className="min-h-screen pb-20">
           {children}
