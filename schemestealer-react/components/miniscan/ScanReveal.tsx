@@ -29,6 +29,7 @@ export function ScanReveal({ imageUrl, reticleData, onComplete }: ScanRevealProp
   const [bloomProgress, setBloomProgress] = useState(0);
   const imageRef = useRef<HTMLImageElement | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const normalizedPositions = useRef<ColorPoint[]>([]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -44,6 +45,19 @@ export function ScanReveal({ imageUrl, reticleData, onComplete }: ScanRevealProp
       imageRef.current = img;
       canvas.width = img.width;
       canvas.height = img.height;
+
+      // Normalize reticle positions to actual image dimensions
+      // Assumes reticle data is in a 1000x1000 reference frame
+      const scaleX = img.width / 1000;
+      const scaleY = img.height / 1000;
+
+      // Create normalized positions
+      normalizedPositions.current = reticleData.map(point => ({
+        x: point.x * scaleX,
+        y: point.y * scaleY,
+        color: point.color,
+        name: point.name,
+      }));
 
       // Start bloom animation
       animateBloom();
@@ -114,7 +128,7 @@ export function ScanReveal({ imageUrl, reticleData, onComplete }: ScanRevealProp
       ctx.filter = 'none';
 
       // Draw color blooms from each point
-      reticleData.forEach(point => {
+      normalizedPositions.current.forEach(point => {
         const maxRadius = Math.sqrt(canvas.width * canvas.width + canvas.height * canvas.height);
         const radius = maxRadius * bloomProgress * 0.8; // 80% of max for better coverage
 
@@ -154,7 +168,7 @@ export function ScanReveal({ imageUrl, reticleData, onComplete }: ScanRevealProp
         drawAuspexGrid(ctx, canvas.width, canvas.height);
       }
     }
-  }, [bloomProgress, phase, reticleData]);
+  }, [bloomProgress, phase]);
 
   const drawAuspexGrid = (ctx: CanvasRenderingContext2D, width: number, height: number) => {
     ctx.strokeStyle = 'rgba(0, 255, 100, 0.4)';
@@ -229,9 +243,9 @@ export function ScanReveal({ imageUrl, reticleData, onComplete }: ScanRevealProp
         />
 
         {/* Reticles - tiny 20px size, appear at end of bloom */}
-        {bloomProgress > 0.8 && reticleData.map((point, index) => {
+        {bloomProgress > 0.8 && normalizedPositions.current.map((point, index) => {
           const canvas = canvasRef.current;
-          if (!canvas) return null;
+          if (!canvas || !canvas.width) return null;
 
           const percentX = (point.x / canvas.width) * 100;
           const percentY = (point.y / canvas.height) * 100;

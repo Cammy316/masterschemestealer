@@ -11,6 +11,8 @@ import { motion } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
 import { ColorPalette } from '@/components/inspiration/ColorPalette';
 import { PaintList } from '@/components/PaintCard';
+import { BrandFilter } from '@/components/shared/BrandFilter';
+import { PaintResults } from '@/components/shared/PaintResults';
 
 export default function InspirationResultsPage() {
   const router = useRouter();
@@ -87,12 +89,28 @@ export default function InspirationResultsPage() {
           </motion.div>
         )}
 
+        {/* Brand Filter */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          <div className="warp-border rounded-lg p-1 depth-2">
+            <div className="bg-dark-gothic rounded-lg p-4 textured">
+              <h3 className="text-sm font-bold warp-text mb-3 gothic-text text-center">
+                ◆ BRAND PREFERENCES ◆
+              </h3>
+              <BrandFilter mode="inspiration" />
+            </div>
+          </div>
+        </motion.div>
+
         {/* Color Palette - The main feature */}
         {currentScan.detectedColors.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
           >
             <div className="warp-border rounded-2xl p-1 depth-3">
               <div className="bg-dark-gothic rounded-xl p-6 textured">
@@ -105,12 +123,40 @@ export default function InspirationResultsPage() {
           </motion.div>
         )}
 
-        {/* Paint Recommendations */}
-        {currentScan.recommendedPaints && currentScan.recommendedPaints.length > 0 && (
+        {/* Paint Recommendations - Per Color */}
+        {currentScan.detectedColors.map((color, index) => {
+          // Only show if color has paintMatches
+          if (!color.paintMatches) return null;
+
+          return (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
+            >
+              <div className="warp-border rounded-2xl p-1 depth-2">
+                <div className="bg-dark-gothic rounded-xl p-6 textured">
+                  <PaintResults
+                    colorName={color.family || `Color ${index + 1}`}
+                    colorHex={color.hex}
+                    paintMatches={color.paintMatches}
+                    mode="inspiration"
+                  />
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
+
+        {/* Fallback: Old-style paint recommendations if no paintMatches */}
+        {currentScan.recommendedPaints &&
+         currentScan.recommendedPaints.length > 0 &&
+         !currentScan.detectedColors.some(c => c.paintMatches) && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
           >
             <div className="warp-border rounded-2xl p-1 depth-2">
               <div className="bg-dark-gothic rounded-xl p-6 textured">

@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { scanInspiration, ApiError } from '@/lib/api';
 import { detectColorsOffline } from '@/lib/offlineColorDetection';
+import { enhanceWithMultiBrandMatches } from '@/lib/paintMatcher';
 import { WarpPortal } from '@/components/inspiration/WarpPortal';
 import { LoadingAnimation } from '@/components/shared/LoadingAnimations';
 import { motion } from 'framer-motion';
@@ -42,6 +43,9 @@ export default function InspirationPage() {
         // Call API to scan inspiration image
         result = await scanInspiration(file);
       }
+
+      // Enhance with multi-brand matches
+      result = enhanceWithMultiBrandMatches(result, 3);
 
       setScanResult(result);
       router.push('/inspiration/results');
