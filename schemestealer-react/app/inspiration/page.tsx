@@ -20,6 +20,7 @@ export default function InspirationPage() {
   const { setMode, setScanResult, offlineMode } = useAppStore();
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hasUploaded, setHasUploaded] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
@@ -27,6 +28,7 @@ export default function InspirationPage() {
   }, [setMode]);
 
   const handleFileSelect = async (file: File) => {
+    setHasUploaded(true);
     setIsProcessing(true);
     setError(null);
 
@@ -61,6 +63,7 @@ export default function InspirationPage() {
 
       setError(errorMessage);
       setIsProcessing(false);
+      setHasUploaded(false);
     }
   };
 
@@ -122,6 +125,7 @@ export default function InspirationPage() {
           onActivate={handlePortalActivate}
           isActive={isProcessing}
           disabled={isProcessing}
+          hasUploaded={hasUploaded}
         />
       </motion.div>
 
