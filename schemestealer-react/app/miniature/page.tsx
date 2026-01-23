@@ -9,14 +9,21 @@ import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { scanMiniature, ApiError } from '@/lib/api';
+import { detectColorsOffline } from '@/lib/offlineColorDetection';
+import { enhanceWithMultiBrandMatches } from '@/lib/paintMatcher';
 import { CogitatorUpload } from '@/components/miniscan/CogitatorUpload';
 import { LoadingAnimation } from '@/components/shared/LoadingAnimations';
+import { ScanReveal } from '@/components/miniscan/ScanReveal';
 import { motion } from 'framer-motion';
+import type { ScanResult } from '@/lib/types';
 
 export default function MiniscanPage() {
   const router = useRouter();
-  const { setMode, setScanResult } = useAppStore();
+  const { setMode, setScanResult, offlineMode } = useAppStore();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showReveal, setShowReveal] = useState(false);
+  const [scanResult, setScanResultLocal] = useState<ScanResult | null>(null);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
 
@@ -28,11 +35,31 @@ export default function MiniscanPage() {
     setIsProcessing(true);
     setError(null);
 
+    // Create object URL for image display
+    const imageUrl = URL.createObjectURL(file);
+    setUploadedImageUrl(imageUrl);
+
     try {
-      // Call API to scan miniature
-      const result = await scanMiniature(file);
-      setScanResult(result);
-      router.push('/miniature/results');
+      let result;
+
+      if (offlineMode) {
+        // Use offline color detection
+        result = await detectColorsOffline(file, 'miniature', {
+          numColors: 6,
+          numPaintMatches: 5,
+        });
+      } else {
+        // Call API to scan miniature
+        result = await scanMiniature(file);
+      }
+
+      // Enhance with multi-brand matches
+      result = enhanceWithMultiBrandMatches(result, 3);
+
+      // Store result locally and show reveal animation
+      setScanResultLocal(result);
+      setIsProcessing(false);
+      setShowReveal(true);
     } catch (err) {
       console.error('Scan error:', err);
 
@@ -45,6 +72,18 @@ export default function MiniscanPage() {
 
       setError(errorMessage);
       setIsProcessing(false);
+      // Clean up object URL on error
+      URL.revokeObjectURL(imageUrl);
+    }
+  };
+
+  const handleRevealComplete = () => {
+    // Animation complete - save to store and navigate
+    if (scanResult) {
+      setScanResult(scanResult);
+      router.push('/miniature/results');
+      // Clean up object URL
+      URL.revokeObjectURL(uploadedImageUrl);
     }
   };
 
@@ -57,8 +96,44 @@ export default function MiniscanPage() {
     if (file) handleFileSelect(file);
   };
 
+  // Show loading animation while processing
   if (isProcessing) {
     return <LoadingAnimation mode="miniature" />;
+  }
+
+  // Show reveal animation after scan complete
+  if (showReveal && scanResult && uploadedImageUrl) {
+    // Prepare reticle data for bloom animation
+    // Use a reference frame of 1000x1000 and distribute colors evenly
+    const centerX = 500;
+    const centerY = 500;
+    const radius = 200; // pixels from center
+
+    const reticleData = scanResult.detectedColors.map((color, index) => {
+      // Distribute colors evenly in a circle
+      const angle = (index * (Math.PI * 2)) / scanResult.detectedColors.length;
+      const x = centerX + Math.cos(angle) * radius;
+      const y = centerY + Math.sin(angle) * radius;
+
+      return {
+        x,
+        y,
+        color: color.hex,
+        name: color.family || `Color ${index + 1}`,
+      };
+    });
+
+    return (
+      <div className="min-h-screen pb-24 pt-8 px-4 cogitator-screen" style={{ background: 'var(--void-black)' }}>
+        <div className="max-w-2xl mx-auto">
+          <ScanReveal
+            imageUrl={uploadedImageUrl}
+            reticleData={reticleData}
+            onComplete={handleRevealComplete}
+          />
+        </div>
+      </div>
+    );
   }
 
   return (

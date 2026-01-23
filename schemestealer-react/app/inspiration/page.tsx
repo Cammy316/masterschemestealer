@@ -9,15 +9,18 @@ import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { scanInspiration, ApiError } from '@/lib/api';
+import { detectColorsOffline } from '@/lib/offlineColorDetection';
+import { enhanceWithMultiBrandMatches } from '@/lib/paintMatcher';
 import { WarpPortal } from '@/components/inspiration/WarpPortal';
 import { LoadingAnimation } from '@/components/shared/LoadingAnimations';
 import { motion } from 'framer-motion';
 
 export default function InspirationPage() {
   const router = useRouter();
-  const { setMode, setScanResult } = useAppStore();
+  const { setMode, setScanResult, offlineMode } = useAppStore();
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hasUploaded, setHasUploaded] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
@@ -25,12 +28,27 @@ export default function InspirationPage() {
   }, [setMode]);
 
   const handleFileSelect = async (file: File) => {
+    setHasUploaded(true);
     setIsProcessing(true);
     setError(null);
 
     try {
-      // Call API to scan inspiration image
-      const result = await scanInspiration(file);
+      let result;
+
+      if (offlineMode) {
+        // Use offline color detection
+        result = await detectColorsOffline(file, 'inspiration', {
+          numColors: 5,
+          numPaintMatches: 5,
+        });
+      } else {
+        // Call API to scan inspiration image
+        result = await scanInspiration(file);
+      }
+
+      // Enhance with multi-brand matches
+      result = enhanceWithMultiBrandMatches(result, 3);
+
       setScanResult(result);
       router.push('/inspiration/results');
     } catch (err) {
@@ -45,6 +63,7 @@ export default function InspirationPage() {
 
       setError(errorMessage);
       setIsProcessing(false);
+      setHasUploaded(false);
     }
   };
 
@@ -106,6 +125,7 @@ export default function InspirationPage() {
           onActivate={handlePortalActivate}
           isActive={isProcessing}
           disabled={isProcessing}
+          hasUploaded={hasUploaded}
         />
       </motion.div>
 

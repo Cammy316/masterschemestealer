@@ -10,6 +10,7 @@ import { useState, useEffect } from 'react';
 export function useScrollDirection() {
   const [scrollDirection, setScrollDirection] = useState<'up' | 'down' | null>(null);
   const [isAtTop, setIsAtTop] = useState(true);
+  const [isNearBottom, setIsNearBottom] = useState(false);
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
@@ -17,6 +18,12 @@ export function useScrollDirection() {
 
     const updateScrollDirection = () => {
       const scrollY = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+
+      // Check if near bottom (within 100px)
+      const distanceFromBottom = documentHeight - (scrollY + windowHeight);
+      setIsNearBottom(distanceFromBottom < 100);
 
       // Always show nav when at top of page
       if (scrollY < 10) {
@@ -46,9 +53,12 @@ export function useScrollDirection() {
       }
     };
 
+    // Initial check
+    updateScrollDirection();
+
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  return { scrollDirection, isAtTop };
+  return { scrollDirection, isAtTop, isNearBottom };
 }

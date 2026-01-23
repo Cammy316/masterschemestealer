@@ -70,6 +70,8 @@ export interface AppState {
   isScanning: boolean;
   isLoading: boolean;
   error: string | null;
+  offlineMode: boolean;
+  preferredBrands: string[]; // ['all'], ['citadel'], ['vallejo'], ['army-painter'], or combinations
 }
 
 export interface AppActions {
@@ -88,6 +90,8 @@ export interface AppActions {
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   clearError: () => void;
+  setOfflineMode: (enabled: boolean) => void;
+  setPreferredBrands: (brands: string[]) => void;
 }
 
 export type AppStore = AppState & AppActions;
