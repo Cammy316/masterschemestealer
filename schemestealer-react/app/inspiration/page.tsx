@@ -9,13 +9,14 @@ import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { scanInspiration, ApiError } from '@/lib/api';
+import { detectColorsOffline } from '@/lib/offlineColorDetection';
 import { WarpPortal } from '@/components/inspiration/WarpPortal';
 import { LoadingAnimation } from '@/components/shared/LoadingAnimations';
 import { motion } from 'framer-motion';
 
 export default function InspirationPage() {
   const router = useRouter();
-  const { setMode, setScanResult } = useAppStore();
+  const { setMode, setScanResult, offlineMode } = useAppStore();
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -29,8 +30,19 @@ export default function InspirationPage() {
     setError(null);
 
     try {
-      // Call API to scan inspiration image
-      const result = await scanInspiration(file);
+      let result;
+
+      if (offlineMode) {
+        // Use offline color detection
+        result = await detectColorsOffline(file, 'inspiration', {
+          numColors: 5,
+          numPaintMatches: 5,
+        });
+      } else {
+        // Call API to scan inspiration image
+        result = await scanInspiration(file);
+      }
+
       setScanResult(result);
       router.push('/inspiration/results');
     } catch (err) {

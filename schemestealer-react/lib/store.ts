@@ -17,18 +17,43 @@ export const useAppStore = create<AppStore>()(
       isScanning: false,
       isLoading: false,
       error: null,
+      offlineMode: false,
 
       // Mode and scan actions
       setMode: (mode: ScanMode) => set({ currentMode: mode, error: null }),
 
-      setScanResult: (result: ScanResult) =>
-        set((state) => ({
-          currentScan: result,
-          scanHistory: [result, ...state.scanHistory.slice(0, 9)], // Keep last 10 scans
-          isScanning: false,
-          isLoading: false,
-          error: null,
-        })),
+      setScanResult: (result: ScanResult) => {
+        try {
+          // Create a persistable version without large base64 images
+          const persistableResult = {
+            ...result,
+            imageUrl: undefined,
+            imageData: undefined,
+          };
+
+          set((state) => ({
+            currentScan: result, // Keep full result in memory
+            scanHistory: [persistableResult, ...state.scanHistory.slice(0, 9)], // Keep last 10 scans without images
+            isScanning: false,
+            isLoading: false,
+            error: null,
+          }));
+        } catch (error) {
+          // If still quota exceeded, clear history and try again
+          if (error instanceof Error && error.name === 'QuotaExceededError') {
+            console.warn('LocalStorage quota exceeded, clearing scan history');
+            set((state) => ({
+              currentScan: result,
+              scanHistory: [], // Clear history to free space
+              isScanning: false,
+              isLoading: false,
+              error: null,
+            }));
+          } else {
+            throw error;
+          }
+        }
+      },
 
       clearCurrentScan: () =>
         set({
@@ -87,13 +112,17 @@ export const useAppStore = create<AppStore>()(
       setError: (error: string | null) => set({ error, isLoading: false }),
 
       clearError: () => set({ error: null }),
+
+      // Offline mode
+      setOfflineMode: (enabled: boolean) => set({ offlineMode: enabled }),
     }),
     {
       name: 'schemestealer-storage', // LocalStorage key
       partialize: (state) => ({
-        // Only persist cart and scan history
+        // Only persist cart, scan history (without images), and offline mode preference
         cart: state.cart,
         scanHistory: state.scanHistory,
+        offlineMode: state.offlineMode,
       }),
     }
   )

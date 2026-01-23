@@ -9,13 +9,14 @@ import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { scanMiniature, ApiError } from '@/lib/api';
+import { detectColorsOffline } from '@/lib/offlineColorDetection';
 import { CogitatorUpload } from '@/components/miniscan/CogitatorUpload';
 import { LoadingAnimation } from '@/components/shared/LoadingAnimations';
 import { motion } from 'framer-motion';
 
 export default function MiniscanPage() {
   const router = useRouter();
-  const { setMode, setScanResult } = useAppStore();
+  const { setMode, setScanResult, offlineMode } = useAppStore();
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -29,8 +30,19 @@ export default function MiniscanPage() {
     setError(null);
 
     try {
-      // Call API to scan miniature
-      const result = await scanMiniature(file);
+      let result;
+
+      if (offlineMode) {
+        // Use offline color detection
+        result = await detectColorsOffline(file, 'miniature', {
+          numColors: 6,
+          numPaintMatches: 5,
+        });
+      } else {
+        // Call API to scan miniature
+        result = await scanMiniature(file);
+      }
+
       setScanResult(result);
       router.push('/miniature/results');
     } catch (err) {

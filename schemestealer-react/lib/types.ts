@@ -70,6 +70,7 @@ export interface AppState {
   isScanning: boolean;
   isLoading: boolean;
   error: string | null;
+  offlineMode: boolean;
 }
 
 export interface AppActions {
@@ -88,6 +89,7 @@ export interface AppActions {
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   clearError: () => void;
+  setOfflineMode: (enabled: boolean) => void;
 }
 
 export type AppStore = AppState & AppActions;
