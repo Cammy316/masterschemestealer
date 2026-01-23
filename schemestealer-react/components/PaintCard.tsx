@@ -1,6 +1,9 @@
 'use client';
 
 import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
+import { useAppStore } from '@/lib/store';
+import type { Paint } from '@/lib/types';
+import { getPaintId } from '@/lib/utils';
 
 interface PaintCardProps {
   paint: {
@@ -56,6 +59,74 @@ export function PaintCard({ paint, mode, onAddToCart }: PaintCardProps) {
           {copied ? '✓ Copied' : `Copy ${paint.hex}`}
         </button>
       </div>
+    </div>
+  );
+}
+
+interface PaintListProps {
+  paints: Paint[];
+  title?: string;
+  emptyMessage?: string;
+  showAddButtons?: boolean;
+  maxDisplay?: number;
+}
+
+export function PaintList({
+  paints,
+  title = 'Recommended Paints',
+  emptyMessage = 'No paint recommendations yet',
+  showAddButtons = true,
+  maxDisplay,
+}: PaintListProps) {
+  const { cart, currentMode, addToCart, currentScan } = useAppStore();
+
+  if (!paints || paints.length === 0) {
+    return (
+      <div className="text-center py-8 text-gray-500">
+        {emptyMessage}
+      </div>
+    );
+  }
+
+  const displayPaints = maxDisplay ? paints.slice(0, maxDisplay) : paints;
+  const cartPaintIds = new Set(cart.map(item => getPaintId(item.paint)));
+  const mode = currentMode || 'miniature';
+
+  const handleAddToCart = (paint: Paint) => {
+    addToCart(paint, currentMode || undefined, currentScan?.id);
+  };
+
+  return (
+    <div className="space-y-4">
+      {title && (
+        <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+      )}
+
+      <div className="space-y-3">
+        {displayPaints.map((paint, index) => {
+          const inCart = cartPaintIds.has(getPaintId(paint));
+
+          return (
+            <PaintCard
+              key={`${paint.brand}-${paint.name}-${index}`}
+              paint={{
+                name: paint.name,
+                brand: paint.brand,
+                hex: paint.hex,
+                deltaE: paint.deltaE || 0,
+              }}
+              mode={mode}
+              onAddToCart={showAddButtons && !inCart ? () => handleAddToCart(paint) : undefined}
+            />
+          );
+        })}
+      </div>
+
+      {maxDisplay && paints.length > maxDisplay && (
+        <p className="text-sm text-gray-500 text-center pt-2">
+          +{paints.length - maxDisplay} more paints
+        </p>
+      )}
     </div>
   );
 }
