@@ -1,257 +1,166 @@
-/**
- * Magical Color Swatch Component for Inspiration Mode
- * Features shimmer effect, 3D lift on hover, and copy functionality
- */
-
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
 
 interface ColorSwatchProps {
-  color: {
-    hex: string;
-    name: string;
-    percentage: number;
-    rgb: [number, number, number];
-  };
+  hex: string;
+  name: string;
+  percentage: number;
+  rgb: [number, number, number];
+  mode: 'miniature' | 'inspiration';
   index: number;
-  onCopy: (hex: string) => void;
-  mode?: 'miniscan' | 'inspiration';
 }
 
-export function ColorSwatch({ color, index, onCopy, mode = 'inspiration' }: ColorSwatchProps) {
+export function ColorSwatch({ hex, name, percentage, rgb, mode, index }: ColorSwatchProps) {
   const [isHovered, setIsHovered] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const { copied, copyToClipboard } = useCopyToClipboard(2000);
 
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(color.hex);
-      onCopy(color.hex);
-      setCopied(true);
+  const themeColors = mode === 'miniature'
+    ? { text: 'text-green-500', border: 'border-green-500', glow: '#00FF66' }
+    : { text: 'text-purple-400', border: 'border-purple-500', glow: '#8B5CF6' };
 
-      setTimeout(() => {
-        setCopied(false);
-      }, 2000);
-    } catch (error) {
-      console.error('Failed to copy:', error);
-    }
+  const handleClick = () => {
+    copyToClipboard(hex);
   };
 
-  const themeColors = mode === 'miniscan'
-    ? {
-        border: 'border-green-500/30',
-        borderHover: 'border-green-400/80',
-        shadowHover: 'shadow-green-500/30',
-        text: 'text-green-200',
-        textDim: 'text-green-400/70',
-        textMuted: 'text-green-400/50',
-        gradient: 'from-gray-900/95 to-gray-800/95',
-        glow: 'ring-green-500',
-      }
-    : {
-        border: 'border-purple-500/30',
-        borderHover: 'border-purple-400/80',
-        shadowHover: 'shadow-purple-500/30',
-        text: 'text-purple-200',
-        textDim: 'text-purple-400/70',
-        textMuted: 'text-purple-400/50',
-        gradient: 'from-gray-900/95 to-gray-800/95',
-        glow: 'ring-purple-500',
-      };
-
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{
-        duration: 0.5,
-        delay: index * 0.1,
-        type: 'spring',
-        stiffness: 100,
+    <div
+      className="color-swatch-enter"
+      style={{
+        animationDelay: `${index * 100}ms`,
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onTouchStart={() => setIsHovered(true)}
-      onTouchEnd={() => setTimeout(() => setIsHovered(false), 3000)}
+      onTouchEnd={() => setTimeout(() => setIsHovered(false), 2000)}
     >
-      <motion.div
-        className={`relative overflow-hidden border-2 rounded-xl transition-all duration-300 ${
-          isHovered
-            ? `${themeColors.borderHover} shadow-2xl ${themeColors.shadowHover} scale-105 -translate-y-2`
-            : `${themeColors.border} shadow-lg`
-        }`}
+      <button
+        onClick={handleClick}
+        className={`
+          relative overflow-hidden rounded-lg border-2 transition-all duration-300 w-full
+          ${isHovered ? `${themeColors.border} shadow-2xl scale-105 -translate-y-0.5` : `${themeColors.border} border-opacity-30 shadow-lg`}
+          ${copied ? 'ring-4 ring-white ring-opacity-50' : ''}
+        `}
         style={{
-          background: `linear-gradient(135deg, rgba(17, 24, 39, 0.95), rgba(31, 41, 55, 0.95))`,
+          background: 'linear-gradient(135deg, rgba(17, 24, 39, 0.95), rgba(31, 41, 55, 0.95))',
         }}
       >
-        {/* Shimmer effect overlay */}
+        {/* Shimmer overlay */}
         <div
-          className="absolute inset-0 pointer-events-none opacity-20"
+          className="absolute inset-0 pointer-events-none shimmer-animation"
           style={{
-            background: mode === 'miniscan'
-              ? 'linear-gradient(110deg, transparent 30%, rgba(0, 255, 100, 0.5) 50%, transparent 70%)'
-              : 'linear-gradient(110deg, transparent 30%, rgba(139, 92, 246, 0.5) 50%, transparent 70%)',
+            background: `linear-gradient(110deg, transparent 30%, ${themeColors.glow}30 50%, transparent 70%)`,
             backgroundSize: '200% 100%',
-            animation: 'shimmer 3s infinite',
           }}
         />
 
-        <div className="relative p-6">
-          {/* Color swatch with flash effect */}
-          <div className="relative mb-4 group">
-            <motion.div
-              className={`w-full h-32 rounded-lg shadow-xl transition-all duration-300 ${
-                copied ? `ring-4 ${themeColors.glow}` : ''
-              }`}
-              style={{
-                backgroundColor: color.hex,
-                boxShadow: `0 8px 32px ${color.hex}40, inset 0 1px 0 rgba(255,255,255,0.2)`,
-              }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            />
+        {/* Flash effect when copied */}
+        {copied && (
+          <div className="absolute inset-0 bg-white pointer-events-none flash-animation" />
+        )}
 
-            {/* Flash effect when copied */}
-            {copied && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: [0, 0.6, 0] }}
-                transition={{ duration: 0.3 }}
-                className="absolute inset-0 bg-white rounded-lg"
-              />
-            )}
-          </div>
+        <div className="relative p-4">
+          {/* Color swatch */}
+          <div
+            className="w-full h-24 rounded-lg shadow-xl mb-3 transition-transform duration-300"
+            style={{
+              backgroundColor: hex,
+              boxShadow: `0 8px 24px ${hex}40`,
+              transform: copied ? 'scale(0.95)' : 'scale(1)',
+            }}
+          />
 
           {/* Color info */}
-          <div className="space-y-2">
+          <div className="space-y-1">
             <div className="flex items-center justify-between">
-              <h3 className={`responsive-body font-bold ${themeColors.text}`}>
-                {color.name}
-              </h3>
-              <span className={`text-xs ${themeColors.textDim} font-mono`}>
-                {color.percentage}%
-              </span>
+              <h3 className={`text-base font-bold ${themeColors.text}`}>{name}</h3>
+              <span className="text-xs text-gray-500">{percentage}%</span>
             </div>
-
-            <div className="flex items-center justify-between gap-2">
-              <code className={`text-sm font-mono ${themeColors.text} flex-1`}>
-                {color.hex}
+            <div>
+              <code className={`text-sm font-mono ${themeColors.text}`}>
+                {copied ? '✓ Copied' : hex}
               </code>
-
-              {/* Copy button - appears on hover/tap */}
-              <motion.button
-                onClick={handleCopy}
-                className={`px-3 py-1 rounded text-xs font-semibold transition-colors ${
-                  copied
-                    ? `${themeColors.glow.replace('ring-', 'bg-')} text-white`
-                    : `${themeColors.textDim} hover:${themeColors.text} hover:bg-white/10`
-                }`}
-                initial={{ opacity: 0, x: 10 }}
-                animate={{
-                  opacity: isHovered ? 1 : 0,
-                  x: isHovered ? 0 : 10,
-                }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {copied ? (
-                  <>
-                    <span className="mr-1">✓</span>
-                    Copied
-                  </>
-                ) : (
-                  <>
-                    <span className="mr-1">📋</span>
-                    Copy
-                  </>
-                )}
-              </motion.button>
             </div>
-
-            {/* RGB values */}
-            <div className={`text-xs ${themeColors.textMuted} font-mono`}>
-              RGB: {color.rgb.join(', ')}
+            <div className="text-xs text-gray-500 font-mono">
+              RGB: {rgb.join(', ')}
             </div>
           </div>
         </div>
 
         {/* Energy glow at bottom */}
         <div
-          className="absolute bottom-0 left-0 right-0 h-1 opacity-60"
+          className="absolute bottom-0 left-0 right-0 h-1 energy-pulse-animation"
           style={{
-            background: `linear-gradient(90deg, transparent, ${color.hex}, transparent)`,
-            boxShadow: `0 0 20px ${color.hex}`,
+            background: `linear-gradient(90deg, transparent, ${hex}, transparent)`,
+            boxShadow: `0 0 20px ${hex}`,
           }}
         />
-      </motion.div>
-    </motion.div>
+      </button>
+    </div>
   );
 }
 
 /**
  * Grid container for color swatches
  */
-export function ColorSwatchGrid({
-  colors,
-  mode = 'inspiration',
-  onCopy,
-  onCopyAll,
-}: {
-  colors: Array<{ hex: string; name: string; percentage: number; rgb: [number, number, number] }>;
-  mode?: 'miniscan' | 'inspiration';
-  onCopy: (hex: string) => void;
-  onCopyAll: () => void;
-}) {
-  const themeColors = mode === 'miniscan'
-    ? {
-        title: 'text-green-400',
-        symbol: '⚙',
-        button: 'border-green-500 text-green-400 hover:bg-green-500/10',
-      }
-    : {
-        title: 'text-purple-400',
-        symbol: '✦',
-        button: 'border-purple-500 text-purple-400 hover:bg-purple-500/10',
-      };
+interface Color {
+  hex: string;
+  name: string;
+  percentage: number;
+  rgb: [number, number, number];
+}
+
+interface ColorSwatchGridProps {
+  colors: Color[];
+  mode: 'miniature' | 'inspiration';
+}
+
+export function ColorSwatchGrid({ colors, mode }: ColorSwatchGridProps) {
+  const { copied, copyToClipboard } = useCopyToClipboard(3000);
+
+  const handleCopyAll = () => {
+    const formatted = colors.map(c => `${c.name}: ${c.hex}`).join('\n');
+    copyToClipboard(formatted);
+  };
+
+  const themeColors = mode === 'miniature'
+    ? { title: 'text-green-500', button: 'bg-green-600 hover:bg-green-700 border-green-500' }
+    : { title: 'text-purple-400', button: 'bg-purple-600 hover:bg-purple-700 border-purple-500' };
 
   return (
-    <div className="mb-8">
-      <h2 className={`responsive-section font-bold ${themeColors.title} mb-6 text-center flex items-center justify-center`}>
-        <span className="text-decoration-symbol">{themeColors.symbol}</span>
-        EXTRACTED ESSENCE
-        <span className="text-decoration-symbol">{themeColors.symbol}</span>
+    <div className="space-y-6">
+      {/* Title */}
+      <h2 className={`text-xl font-bold ${themeColors.title} text-center`}>
+        {mode === 'miniature' ? '◆ DETECTED COLORS ◆' : '✦ EXTRACTED ESSENCE ✦'}
       </h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Grid - responsive: 2 cols mobile, 3 cols tablet, 4 cols desktop */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {colors.map((color, index) => (
           <ColorSwatch
             key={color.hex}
-            color={color}
-            index={index}
+            hex={color.hex}
+            name={color.name}
+            percentage={color.percentage}
+            rgb={color.rgb}
             mode={mode}
-            onCopy={onCopy}
+            index={index}
           />
         ))}
       </div>
 
-      {/* Copy all button */}
-      <motion.div
-        className="mt-8 text-center"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: colors.length * 0.1 + 0.2 }}
-      >
-        <motion.button
-          onClick={onCopyAll}
-          className={`px-6 py-3 rounded-lg border-2 font-bold responsive-body transition-colors ${themeColors.button}`}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+      {/* Copy All button */}
+      <div className="flex justify-center pt-4">
+        <button
+          onClick={handleCopyAll}
+          className={`px-6 py-3 rounded-lg font-bold text-white border-2 transition-all min-h-[52px] ${themeColors.button} ${
+            copied ? 'ring-4 ring-white ring-opacity-30' : ''
+          }`}
         >
-          <span className="mr-2">📋</span>
-          COPY ALL HEX CODES
-        </motion.button>
-      </motion.div>
+          {copied ? '✓ Copied All Hex Codes' : 'Copy All Hex Codes'}
+        </button>
+      </div>
     </div>
   );
 }
