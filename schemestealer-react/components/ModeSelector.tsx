@@ -17,6 +17,12 @@ export function ModeSelector() {
   const setMode = useAppStore((state) => state.setMode);
   const offlineMode = useAppStore((state) => state.offlineMode);
   const setOfflineMode = useAppStore((state) => state.setOfflineMode);
+  const [isClient, setIsClient] = React.useState(false);
+
+  // Prevent hydration mismatch by only showing toggle after client mount
+  React.useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleModeSelect = (mode: ScanMode) => {
     setMode(mode);
@@ -62,77 +68,79 @@ export function ModeSelector() {
           </div>
         </motion.div>
 
-        {/* Offline Mode Toggle */}
-        <motion.div
-          className="mb-3 text-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
-        >
-          <button
-            onClick={() => setOfflineMode(!offlineMode)}
-            className="inline-flex items-center gap-3 px-4 py-2 rounded-lg border-2 transition-all duration-300 touch-target"
-            style={{
-              borderColor: offlineMode ? 'rgba(59, 130, 246, 0.5)' : 'rgba(156, 163, 175, 0.3)',
-              backgroundColor: offlineMode ? 'rgba(59, 130, 246, 0.1)' : 'rgba(0, 0, 0, 0.3)',
-            }}
-          >
-            <span className="text-xs font-mono tracking-wider text-gray-400">
-              DETECTION MODE:
-            </span>
-
-            {/* Toggle Switch */}
-            <div className="relative">
-              <motion.div
-                className="w-12 h-6 rounded-full relative"
-                style={{
-                  backgroundColor: offlineMode ? 'rgba(59, 130, 246, 0.3)' : 'rgba(156, 163, 175, 0.2)',
-                }}
-                animate={{
-                  backgroundColor: offlineMode
-                    ? 'rgba(59, 130, 246, 0.3)'
-                    : 'rgba(156, 163, 175, 0.2)',
-                }}
-              >
-                <motion.div
-                  className="absolute top-0.5 w-5 h-5 rounded-full"
-                  style={{
-                    backgroundColor: offlineMode ? '#3B82F6' : '#9CA3AF',
-                    boxShadow: offlineMode
-                      ? '0 0 10px rgba(59, 130, 246, 0.5)'
-                      : '0 0 5px rgba(0, 0, 0, 0.3)',
-                  }}
-                  animate={{
-                    x: offlineMode ? 24 : 2,
-                  }}
-                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                />
-              </motion.div>
-            </div>
-
-            {/* Status Label */}
-            <span
-              className="text-xs font-bold tracking-wider"
-              style={{
-                color: offlineMode ? '#3B82F6' : '#9CA3AF',
-              }}
-            >
-              {offlineMode ? '⚡ OFFLINE' : '🌐 ONLINE'}
-            </span>
-          </button>
-
-          {/* Info text */}
-          <motion.p
-            className="text-xs text-gray-500 mt-1.5 font-mono"
+        {/* Offline Mode Toggle - Only render after client hydration */}
+        {isClient && (
+          <motion.div
+            className="mb-3 text-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
           >
-            {offlineMode
-              ? '⚡ Lightning-fast local analysis • No network required'
-              : '🌐 Enhanced accuracy • Cloud processing'}
-          </motion.p>
-        </motion.div>
+            <button
+              onClick={() => setOfflineMode(!offlineMode)}
+              className="inline-flex items-center gap-3 px-4 py-2 rounded-lg border-2 transition-all duration-300 touch-target"
+              style={{
+                borderColor: offlineMode ? 'rgba(59, 130, 246, 0.5)' : 'rgba(156, 163, 175, 0.3)',
+                backgroundColor: offlineMode ? 'rgba(59, 130, 246, 0.1)' : 'rgba(0, 0, 0, 0.3)',
+              }}
+            >
+              <span className="text-xs font-mono tracking-wider text-gray-400">
+                DETECTION MODE:
+              </span>
+
+              {/* Toggle Switch */}
+              <div className="relative">
+                <motion.div
+                  className="w-12 h-6 rounded-full relative"
+                  style={{
+                    backgroundColor: offlineMode ? 'rgba(59, 130, 246, 0.3)' : 'rgba(156, 163, 175, 0.2)',
+                  }}
+                  animate={{
+                    backgroundColor: offlineMode
+                      ? 'rgba(59, 130, 246, 0.3)'
+                      : 'rgba(156, 163, 175, 0.2)',
+                  }}
+                >
+                  <motion.div
+                    className="absolute top-0.5 w-5 h-5 rounded-full"
+                    style={{
+                      backgroundColor: offlineMode ? '#3B82F6' : '#9CA3AF',
+                      boxShadow: offlineMode
+                        ? '0 0 10px rgba(59, 130, 246, 0.5)'
+                        : '0 0 5px rgba(0, 0, 0, 0.3)',
+                    }}
+                    animate={{
+                      x: offlineMode ? 24 : 2,
+                    }}
+                    transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                  />
+                </motion.div>
+              </div>
+
+              {/* Status Label */}
+              <span
+                className="text-xs font-bold tracking-wider"
+                style={{
+                  color: offlineMode ? '#3B82F6' : '#9CA3AF',
+                }}
+              >
+                {offlineMode ? '⚡ OFFLINE' : '🌐 ONLINE'}
+              </span>
+            </button>
+
+            {/* Info text */}
+            <motion.p
+              className="text-xs text-gray-500 mt-1.5 font-mono"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              {offlineMode
+                ? '⚡ Lightning-fast local analysis • No network required'
+                : '🌐 Enhanced accuracy • Cloud processing'}
+            </motion.p>
+          </motion.div>
+        )}
 
         {/* Header - Compact and Responsive */}
         <motion.div

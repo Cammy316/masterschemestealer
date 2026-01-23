@@ -22,11 +22,6 @@ export function Navigation() {
   const [revealedByTap, setRevealedByTap] = React.useState(false);
   const tapTimerRef = React.useRef<NodeJS.Timeout | null>(null);
 
-  // Don't show nav on home page
-  if (pathname === '/') {
-    return null;
-  }
-
   const isActive = (path: string) => pathname === path || pathname.startsWith(path);
   const cartCount = cartItems.length;
 
@@ -69,6 +64,11 @@ export function Navigation() {
       }
     };
   }, [isVisible, isAtTop, isNearBottom]);
+
+  // Don't show nav on home page - check AFTER all hooks are called
+  if (pathname === '/') {
+    return null;
+  }
 
   return (
     <>
