@@ -5,7 +5,7 @@
 
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
@@ -13,10 +13,13 @@ import { ColorPalette } from '@/components/inspiration/ColorPalette';
 import { PaintList } from '@/components/PaintCard';
 import { BrandFilter } from '@/components/shared/BrandFilter';
 import { PaintResults } from '@/components/shared/PaintResults';
+import { ShareButton } from '@/components/ShareButton';
+import { ShareModal } from '@/components/ShareModal';
 
 export default function InspirationResultsPage() {
   const router = useRouter();
   const { currentScan, clearCurrentScan } = useAppStore();
+  const [showShareModal, setShowShareModal] = useState(false);
 
   React.useEffect(() => {
     // Redirect if no scan result
@@ -243,6 +246,11 @@ export default function InspirationResultsPage() {
               </span>
             </div>
           </motion.button>
+
+          <ShareButton
+            mode="inspiration"
+            onShareClick={() => setShowShareModal(true)}
+          />
         </motion.div>
 
         {/* Info card */}
@@ -291,6 +299,21 @@ export default function InspirationResultsPage() {
           </div>
         </motion.div>
       </div>
+
+      {showShareModal && (
+        <ShareModal
+          mode="inspiration"
+          data={{
+            colors: currentScan.detectedColors.map(color => ({
+              hex: color.hex,
+              name: color.family || 'Unknown',
+              percentage: color.percentage || 0,
+            })),
+            imageUrl: currentScan.imageData,
+          }}
+          onClose={() => setShowShareModal(false)}
+        />
+      )}
     </div>
   );
 }

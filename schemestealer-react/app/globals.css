@@ -573,6 +573,15 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+@keyframes pulse-once {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.animate-pulse-once {
+  animation: pulse-once 0.3s ease-out;
+}
+
 .pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
 }
