@@ -8,6 +8,7 @@
 import { useMemo } from 'react';
 import { useAppStore } from '@/lib/store';
 import type { Paint } from '@/lib/types';
+import { PaintCard } from '@/components/PaintCard';
 import { motion } from 'framer-motion';
 
 interface PaintResultsProps {
@@ -129,45 +130,20 @@ export function PaintResults({
             {brand.paints.map((paint, index) => (
               <motion.div
                 key={index}
-                className="flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg hover:bg-gray-800 transition-colors"
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.05, duration: 0.2 }}
               >
-                {/* Paint swatch */}
-                <div
-                  className="w-12 h-12 rounded-md shadow-md border border-gray-700 flex-shrink-0"
-                  style={{ backgroundColor: paint.hex }}
+                <PaintCard
+                  paint={{
+                    name: paint.name,
+                    brand: paint.brand,
+                    hex: paint.hex,
+                    deltaE: paint.deltaE || 0,
+                  }}
+                  mode={mode}
+                  onAddToCart={() => handleAddToCart(paint)}
                 />
-
-                {/* Paint info */}
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-white truncate">
-                    {paint.name}
-                  </p>
-                  <p className="text-xs text-gray-400">{paint.brand}</p>
-                </div>
-
-                {/* Delta-E badge */}
-                {paint.deltaE !== undefined && (
-                  <div
-                    className={`px-3 py-1 rounded-full ${themeColors.bg} bg-opacity-20 border ${themeColors.border}`}
-                  >
-                    <span className={`text-sm font-mono ${themeColors.header}`}>
-                      ΔE: {paint.deltaE.toFixed(1)}
-                    </span>
-                  </div>
-                )}
-
-                {/* Add to cart button */}
-                <motion.button
-                  className={`px-4 py-2 rounded-lg ${themeColors.bg} text-white font-semibold text-sm hover:opacity-90 transition-opacity`}
-                  onClick={() => handleAddToCart(paint)}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  Add
-                </motion.button>
               </motion.div>
             ))}
           </div>

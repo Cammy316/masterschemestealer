@@ -5,18 +5,21 @@
 
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { ReticleReveal } from '@/components/miniscan/ReticleReveal';
 import { PaintList } from '@/components/PaintCard';
 import { BrandFilter } from '@/components/shared/BrandFilter';
 import { PaintResults } from '@/components/shared/PaintResults';
+import { ShareButton } from '@/components/ShareButton';
+import { ShareModal } from '@/components/ShareModal';
 import { motion } from 'framer-motion';
 
 export default function MiniscanResultsPage() {
   const router = useRouter();
   const { currentScan, clearCurrentScan } = useAppStore();
+  const [showShareModal, setShowShareModal] = useState(false);
 
   React.useEffect(() => {
     // Redirect if no scan result
@@ -195,6 +198,11 @@ export default function MiniscanResultsPage() {
               </span>
             </div>
           </motion.button>
+
+          <ShareButton
+            mode="miniature"
+            onShareClick={() => setShowShareModal(true)}
+          />
         </motion.div>
 
         {/* Cogitator Report - Enhanced parchment panel */}
@@ -245,6 +253,21 @@ export default function MiniscanResultsPage() {
           </div>
         </motion.div>
       </div>
+
+      {showShareModal && (
+        <ShareModal
+          mode="miniature"
+          data={{
+            colors: currentScan.detectedColors.map(color => ({
+              hex: color.hex,
+              name: color.family || 'Unknown',
+              percentage: color.percentage || 0,
+            })),
+            imageUrl: currentScan.imageData,
+          }}
+          onClose={() => setShowShareModal(false)}
+        />
+      )}
     </div>
   );
 }
