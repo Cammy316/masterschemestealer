@@ -6,7 +6,7 @@ Provides color detection endpoints for both Miniscan and Inspiration modes
 import io
 import json
 import base64
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi import FastAPI, File, UploadFile, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from PIL import Image
@@ -23,6 +23,47 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+# Security Configuration
+MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
+MAX_IMAGE_DIMENSION = 4096
+ALLOWED_MIME_TYPES = {'image/jpeg', 'image/png', 'image/webp', 'image/heic'}
+
+
+async def validate_image_upload(file: UploadFile = File(...)) -> bytes:
+    """Validate uploaded image for security"""
+
+    # Check content type
+    if file.content_type not in ALLOWED_MIME_TYPES:
+        raise HTTPException(400, f"Invalid file type: {file.content_type}. Allowed: JPEG, PNG, WebP, HEIC")
+
+    # Read with size limit
+    contents = await file.read()
+    if len(contents) > MAX_FILE_SIZE:
+        raise HTTPException(413, f"File too large. Max: {MAX_FILE_SIZE // (1024*1024)}MB")
+
+    # Validate it's actually an image
+    try:
+        image = Image.open(io.BytesIO(contents))
+        image.verify()
+
+        # Re-open for dimension check (verify() closes the image)
+        image = Image.open(io.BytesIO(contents))
+        width, height = image.size
+
+        if width > MAX_IMAGE_DIMENSION or height > MAX_IMAGE_DIMENSION:
+            raise HTTPException(400, f"Image too large. Max: {MAX_IMAGE_DIMENSION}px")
+
+        if width < 100 or height < 100:
+            raise HTTPException(400, "Image too small. Min: 100px")
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(400, f"Invalid image file: {str(e)}")
+
+    return contents
+
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -74,23 +115,22 @@ async def get_paints():
 
 
 @app.post("/api/scan/miniature")
-async def scan_miniature(file: UploadFile = File(...)):
+async def scan_miniature(contents: bytes = Depends(validate_image_upload)):
     """
     Scan a painted miniature to detect colors
     - Removes background using rembg
     - Detects 3-5 dominant colors on the miniature
-    - Returns paint recommendations
+    - Returns paint recommendations (v3.0 with triads)
     """
     try:
-        # Read and validate image
-        contents = await file.read()
+        # Image already validated by dependency
         image = Image.open(io.BytesIO(contents))
 
         # Convert to RGB if needed
         if image.mode != 'RGB':
             image = image.convert('RGB')
 
-        logger.info(f"Processing miniature scan: {file.filename}, size: {image.size}")
+        logger.info(f"Processing miniature scan, size: {image.size}")
 
         # Process with miniature scanner (includes background removal)
         result = miniature_scanner.scan(image)
@@ -108,23 +148,22 @@ async def scan_miniature(file: UploadFile = File(...)):
 
 
 @app.post("/api/scan/inspiration")
-async def scan_inspiration(file: UploadFile = File(...)):
+async def scan_inspiration(contents: bytes = Depends(validate_image_upload)):
     """
     Extract color palette from any image for inspiration
     - NO background removal (analyzes entire image)
     - Detects 5-8 dominant colors
-    - Returns paint recommendations
+    - Returns paint recommendations (v3.0 with triads)
     """
     try:
-        # Read and validate image
-        contents = await file.read()
+        # Image already validated by dependency
         image = Image.open(io.BytesIO(contents))
 
         # Convert to RGB if needed
         if image.mode != 'RGB':
             image = image.convert('RGB')
 
-        logger.info(f"Processing inspiration scan: {file.filename}, size: {image.size}")
+        logger.info(f"Processing inspiration scan, size: {image.size}")
 
         # Process with inspiration scanner (NO background removal)
         result = inspiration_scanner.scan(image)

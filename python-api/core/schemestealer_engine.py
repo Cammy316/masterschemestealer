@@ -16,38 +16,47 @@ from config import ColorDetection, Affiliate
 from core.photo_processor import PhotoProcessor
 from core.base_detector import BaseDetector
 from core.color_engine import (
-    Paint, ShadeTypeAnalyser, 
-    PaintMatcher, VisualizationEngine
+    Paint, ShadeTypeAnalyser,
+    PaintMatcher, VisualizationEngine,
+    HierarchicalPaintMatcher
 )
 from core.smart_color_system import SmartColorExtractor 
 from utils.helpers import apply_white_balance, increase_saturation
 from utils.logging_config import logger
 
 class SchemeStealerEngine:
-    def __init__(self, paint_db_path: str = 'paints.json'):
-        logger.info(f"Initializing SchemeStealer Engine v2.6 (ML-Enhanced)")
-        
+    def __init__(self, paint_db_path: str = 'paints_v3.json'):
+        logger.info(f"Initializing SchemeStealer Engine v3.0 (Production)")
+
         with open(paint_db_path, 'r') as f:
             paint_data = json.load(f)
-        
+
         self.paint_db = []
         for p in paint_data:
             paint = Paint(
                 name=p['name'],
                 brand=p['brand'],
                 hex=p['hex'],
-                type=p.get('type', 'paint')
+                category=p.get('category', 'base'),
+                finish=p.get('finish', 'matte'),
+                transparency=p.get('transparency', 0.0),
+                color_family=p.get('color_family', 'grey'),
+                tags=p.get('tags', []),
+                layer_sequence=p.get('layer_sequence')
             )
-            paint.compute_properties()
+            # Note: compute_properties() is called in __post_init__
             self.paint_db.append(paint)
-        
+
+        logger.info(f"Loaded {len(self.paint_db)} paints from {paint_db_path}")
+
         self.photo_processor = PhotoProcessor()
         self.base_detector = BaseDetector()
         self.smart_extractor = SmartColorExtractor()
-        self.matcher = PaintMatcher(self.paint_db)
+        self.matcher = PaintMatcher(self.paint_db)  # Legacy matcher (still used for some features)
+        self.hierarchical_matcher = HierarchicalPaintMatcher(self.paint_db)  # v3.0 triad matcher
         self.viz_engine = VisualizationEngine()
-        
-        logger.info("Engine initialization complete - ML features enabled")
+
+        logger.info("Engine initialization complete - v3.0 Production Ready")
 
     def analyze_miniature(self, img_np: np.ndarray, mode: str = "mini",
                          remove_base: bool = True, use_awb: bool = True,
@@ -101,13 +110,13 @@ class SchemeStealerEngine:
 
         # 6. Smart Color Extraction
         colors = self.smart_extractor.extract_colors(resized_original, mini_mask)
-        
-        # 7. Build Recipes with FULL ML FEATURES
-        recipes = self._build_recipes_with_ml_features(
+
+        # 7. Build Recipes with v3.0 TRIAD STRUCTURE
+        recipes = self._build_recipes_with_triads(
             colors, resized_original, mini_mask, brands, new_w, new_h
         )
         recipes.sort(key=lambda x: (x.get('is_detail', False), -x['dominance']))
-        
+
         return recipes, cropped_rgba, quality_report.__dict__
 
     def _build_recipes_with_ml_features(self, colors: List[Dict], img_rgb: np.ndarray,
@@ -263,3 +272,136 @@ class SchemeStealerEngine:
         """Match color to paint and format for UI"""
         match = self.matcher.match_color(rgb, brand, p_type, context)
         return {'name': match.name, 'hex': match.hex, 'type': match.type} if match else None
+    def _build_recipes_with_triads(self, colors: List[Dict], img_rgb: np.ndarray,
+                                    mini_mask: np.ndarray, brands: List[str],
+                                    width: int, height: int) -> List[dict]:
+        """
+        Build recipes with v3.0 triad structure
+
+        Returns recipes with triads by brand:
+        {
+            'family': 'Blue',
+            'dominance': 45.2,
+            'hex': '#0D407F',
+            'triads': {
+                'Citadel': {
+                    'base': {...},
+                    'layer': {...},
+                    'shade': {...},
+                    'highlight': {...},
+                    'alternatives': {...}
+                },
+                'Vallejo': {...},
+                'Army Painter': {...}
+            }
+        }
+        """
+        recipes = []
+
+        for color_data in colors:
+            family = color_data.get('family', 'Unknown')
+            median_rgb = color_data['median_rgb']
+            median_lab = color_data.get('median_lab')
+
+            if median_lab is None:
+                rgb_norm = median_rgb / 255.0
+                median_lab = sk_color.rgb2lab(np.array([[rgb_norm]]))[0][0]
+
+            # Detect if this color region is metallic
+            is_metallic = (
+                "Gold" in family or "Silver" in family or "Bronze" in family or
+                "Metal" in family or "Brass" in family or "Copper" in family or
+                color_data.get('is_metallic', False)
+            )
+
+            # Generate triads for each brand
+            triads = {}
+            for brand in brands:
+                # Match base color (excludes washes automatically!)
+                base_match = self.hierarchical_matcher.match_base_color(
+                    median_lab, brand, is_metallic
+                )
+
+                if base_match:
+                    # Generate full triad
+                    triad = self.hierarchical_matcher.generate_triad(base_match, brand)
+
+                    # Get alternatives for each slot
+                    triads[brand] = {
+                        'base': self._format_paint_with_delta(triad['base'], median_lab),
+                        'layer': self._format_paint_with_delta(triad['layer'], median_lab) if triad['layer'] else None,
+                        'shade': self._format_paint(triad['shade']) if triad['shade'] else None,  # No deltaE for washes
+                        'highlight': self._format_paint_with_delta(triad['highlight'], median_lab) if triad['highlight'] else None,
+                        'alternatives': {
+                            'base': [self._format_paint_with_delta(p, median_lab)
+                                    for p in self.hierarchical_matcher.get_alternatives(triad['base'], brand, 2)],
+                            'layer': [self._format_paint_with_delta(p, median_lab)
+                                     for p in self.hierarchical_matcher.get_alternatives(triad['layer'], brand, 2)] if triad['layer'] else [],
+                        }
+                    }
+                else:
+                    triads[brand] = None
+
+            # Calculate spatial features for reticle
+            spatial_mask = np.zeros(img_rgb.shape[:2], dtype=bool)
+            indices = color_data.get('pixel_indices')
+            if indices is not None:
+                mask_flat = mini_mask.flatten()
+                valid_coords = np.argwhere(mask_flat).flatten()
+                if len(indices) > 0 and len(valid_coords) > 0:
+                    actual_indices = valid_coords[indices]
+                    spatial_mask.ravel()[actual_indices] = True
+
+            # Create visualization
+            reticle_pos = self.viz_engine.find_optimal_reticle_position(spatial_mask)
+            reticle_img = self.viz_engine.create_color_overlay(
+                img_rgb, spatial_mask, median_rgb / 255.0, reticle_pos
+            )
+
+            # Build recipe with triads
+            recipe = {
+                'family': family,
+                'dominance': color_data['coverage'],
+                'triads': triads,  # NEW: triads by brand
+                'is_metallic': is_metallic,
+                'rgb': median_rgb.tolist() if isinstance(median_rgb, np.ndarray) else median_rgb,
+                'lab': median_lab.tolist() if isinstance(median_lab, np.ndarray) else median_lab,
+                'hex': '#{:02x}{:02x}{:02x}'.format(int(median_rgb[0]), int(median_rgb[1]), int(median_rgb[2])),
+                'is_detail': color_data.get('is_detail', False),
+                'reticle': reticle_img,
+            }
+
+            recipes.append(recipe)
+
+        return recipes
+
+    def _format_paint_with_delta(self, paint: Paint, target_lab: np.ndarray) -> dict:
+        """Format paint with Delta-E score"""
+        if not paint:
+            return None
+
+        delta_e = sk_color.deltaE_ciede2000(
+            np.array([[target_lab]]),
+            np.array([[paint.lab]])
+        )[0][0]
+
+        return {
+            'name': paint.name,
+            'brand': paint.brand,
+            'hex': paint.hex,
+            'type': paint.category,
+            'finish': paint.finish,
+            'deltaE': round(delta_e, 1)
+        }
+
+    def _format_paint(self, paint: Paint) -> dict:
+        """Format paint without Delta-E (for washes)"""
+        if not paint:
+            return None
+        return {
+            'name': paint.name,
+            'brand': paint.brand,
+            'hex': paint.hex,
+            'type': paint.category,
+            'finish': paint.finish
+        }

@@ -17,7 +17,7 @@ from sklearn.cluster import KMeans
 from sklearn.neighbors import KDTree
 from skimage import color
 from typing import List, Dict, Tuple, Optional
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from scipy import ndimage
 
 from config import ColorDetection, Visualization, ShadeRules
@@ -30,28 +30,62 @@ from utils.logging_config import logger
 
 @dataclass
 class Paint:
-    """Paint data structure"""
+    """Paint data structure matching paints_v3.json schema"""
     name: str
     brand: str
     hex: str
-    type: str
-    
+    category: str = "base"  # base, layer, wash, contrast, air, dry, ink, technical, glaze
+    finish: str = "matte"  # matte, satin, metallic, gloss
+    transparency: float = 0.0  # 0.0 (opaque) to 0.85 (wash)
+    color_family: str = "grey"
+    tags: List[str] = None
+    layer_sequence: Optional[dict] = None
+
+    # Computed properties (set by compute_properties)
     rgb: np.ndarray = None
     lab: np.ndarray = None
     hsv: np.ndarray = None
     chroma: float = None
     saturation: float = None
     brightness: float = None
-    
+
+    def __post_init__(self):
+        if self.tags is None:
+            self.tags = []
+        self.compute_properties()
+
     def compute_properties(self):
-        """Compute color properties"""
+        """Compute color properties from hex"""
         h = self.hex.lstrip('#')
+        if len(h) != 6:
+            h = "808080"  # Default grey
         self.rgb = np.array([int(h[i:i+2], 16) for i in (0, 2, 4)]) / 255.0
         self.lab = color.rgb2lab(np.array([[self.rgb]]))[0][0]
         self.hsv = np.array(colorsys.rgb_to_hsv(*self.rgb))
         self.saturation = self.hsv[1]
         self.brightness = self.hsv[2]
         self.chroma = np.sqrt(self.lab[1]**2 + self.lab[2]**2)
+
+    @property
+    def is_wash(self) -> bool:
+        """Check if paint is a wash/shade/ink (CRITICAL: exclude from base/layer matching)"""
+        return self.transparency > 0.3 or self.category in ['wash', 'shade', 'contrast', 'ink', 'glaze']
+
+    @property
+    def is_metallic(self) -> bool:
+        """Check if paint is metallic"""
+        return self.finish == 'metallic'
+
+    @property
+    def is_opaque(self) -> bool:
+        """Check if paint is opaque (suitable for base/layer matching)"""
+        return self.transparency < 0.3 and self.category not in ['wash', 'shade', 'contrast', 'ink', 'glaze']
+
+    # Backward compatibility
+    @property
+    def type(self) -> str:
+        """Backward compatibility for old 'type' field"""
+        return self.category
 
 
 # ============================================================================
@@ -554,3 +588,235 @@ class VisualizationEngine:
             return (x + w//2, y + h//2)
         
         return (width // 2, height // 2)
+
+# ============================================================================
+# HIERARCHICAL PAINT MATCHER - v3.0 PRODUCTION
+# ============================================================================
+
+class HierarchicalPaintMatcher:
+    """
+    Production-grade paint matcher with:
+    - Transparency filtering (exclude washes from base/layer matching)
+    - Texture filtering (metallic vs matte)
+    - Brand-specific matching
+    - Triad generation (base → layer → shade → highlight)
+    """
+
+    # Wash recommendations by color family and brand
+    WASH_MAP = {
+        'Citadel': {
+            'red': 'Carroburg Crimson', 'blue': 'Drakenhof Nightshade',
+            'green': 'Biel-Tan Green', 'brown': 'Agrax Earthshade',
+            'flesh': 'Reikland Fleshshade', 'purple': 'Druchii Violet',
+            'yellow': 'Seraphim Sepia', 'orange': 'Seraphim Sepia',
+            'bone': 'Seraphim Sepia', 'gold': 'Reikland Fleshshade',
+            'silver': 'Nuln Oil', 'bronze': 'Agrax Earthshade',
+            'grey': 'Nuln Oil', 'black': 'Nuln Oil', 'white': 'Nuln Oil',
+            'pink': 'Carroburg Crimson', 'cyan': 'Coelia Greenshade',
+            'default': 'Nuln Oil'
+        },
+        'Vallejo': {
+            'red': 'Red Wash', 'blue': 'Blue Wash', 'green': 'Green Wash',
+            'brown': 'Umber Shade', 'flesh': 'Flesh Wash', 'default': 'Black Wash'
+        },
+        'Army Painter': {
+            'red': 'Red Tone', 'blue': 'Blue Tone', 'green': 'Green Tone',
+            'brown': 'Strong Tone', 'flesh': 'Flesh Wash', 'purple': 'Purple Tone',
+            'default': 'Dark Tone'
+        },
+        'Scale75': {
+            'default': 'Black Wash'
+        }
+    }
+
+    def __init__(self, paint_db: List[Paint]):
+        self.paint_db = paint_db
+        self._build_indices()
+        logger.info(f"HierarchicalPaintMatcher initialized with {len(paint_db)} paints")
+
+    def _build_indices(self):
+        """Pre-build filtered indices for fast lookup"""
+
+        # Separate by key attributes
+        self.opaque_paints = [p for p in self.paint_db if p.is_opaque]
+        self.metallic_paints = [p for p in self.paint_db if p.is_metallic and p.is_opaque]
+        self.non_metallic_paints = [p for p in self.paint_db if not p.is_metallic and p.is_opaque]
+        self.washes = [p for p in self.paint_db if p.is_wash]
+
+        # Build KD-trees for fast LAB lookup
+        if self.opaque_paints:
+            self.opaque_tree = KDTree([p.lab for p in self.opaque_paints])
+        if self.metallic_paints:
+            self.metallic_tree = KDTree([p.lab for p in self.metallic_paints])
+        if self.non_metallic_paints:
+            self.non_metallic_tree = KDTree([p.lab for p in self.non_metallic_paints])
+
+        # Index by brand for faster filtering
+        self.by_brand = {}
+        for brand in ['Citadel', 'Vallejo', 'Army Painter', 'Scale75']:
+            self.by_brand[brand] = {
+                'opaque': [p for p in self.opaque_paints if p.brand == brand],
+                'metallic': [p for p in self.metallic_paints if p.brand == brand],
+                'non_metallic': [p for p in self.non_metallic_paints if p.brand == brand],
+                'wash': [p for p in self.washes if p.brand == brand],
+            }
+
+        logger.info(f"Built indices: {len(self.opaque_paints)} opaque, "
+                   f"{len(self.metallic_paints)} metallic, {len(self.washes)} washes")
+
+    def match_base_color(self,
+                         target_lab: np.ndarray,
+                         brand: str,
+                         is_metallic: bool = False) -> Optional[Paint]:
+        """
+        Match detected color to best BASE paint.
+        CRITICAL: Excludes all washes/inks/contrasts!
+        """
+
+        # Select candidate pool based on texture
+        if is_metallic:
+            candidates = self.by_brand.get(brand, {}).get('metallic', [])
+            if not candidates:
+                candidates = self.metallic_paints  # Fallback to any brand
+        else:
+            candidates = self.by_brand.get(brand, {}).get('non_metallic', [])
+            if not candidates:
+                candidates = self.by_brand.get(brand, {}).get('opaque', [])
+            if not candidates:
+                candidates = self.non_metallic_paints  # Fallback
+
+        if not candidates:
+            logger.warning(f"No candidates found for brand={brand}, metallic={is_metallic}")
+            return None
+
+        # Find closest match using Delta-E 2000
+        best_paint = None
+        best_distance = float('inf')
+
+        for paint in candidates:
+            distance = color.deltaE_ciede2000(
+                np.array([[target_lab]]),
+                np.array([[paint.lab]])
+            )[0][0]
+
+            if distance < best_distance:
+                best_distance = distance
+                best_paint = paint
+
+        if best_paint:
+            logger.debug(f"Base match: {best_paint.name} (ΔE={best_distance:.2f})")
+
+        return best_paint
+
+    def generate_triad(self,
+                       base_paint: Paint,
+                       brand: str) -> Dict[str, Optional[Paint]]:
+        """
+        Generate complete painting triad from base paint.
+
+        Returns:
+        {
+            'base': Paint,
+            'layer': Paint or None (lighter, same hue family),
+            'shade': Paint or None (recommended wash),
+            'highlight': Paint or None (even lighter)
+        }
+        """
+        result = {
+            'base': base_paint,
+            'layer': None,
+            'shade': None,
+            'highlight': None
+        }
+
+        base_L = base_paint.lab[0]  # Lightness in LAB
+        base_hue = base_paint.hsv[0]  # Hue 0-1
+        color_family = base_paint.color_family
+
+        # Get same-brand opaque paints
+        brand_paints = self.by_brand.get(brand, {}).get('opaque', [])
+        if not brand_paints:
+            brand_paints = self.opaque_paints
+
+        # Filter to same color family (hue tolerance ~30 degrees)
+        def is_same_family(paint):
+            # Check color_family tag first
+            if paint.color_family == color_family:
+                return True
+            # Fallback to hue comparison
+            hue_diff = abs(paint.hsv[0] - base_hue)
+            hue_diff = min(hue_diff, 1 - hue_diff)  # Handle wrap-around
+            return hue_diff < 0.08  # ~30 degrees tolerance
+
+        same_family = [p for p in brand_paints
+                      if is_same_family(p) and p.name != base_paint.name]
+
+        # Find LAYER (lighter than base, closest to +15 lightness)
+        layer_candidates = [p for p in same_family if p.lab[0] > base_L + 5]
+        if layer_candidates:
+            target_L = min(95, base_L + 15)
+            result['layer'] = min(layer_candidates,
+                                 key=lambda p: abs(p.lab[0] - target_L))
+
+        # Find HIGHLIGHT (even lighter than layer)
+        if result['layer']:
+            layer_L = result['layer'].lab[0]
+            highlight_candidates = [p for p in same_family if p.lab[0] > layer_L + 5]
+            if highlight_candidates:
+                target_L = min(98, base_L + 30)
+                result['highlight'] = min(highlight_candidates,
+                                         key=lambda p: abs(p.lab[0] - target_L))
+
+        # Find SHADE (recommended wash for this color family)
+        result['shade'] = self._get_recommended_wash(color_family, brand)
+
+        return result
+
+    def _get_recommended_wash(self, color_family: str, brand: str) -> Optional[Paint]:
+        """Get the recommended wash for a color family and brand"""
+
+        # Get wash name from mapping
+        brand_map = self.WASH_MAP.get(brand, self.WASH_MAP.get('Citadel', {}))
+        wash_name = brand_map.get(color_family, brand_map.get('default', 'Nuln Oil'))
+
+        # Find the wash in database
+        brand_washes = self.by_brand.get(brand, {}).get('wash', [])
+
+        # Try exact name match first
+        for wash in brand_washes:
+            if wash_name.lower() in wash.name.lower():
+                return wash
+
+        # Fallback: any wash from this brand
+        if brand_washes:
+            return brand_washes[0]
+
+        # Last resort: any wash
+        if self.washes:
+            return self.washes[0]
+
+        return None
+
+    def get_alternatives(self, paint: Paint, brand: str, limit: int = 2) -> List[Paint]:
+        """Get alternative paints similar to the given paint"""
+
+        if paint.is_wash:
+            candidates = self.by_brand.get(brand, {}).get('wash', [])
+        elif paint.is_metallic:
+            candidates = self.by_brand.get(brand, {}).get('metallic', [])
+        else:
+            candidates = self.by_brand.get(brand, {}).get('opaque', [])
+
+        # Sort by Delta-E distance
+        scored = []
+        for p in candidates:
+            if p.name == paint.name:
+                continue
+            dist = color.deltaE_ciede2000(
+                np.array([[paint.lab]]),
+                np.array([[p.lab]])
+            )[0][0]
+            scored.append((p, dist))
+
+        scored.sort(key=lambda x: x[1])
+        return [p for p, _ in scored[:limit]]
