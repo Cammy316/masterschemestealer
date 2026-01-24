@@ -99,13 +99,15 @@ class InspirationScannerService:
                 int(rgb[0]), int(rgb[1]), int(rgb[2])
             )
 
-            # Add color
+            # Add color with triads
             colors.append({
                 'rgb': [int(rgb[0]), int(rgb[1]), int(rgb[2])],
                 'lab': [float(lab[0]), float(lab[1]), float(lab[2])],
                 'hex': hex_color,
                 'percentage': float(recipe.get('dominance', 0)),
+                'dominance': float(recipe.get('dominance', 0)),  # Frontend expects 'dominance'
                 'family': recipe.get('family', 'Unknown'),
+                'triads': recipe.get('triads'),  # ✅ Include triads for paint recipes
             })
 
             # Extract paint recommendations from base matches

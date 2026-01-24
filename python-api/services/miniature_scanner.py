@@ -128,14 +128,16 @@ class MiniatureScannerService:
                     logger.warning(f"Failed to encode reticle for {hex_color}: {e}")
                     reticle_base64 = None
 
-            # Add color with reticle data
+            # Add color with reticle data and triads
             colors.append({
                 'rgb': [int(rgb[0]), int(rgb[1]), int(rgb[2])],
                 'lab': [float(lab[0]), float(lab[1]), float(lab[2])],
                 'hex': hex_color,
                 'percentage': float(recipe.get('dominance', 0)),
+                'dominance': float(recipe.get('dominance', 0)),  # Frontend expects 'dominance'
                 'family': recipe.get('family', 'Unknown'),
                 'reticle': reticle_base64,  # ✅ Include reticle data
+                'triads': recipe.get('triads'),  # ✅ Include triads for paint recipes
             })
 
             # Extract paint recommendations from base matches

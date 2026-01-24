@@ -16,13 +16,26 @@ export interface LABColor {
   b: number;
 }
 
+export interface TriadData {
+  base: Paint | null;
+  layer: Paint | null;
+  shade: Paint | null;
+  highlight: Paint | null;
+  alternatives?: {
+    base?: Paint[];
+    layer?: Paint[];
+  };
+}
+
 export interface Color {
   rgb: [number, number, number];
   lab: [number, number, number];
   hex: string;
   percentage?: number; // % of image this color represents
+  dominance?: number; // Same as percentage, used by frontend for display
   family?: string; // Color family (e.g., "Blue", "Gold", "Red")
   reticle?: string | null; // Base64 encoded JPEG showing color location on miniature
+  triads?: Record<string, TriadData | null>; // Paint triads by brand (Citadel, Vallejo, Army Painter)
 }
 
 export interface Paint {
