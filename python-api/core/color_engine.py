@@ -605,26 +605,57 @@ class HierarchicalPaintMatcher:
     # Wash recommendations by color family and brand
     WASH_MAP = {
         'Citadel': {
-            'red': 'Carroburg Crimson', 'blue': 'Drakenhof Nightshade',
-            'green': 'Biel-Tan Green', 'brown': 'Agrax Earthshade',
-            'flesh': 'Reikland Fleshshade', 'purple': 'Druchii Violet',
-            'yellow': 'Seraphim Sepia', 'orange': 'Seraphim Sepia',
-            'bone': 'Seraphim Sepia', 'gold': 'Reikland Fleshshade',
-            'silver': 'Nuln Oil', 'bronze': 'Agrax Earthshade',
-            'grey': 'Nuln Oil', 'black': 'Nuln Oil', 'white': 'Nuln Oil',
-            'pink': 'Carroburg Crimson', 'cyan': 'Coelia Greenshade',
+            'red': 'Carroburg Crimson',
+            'blue': 'Drakenhof Nightshade',
+            'green': 'Biel-Tan Green',
+            'brown': 'Agrax Earthshade',
+            'flesh': 'Reikland Fleshshade',
+            'bone': 'Seraphim Sepia',
+            'yellow': 'Casandora Yellow',
+            'orange': 'Fuegan Orange',
+            'purple': 'Druchii Violet',
+            'pink': 'Carroburg Crimson',
+            'cyan': 'Drakenhof Nightshade',
+            'grey': 'Nuln Oil',
+            'black': 'Nuln Oil',
+            'white': 'Nuln Oil',
+            'gold': 'Reikland Fleshshade',
+            'silver': 'Nuln Oil',
+            'bronze': 'Agrax Earthshade',
+            'copper': 'Reikland Fleshshade',
             'default': 'Nuln Oil'
         },
         'Vallejo': {
-            'red': 'Red Wash', 'blue': 'Blue Wash', 'green': 'Green Wash',
-            'brown': 'Umber Shade', 'flesh': 'Flesh Wash', 'default': 'Black Wash'
+            'red': 'Red Wash',
+            'blue': 'Blue Wash',
+            'green': 'Green Wash',
+            'brown': 'Umber Shade',
+            'flesh': 'Flesh Wash',
+            'yellow': 'Sepia Wash',
+            'orange': 'Sepia Wash',
+            'purple': 'Blue Wash',
+            'grey': 'Black Wash',
+            'black': 'Black Wash',
+            'white': 'Black Wash',
+            'default': 'Black Wash'
         },
         'Army Painter': {
-            'red': 'Red Tone', 'blue': 'Blue Tone', 'green': 'Green Tone',
-            'brown': 'Strong Tone', 'flesh': 'Flesh Wash', 'purple': 'Purple Tone',
+            'red': 'Red Tone',
+            'blue': 'Blue Tone',
+            'green': 'Green Tone',
+            'brown': 'Strong Tone',
+            'flesh': 'Flesh Wash',
+            'yellow': 'Soft Tone',
+            'orange': 'Soft Tone',
+            'purple': 'Purple Tone',
+            'grey': 'Dark Tone',
+            'black': 'Dark Tone',
+            'white': 'Dark Tone',
             'default': 'Dark Tone'
         },
         'Scale75': {
+            'brown': 'Brown Wash',
+            'grey': 'Black Wash',
             'default': 'Black Wash'
         }
     }
@@ -661,8 +692,42 @@ class HierarchicalPaintMatcher:
                 'wash': [p for p in self.washes if p.brand == brand],
             }
 
-        logger.info(f"Built indices: {len(self.opaque_paints)} opaque, "
-                   f"{len(self.metallic_paints)} metallic, {len(self.washes)} washes")
+        # =========================================================================
+        # VALIDATION: Ensure washes are properly excluded from opaque lists
+        # =========================================================================
+        wash_names_in_opaque = [p.name for p in self.opaque_paints
+                               if 'nuln' in p.name.lower() or
+                                  'agrax' in p.name.lower() or
+                                  'reikland' in p.name.lower() or
+                                  'wash' in p.name.lower() or
+                                  'shade' in p.name.lower() or
+                                  'tone' in p.name.lower()]
+
+        if wash_names_in_opaque:
+            logger.error(f"CRITICAL: Washes found in opaque list: {wash_names_in_opaque}")
+            # Force remove them
+            self.opaque_paints = [p for p in self.opaque_paints
+                                 if p.name not in wash_names_in_opaque]
+            self.non_metallic_paints = [p for p in self.non_metallic_paints
+                                       if p.name not in wash_names_in_opaque]
+            # Rebuild brand indices
+            for brand in ['Citadel', 'Vallejo', 'Army Painter', 'Scale75']:
+                self.by_brand[brand]['opaque'] = [p for p in self.opaque_paints if p.brand == brand]
+                self.by_brand[brand]['non_metallic'] = [p for p in self.non_metallic_paints if p.brand == brand]
+
+        # Log detailed statistics
+        logger.info(f"Paint indices built:")
+        logger.info(f"  Total paints: {len(self.paint_db)}")
+        logger.info(f"  Opaque paints: {len(self.opaque_paints)}")
+        logger.info(f"  Metallic paints: {len(self.metallic_paints)}")
+        logger.info(f"  Non-metallic paints: {len(self.non_metallic_paints)}")
+        logger.info(f"  Washes: {len(self.washes)}")
+
+        # Log by brand
+        for brand in ['Citadel', 'Vallejo', 'Army Painter', 'Scale75']:
+            brand_data = self.by_brand.get(brand, {})
+            logger.info(f"  {brand}: {len(brand_data.get('opaque', []))} opaque, "
+                       f"{len(brand_data.get('wash', []))} washes")
 
     def match_base_color(self,
                          target_lab: np.ndarray,
@@ -714,12 +779,20 @@ class HierarchicalPaintMatcher:
         """
         Generate complete painting triad from base paint.
 
+        CRITICAL ALGORITHM RULES:
+        1. ACHROMATIC base (grey/black/white) → ONLY match achromatic paints
+        2. CHROMATIC base → ONLY match same color family
+        3. Layer must be LIGHTER than base (L* + 5 minimum)
+        4. Highlight must be LIGHTER than layer (L* + 5 minimum)
+        5. Shade is always a WASH (never opaque paint)
+        6. NEVER use hue comparison for achromatic colors
+
         Returns:
         {
             'base': Paint,
-            'layer': Paint or None (lighter, same hue family),
-            'shade': Paint or None (recommended wash),
-            'highlight': Paint or None (even lighter)
+            'layer': Paint or None,
+            'shade': Paint or None,
+            'highlight': Paint or None
         }
         """
         result = {
@@ -729,8 +802,10 @@ class HierarchicalPaintMatcher:
             'highlight': None
         }
 
-        base_L = base_paint.lab[0]  # Lightness in LAB
+        base_L = base_paint.lab[0]  # Lightness in LAB (0-100)
         base_hue = base_paint.hsv[0]  # Hue 0-1
+        base_sat = base_paint.hsv[1]  # Saturation 0-1
+        base_val = base_paint.hsv[2]  # Value 0-1
         color_family = base_paint.color_family
 
         # Get same-brand opaque paints
@@ -738,75 +813,167 @@ class HierarchicalPaintMatcher:
         if not brand_paints:
             brand_paints = self.opaque_paints
 
-        # Define neutral/achromatic color families that are compatible with each other
-        NEUTRAL_FAMILIES = {'black', 'grey', 'white', 'gunmetal', 'gunmetal/grey',
-                           'gunmetal/iron', 'silver', 'silver/steel', 'deep shadow'}
+        # =========================================================================
+        # CRITICAL: ROBUST ACHROMATIC DETECTION
+        # =========================================================================
+        # A color is achromatic if:
+        # 1. Its color_family is grey/black/white, OR
+        # 2. Saturation is very low (< 0.12), OR
+        # 3. Saturation is low (< 0.20) AND value is low (< 0.25) - dark greys
+        # 4. Saturation is low (< 0.20) AND value is high (> 0.85) - light greys
+        # 5. Moderate saturation but very dark = treat as achromatic
 
-        # Check if base paint is neutral:
-        # 1. Low saturation (< 0.15) = always neutral
-        # 2. Very dark (L < 20) AND moderate saturation (< 0.35) = "warm/cool blacks"
-        # 3. Neutral color family name
-        # NOTE: Dark chromatic colors (dark red, dark blue) have high saturation
-        base_is_neutral = (base_paint.saturation < 0.15 or
-                          (base_L < 20 and base_paint.saturation < 0.35) or
-                          color_family.lower() in NEUTRAL_FAMILIES)
+        ACHROMATIC_FAMILIES = {'grey', 'black', 'white'}
 
-        # Filter to same color family with proper neutral handling
-        def is_same_family(paint):
-            paint_family = paint.color_family.lower() if paint.color_family else ''
-            base_family = color_family.lower() if color_family else ''
-
-            # Check exact color_family match first
-            if paint_family == base_family:
+        def is_achromatic_color(sat: float, val: float, family: str) -> bool:
+            """Determine if a color should be treated as achromatic (no hue)"""
+            # Explicit achromatic families
+            if family and family.lower() in ACHROMATIC_FAMILIES:
                 return True
 
-            # NEUTRAL HANDLING: Neutrals should only match other neutrals
-            # Very dark + low-ish saturation = neutral (warm/cool blacks)
-            # Very dark + HIGH saturation = chromatic (dark red, dark blue)
-            paint_is_neutral = (paint.saturation < 0.15 or
-                               (paint.lab[0] < 20 and paint.saturation < 0.35) or
-                               paint_family in NEUTRAL_FAMILIES)
+            # Very low saturation = definitely achromatic
+            if sat < 0.12:
+                return True
 
-            if base_is_neutral:
-                # Base is neutral - only match other neutral paints
-                # This prevents grey from matching red, blue, etc.
-                return paint_is_neutral
+            # Low saturation + extreme brightness = achromatic
+            if sat < 0.20:
+                if val < 0.25 or val > 0.85:
+                    return True
 
-            if paint_is_neutral:
-                # Paint is neutral but base is chromatic - don't match
+            # Moderate saturation but very dark = treat as achromatic
+            # (dark colors have unreliable hue)
+            if sat < 0.25 and val < 0.15:
+                return True
+
+            return False
+
+        is_base_achromatic = is_achromatic_color(base_sat, base_val, color_family)
+
+        logger.debug(f"Base paint: {base_paint.name}, family={color_family}, "
+                    f"sat={base_sat:.2f}, val={base_val:.2f}, "
+                    f"achromatic={is_base_achromatic}")
+
+        # =========================================================================
+        # COLOR FAMILY MATCHING FUNCTION
+        # =========================================================================
+        def is_compatible_family(paint: Paint) -> bool:
+            """
+            Determine if paint can be used as layer/highlight for base.
+
+            RULES:
+            1. Achromatic base → achromatic paint ONLY (no colored paints!)
+            2. Chromatic base → same color_family OR very close hue
+            3. NEVER use hue for achromatic matching
+            """
+            paint_sat = paint.hsv[1]
+            paint_val = paint.hsv[2]
+            paint_family = paint.color_family
+
+            is_paint_achromatic = is_achromatic_color(paint_sat, paint_val, paint_family)
+
+            # RULE 1: Achromatic base MUST use achromatic paints
+            if is_base_achromatic:
+                if not is_paint_achromatic:
+                    return False
+                # Both achromatic - compatible
+                return True
+
+            # RULE 2: Chromatic base should NOT use achromatic paints
+            # (unless they're very light for highlights)
+            if is_paint_achromatic and paint.lab[0] < 80:
                 return False
 
-            # CHROMATIC HANDLING: Both paints are chromatic
-            # Only use hue comparison if BOTH have meaningful saturation
-            if base_paint.saturation < 0.20 or paint.saturation < 0.20:
-                # One or both have low saturation - hue is unreliable
-                return False
+            # RULE 3: Same color_family tag - always compatible
+            if paint_family and color_family and paint_family.lower() == color_family.lower():
+                return True
 
-            # Hue comparison for chromatic paints only
-            hue_diff = abs(paint.hsv[0] - base_hue)
-            hue_diff = min(hue_diff, 1 - hue_diff)  # Handle wrap-around
-            return hue_diff < 0.08  # ~30 degrees tolerance
+            # RULE 4: Compatible family groups
+            FAMILY_GROUPS = {
+                'reds': {'red', 'pink'},
+                'oranges': {'orange', 'brown'},
+                'yellows': {'yellow', 'gold', 'bone'},
+                'greens': {'green'},
+                'cyans': {'cyan'},
+                'blues': {'blue'},
+                'purples': {'purple'},
+                'metals_warm': {'gold', 'bronze', 'copper'},
+                'metals_cool': {'silver'},
+                'skin': {'flesh', 'bone'},
+            }
 
+            # Find base's group
+            base_group = None
+            base_family_lower = color_family.lower() if color_family else ''
+            for group_name, families in FAMILY_GROUPS.items():
+                if base_family_lower in families:
+                    base_group = group_name
+                    break
+
+            # Check if paint is in same group
+            if base_group:
+                paint_family_lower = paint_family.lower() if paint_family else ''
+                if paint_family_lower in FAMILY_GROUPS.get(base_group, set()):
+                    return True
+
+            # RULE 5: Hue comparison - ONLY for chromatic colors with reliable hue
+            # Both must have saturation > 0.25 for hue to be meaningful
+            if base_sat > 0.25 and paint_sat > 0.25:
+                hue_diff = abs(paint.hsv[0] - base_hue)
+                hue_diff = min(hue_diff, 1 - hue_diff)  # Handle wrap-around
+
+                # Tighter tolerance: ~20 degrees (0.055) instead of 30 degrees
+                if hue_diff < 0.055:
+                    return True
+
+            return False
+
+        # =========================================================================
+        # FIND COMPATIBLE PAINTS
+        # =========================================================================
         same_family = [p for p in brand_paints
-                      if is_same_family(p) and p.name != base_paint.name]
+                       if is_compatible_family(p) and p.name != base_paint.name]
 
-        # Find LAYER (lighter than base, closest to +15 lightness)
-        layer_candidates = [p for p in same_family if p.lab[0] > base_L + 5]
+        logger.debug(f"Found {len(same_family)} compatible candidates for {base_paint.name}")
+
+        # =========================================================================
+        # FIND LAYER (lighter than base, target L* = base + 15)
+        # =========================================================================
+        MIN_LAYER_DELTA_L = 5  # Minimum lightness increase for layer
+
+        layer_candidates = [p for p in same_family if p.lab[0] > base_L + MIN_LAYER_DELTA_L]
+
         if layer_candidates:
             target_L = min(95, base_L + 15)
-            result['layer'] = min(layer_candidates,
-                                 key=lambda p: abs(p.lab[0] - target_L))
+            result['layer'] = min(layer_candidates, key=lambda p: abs(p.lab[0] - target_L))
+            logger.debug(f"Layer selected: {result['layer'].name} (L={result['layer'].lab[0]:.1f})")
+        else:
+            logger.debug(f"No layer candidates found (base L={base_L:.1f})")
 
-        # Find HIGHLIGHT (even lighter than layer)
+        # =========================================================================
+        # FIND HIGHLIGHT (lighter than layer, target L* = base + 30)
+        # =========================================================================
         if result['layer']:
             layer_L = result['layer'].lab[0]
-            highlight_candidates = [p for p in same_family if p.lab[0] > layer_L + 5]
+            MIN_HIGHLIGHT_DELTA_L = 5
+
+            highlight_candidates = [p for p in same_family
+                                   if p.lab[0] > layer_L + MIN_HIGHLIGHT_DELTA_L
+                                   and p.name != result['layer'].name]
+
             if highlight_candidates:
                 target_L = min(98, base_L + 30)
-                result['highlight'] = min(highlight_candidates,
-                                         key=lambda p: abs(p.lab[0] - target_L))
+                result['highlight'] = min(highlight_candidates, key=lambda p: abs(p.lab[0] - target_L))
+                logger.debug(f"Highlight selected: {result['highlight'].name} (L={result['highlight'].lab[0]:.1f})")
+        else:
+            # Try to find highlight even without layer (for very dark bases)
+            highlight_candidates = [p for p in same_family if p.lab[0] > base_L + 15]
+            if highlight_candidates:
+                target_L = min(98, base_L + 30)
+                result['highlight'] = min(highlight_candidates, key=lambda p: abs(p.lab[0] - target_L))
 
-        # Find SHADE (recommended wash for this color family)
+        # =========================================================================
+        # FIND SHADE (recommended wash for this color family)
+        # =========================================================================
         result['shade'] = self._get_recommended_wash(color_family, brand)
 
         return result
