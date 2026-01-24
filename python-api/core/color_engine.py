@@ -738,12 +738,51 @@ class HierarchicalPaintMatcher:
         if not brand_paints:
             brand_paints = self.opaque_paints
 
-        # Filter to same color family (hue tolerance ~30 degrees)
+        # Define neutral/achromatic color families that are compatible with each other
+        NEUTRAL_FAMILIES = {'black', 'grey', 'white', 'gunmetal', 'gunmetal/grey',
+                           'gunmetal/iron', 'silver', 'silver/steel', 'deep shadow'}
+
+        # Check if base paint is neutral:
+        # 1. Low saturation (< 0.15) = always neutral
+        # 2. Very dark (L < 20) AND moderate saturation (< 0.35) = "warm/cool blacks"
+        # 3. Neutral color family name
+        # NOTE: Dark chromatic colors (dark red, dark blue) have high saturation
+        base_is_neutral = (base_paint.saturation < 0.15 or
+                          (base_L < 20 and base_paint.saturation < 0.35) or
+                          color_family.lower() in NEUTRAL_FAMILIES)
+
+        # Filter to same color family with proper neutral handling
         def is_same_family(paint):
-            # Check color_family tag first
-            if paint.color_family == color_family:
+            paint_family = paint.color_family.lower() if paint.color_family else ''
+            base_family = color_family.lower() if color_family else ''
+
+            # Check exact color_family match first
+            if paint_family == base_family:
                 return True
-            # Fallback to hue comparison
+
+            # NEUTRAL HANDLING: Neutrals should only match other neutrals
+            # Very dark + low-ish saturation = neutral (warm/cool blacks)
+            # Very dark + HIGH saturation = chromatic (dark red, dark blue)
+            paint_is_neutral = (paint.saturation < 0.15 or
+                               (paint.lab[0] < 20 and paint.saturation < 0.35) or
+                               paint_family in NEUTRAL_FAMILIES)
+
+            if base_is_neutral:
+                # Base is neutral - only match other neutral paints
+                # This prevents grey from matching red, blue, etc.
+                return paint_is_neutral
+
+            if paint_is_neutral:
+                # Paint is neutral but base is chromatic - don't match
+                return False
+
+            # CHROMATIC HANDLING: Both paints are chromatic
+            # Only use hue comparison if BOTH have meaningful saturation
+            if base_paint.saturation < 0.20 or paint.saturation < 0.20:
+                # One or both have low saturation - hue is unreliable
+                return False
+
+            # Hue comparison for chromatic paints only
             hue_diff = abs(paint.hsv[0] - base_hue)
             hue_diff = min(hue_diff, 1 - hue_diff)  # Handle wrap-around
             return hue_diff < 0.08  # ~30 degrees tolerance
