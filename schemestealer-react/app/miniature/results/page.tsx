@@ -85,13 +85,13 @@ export default function MiniscanResultsPage() {
                   />
 
                   {/* Paint Recipe Results */}
-                  {color.paintMatches ? (
+                  {color.triads ? (
                     <div className="mt-6">
                       <ColorPaintResults
                         colorName={color.family || 'UNKNOWN'}
                         colorHex={color.hex}
-                        colorPercentage={color.percentage || 0}
-                        paintsByBrand={transformToRecipeStructure(color.paintMatches)}
+                        colorPercentage={color.dominance || 0}
+                        paintsByBrand={transformToRecipeStructure(color.triads)}
                         mode="miniature"
                       />
                     </div>

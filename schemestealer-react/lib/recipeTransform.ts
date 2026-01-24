@@ -1,13 +1,42 @@
 /**
- * Transform paint matches to recipe structure grouped by type
+ * Transform backend v3.0 triad format to frontend array format
+ *
+ * Backend sends triads with single paint + alternatives:
+ * {
+ *   "Citadel": {
+ *     "base": {...},
+ *     "layer": {...},
+ *     "alternatives": {base: [], layer: []}
+ *   }
+ * }
+ *
+ * Frontend expects arrays:
+ * {
+ *   citadel: {
+ *     base: [main, ...alternatives],
+ *     layer: [main, ...alternatives]
+ *   }
+ * }
  */
 
 import type { Paint } from './types';
 
-interface PaintsByBrand {
-  citadel: Paint[];
-  vallejo: Paint[];
-  armyPainter: Paint[];
+interface BackendTriad {
+  base: Paint | null;
+  layer: Paint | null;
+  shade: Paint | null;
+  highlight: Paint | null;
+  alternatives?: {
+    base?: Paint[];
+    layer?: Paint[];
+  };
+}
+
+interface BackendTriadsByBrand {
+  Citadel?: BackendTriad | null;
+  Vallejo?: BackendTriad | null;
+  'Army Painter'?: BackendTriad | null;
+  Scale75?: BackendTriad | null;
 }
 
 interface RecipePaintsByBrand {
@@ -32,49 +61,31 @@ interface RecipePaintsByBrand {
 }
 
 /**
- * Groups paints by type (base, layer, shade, highlight) within each brand
- * Sorts by deltaE (lowest first) within each type
+ * Convert backend triad format to frontend array format
+ * Combines main paint with alternatives into arrays
  */
-export function transformToRecipeStructure(paintsByBrand: PaintsByBrand): RecipePaintsByBrand {
-  const groupByType = (paints: Paint[]) => {
-    const grouped = {
-      base: [] as Paint[],
-      layer: [] as Paint[],
-      shade: [] as Paint[],
-      highlight: [] as Paint[],
+export function transformToRecipeStructure(triads: BackendTriadsByBrand): RecipePaintsByBrand {
+  const convertTriad = (triad: BackendTriad | null | undefined) => {
+    if (!triad) {
+      return {
+        base: [],
+        layer: [],
+        shade: [],
+        highlight: [],
+      };
+    }
+
+    return {
+      base: triad.base ? [triad.base, ...(triad.alternatives?.base || [])] : [],
+      layer: triad.layer ? [triad.layer, ...(triad.alternatives?.layer || [])] : [],
+      shade: triad.shade ? [triad.shade] : [],
+      highlight: triad.highlight ? [triad.highlight] : [],
     };
-
-    paints.forEach((paint) => {
-      const type = paint.type || 'layer'; // Default to layer if no type
-      if (type === 'base') {
-        grouped.base.push(paint);
-      } else if (type === 'layer') {
-        grouped.layer.push(paint);
-      } else if (type === 'shade') {
-        grouped.shade.push(paint);
-      } else if (type === 'highlight') {
-        grouped.highlight.push(paint);
-      } else {
-        // Unknown type, default to layer
-        grouped.layer.push(paint);
-      }
-    });
-
-    // Sort each group by deltaE (lowest first)
-    Object.keys(grouped).forEach((key) => {
-      grouped[key as keyof typeof grouped].sort((a, b) => {
-        const deltaA = a.deltaE ?? Infinity;
-        const deltaB = b.deltaE ?? Infinity;
-        return deltaA - deltaB;
-      });
-    });
-
-    return grouped;
   };
 
   return {
-    citadel: groupByType(paintsByBrand.citadel || []),
-    vallejo: groupByType(paintsByBrand.vallejo || []),
-    armyPainter: groupByType(paintsByBrand.armyPainter || []),
+    citadel: convertTriad(triads.Citadel),
+    vallejo: convertTriad(triads.Vallejo),
+    armyPainter: convertTriad(triads['Army Painter']),
   };
 }

@@ -112,8 +112,8 @@ export default function InspirationResultsPage() {
 
         {/* Paint Recommendations - Per Color */}
         {currentScan.detectedColors.map((color, index) => {
-          // Only show if color has paintMatches
-          if (!color.paintMatches) return null;
+          // Only show if color has triads
+          if (!color.triads) return null;
 
           return (
             <motion.div
@@ -127,8 +127,8 @@ export default function InspirationResultsPage() {
                   <ColorPaintResults
                     colorName={color.family || `Color ${index + 1}`}
                     colorHex={color.hex}
-                    colorPercentage={color.percentage || 0}
-                    paintsByBrand={transformToRecipeStructure(color.paintMatches)}
+                    colorPercentage={color.dominance || 0}
+                    paintsByBrand={transformToRecipeStructure(color.triads)}
                     mode="inspiration"
                   />
                 </div>
