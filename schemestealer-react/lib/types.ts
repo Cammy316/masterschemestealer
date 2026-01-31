@@ -23,6 +23,36 @@ export interface Color {
   percentage?: number; // % of image this color represents
   family?: string; // Color family (e.g., "Blue", "Gold", "Red")
   reticle?: string | null; // Base64 encoded JPEG showing color location on miniature
+  paintRecipe?: PaintRecipe; // NEW: Structured recipe per brand
+  // Legacy support for old paint matches format
+  paintMatches?: {
+    citadel: Paint[];
+    vallejo: Paint[];
+    armyPainter: Paint[];
+  };
+}
+
+// NEW: Paint recipe types for structured paint recommendations
+export interface PaintMatch {
+  name: string;
+  hex: string;
+  type: string;
+  deltaE?: number;
+  discontinued?: boolean; // Whether this paint is no longer available
+  alternativeName?: string; // For renamed paints
+}
+
+export interface BrandRecipe {
+  base: PaintMatch | null;
+  shade: PaintMatch | null;
+  highlight: PaintMatch | null;
+  wash: PaintMatch | null;
+}
+
+export interface PaintRecipe {
+  citadel: BrandRecipe;
+  vallejo: BrandRecipe;
+  army_painter: BrandRecipe;
 }
 
 export interface Paint {
@@ -39,7 +69,7 @@ export interface Paint {
 export interface ScanResult {
   id: string;
   mode: ScanMode;
-  imageUrl: string;
+  imageUrl?: string; // Optional for persisted results (to save space)
   imageData?: string; // Base64 encoded image
   detectedColors: Color[];
   recommendedPaints: Paint[];

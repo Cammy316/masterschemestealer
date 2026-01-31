@@ -1,6 +1,7 @@
 /**
  * Miniscan results page - Cogitator-themed display with ReticleReveal
  * The "magic moment" page with hidden-by-default reticle reveals
+ * Now with per-color brand selection using PaintRecipeCard
  */
 
 'use client';
@@ -10,7 +11,7 @@ import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { ReticleReveal } from '@/components/miniscan/ReticleReveal';
 import { PaintList } from '@/components/PaintCard';
-import { BrandFilter } from '@/components/shared/BrandFilter';
+import { PaintRecipeCard } from '@/components/shared/PaintRecipeCard';
 import { PaintResults } from '@/components/shared/PaintResults';
 import { ShareButton } from '@/components/ShareButton';
 import { ShareModal } from '@/components/ShareModal';
@@ -65,23 +66,7 @@ export default function MiniscanResultsPage() {
           </motion.div>
         </motion.div>
 
-        {/* Brand Filter */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <div className="gothic-frame rounded-lg p-1 depth-2">
-            <div className="bg-dark-gothic rounded-lg p-4 textured">
-              <h3 className="text-sm font-bold auspex-text mb-3 gothic-text text-center">
-                ◆ BRAND PREFERENCES ◆
-              </h3>
-              <BrandFilter mode="miniature" />
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Detected Colors with ReticleReveal */}
+        {/* Detected Colors with ReticleReveal and PaintRecipeCard */}
         <div className="space-y-6">
           {currentScan.detectedColors.map((color, index) => (
             <motion.div
@@ -106,9 +91,7 @@ export default function MiniscanResultsPage() {
                         <span className="text-sm text-cogitator-green-dim tech-text">
                           Coverage: {color.percentage?.toFixed(1)}%
                         </span>
-                        <span className="text-sm text-brass tech-text">
-                          {color.hex}
-                        </span>
+                        <span className="text-sm text-brass tech-text">{color.hex}</span>
                       </div>
                     </div>
                   </div>
@@ -117,12 +100,27 @@ export default function MiniscanResultsPage() {
                   <ReticleReveal
                     colorName={color.family || 'Color'}
                     colorHex={color.hex}
-                    reticleImage={color.reticle ? `data:image/jpeg;base64,${color.reticle}` : undefined}
+                    reticleImage={
+                      color.reticle ? `data:image/jpeg;base64,${color.reticle}` : undefined
+                    }
                     originalImage={currentScan.imageData}
                   />
 
-                  {/* Paint Recommendations for this color */}
-                  {color.paintMatches ? (
+                  {/* Paint Recipe Card - NEW: Per-color brand selection */}
+                  {color.paintRecipe ? (
+                    <div className="mt-6">
+                      <h4 className="text-sm font-bold auspex-text mb-3 gothic-text text-center text-shadow-sm">
+                        ◆ SACRED FORMULATIONS ◆
+                      </h4>
+                      <PaintRecipeCard
+                        colorFamily={color.family || 'Unknown'}
+                        colorHex={color.hex}
+                        paintRecipe={color.paintRecipe}
+                        mode="miniature"
+                      />
+                    </div>
+                  ) : color.paintMatches ? (
+                    // Legacy fallback: old paintMatches format
                     <div className="mt-6">
                       <PaintResults
                         colorName={color.family || 'Color'}
@@ -131,7 +129,9 @@ export default function MiniscanResultsPage() {
                         mode="miniature"
                       />
                     </div>
-                  ) : currentScan.recommendedPaints && currentScan.recommendedPaints.length > 0 ? (
+                  ) : currentScan.recommendedPaints &&
+                    currentScan.recommendedPaints.length > 0 ? (
+                    // Ultimate fallback: global recommended paints
                     <div className="mt-6 p-4 rounded-lg border border-cogitator-green/20 bg-cogitator-green/5 depth-1">
                       <h4 className="text-sm font-bold auspex-text mb-3 gothic-text text-center text-shadow-sm">
                         ◆ SACRED FORMULATIONS ◆
@@ -169,12 +169,21 @@ export default function MiniscanResultsPage() {
             whileTap={{ scale: 0.98 }}
           >
             <div className="flex items-center justify-center gap-3">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--cogitator-green)" strokeWidth="2">
-                <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" strokeLinecap="round" strokeLinejoin="round" />
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="var(--cogitator-green)"
+                strokeWidth="2"
+              >
+                <path
+                  d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
-              <span className="auspex-text font-bold cyber-text">
-                INITIATE NEW SCAN
-              </span>
+              <span className="auspex-text font-bold cyber-text">INITIATE NEW SCAN</span>
             </div>
           </motion.button>
 
@@ -188,21 +197,31 @@ export default function MiniscanResultsPage() {
             whileTap={{ scale: 0.98 }}
           >
             <div className="flex items-center justify-center gap-3">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--brass)" strokeWidth="2">
-                <rect x="3" y="8" width="18" height="13" rx="1" strokeLinecap="round" strokeLinejoin="round" />
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="var(--brass)"
+                strokeWidth="2"
+              >
+                <rect
+                  x="3"
+                  y="8"
+                  width="18"
+                  height="13"
+                  rx="1"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
                 <path d="M3 13h18M3 17h18" strokeLinecap="round" strokeLinejoin="round" />
                 <path d="M8 8V6a4 4 0 0 1 8 0v2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-              <span className="text-brass font-bold cyber-text">
-                VIEW SUPPLY REQUISITION
-              </span>
+              <span className="text-brass font-bold cyber-text">VIEW SUPPLY REQUISITION</span>
             </div>
           </motion.button>
 
-          <ShareButton
-            mode="miniature"
-            onShareClick={() => setShowShareModal(true)}
-          />
+          <ShareButton mode="miniature" onShareClick={() => setShowShareModal(true)} />
         </motion.div>
 
         {/* Cogitator Report - Enhanced parchment panel */}
@@ -213,18 +232,56 @@ export default function MiniscanResultsPage() {
         >
           <div className="parchment-bg rounded-lg p-5 text-sm depth-2 border-2 border-brass/30">
             <div className="flex items-center justify-center gap-2 mb-3">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--void-black)" strokeWidth="2" opacity="0.7">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="var(--void-black)"
+                strokeWidth="2"
+                opacity="0.7"
+              >
                 <circle cx="12" cy="12" r="3" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M12 1v6m0 6v6M1 12h6m6 0h6" strokeLinecap="round" strokeLinejoin="round" />
-                <circle cx="12" cy="12" r="10" strokeLinecap="round" strokeLinejoin="round" opacity="0.4" />
+                <path
+                  d="M12 1v6m0 6v6M1 12h6m6 0h6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  opacity="0.4"
+                />
               </svg>
               <h3 className="font-bold text-void-black gothic-text text-center text-base">
                 COGITATOR REPORT
               </h3>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--void-black)" strokeWidth="2" opacity="0.7">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="var(--void-black)"
+                strokeWidth="2"
+                opacity="0.7"
+              >
                 <circle cx="12" cy="12" r="3" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M12 1v6m0 6v6M1 12h6m6 0h6" strokeLinecap="round" strokeLinejoin="round" />
-                <circle cx="12" cy="12" r="10" strokeLinecap="round" strokeLinejoin="round" opacity="0.4" />
+                <path
+                  d="M12 1v6m0 6v6M1 12h6m6 0h6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  opacity="0.4"
+                />
               </svg>
             </div>
             <div className="w-16 h-px bg-void-black/30 mx-auto mb-3" />
@@ -235,15 +292,21 @@ export default function MiniscanResultsPage() {
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-void-black/60 flex-shrink-0">►</span>
-                <span>{currentScan.detectedColors.length} dominant color signatures identified</span>
+                <span>
+                  {currentScan.detectedColors.length} dominant color signatures identified
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-void-black/60 flex-shrink-0">►</span>
-                <span>{currentScan.recommendedPaints?.length || 0} paint formulations matched from sacred archives</span>
+                <span>
+                  Paint recipes include BASE, SHADE, HIGHLIGHT, and WASH recommendations
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-void-black/60 flex-shrink-0">►</span>
-                <span>Delta-E (ΔE) indicates color purity rating (lower = more accurate)</span>
+                <span>
+                  Delta-E ({'\u0394'}E) indicates color purity rating (lower = more accurate)
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-void-black/60 flex-shrink-0">►</span>
@@ -258,7 +321,7 @@ export default function MiniscanResultsPage() {
         <ShareModal
           mode="miniature"
           data={{
-            colors: currentScan.detectedColors.map(color => ({
+            colors: currentScan.detectedColors.map((color) => ({
               hex: color.hex,
               name: color.family || 'Unknown',
               percentage: color.percentage || 0,
