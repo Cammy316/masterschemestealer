@@ -176,3 +176,46 @@ export function formatTimestamp(date: Date): string {
 export function cn(...classes: (string | boolean | undefined)[]): string {
   return classes.filter(Boolean).join(' ');
 }
+
+/**
+ * Paint brand prices (average cost per pot)
+ */
+export const PAINT_PRICES: Record<string, number> = {
+  'Citadel': 5.50,
+  'Vallejo': 3.50,
+  'Army Painter': 4.00,
+};
+
+/**
+ * Calculate total cost for a paint list
+ */
+export function calculatePaintCost(paints: { brand: string; quantity?: number }[]): number {
+  return paints.reduce((sum, item) => {
+    const price = PAINT_PRICES[item.brand] || 4.00; // Default price
+    const quantity = item.quantity || 1;
+    return sum + (price * quantity);
+  }, 0);
+}
+
+/**
+ * Format currency for display
+ */
+export function formatCurrency(amount: number, currency: string = 'GBP'): string {
+  return new Intl.NumberFormat('en-GB', {
+    style: 'currency',
+    currency,
+  }).format(amount);
+}
+
+/**
+ * Get paint difficulty description
+ */
+export function getDifficultyDescription(paintCount: number): { level: number; label: string; stars: string } {
+  if (paintCount <= 2) {
+    return { level: 1, label: 'Beginner', stars: '⭐' };
+  } else if (paintCount <= 4) {
+    return { level: 2, label: 'Intermediate', stars: '⭐⭐' };
+  } else {
+    return { level: 3, label: 'Advanced', stars: '⭐⭐⭐' };
+  }
+}

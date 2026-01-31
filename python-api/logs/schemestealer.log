@@ -317,3 +317,114 @@
 2026-01-23 15:49:13,322 - SchemeStealer - INFO -   Grey: 2.9% (conf=0.89)
 2026-01-23 15:49:13,322 - SchemeStealer - INFO -   Yellow: 1.2% (conf=0.54)
 2026-01-23 15:49:13,324 - SchemeStealer - INFO -   Blue: 0.6% (conf=0.78)
+2026-01-31 17:30:43,955 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-01-31 17:30:44,014 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-31 17:30:44,022 - SchemeStealer - INFO - Engine initialization complete - ML features enabled
+2026-01-31 17:30:44,025 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-01-31 17:30:44,049 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-31 17:30:44,050 - SchemeStealer - INFO - Engine initialization complete - ML features enabled
+2026-01-31 17:30:44,184 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-01-31 17:30:44,211 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-31 17:30:44,213 - SchemeStealer - INFO - Engine initialization complete - ML features enabled
+2026-01-31 17:30:44,214 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-01-31 17:30:44,232 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-31 17:30:44,233 - SchemeStealer - INFO - Engine initialization complete - ML features enabled
+2026-01-31 20:43:04,374 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-01-31 20:43:04,415 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-31 20:43:04,415 - SchemeStealer - INFO - Engine initialization complete - ML features enabled
+2026-01-31 20:43:04,415 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-01-31 20:43:04,438 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-31 20:43:04,440 - SchemeStealer - INFO - Engine initialization complete - ML features enabled
+2026-01-31 20:43:07,993 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-01-31 20:43:08,013 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-31 20:43:08,018 - SchemeStealer - INFO - Engine initialization complete - ML features enabled
+2026-01-31 20:43:08,020 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-01-31 20:43:08,037 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-31 20:43:08,038 - SchemeStealer - INFO - Engine initialization complete - ML features enabled
+2026-01-31 20:43:08,253 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-01-31 20:43:08,273 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-31 20:43:08,276 - SchemeStealer - INFO - Engine initialization complete - ML features enabled
+2026-01-31 20:43:08,277 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-01-31 20:43:08,293 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-31 20:43:08,293 - SchemeStealer - INFO - Engine initialization complete - ML features enabled
+2026-01-31 20:43:25,268 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-31 20:43:25,584 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-31 20:43:28,594 - SchemeStealer - INFO - Starting base detection v2.0 on 300x312 image
+2026-01-31 20:43:28,863 - SchemeStealer - INFO - Base detection complete: removed 17.6% as base material
+2026-01-31 20:43:28,863 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-01-31 20:43:28,893 - SchemeStealer - INFO - Initial clustering into 12 clusters...
+2026-01-31 20:43:31,430 - SchemeStealer - INFO - After shadow filtering: 8 clusters remain
+2026-01-31 20:43:31,432 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Blue'
+2026-01-31 20:43:31,433 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Red'
+2026-01-31 20:43:31,434 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Yellow'
+2026-01-31 20:43:31,435 - SchemeStealer - INFO - Final: 4 major + 0 details
+2026-01-31 20:43:31,436 - SchemeStealer - INFO -   Grey: 37.2% (conf=0.67)
+2026-01-31 20:43:31,438 - SchemeStealer - INFO -   Blue: 37.1% (conf=0.77)
+2026-01-31 20:43:31,439 - SchemeStealer - INFO -   Yellow: 18.6% (conf=0.67)
+2026-01-31 20:43:31,440 - SchemeStealer - INFO -   Red: 7.1% (conf=0.81)
+2026-01-31 21:21:47,930 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-01-31 21:21:47,952 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-31 21:21:47,953 - SchemeStealer - INFO - Engine initialization complete - ML features enabled
+2026-01-31 21:21:47,955 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-01-31 21:21:47,973 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-31 21:21:47,974 - SchemeStealer - INFO - Engine initialization complete - ML features enabled
+2026-01-31 21:21:51,554 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-01-31 21:21:51,575 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-31 21:21:51,576 - SchemeStealer - INFO - Engine initialization complete - ML features enabled
+2026-01-31 21:21:51,578 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-01-31 21:21:51,595 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-31 21:21:51,596 - SchemeStealer - INFO - Engine initialization complete - ML features enabled
+2026-01-31 21:21:51,739 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-01-31 21:21:51,762 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-31 21:21:51,762 - SchemeStealer - INFO - Engine initialization complete - ML features enabled
+2026-01-31 21:21:51,764 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-01-31 21:21:51,789 - SchemeStealer - INFO - Paint matcher initialized with 149 paints
+2026-01-31 21:21:51,790 - SchemeStealer - INFO - Engine initialization complete - ML features enabled
+2026-01-31 21:22:13,802 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-31 21:22:14,024 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-31 21:22:16,621 - SchemeStealer - INFO - Starting base detection v2.0 on 300x312 image
+2026-01-31 21:22:16,694 - SchemeStealer - INFO - Base detection complete: removed 17.6% as base material
+2026-01-31 21:22:16,695 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-01-31 21:22:16,718 - SchemeStealer - INFO - Initial clustering into 12 clusters...
+2026-01-31 21:22:18,985 - SchemeStealer - INFO - After shadow filtering: 8 clusters remain
+2026-01-31 21:22:18,986 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Blue'
+2026-01-31 21:22:18,987 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Red'
+2026-01-31 21:22:18,988 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Yellow'
+2026-01-31 21:22:18,989 - SchemeStealer - INFO - Final: 4 major + 0 details
+2026-01-31 21:22:18,990 - SchemeStealer - INFO -   Grey: 37.2% (conf=0.67)
+2026-01-31 21:22:18,992 - SchemeStealer - INFO -   Blue: 37.1% (conf=0.77)
+2026-01-31 21:22:18,993 - SchemeStealer - INFO -   Yellow: 18.6% (conf=0.67)
+2026-01-31 21:22:18,994 - SchemeStealer - INFO -   Red: 7.1% (conf=0.81)
+2026-01-31 22:21:27,608 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-01-31 22:21:27,980 - SchemeStealer - INFO - Paint matcher initialized with 3022 paints
+2026-01-31 22:21:27,981 - SchemeStealer - INFO - Engine initialization complete - ML features enabled
+2026-01-31 22:21:27,998 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-01-31 22:21:28,374 - SchemeStealer - INFO - Paint matcher initialized with 3022 paints
+2026-01-31 22:21:28,375 - SchemeStealer - INFO - Engine initialization complete - ML features enabled
+2026-01-31 22:21:32,126 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-01-31 22:21:32,520 - SchemeStealer - INFO - Paint matcher initialized with 3022 paints
+2026-01-31 22:21:32,521 - SchemeStealer - INFO - Engine initialization complete - ML features enabled
+2026-01-31 22:21:32,538 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-01-31 22:21:32,929 - SchemeStealer - INFO - Paint matcher initialized with 3022 paints
+2026-01-31 22:21:32,930 - SchemeStealer - INFO - Engine initialization complete - ML features enabled
+2026-01-31 22:21:33,076 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-01-31 22:21:33,454 - SchemeStealer - INFO - Paint matcher initialized with 3022 paints
+2026-01-31 22:21:33,455 - SchemeStealer - INFO - Engine initialization complete - ML features enabled
+2026-01-31 22:21:33,538 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-01-31 22:21:33,927 - SchemeStealer - INFO - Paint matcher initialized with 3022 paints
+2026-01-31 22:21:33,928 - SchemeStealer - INFO - Engine initialization complete - ML features enabled
+2026-01-31 22:22:02,273 - SchemeStealer - INFO - Starting photo quality assessment
+2026-01-31 22:22:02,479 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-01-31 22:22:04,948 - SchemeStealer - INFO - Starting base detection v2.0 on 300x312 image
+2026-01-31 22:22:05,005 - SchemeStealer - INFO - Base detection complete: removed 17.6% as base material
+2026-01-31 22:22:05,006 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-01-31 22:22:05,027 - SchemeStealer - INFO - Initial clustering into 12 clusters...
+2026-01-31 22:22:07,453 - SchemeStealer - INFO - After shadow filtering: 8 clusters remain
+2026-01-31 22:22:07,454 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Blue'
+2026-01-31 22:22:07,455 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Red'
+2026-01-31 22:22:07,456 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Yellow'
+2026-01-31 22:22:07,457 - SchemeStealer - INFO - Final: 4 major + 0 details
+2026-01-31 22:22:07,458 - SchemeStealer - INFO -   Grey: 37.2% (conf=0.67)
+2026-01-31 22:22:07,458 - SchemeStealer - INFO -   Blue: 37.1% (conf=0.77)
+2026-01-31 22:22:07,459 - SchemeStealer - INFO -   Yellow: 18.6% (conf=0.67)
+2026-01-31 22:22:07,461 - SchemeStealer - INFO -   Red: 7.1% (conf=0.81)

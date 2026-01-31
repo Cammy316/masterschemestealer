@@ -708,3 +708,97 @@ h1, h2, h3, h4, h5, h6 {
     animation: none !important;
   }
 }
+
+/* ========================================
+   HIGH CONTRAST MODE
+   ======================================== */
+
+@media (prefers-contrast: high) {
+  /* Increase border visibility */
+  .paint-card,
+  .color-swatch-enter button,
+  [class*="border-"] {
+    border-width: 3px !important;
+  }
+
+  /* Ensure text is readable */
+  .text-gray-400,
+  .text-gray-500,
+  .text-gray-600 {
+    color: #fff !important;
+  }
+
+  /* Increase contrast for backgrounds */
+  .bg-gray-800,
+  .bg-gray-900 {
+    background-color: #000 !important;
+  }
+
+  /* Make badges more visible */
+  .text-xs.bg-green-500,
+  .text-xs.bg-red-500,
+  [class*="rounded-full"] {
+    font-weight: 700 !important;
+    border: 2px solid currentColor !important;
+  }
+
+  /* Increase button contrast */
+  button {
+    border: 2px solid currentColor !important;
+  }
+
+  /* Tooltip high contrast */
+  [role="tooltip"] {
+    border: 2px solid #fff !important;
+  }
+}
+
+/* ========================================
+   SCREEN READER ONLY (for accessibility)
+   ======================================== */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ========================================
+   SKELETON ANIMATION
+   ======================================== */
+
+@keyframes skeleton-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.skeleton-shimmer {
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+/* ========================================
+   SHIMMER ANIMATION (for color swatches)
+   ======================================== */
+
+@keyframes shimmer-slide {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer-animation {
+  animation: shimmer-slide 3s ease-in-out infinite;
+}

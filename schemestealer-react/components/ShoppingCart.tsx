@@ -8,7 +8,7 @@ import React from 'react';
 import { useAppStore } from '@/lib/store';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/Card';
 import { Button } from './ui/Button';
-import { getPaintId, getTotalCartItems } from '@/lib/utils';
+import { getPaintId, getTotalCartItems, calculatePaintCost, formatCurrency, PAINT_PRICES } from '@/lib/utils';
 
 export function ShoppingCart() {
   const { cart, removeFromCart, updateQuantity, clearCart } = useAppStore();
@@ -61,6 +61,9 @@ export function ShoppingCart() {
           />
         ))}
       </div>
+
+      {/* Cost Summary */}
+      <CostSummary cart={cart} totalItems={totalItems} />
 
       {/* Approval stamp area */}
       <div className="mt-6 p-4 border-2 border-dashed border-amber-900/30 rounded text-center">
@@ -172,6 +175,73 @@ function CartItem({ item, index, onRemove, onUpdateQuantity }: CartItemProps) {
       >
         ✕
       </button>
+    </div>
+  );
+}
+
+/**
+ * Cost Summary - shows estimated paint costs by brand
+ */
+interface CostSummaryProps {
+  cart: Array<{
+    paint: { name: string; brand: string; hex: string };
+    quantity: number;
+  }>;
+  totalItems: number;
+}
+
+function CostSummary({ cart, totalItems }: CostSummaryProps) {
+  // Group by brand and calculate costs
+  const brandTotals = cart.reduce((acc, item) => {
+    const brand = item.paint.brand;
+    if (!acc[brand]) {
+      acc[brand] = { count: 0, cost: 0 };
+    }
+    const price = PAINT_PRICES[brand] || 4.00;
+    acc[brand].count += item.quantity;
+    acc[brand].cost += price * item.quantity;
+    return acc;
+  }, {} as Record<string, { count: number; cost: number }>);
+
+  const totalCost = Object.values(brandTotals).reduce((sum, b) => sum + b.cost, 0);
+
+  return (
+    <div className="mt-4 p-4 border border-amber-900/30 bg-amber-950/10 rounded-lg">
+      <h4 className="text-sm font-bold text-amber-500 gothic-text text-center mb-3">
+        ◆ ESTIMATED COSTS ◆
+      </h4>
+
+      {/* Brand breakdown */}
+      <div className="space-y-2 mb-4">
+        {Object.entries(brandTotals).map(([brand, data]) => (
+          <div key={brand} className="flex justify-between text-sm">
+            <span className="text-amber-400/80">
+              {brand} <span className="text-amber-500/50">×{data.count}</span>
+            </span>
+            <span className="text-amber-300 font-mono">
+              {formatCurrency(data.cost)}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {/* Divider */}
+      <div className="border-t border-amber-900/30 mb-3" />
+
+      {/* Total */}
+      <div className="flex justify-between items-center">
+        <span className="text-amber-500 font-semibold">
+          ESTIMATED TOTAL
+        </span>
+        <span className="text-amber-300 font-bold text-lg font-mono">
+          {formatCurrency(totalCost)}
+        </span>
+      </div>
+
+      {/* Disclaimer */}
+      <p className="text-xs text-amber-500/50 mt-3 text-center tech-text">
+        Based on average retail prices. Actual costs may vary by retailer.
+      </p>
     </div>
   );
 }
