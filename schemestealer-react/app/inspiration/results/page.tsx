@@ -16,6 +16,7 @@ import { PaintRecipeCard } from '@/components/shared/PaintRecipeCard';
 import { PaintResults } from '@/components/shared/PaintResults';
 import { ShareButton } from '@/components/ShareButton';
 import { ShareModal } from '@/components/ShareModal';
+import { mlLogger } from '@/lib/mlDataLogger';
 
 export default function InspirationResultsPage() {
   const router = useRouter();
@@ -27,6 +28,13 @@ export default function InspirationResultsPage() {
     if (!currentScan || currentScan.mode !== 'inspiration') {
       router.push('/inspiration');
     }
+
+    // Track time on results page for ML
+    return () => {
+      if (currentScan) {
+        mlLogger.logResultsPageExit(currentScan.id);
+      }
+    };
   }, [currentScan, router]);
 
   if (!currentScan) {

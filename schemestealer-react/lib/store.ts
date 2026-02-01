@@ -5,6 +5,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { AppStore, ScanMode, ScanResult, Paint, CartItem } from './types';
+import { mlLogger } from './mlDataLogger';
 
 export const useAppStore = create<AppStore>()(
   persist(
@@ -66,6 +67,9 @@ export const useAppStore = create<AppStore>()(
       // Cart actions
       addToCart: (paint: Paint, mode?: ScanMode, scanId?: string) =>
         set((state) => {
+          // Log cart action for ML training
+          mlLogger.logCartAction(scanId, 'add', paint.name, paint.brand);
+
           // Check if paint already exists in cart
           const existingItemIndex = state.cart.findIndex(
             (item) => item.paint.name === paint.name && item.paint.brand === paint.brand
@@ -90,11 +94,28 @@ export const useAppStore = create<AppStore>()(
         }),
 
       removeFromCart: (paintId: string) =>
-        set((state) => ({
-          cart: state.cart.filter(
-            (item) => `${item.paint.brand}-${item.paint.name}` !== paintId
-          ),
-        })),
+        set((state) => {
+          // Find the item being removed to log it
+          const removedItem = state.cart.find(
+            (item) => `${item.paint.brand}-${item.paint.name}` === paintId
+          );
+
+          // Log cart removal for ML training (negative signal)
+          if (removedItem) {
+            mlLogger.logCartAction(
+              removedItem.scanId,
+              'remove',
+              removedItem.paint.name,
+              removedItem.paint.brand
+            );
+          }
+
+          return {
+            cart: state.cart.filter(
+              (item) => `${item.paint.brand}-${item.paint.name}` !== paintId
+            ),
+          };
+        }),
 
       updateQuantity: (paintId: string, quantity: number) =>
         set((state) => ({

@@ -16,6 +16,7 @@ import { PaintResults } from '@/components/shared/PaintResults';
 import { ShareButton } from '@/components/ShareButton';
 import { ShareModal } from '@/components/ShareModal';
 import { motion } from 'framer-motion';
+import { mlLogger } from '@/lib/mlDataLogger';
 
 export default function MiniscanResultsPage() {
   const router = useRouter();
@@ -27,6 +28,13 @@ export default function MiniscanResultsPage() {
     if (!currentScan || currentScan.mode !== 'miniature') {
       router.push('/miniature');
     }
+
+    // Track time on results page for ML
+    return () => {
+      if (currentScan) {
+        mlLogger.logResultsPageExit(currentScan.id);
+      }
+    };
   }, [currentScan, router]);
 
   if (!currentScan) {

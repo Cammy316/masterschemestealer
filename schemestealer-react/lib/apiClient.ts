@@ -70,11 +70,12 @@ export const apiClient = {
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
     try {
+      const { body: _, ...restConfig } = config || {};
       const response = await fetch(url, {
+        ...restConfig,
         method: 'POST',
         body: formData,
         signal: controller.signal,
-        ...config,
         // Don't set Content-Type for FormData - browser sets it with boundary
         headers: {
           ...config?.headers,

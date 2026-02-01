@@ -14,6 +14,7 @@ import { enhanceWithMultiBrandMatches } from '@/lib/paintMatcher';
 import { WarpPortal } from '@/components/inspiration/WarpPortal';
 import { LoadingAnimation } from '@/components/shared/LoadingAnimations';
 import { motion } from 'framer-motion';
+import { mlLogger } from '@/lib/mlDataLogger';
 
 export default function InspirationPage() {
   const router = useRouter();
@@ -32,11 +33,14 @@ export default function InspirationPage() {
     setIsProcessing(true);
     setError(null);
 
+    // Start ML logging for this scan
+    await mlLogger.startScan('inspiration', file);
+
     try {
       let result;
 
       if (offlineMode) {
-        // Use offline color detection
+        // Use offline colour detection
         result = await detectColorsOffline(file, 'inspiration', {
           numColors: 5,
           numPaintMatches: 5,
@@ -48,6 +52,9 @@ export default function InspirationPage() {
 
       // Enhance with multi-brand matches
       result = enhanceWithMultiBrandMatches(result, 3);
+
+      // Log completed scan for ML training
+      mlLogger.logScanComplete(result);
 
       setScanResult(result);
       router.push('/inspiration/results');

@@ -15,6 +15,7 @@ import { CogitatorUpload } from '@/components/miniscan/CogitatorUpload';
 import { LoadingAnimation } from '@/components/shared/LoadingAnimations';
 import { ScanReveal } from '@/components/miniscan/ScanReveal';
 import { motion } from 'framer-motion';
+import { mlLogger } from '@/lib/mlDataLogger';
 import type { ScanResult } from '@/lib/types';
 
 export default function MiniscanPage() {
@@ -35,6 +36,9 @@ export default function MiniscanPage() {
     setIsProcessing(true);
     setError(null);
 
+    // Start ML logging for this scan
+    await mlLogger.startScan('miniature', file);
+
     // Create object URL for image display
     const imageUrl = URL.createObjectURL(file);
     setUploadedImageUrl(imageUrl);
@@ -43,7 +47,7 @@ export default function MiniscanPage() {
       let result;
 
       if (offlineMode) {
-        // Use offline color detection
+        // Use offline colour detection
         result = await detectColorsOffline(file, 'miniature', {
           numColors: 6,
           numPaintMatches: 5,
@@ -55,6 +59,9 @@ export default function MiniscanPage() {
 
       // Enhance with multi-brand matches
       result = enhanceWithMultiBrandMatches(result, 3);
+
+      // Log completed scan for ML training
+      mlLogger.logScanComplete(result);
 
       // Store result locally and show reveal animation
       setScanResultLocal(result);
