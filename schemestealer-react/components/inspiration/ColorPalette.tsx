@@ -1,6 +1,6 @@
 /**
- * Color Palette - Big beautiful swatches for Inspiration results
- * No reticles - just pure color extraction from the image
+ * Colour Palette - Big beautiful swatches for Inspiration results
+ * No reticles - just pure colour extraction from the image
  */
 
 'use client';

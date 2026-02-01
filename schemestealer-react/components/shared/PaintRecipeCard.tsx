@@ -209,7 +209,7 @@ export function PaintRecipeCard({
 
         <div className="flex items-center gap-2">
           {/* Color Comparison Toggle */}
-          <Tooltip content="Compare detected color with paint matches">
+          <Tooltip content="Compare detected colour with paint matches">
             <button
               onClick={() => setShowComparison(!showComparison)}
               className={`p-1.5 rounded text-xs transition-colors ${

@@ -33,7 +33,7 @@ export async function copyAllHexCodes(colors: Array<{ hex: string; name: string 
     const hexList = colors.map(c => c.hex).join(', ');
     await navigator.clipboard.writeText(hexList);
     return {
-      message: `Copied ${colors.length} color codes`,
+      message: `Copied ${colors.length} colour codes`,
       type: 'success',
     };
   } catch (error) {
@@ -57,7 +57,7 @@ export async function copyFormattedColors(
 
     await navigator.clipboard.writeText(formatted);
     return {
-      message: `Copied formatted color list`,
+      message: `Copied formatted colour list`,
       type: 'success',
     };
   } catch (error) {
@@ -109,8 +109,8 @@ export async function copyForDiscord(data: {
 }): Promise<CopyNotification> {
   try {
     const title = data.type === 'miniscan'
-      ? '**🎨 Miniature Color Analysis - SchemeStealer**'
-      : '**✨ Color Palette Extraction - SchemeStealer**';
+      ? '**🎨 Miniature Colour Analysis - SchemeStealer**'
+      : '**✨ Colour Palette Extraction - SchemeStealer**';
 
     const colorList = data.colors
       .map(c => {

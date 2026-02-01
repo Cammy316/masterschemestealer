@@ -132,7 +132,7 @@ export function ColorSwatchGrid({ colors, mode }: ColorSwatchGridProps) {
     <div className="space-y-6">
       {/* Title */}
       <h2 className={`text-xl font-bold ${themeColors.title} text-center`}>
-        {mode === 'miniature' ? '◆ DETECTED COLORS ◆' : '✦ EXTRACTED ESSENCE ✦'}
+        {mode === 'miniature' ? '◆ DETECTED COLOURS ◆' : '✦ EXTRACTED ESSENCE ✦'}
       </h2>
 
       {/* Grid - responsive: 2 cols mobile, 3 cols tablet, 4 cols desktop */}
