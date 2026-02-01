@@ -17,7 +17,7 @@ interface ColorPaletteProps {
 
 export function ColorPalette({
   colors,
-  title = 'Detected Colors',
+  title = 'Detected Colours',
   showPercentages = true,
   className,
 }: ColorPaletteProps) {

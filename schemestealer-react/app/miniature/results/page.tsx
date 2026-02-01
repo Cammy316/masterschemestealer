@@ -55,7 +55,7 @@ export default function MiniscanResultsPage() {
             ◆ SCAN COMPLETE ◆
           </h1>
           <p className="text-cogitator-green-dim tech-text">
-            Auspex has identified {currentScan.detectedColors.length} color signatures
+            Auspex has identified {currentScan.detectedColors.length} colour signatures
           </p>
           <motion.div
             className="mt-2 text-xs text-brass cyber-text"
@@ -98,7 +98,7 @@ export default function MiniscanResultsPage() {
 
                   {/* RETICLE REVEAL - THE MAGIC MOMENT */}
                   <ReticleReveal
-                    colorName={color.family || 'Color'}
+                    colorName={color.family || 'Colour'}
                     colorHex={color.hex}
                     reticleImage={
                       color.reticle ? `data:image/jpeg;base64,${color.reticle}` : undefined
@@ -123,7 +123,7 @@ export default function MiniscanResultsPage() {
                     // Legacy fallback: old paintMatches format
                     <div className="mt-6">
                       <PaintResults
-                        colorName={color.family || 'Color'}
+                        colorName={color.family || 'Colour'}
                         colorHex={color.hex}
                         paintMatches={color.paintMatches}
                         mode="miniature"
@@ -293,7 +293,7 @@ export default function MiniscanResultsPage() {
               <li className="flex items-start gap-2">
                 <span className="text-void-black/60 flex-shrink-0">►</span>
                 <span>
-                  {currentScan.detectedColors.length} dominant color signatures identified
+                  {currentScan.detectedColors.length} dominant colour signatures identified
                 </span>
               </li>
               <li className="flex items-start gap-2">
@@ -305,12 +305,12 @@ export default function MiniscanResultsPage() {
               <li className="flex items-start gap-2">
                 <span className="text-void-black/60 flex-shrink-0">►</span>
                 <span>
-                  Delta-E ({'\u0394'}E) indicates color purity rating (lower = more accurate)
+                  Delta-E ({'\u0394'}E) indicates colour purity rating (lower = more accurate)
                 </span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-void-black/60 flex-shrink-0">►</span>
-                <span>Tap "REVEAL LOCATION" to view color placement on miniature</span>
+                <span>Tap "REVEAL LOCATION" to view colour placement on miniature</span>
               </li>
             </ul>
           </div>

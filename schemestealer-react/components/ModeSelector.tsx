@@ -316,7 +316,7 @@ export function ModeSelector() {
               <p className="text-purple-400/60 responsive-label mb-2">PROTOCOL</p>
 
               <p className="text-gray-400 responsive-label text-center mb-3 leading-relaxed">
-                Extract colors from any image
+                Extract colours from any image
               </p>
 
               <div className="px-3 py-2 border border-purple-500/50 rounded responsive-label">

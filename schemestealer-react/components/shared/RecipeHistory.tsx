@@ -155,7 +155,7 @@ function HistoryCard({ scan, onSelect }: HistoryCardProps) {
             </span>
           </div>
           <p className="text-sm text-white font-medium truncate">
-            {colorCount} color{colorCount !== 1 ? 's' : ''} detected
+            {colorCount} colour{colorCount !== 1 ? 's' : ''} detected
           </p>
           <p className="text-xs text-gray-500 truncate">
             {topColors.map((c) => c.family || c.hex).join(', ')}

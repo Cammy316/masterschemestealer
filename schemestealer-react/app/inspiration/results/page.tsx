@@ -130,7 +130,7 @@ export default function InspirationResultsPage() {
                     />
                     <div className="flex-1 min-w-0">
                       <h3 className="text-lg font-bold warp-text gothic-text truncate">
-                        {color.family || `Color ${index + 1}`}
+                        {color.family || `Colour ${index + 1}`}
                       </h3>
                       <div className="flex flex-wrap gap-2 mt-1">
                         <span className="text-sm text-warp-purple-light/70 tech-text">
@@ -152,7 +152,7 @@ export default function InspirationResultsPage() {
                   ) : color.paintMatches ? (
                     // Legacy fallback: old paintMatches format
                     <PaintResults
-                      colorName={color.family || `Color ${index + 1}`}
+                      colorName={color.family || `Colour ${index + 1}`}
                       colorHex={color.hex}
                       paintMatches={color.paintMatches}
                       mode="inspiration"
@@ -353,7 +353,7 @@ export default function InspirationResultsPage() {
                 <li className="flex items-start gap-2">
                   <span className="text-warp-purple-light/70 flex-shrink-0">►</span>
                   <span>
-                    These {currentScan.detectedColors.length} colors form a harmonious scheme
+                    These {currentScan.detectedColors.length} colours form a harmonious scheme
                   </span>
                 </li>
                 <li className="flex items-start gap-2">

@@ -22,8 +22,8 @@ export function ShareModal({ mode, data, onClose }: ShareModalProps) {
 
   const handlePlatformShare = (platform: string) => {
     const text = mode === 'miniature'
-      ? 'Check out the paint colors I identified using SchemeStealer!'
-      : 'Check out this color palette from SchemeStealer!';
+      ? 'Check out the paint colours I identified using SchemeStealer!'
+      : 'Check out this colour palette from SchemeStealer!';
     const url = window.location.href;
 
     const shareUrls: Record<string, string> = {
