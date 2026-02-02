@@ -78,6 +78,14 @@ class BehaviouralSignals(BaseModel):
     scanned_again_same_image: Optional[bool] = None
 
 
+class ColourCorrection(BaseModel):
+    colour_index: int
+    original_family: str
+    was_correct: bool
+    corrected_family: Optional[str] = None
+    actual_paint_used: Optional[str] = None
+
+
 class FeedbackData(BaseModel):
     scan_id: str
     session_id: str
@@ -87,6 +95,19 @@ class FeedbackData(BaseModel):
     corrected_value: Optional[str] = None
     rating: Optional[int] = None
     comment: Optional[str] = None
+    timestamp: str
+
+
+class CompleteFeedback(BaseModel):
+    """Enhanced feedback with colour-level corrections for ML training"""
+    scan_id: str
+    session_id: str
+    rating: int  # 1-5 skull rating
+    colour_corrections: List[ColourCorrection] = []
+    issue_categories: List[str] = []  # e.g., ['wrong_colours', 'poor_recommendations']
+    experience_level: Optional[str] = None  # 'beginner' | 'intermediate' | 'advanced'
+    comment: Optional[str] = None
+    email: Optional[str] = None
     timestamp: str
 
 
@@ -110,6 +131,18 @@ class MLStats(BaseModel):
     scans_by_mode: Dict[str, int]
     scans_today: int
     unique_sessions: int
+
+
+class FeedbackStats(BaseModel):
+    """Detailed feedback statistics for admin dashboard"""
+    total_feedback: int
+    feedback_rate: float  # percentage of scans with feedback
+    average_rating: float
+    rating_distribution: Dict[int, int]  # 1-5 star counts
+    most_common_issues: Dict[str, int]
+    colour_families_corrected: Dict[str, int]
+    feedback_today: int
+    feedback_with_corrections: int
 
 
 # ============================================================================
@@ -194,6 +227,36 @@ def save_feedback_json(feedback: FeedbackData):
     logger.info(f"Saved feedback: {filepath}")
 
 
+def save_complete_feedback(feedback: CompleteFeedback):
+    """Save complete feedback with colour corrections"""
+    ensure_directories()
+
+    timestamp_safe = feedback.timestamp.replace(':', '-').replace('.', '-')
+    filename = f"{feedback.scan_id}_{timestamp_safe}_complete.json"
+    filepath = FEEDBACK_DIR / filename
+
+    data = feedback.model_dump()
+    data['saved_at'] = datetime.utcnow().isoformat()
+    data['has_corrections'] = len(feedback.colour_corrections) > 0
+
+    # Extract ground truth labels for ML training
+    ground_truth = []
+    for correction in feedback.colour_corrections:
+        if not correction.was_correct and correction.corrected_family:
+            ground_truth.append({
+                'colour_index': correction.colour_index,
+                'original_family': correction.original_family,
+                'correct_family': correction.corrected_family,
+                'actual_paint': correction.actual_paint_used
+            })
+    data['ground_truth_labels'] = ground_truth
+
+    with open(filepath, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2)
+
+    logger.info(f"Saved complete feedback: {filepath} with {len(ground_truth)} corrections")
+
+
 def save_behaviour_json(behaviour: BehaviouralSignals):
     """Save behavioural data as JSON file"""
     ensure_directories()
@@ -210,6 +273,76 @@ def save_behaviour_json(behaviour: BehaviouralSignals):
         json.dump(data, f, indent=2)
 
     logger.info(f"Saved behaviour: {filepath}")
+
+
+def get_feedback_stats() -> FeedbackStats:
+    """Calculate detailed feedback statistics"""
+    ensure_directories()
+
+    feedback_files = list(FEEDBACK_DIR.glob("*.json"))
+    total_feedback = len(feedback_files)
+
+    rating_distribution = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}
+    issue_counts: Dict[str, int] = {}
+    family_corrections: Dict[str, int] = {}
+    total_ratings = 0
+    sum_ratings = 0
+    feedback_with_corrections = 0
+    today = datetime.utcnow().date().isoformat()
+    feedback_today = 0
+
+    for feedback_file in feedback_files:
+        try:
+            with open(feedback_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+
+            # Count ratings
+            rating = data.get('rating')
+            if rating and 1 <= rating <= 5:
+                rating_distribution[rating] += 1
+                sum_ratings += rating
+                total_ratings += 1
+
+            # Count issues
+            for issue in data.get('issue_categories', []):
+                issue_counts[issue] = issue_counts.get(issue, 0) + 1
+
+            # Count colour family corrections
+            corrections = data.get('colour_corrections', [])
+            if corrections:
+                for correction in corrections:
+                    if not correction.get('was_correct') and correction.get('corrected_family'):
+                        original = correction.get('original_family', 'Unknown')
+                        family_corrections[original] = family_corrections.get(original, 0) + 1
+                        feedback_with_corrections += 1
+
+            # Check if today
+            timestamp = data.get('timestamp', '')
+            if timestamp.startswith(today):
+                feedback_today += 1
+
+        except Exception as e:
+            logger.warning(f"Error reading feedback file {feedback_file}: {e}")
+
+    # Calculate feedback rate
+    scan_files = list(SCANS_DIR.glob("*.json"))
+    total_scans = len(scan_files)
+    feedback_rate = (total_feedback / total_scans * 100) if total_scans > 0 else 0
+
+    # Sort issues by count
+    sorted_issues = dict(sorted(issue_counts.items(), key=lambda x: x[1], reverse=True))
+    sorted_families = dict(sorted(family_corrections.items(), key=lambda x: x[1], reverse=True))
+
+    return FeedbackStats(
+        total_feedback=total_feedback,
+        feedback_rate=round(feedback_rate, 2),
+        average_rating=round(sum_ratings / total_ratings, 2) if total_ratings > 0 else 0,
+        rating_distribution=rating_distribution,
+        most_common_issues=sorted_issues,
+        colour_families_corrected=sorted_families,
+        feedback_today=feedback_today,
+        feedback_with_corrections=feedback_with_corrections
+    )
 
 
 def get_stats() -> MLStats:
@@ -327,6 +460,38 @@ async def log_feedback(feedback: FeedbackData):
         raise HTTPException(status_code=500, detail=f"Failed to log feedback: {str(e)}")
 
 
+@router.post("/log-complete-feedback")
+async def log_complete_feedback(feedback: CompleteFeedback):
+    """
+    Log complete feedback with colour-level corrections
+    - 1-5 skull rating
+    - Per-colour corrections with correct family
+    - Issue categories
+    - Experience level
+    - Ground truth labels extracted for ML training
+    """
+    try:
+        save_complete_feedback(feedback)
+
+        # Count corrections for response
+        corrections_count = sum(
+            1 for c in feedback.colour_corrections
+            if not c.was_correct and c.corrected_family
+        )
+
+        return {
+            "status": "success",
+            "scan_id": feedback.scan_id,
+            "rating": feedback.rating,
+            "corrections_logged": corrections_count,
+            "issues_logged": len(feedback.issue_categories)
+        }
+
+    except Exception as e:
+        logger.error(f"Error logging complete feedback: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Failed to log feedback: {str(e)}")
+
+
 @router.post("/log-behavior")
 async def log_behaviour(behaviour: BehaviouralSignals):
     """
@@ -411,6 +576,24 @@ async def get_ml_stats():
     except Exception as e:
         logger.error(f"Error getting stats: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Failed to get stats: {str(e)}")
+
+
+@router.get("/feedback-stats", response_model=FeedbackStats)
+async def get_ml_feedback_stats():
+    """
+    Get detailed feedback statistics
+    - Rating distribution (1-5 skulls)
+    - Most common issues reported
+    - Colour families most often corrected
+    - Feedback rate vs total scans
+    """
+    try:
+        stats = get_feedback_stats()
+        return stats
+
+    except Exception as e:
+        logger.error(f"Error getting feedback stats: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Failed to get feedback stats: {str(e)}")
 
 
 @router.get("/health")

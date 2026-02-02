@@ -16,12 +16,40 @@ import { PaintRecipeCard } from '@/components/shared/PaintRecipeCard';
 import { PaintResults } from '@/components/shared/PaintResults';
 import { ShareButton } from '@/components/ShareButton';
 import { ShareModal } from '@/components/ShareModal';
+import { FeedbackModal, type FeedbackSubmission } from '@/components/FeedbackModal';
+import { useFeedbackPrompt } from '@/hooks/useFeedbackPrompt';
 import { mlLogger } from '@/lib/mlDataLogger';
 
 export default function InspirationResultsPage() {
   const router = useRouter();
   const { currentScan, clearCurrentScan } = useAppStore();
   const [showShareModal, setShowShareModal] = useState(false);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+
+  // Feedback prompt hook - auto-shows after 10 seconds
+  const { shouldShow: shouldShowFeedback, dismiss: dismissFeedback, triggerManually: triggerFeedback } = useFeedbackPrompt({
+    scanId: currentScan?.id,
+    delay: 10000,
+    enabled: !!currentScan,
+  });
+
+  // Show feedback modal when prompted
+  React.useEffect(() => {
+    if (shouldShowFeedback && !showFeedbackModal) {
+      setShowFeedbackModal(true);
+    }
+  }, [shouldShowFeedback, showFeedbackModal]);
+
+  // Handle feedback submission
+  const handleFeedbackSubmit = async (feedback: FeedbackSubmission) => {
+    await mlLogger.submitCompleteFeedback(feedback);
+  };
+
+  // Handle feedback modal close
+  const handleFeedbackClose = () => {
+    setShowFeedbackModal(false);
+    dismissFeedback();
+  };
 
   React.useEffect(() => {
     // Redirect if no scan result
@@ -293,6 +321,35 @@ export default function InspirationResultsPage() {
           </motion.button>
 
           <ShareButton mode="inspiration" onShareClick={() => setShowShareModal(true)} />
+
+          {/* Give Feedback Button */}
+          <motion.button
+            onClick={triggerFeedback}
+            className="w-full py-3 px-6 rounded-lg border border-warp-pink/50 bg-warp-pink/10 touch-target"
+            whileHover={{
+              boxShadow: '0 0 10px var(--warp-pink)',
+              scale: 1.01,
+            }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <div className="flex items-center justify-center gap-2">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="var(--warp-pink)"
+                strokeWidth="2"
+              >
+                <path
+                  d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <span className="text-warp-pink text-sm tech-text">Give Feedback</span>
+            </div>
+          </motion.button>
         </motion.div>
 
         {/* Info card */}
@@ -398,6 +455,17 @@ export default function InspirationResultsPage() {
           onClose={() => setShowShareModal(false)}
         />
       )}
+
+      {/* Feedback Modal */}
+      <FeedbackModal
+        isOpen={showFeedbackModal}
+        onClose={handleFeedbackClose}
+        onSubmit={handleFeedbackSubmit}
+        scanId={currentScan.id}
+        sessionId={mlLogger.getSessionId()}
+        detectedColours={currentScan.detectedColors}
+        mode="inspiration"
+      />
     </div>
   );
 }
