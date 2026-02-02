@@ -17,7 +17,9 @@ import { PaintResults } from '@/components/shared/PaintResults';
 import { ShareButton } from '@/components/ShareButton';
 import { ShareModal } from '@/components/ShareModal';
 import { FeedbackModal, type FeedbackSubmission } from '@/components/FeedbackModal';
+import { KoFiPrompt, KoFiBanner } from '@/components/KoFiPrompt';
 import { useFeedbackPrompt } from '@/hooks/useFeedbackPrompt';
+import { useAnalytics } from '@/hooks/useAnalytics';
 import { mlLogger } from '@/lib/mlDataLogger';
 
 export default function InspirationResultsPage() {
@@ -25,6 +27,9 @@ export default function InspirationResultsPage() {
   const { currentScan, clearCurrentScan } = useAppStore();
   const [showShareModal, setShowShareModal] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [showKoFiPrompt, setShowKoFiPrompt] = useState(false);
+  const [koFiTrigger, setKoFiTrigger] = useState<'scan' | 'feedback'>('scan');
+  const { trackFeedbackSubmitted } = useAnalytics();
 
   // Feedback prompt hook - auto-shows after 10 seconds
   const { shouldShow: shouldShowFeedback, dismiss: dismissFeedback, triggerManually: triggerFeedback } = useFeedbackPrompt({
@@ -43,6 +48,12 @@ export default function InspirationResultsPage() {
   // Handle feedback submission
   const handleFeedbackSubmit = async (feedback: FeedbackSubmission) => {
     await mlLogger.submitCompleteFeedback(feedback);
+    // Track in analytics
+    const hasCorrections = feedback.colourCorrections.some(c => !c.wasCorrect);
+    trackFeedbackSubmitted(feedback.rating, hasCorrections);
+    // Show Ko-fi prompt after feedback
+    setKoFiTrigger('feedback');
+    setShowKoFiPrompt(true);
   };
 
   // Handle feedback modal close
@@ -64,6 +75,19 @@ export default function InspirationResultsPage() {
       }
     };
   }, [currentScan, router]);
+
+  // Show Ko-fi prompt with 20% chance after scan (delayed)
+  React.useEffect(() => {
+    if (currentScan && !showKoFiPrompt) {
+      const timer = setTimeout(() => {
+        if (Math.random() < 0.2) {
+          setKoFiTrigger('scan');
+          setShowKoFiPrompt(true);
+        }
+      }, 15000);
+      return () => clearTimeout(timer);
+    }
+  }, [currentScan, showKoFiPrompt]);
 
   if (!currentScan) {
     return null;
@@ -352,6 +376,15 @@ export default function InspirationResultsPage() {
           </motion.button>
         </motion.div>
 
+        {/* Ko-fi Support Banner */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.55 }}
+        >
+          <KoFiBanner source="inspiration_results" />
+        </motion.div>
+
         {/* Info card */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -466,6 +499,15 @@ export default function InspirationResultsPage() {
         detectedColours={currentScan.detectedColors}
         mode="inspiration"
       />
+
+      {/* Ko-fi Prompt */}
+      {showKoFiPrompt && (
+        <KoFiPrompt
+          trigger={koFiTrigger}
+          forceShow={koFiTrigger === 'feedback'}
+          onDismiss={() => setShowKoFiPrompt(false)}
+        />
+      )}
     </div>
   );
 }

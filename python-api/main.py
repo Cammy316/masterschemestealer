@@ -17,6 +17,7 @@ import logging
 from services.miniature_scanner import MiniatureScannerService
 from services.inspiration_scanner import InspirationScannerService
 from routes.ml_data import router as ml_data_router
+from routes.analytics import router as analytics_router
 
 # Configure logging
 logging.basicConfig(
@@ -53,6 +54,9 @@ inspiration_scanner = InspirationScannerService()
 
 # Include ML data collection router
 app.include_router(ml_data_router)
+
+# Include analytics router
+app.include_router(analytics_router)
 
 
 @app.get("/")
