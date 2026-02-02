@@ -86,6 +86,26 @@ export interface FeedbackData {
   timestamp: string;
 }
 
+export interface ColourCorrection {
+  colourIndex: number;
+  originalFamily: string;
+  wasCorrect: boolean;
+  correctedFamily?: string;
+  actualPaintUsed?: string;
+}
+
+export interface CompleteFeedback {
+  scanId: string;
+  sessionId: string;
+  rating: number;
+  colourCorrections: ColourCorrection[];
+  issueCategories: string[];
+  experienceLevel: 'beginner' | 'intermediate' | 'advanced' | null;
+  comment: string;
+  email: string;
+  timestamp: string;
+}
+
 // ============================================================================
 // Session Management
 // ============================================================================
@@ -646,6 +666,56 @@ class MLDataLogger {
       timestamp: Date.now(),
       retryCount: 0,
     });
+  }
+
+  /**
+   * Submit complete feedback with colour corrections
+   * Sends directly to backend (not queued) for immediate processing
+   */
+  async submitCompleteFeedback(feedback: CompleteFeedback): Promise<boolean> {
+    try {
+      // Convert camelCase to snake_case for backend
+      const payload = {
+        scan_id: feedback.scanId,
+        session_id: feedback.sessionId,
+        rating: feedback.rating,
+        colour_corrections: feedback.colourCorrections.map(c => ({
+          colour_index: c.colourIndex,
+          original_family: c.originalFamily,
+          was_correct: c.wasCorrect,
+          corrected_family: c.correctedFamily || null,
+          actual_paint_used: c.actualPaintUsed || null,
+        })),
+        issue_categories: feedback.issueCategories,
+        experience_level: feedback.experienceLevel,
+        comment: feedback.comment || null,
+        email: feedback.email || null,
+        timestamp: feedback.timestamp,
+      };
+
+      await apiClient.post('/api/ml/log-complete-feedback', payload);
+      console.log('MLLogger: Complete feedback submitted successfully');
+      return true;
+    } catch (error) {
+      console.error('MLLogger: Failed to submit complete feedback:', error);
+
+      // Queue for retry if direct submission fails
+      addToQueue({
+        type: 'feedback',
+        data: {
+          scan_id: feedback.scanId,
+          session_id: feedback.sessionId,
+          feedback_type: 'rating',
+          rating: feedback.rating,
+          comment: feedback.comment,
+          timestamp: feedback.timestamp,
+        } as FeedbackData,
+        timestamp: Date.now(),
+        retryCount: 0,
+      });
+
+      return false;
+    }
   }
 
   /**
