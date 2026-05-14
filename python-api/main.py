@@ -6,6 +6,9 @@ Provides color detection endpoints for both Miniscan and Inspiration modes
 import io
 import json
 import base64
+import os
+import sys
+from pathlib import Path
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -13,6 +16,9 @@ from PIL import Image
 import numpy as np
 from typing import List, Dict, Any
 import logging
+
+# Ensure CWD is the directory containing main.py so relative paths work
+os.chdir(Path(__file__).parent)
 
 from services.miniature_scanner import MiniatureScannerService
 from services.inspiration_scanner import InspirationScannerService
@@ -49,8 +55,13 @@ app.add_middleware(
 )
 
 # Initialize services
-miniature_scanner = MiniatureScannerService()
-inspiration_scanner = InspirationScannerService()
+try:
+    miniature_scanner = MiniatureScannerService()
+    inspiration_scanner = InspirationScannerService()
+    logger.info("Services initialised successfully")
+except Exception as e:
+    logger.critical(f"Failed to initialise services: {e}", exc_info=True)
+    sys.exit(1)
 
 # Include ML data collection router
 app.include_router(ml_data_router)
