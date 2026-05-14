@@ -16,11 +16,13 @@ import { LoadingAnimation } from '@/components/shared/LoadingAnimations';
 import { ScanReveal } from '@/components/miniscan/ScanReveal';
 import { motion } from 'framer-motion';
 import { mlLogger } from '@/lib/mlDataLogger';
+import { useApiReady } from '@/hooks/useApiReady';
 import type { ScanResult } from '@/lib/types';
 
 export default function MiniscanPage() {
   const router = useRouter();
   const { setMode, setScanResult, offlineMode } = useAppStore();
+  const apiReady = useApiReady(offlineMode);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showReveal, setShowReveal] = useState(false);
   const [scanResult, setScanResultLocal] = useState<ScanResult | null>(null);
@@ -102,6 +104,41 @@ export default function MiniscanPage() {
     const file = e.target.files?.[0];
     if (file) handleFileSelect(file);
   };
+
+  // Show warm-up screen while backend scanner is initialising
+  if (!apiReady) {
+    return (
+      <div className="min-h-screen flex items-center justify-center cogitator-screen" style={{ background: 'var(--void-black)' }}>
+        <div className="text-center px-8">
+          <motion.div
+            className="text-5xl mb-6"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+          >
+            ⚙
+          </motion.div>
+          <h2 className="text-xl font-bold gothic-text auspex-text mb-2">
+            MACHINE SPIRIT AWAKENING
+          </h2>
+          <p className="text-cogitator-green-dim tech-text text-sm mb-6">
+            Initialising Cogitator arrays... please wait
+          </p>
+          <motion.div
+            className="flex gap-2 justify-center"
+            animate={{ opacity: [0.3, 1, 0.3] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          >
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="w-2 h-2 rounded-full bg-green-500" />
+            ))}
+          </motion.div>
+          <p className="text-cogitator-green-dim/50 tech-text text-xs mt-6">
+            First activation after dormancy takes ~60 seconds
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   // Show loading animation while processing
   if (isProcessing) {
