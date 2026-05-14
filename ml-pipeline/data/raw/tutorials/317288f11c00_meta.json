@@ -1,0 +1,132 @@
+{
+  "source": "goonhammer",
+  "url": "https://www.goonhammer.com/how-to-paint-everything-industrial-bases/",
+  "title": "How to Paint Everything: Industrial Bases",
+  "paints": [
+    {
+      "brand": "Citadel",
+      "name": "Blood Angels",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "contrast",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Drakenhof",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Snakebite",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Yriel yellow",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Mournfang Brown",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Leadbelcher",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Troll Slayer Orange",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Ironbreaker",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army Painter Gunmetal",
+      "confidence": 0.8
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army Painter Dark Tone",
+      "confidence": 0.8
+    }
+  ],
+  "steps": [],
+  "images": [
+    {
+      "filename": "317288f11c00_2.jpeg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/09/IMG_9722-1024x1024.jpeg",
+      "alt_text": ""
+    },
+    {
+      "filename": "317288f11c00_4.jpeg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/09/IMG_9732-1024x1024.jpeg",
+      "alt_text": ""
+    },
+    {
+      "filename": "317288f11c00_6.jpeg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2025/05/IMG_3030-1024x1024.jpeg",
+      "alt_text": ""
+    },
+    {
+      "filename": "317288f11c00_8.jpeg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2025/05/IMG_3029-1024x1024.jpeg",
+      "alt_text": ""
+    },
+    {
+      "filename": "317288f11c00_10.jpeg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2025/05/IMG_3028-1024x1024.jpeg",
+      "alt_text": ""
+    },
+    {
+      "filename": "317288f11c00_12.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/09/dylon_goliaths_02-1024x609.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "317288f11c00_14.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2025/05/image6-1024x771.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "317288f11c00_16.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2025/05/image3-1024x771.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "317288f11c00_18.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2025/05/image2-1024x771.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "317288f11c00_20.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2025/05/image5-1024x771.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "317288f11c00_22.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2025/05/image4-1024x771.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "317288f11c00_24.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2025/05/image1-1024x576.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "317288f11c00_26.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2022/04/Murder-Hornets-1024x550.jpg",
+      "alt_text": ""
+    }
+  ],
+  "scraped_at": "2026-02-01T20:48:28.530618",
+  "has_ground_truth": true
+}

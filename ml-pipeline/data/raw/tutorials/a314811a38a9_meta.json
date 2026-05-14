@@ -1,0 +1,97 @@
+{
+  "source": "goonhammer",
+  "url": "https://www.goonhammer.com/how-to-paint-everything-star-wars-shatterpoint-fearless-and-inventive-squad-pack/",
+  "title": "How to Paint Everything: Star Wars Shatterpoint Fearless and Inventive Squad Pack",
+  "paints": [
+    {
+      "brand": "Citadel",
+      "name": "contrast",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army Painter Dark Tone wash",
+      "confidence": 0.8
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army Painter Strong Tone and a very light drybrush of Reaper Yellowed Bone",
+      "confidence": 0.8
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army Painter Strong Tone",
+      "confidence": 0.8
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army Painter Strong Tone for the cloth and Dark Tone for the metallic bits",
+      "confidence": 0.8
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army Painter Strong Tone wash",
+      "confidence": 0.8
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army Painter brush",
+      "confidence": 0.8
+    }
+  ],
+  "steps": [],
+  "images": [
+    {
+      "filename": "a314811a38a9_1.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/12/fearless-inventive-696x392.jpg",
+      "alt_text": "Star Wars Shatterpoint Fearless and Inventive"
+    },
+    {
+      "filename": "a314811a38a9_2.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/12/fearless-bases-colors.png",
+      "alt_text": "Shatterpoint bases colors"
+    },
+    {
+      "filename": "a314811a38a9_4.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/12/luke.jpg",
+      "alt_text": "Shatterpoint Jedi Knight Luke Skywalker"
+    },
+    {
+      "filename": "a314811a38a9_6.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/12/fearless-luke-colors.png",
+      "alt_text": "Jedi Knight Luke Skywalker colors"
+    },
+    {
+      "filename": "a314811a38a9_8.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/12/boushh.jpg",
+      "alt_text": "Shatterpoint Boushh Princess Leia"
+    },
+    {
+      "filename": "a314811a38a9_10.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/12/fearless-boushh-colors.png",
+      "alt_text": "Shatterpoint Boushh colors"
+    },
+    {
+      "filename": "a314811a38a9_12.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/12/lando.jpg",
+      "alt_text": "Shatterpoint Lando Inside Job"
+    },
+    {
+      "filename": "a314811a38a9_14.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/12/fearless-lando-colors.png",
+      "alt_text": "Shatterpoint Lando Inside Job colors"
+    },
+    {
+      "filename": "a314811a38a9_16.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/12/R2.jpg",
+      "alt_text": "Shatterpoint R2-D2 Inside Job"
+    },
+    {
+      "filename": "a314811a38a9_18.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/12/fearless-R2-colors.png",
+      "alt_text": "Shatterpoint R2-D2 Inside Job colors"
+    }
+  ],
+  "scraped_at": "2026-02-01T20:55:39.809928",
+  "has_ground_truth": true
+}

@@ -1,0 +1,30 @@
+# ML Pipeline Dependencies
+# Install with: pip install -r requirements.txt
+
+# Web Scraping
+praw>=7.7.0                 # Reddit API
+requests>=2.31.0            # HTTP requests
+beautifulsoup4>=4.12.0      # HTML parsing
+lxml>=4.9.0                 # Fast HTML parser
+
+# Image Processing
+Pillow>=10.0.0              # Image handling
+imagehash>=4.3.0            # Perceptual hashing
+
+# Data Processing
+pandas>=2.0.0               # Data manipulation
+numpy>=1.24.0               # Numerical operations
+
+# Machine Learning
+scikit-learn>=1.3.0         # ML algorithms
+joblib>=1.3.0               # Model serialization
+
+# XGBoost (for later stages)
+xgboost>=2.0.0              # Gradient boosting
+
+# Labelling UI
+flask>=3.0.0                # Web framework
+
+# Utilities
+python-dotenv>=1.0.0        # Environment variables
+tqdm>=4.65.0                # Progress bars

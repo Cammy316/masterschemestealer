@@ -1,0 +1,52 @@
+{
+  "source": "goonhammer",
+  "url": "https://www.goonhammer.com/how-to-paint-everything-crisis-protocol-warlock/",
+  "title": "How to Paint Everything: Crisis Protocol \u2013 Warlock",
+  "paints": [
+    {
+      "brand": "Citadel",
+      "name": "Ulthuan Grey",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Rhinox",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Agrax Earthshade",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Nuln",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Mournfang Brown",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Fire Dragon",
+      "confidence": 0.9
+    }
+  ],
+  "steps": [],
+  "images": [
+    {
+      "filename": "17ce8a5a6a3b_1.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/09/WarlockScenic-696x378.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "17ce8a5a6a3b_2.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/09/WarlockColors-1024x541.jpg",
+      "alt_text": ""
+    }
+  ],
+  "scraped_at": "2026-02-01T20:48:20.549156",
+  "has_ground_truth": true
+}

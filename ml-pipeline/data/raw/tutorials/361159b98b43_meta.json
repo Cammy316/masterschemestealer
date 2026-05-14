@@ -1,0 +1,82 @@
+{
+  "source": "goonhammer",
+  "url": "https://www.goonhammer.com/how-to-paint-everything-marvel-crisis-protocol-maverick/",
+  "title": "How to Paint Everything: Marvel Crisis Protocol \u2013 Maverick",
+  "paints": [
+    {
+      "brand": "Citadel",
+      "name": "Flash Gitz Yellow",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Genestealer Purple",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Ulthuan Grey",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Nuln",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "contrast",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Incubi",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "XV-88",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Ushabti",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "XV-88 Layer",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Agrax Earthshade",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army Painter Daemonic Yellow Spray Primer Shadow",
+      "confidence": 0.8
+    }
+  ],
+  "steps": [],
+  "images": [
+    {
+      "filename": "361159b98b43_1.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/09/MaverickScenic-696x419.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "361159b98b43_2.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/09/MaverickScenic-1024x617.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "361159b98b43_4.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/09/MaverickColors-1024x606.jpg",
+      "alt_text": ""
+    }
+  ],
+  "scraped_at": "2026-02-01T20:51:15.585124",
+  "has_ground_truth": true
+}

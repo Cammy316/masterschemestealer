@@ -30,7 +30,7 @@ export function ModeSelector() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-void-black relative overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-void-black relative overflow-x-hidden overflow-y-auto">
       {/* Subtle starfield background */}
       <div className="starfield-bg fixed inset-0 opacity-30" />
 
@@ -53,7 +53,7 @@ export function ModeSelector() {
       />
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center flex-1 px-3 py-4">
+      <div className="relative z-10 flex flex-col items-center justify-center flex-1 px-6 py-4">
         {/* System Status Indicator */}
         <motion.div
           className="mb-2 text-center"
@@ -171,7 +171,7 @@ export function ModeSelector() {
 
         {/* Mission Select Cards - Side by side on ALL screens including mobile */}
         <motion.div
-          className="w-full flex gap-3 mb-4"
+          className="w-full flex gap-3 mb-4 overflow-visible"
           style={{ maxHeight: '70vh' }}
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}

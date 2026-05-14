@@ -1,0 +1,1452 @@
+{
+  "source": "goonhammer",
+  "url": "https://www.goonhammer.com/how-to-paint-everything-alpha-legion-chaos-space-marines/",
+  "title": "How to Paint Everything \u2013 Alpha Legion Chaos Space Marines",
+  "paints": [
+    {
+      "brand": "Citadel",
+      "name": "Dorn",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Contrast",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Macragge Blue",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Incubi",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Drakenhof",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Altdorf",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Leadbelcher",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Nuln",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Retributor",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Agrax Earthshade",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Warpstone",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Runefang",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Moot Green",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Kantor Blue",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Kabalite Green",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Grey Seer",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Mournfang Brown",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Naggaroth",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Fang",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Rakarth Flesh",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Wraithbone",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Iyanden Yellow",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Mephiston Red",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Evil Sunz",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Warboss Green",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Biel-Tan",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Skarsnik Green",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Pink Horror",
+      "confidence": 0.9
+    }
+  ],
+  "steps": [
+    {
+      "text": "In our How to Paint Everything series we look at how to paint, well, everything, with a look at different approaches from different painters and some of the special techniques for painting. In this article we\u2019re looking at how to paint Alpha Legion Chaos Space Marines. The last (or among the first, depending on which source you read ) of the legions to find its primarch, the origins of the Alpha Legion are shrouded in mystery, in part intentionally. The legion itself had not one primarch, but tw",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Dorn",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Macragge Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Incubi",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Altdorf",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Retributor",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Warpstone",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Runefang",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Moot Green",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AlphaLegion_HTPE_Header.png"
+    },
+    {
+      "text": "In our How to Paint Everything series we look at how to paint, well, everything, with a look at different approaches from different painters and some of the special techniques for painting. In this article we\u2019re looking at how to paint Alpha Legion Chaos Space Marines. The last (or among the first, depending on which source you read ) of the legions to find its primarch, the origins of the Alpha Legion are shrouded in mystery, in part intentionally. The legion itself had not one primarch, but tw",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Dorn",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Macragge Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Incubi",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Altdorf",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Retributor",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Warpstone",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Runefang",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Moot Green",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AlphaLegion_HTPE_Header.png"
+    },
+    {
+      "text": "In our How to Paint Everything series we look at how to paint, well, everything, with a look at different approaches from different painters and some of the special techniques for painting. In this article we\u2019re looking at how to paint Alpha Legion Chaos Space Marines. The last (or among the first, depending on which source you read ) of the legions to find its primarch, the origins of the Alpha Legion are shrouded in mystery, in part intentionally. The legion itself had not one primarch, but tw",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Dorn",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Macragge Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Incubi",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Altdorf",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Retributor",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Warpstone",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Runefang",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Moot Green",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AlphaLegion_HTPE_Header.png"
+    },
+    {
+      "text": "In our How to Paint Everything series we look at how to paint, well, everything, with a look at different approaches from different painters and some of the special techniques for painting. In this article we\u2019re looking at how to paint Alpha Legion Chaos Space Marines. The last (or among the first, depending on which source you read ) of the legions to find its primarch, the origins of the Alpha Legion are shrouded in mystery, in part intentionally. The legion itself had not one primarch, but tw",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Dorn",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Macragge Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Incubi",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Altdorf",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Retributor",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Warpstone",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Runefang",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Moot Green",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AlphaLegion_HTPE_Header.png"
+    },
+    {
+      "text": "In our How to Paint Everything series we look at how to paint, well, everything, with a look at different approaches from different painters and some of the special techniques for painting. In this article we\u2019re looking at how to paint Alpha Legion Chaos Space Marines. The last (or among the first, depending on which source you read ) of the legions to find its primarch, the origins of the Alpha Legion are shrouded in mystery, in part intentionally. The legion itself had not one primarch, but tw",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Dorn",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Macragge Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Incubi",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Altdorf",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Retributor",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Warpstone",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Runefang",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Moot Green",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AlphaLegion_HTPE_Header.png"
+    },
+    {
+      "text": "In our How to Paint Everything series we look at how to paint, well, everything, with a look at different approaches from different painters and some of the special techniques for painting. In this article we\u2019re looking at how to paint Alpha Legion Chaos Space Marines. The last (or among the first, depending on which source you read ) of the legions to find its primarch, the origins of the Alpha Legion are shrouded in mystery, in part intentionally. The legion itself had not one primarch, but tw",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Dorn",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Macragge Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Incubi",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Altdorf",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Retributor",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Warpstone",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Runefang",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Moot Green",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AlphaLegion_HTPE_Header.png"
+    },
+    {
+      "text": "In our How to Paint Everything series we look at how to paint, well, everything, with a look at different approaches from different painters and some of the special techniques for painting. In this article we\u2019re looking at how to paint Alpha Legion Chaos Space Marines. The last (or among the first, depending on which source you read ) of the legions to find its primarch, the origins of the Alpha Legion are shrouded in mystery, in part intentionally. The legion itself had not one primarch, but tw",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Dorn",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Macragge Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Incubi",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Altdorf",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Retributor",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Warpstone",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Runefang",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Moot Green",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Kantor Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Kabalite Green",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Grey Seer",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AlphaLegion_HTPE_Header.png"
+    },
+    {
+      "text": "In our How to Paint Everything series we look at how to paint, well, everything, with a look at different approaches from different painters and some of the special techniques for painting. In this article we\u2019re looking at how to paint Alpha Legion Chaos Space Marines. The last (or among the first, depending on which source you read ) of the legions to find its primarch, the origins of the Alpha Legion are shrouded in mystery, in part intentionally. The legion itself had not one primarch, but tw",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Dorn",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Macragge Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Incubi",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Altdorf",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Retributor",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Warpstone",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Runefang",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Moot Green",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Kantor Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Kabalite Green",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Grey Seer",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AlphaLegion_HTPE_Header.png"
+    },
+    {
+      "text": "In our How to Paint Everything series we look at how to paint, well, everything, with a look at different approaches from different painters and some of the special techniques for painting. In this article we\u2019re looking at how to paint Alpha Legion Chaos Space Marines. The last (or among the first, depending on which source you read ) of the legions to find its primarch, the origins of the Alpha Legion are shrouded in mystery, in part intentionally. The legion itself had not one primarch, but tw",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Dorn",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Macragge Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Incubi",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Altdorf",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Retributor",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Warpstone",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Runefang",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Moot Green",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Kantor Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Kabalite Green",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Grey Seer",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AlphaLegion_HTPE_Header.png"
+    },
+    {
+      "text": "In our How to Paint Everything series we look at how to paint, well, everything, with a look at different approaches from different painters and some of the special techniques for painting. In this article we\u2019re looking at how to paint Alpha Legion Chaos Space Marines. The last (or among the first, depending on which source you read ) of the legions to find its primarch, the origins of the Alpha Legion are shrouded in mystery, in part intentionally. The legion itself had not one primarch, but tw",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Dorn",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Macragge Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Incubi",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Altdorf",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Retributor",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Warpstone",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Runefang",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Moot Green",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Kantor Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Kabalite Green",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Grey Seer",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AlphaLegion_HTPE_Header.png"
+    },
+    {
+      "text": "In our How to Paint Everything series we look at how to paint, well, everything, with a look at different approaches from different painters and some of the special techniques for painting. In this article we\u2019re looking at how to paint Alpha Legion Chaos Space Marines. The last (or among the first, depending on which source you read ) of the legions to find its primarch, the origins of the Alpha Legion are shrouded in mystery, in part intentionally. The legion itself had not one primarch, but tw",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Dorn",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Macragge Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Incubi",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Altdorf",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Retributor",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Warpstone",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Runefang",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Moot Green",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Kantor Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Kabalite Green",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Grey Seer",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AlphaLegion_HTPE_Header.png"
+    },
+    {
+      "text": "In our How to Paint Everything series we look at how to paint, well, everything, with a look at different approaches from different painters and some of the special techniques for painting. In this article we\u2019re looking at how to paint Alpha Legion Chaos Space Marines. The last (or among the first, depending on which source you read ) of the legions to find its primarch, the origins of the Alpha Legion are shrouded in mystery, in part intentionally. The legion itself had not one primarch, but tw",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Dorn",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Macragge Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Incubi",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Altdorf",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Retributor",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Warpstone",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Runefang",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Moot Green",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Kantor Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Kabalite Green",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Grey Seer",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Mournfang Brown",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AlphaLegion_HTPE_Header.png"
+    },
+    {
+      "text": "In our How to Paint Everything series we look at how to paint, well, everything, with a look at different approaches from different painters and some of the special techniques for painting. In this article we\u2019re looking at how to paint Alpha Legion Chaos Space Marines. The last (or among the first, depending on which source you read ) of the legions to find its primarch, the origins of the Alpha Legion are shrouded in mystery, in part intentionally. The legion itself had not one primarch, but tw",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Dorn",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Macragge Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Incubi",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Altdorf",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Retributor",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Warpstone",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Runefang",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Moot Green",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Kantor Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Kabalite Green",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Grey Seer",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Mournfang Brown",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AlphaLegion_HTPE_Header.png"
+    },
+    {
+      "text": "In our How to Paint Everything series we look at how to paint, well, everything, with a look at different approaches from different painters and some of the special techniques for painting. In this article we\u2019re looking at how to paint Alpha Legion Chaos Space Marines. The last (or among the first, depending on which source you read ) of the legions to find its primarch, the origins of the Alpha Legion are shrouded in mystery, in part intentionally. The legion itself had not one primarch, but tw",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Dorn",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Macragge Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Incubi",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Altdorf",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Retributor",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Warpstone",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Runefang",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Moot Green",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Kantor Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Kabalite Green",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Grey Seer",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Mournfang Brown",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AlphaLegion_HTPE_Header.png"
+    }
+  ],
+  "images": [
+    {
+      "filename": "56f3522eb82b_1.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AlphaLegion_HTPE_Header.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_2.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AL_Heraldry_Header.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_4.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AL_Heraldry_Example-947x1024.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_6.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AlphaLegion_HTPE_Decloaking_Header.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_8.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AL_Decloak_Conv1-1.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_10.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AL_Decloak_Steps1.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_12.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AL_Decloak_Conv3-1.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_14.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AL_Decloak_Conv4-1.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_16.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AL_Decloaked_STep1-1.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_18.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AL_Decloaked_STep2-1.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_20.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AL_Decloaked_STep3-1.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_22.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AL_Decloaked_STep4-1.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_24.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AL_Decloaked_Step5-1.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_26.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AL_Decloaked_Step6-1.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_28.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/TheChirurgeon-AlphaLegion-Decloaked-1024x706.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_30.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AL_Scales_Header.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_32.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AL_Scales_HTPE-1.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_34.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AlphaLegion_TheChirurgeon_Header.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_36.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AlphaLegion_Step1.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_38.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AlphaLegion_Step2.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_40.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AlphaLegion_Step3.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_42.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AlphaLegion_Step4.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_44.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AlphaLegion_Step5.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_46.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/RobAlphaLegion.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_48.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/TheChirurgeon-AlphaLegion-Decloaked-1024x706.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_50.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AlphaLegion_HH_TheChirurgeon_Header.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_52.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AlphaLegion_HH_Step1.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_54.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AlphaLegion_HH_Step2.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_56.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AlphaLegion_HH_Step3.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_58.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/1000027262-1024x685.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_60.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/AlphaLegion_2ed_TheChirurgeon_Header.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_62.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/04/HTPE_AlphaLegion-1920x614.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_64.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/04/HTPE_AlphaLegion2-750x436.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "56f3522eb82b_66.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/01/1000027416-1024x779.jpg",
+      "alt_text": ""
+    }
+  ],
+  "scraped_at": "2026-02-01T20:49:41.193187",
+  "has_ground_truth": true
+}

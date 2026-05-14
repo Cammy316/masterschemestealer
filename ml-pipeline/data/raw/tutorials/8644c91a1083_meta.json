@@ -1,0 +1,97 @@
+{
+  "source": "goonhammer",
+  "url": "https://www.goonhammer.com/how-to-paint-everything-marvel-crisis-protocol-namor-the-sub-mariner/",
+  "title": "How to Paint Everything: Marvel Crisis Protocol \u2013 Namor the Sub-Mariner",
+  "paints": [
+    {
+      "brand": "Citadel",
+      "name": "Thousand Sons Blue",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Agrax Earthshade",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Warpstone",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Mephiston Red",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Flash Gitz Yellow",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "contrast",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Rhinox",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "XV-88",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Yriel Yellow",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Kantor Blue",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Teclis Blue",
+      "confidence": 0.9
+    }
+  ],
+  "steps": [],
+  "images": [
+    {
+      "filename": "8644c91a1083_2.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/06/NamorWaveSteps-1024x699.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "8644c91a1083_4.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/06/NamorSkinSteps-1024x938.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "8644c91a1083_6.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/06/NamorSuitSteps-1024x281.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "8644c91a1083_8.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/06/NamorGoldSteps-1024x275.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "8644c91a1083_10.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/06/NamorHairSteps-1024x281.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "8644c91a1083_12.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/06/NamorFinished-654x1024.jpg",
+      "alt_text": ""
+    }
+  ],
+  "scraped_at": "2026-02-01T20:53:27.706653",
+  "has_ground_truth": true
+}

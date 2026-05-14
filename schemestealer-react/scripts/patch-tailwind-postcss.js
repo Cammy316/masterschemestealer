@@ -1,0 +1,35 @@
+/**
+ * Patches @tailwindcss/postcss to fix Turbopack + monorepo resolution issue.
+ *
+ * Root cause: When Turbopack runs PostCSS it doesn't set opts.from, so
+ * @tailwindcss/postcss falls back to path.dirname(process.cwd()), which is
+ * the repo root rather than the app directory. enhanced-resolve then looks for
+ * tailwindcss in the repo root's node_modules (which doesn't exist).
+ *
+ * Fix: when opts.from is empty, use process.cwd() directly (the `r` variable
+ * already in scope) instead of path.dirname(process.cwd()).
+ */
+const fs = require('fs');
+const path = require('path');
+
+const file = path.join(__dirname, '../node_modules/@tailwindcss/postcss/dist/index.js');
+
+if (!fs.existsSync(file)) {
+  console.log('patch-tailwind-postcss: file not found, skipping');
+  process.exit(0);
+}
+
+let content = fs.readFileSync(file, 'utf8');
+
+const ORIGINAL = 'let c=$.default.dirname($.default.resolve(u))';
+const PATCHED  = 'let c=u?$.default.dirname($.default.resolve(u)):r';
+
+if (content.includes(PATCHED)) {
+  console.log('patch-tailwind-postcss: already applied, skipping');
+} else if (content.includes(ORIGINAL)) {
+  content = content.replace(ORIGINAL, PATCHED);
+  fs.writeFileSync(file, content);
+  console.log('patch-tailwind-postcss: applied successfully');
+} else {
+  console.warn('patch-tailwind-postcss: target string not found — @tailwindcss/postcss may have been updated. Check if the patch is still needed.');
+}

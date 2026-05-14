@@ -1,0 +1,92 @@
+{
+  "source": "goonhammer",
+  "url": "https://www.goonhammer.com/how-to-paint-everything-the-invincible-iron-man/",
+  "title": "How to Paint Everything: The Invincible Iron Man",
+  "paints": [
+    {
+      "brand": "Citadel",
+      "name": "Contrast",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Ulthuan Grey",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Screamer Pink",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Nuln",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army Painter Speed Paints",
+      "confidence": 0.8
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army Painter Enchanted Steel over the entire model",
+      "confidence": 0.8
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army Painter Hoplite Gold into the recessed areas of his armor and his joints and face plate",
+      "confidence": 0.8
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army Painter Enchanted Steel Credit",
+      "confidence": 0.8
+    }
+  ],
+  "steps": [],
+  "images": [
+    {
+      "filename": "e5dc976e1f6b_1.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/10/Painthowtoheader.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "e5dc976e1f6b_2.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/PXL_20231031_014405699-300x300.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "e5dc976e1f6b_4.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/PXL_20231031_015226967-300x300.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "e5dc976e1f6b_6.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/PXL_20231118_175025919-300x300.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "e5dc976e1f6b_8.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/PXL_20231122_035822043-scaled-e1700965570209-300x300.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "e5dc976e1f6b_10.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/PXL_20231122_042535895-scaled-e1700965896723-300x300.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "e5dc976e1f6b_12.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/PXL_20231123_034501108-1024x771.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "e5dc976e1f6b_14.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/PXL_20231123_034514401-1024x771.jpg",
+      "alt_text": ""
+    }
+  ],
+  "scraped_at": "2026-02-01T20:55:44.636104",
+  "has_ground_truth": true
+}

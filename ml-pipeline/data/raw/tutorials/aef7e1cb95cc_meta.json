@@ -1,0 +1,92 @@
+{
+  "source": "goonhammer",
+  "url": "https://www.goonhammer.com/how-to-paint-everything-ww2-north-africa-vehicles/",
+  "title": "How To Paint Everything: WW2 North Africa Vehicles",
+  "paints": [
+    {
+      "brand": "Citadel",
+      "name": "contrast",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Leadbelcher",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Agrax Earthshade",
+      "confidence": 0.9
+    }
+  ],
+  "steps": [],
+  "images": [
+    {
+      "filename": "aef7e1cb95cc_1.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/10/Painthowtoheader.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "aef7e1cb95cc_2.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/12/IMG_20201116_214130.jpg",
+      "alt_text": "Desert Vehicle base coat"
+    },
+    {
+      "filename": "aef7e1cb95cc_4.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/12/IMG_20201116_225753.jpg",
+      "alt_text": "Desert vehicle mid coat"
+    },
+    {
+      "filename": "aef7e1cb95cc_6.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/12/IMG_20201116_225847.jpg",
+      "alt_text": "North Africa vehicle mid coat top view"
+    },
+    {
+      "filename": "aef7e1cb95cc_8.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/12/IMG_20201122_001157.jpg",
+      "alt_text": "North Africa vehicle highlight"
+    },
+    {
+      "filename": "aef7e1cb95cc_10.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/12/IMG_20190429_231055.jpg",
+      "alt_text": "North Africa panel lining "
+    },
+    {
+      "filename": "aef7e1cb95cc_12.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/12/IMG_20201203_015642.jpg",
+      "alt_text": "North Africa jerry cans"
+    },
+    {
+      "filename": "aef7e1cb95cc_14.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/12/IMG_20201203_015904.jpg",
+      "alt_text": "North Africa paint chipping"
+    },
+    {
+      "filename": "aef7e1cb95cc_16.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/12/IMG_20201203_020250.jpg",
+      "alt_text": "North Africa grime streaks"
+    },
+    {
+      "filename": "aef7e1cb95cc_18.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/12/IMG_20201203_021530.jpg",
+      "alt_text": "North Africa rusty tools"
+    },
+    {
+      "filename": "aef7e1cb95cc_20.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/12/IMG_20201203_020150.jpg",
+      "alt_text": "North Africa old rust example"
+    },
+    {
+      "filename": "aef7e1cb95cc_22.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/12/IMG_20200419_153457.jpg",
+      "alt_text": "North Africa windshield"
+    },
+    {
+      "filename": "aef7e1cb95cc_24.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/12/IMG_20201203_020032.jpg",
+      "alt_text": "North Africa vehicle color comparison"
+    }
+  ],
+  "scraped_at": "2026-02-01T20:48:12.504565",
+  "has_ground_truth": true
+}

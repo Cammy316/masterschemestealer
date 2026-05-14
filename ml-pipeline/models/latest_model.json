@@ -1,0 +1,33 @@
+{
+  "model_type": "RandomForestClassifier",
+  "timestamp": "20260201_213817",
+  "accuracy": 0.9056603773584906,
+  "cv_score": 0.9214969149602075,
+  "cv_std": 0.012418587851327817,
+  "n_samples": 1057,
+  "n_features": 11,
+  "feature_names": [
+    "r",
+    "g",
+    "b",
+    "h",
+    "s",
+    "v",
+    "l",
+    "a",
+    "b_lab",
+    "coverage",
+    "is_metallic"
+  ],
+  "classes": [
+    "Blue",
+    "Cyan",
+    "Gold",
+    "Green",
+    "Grey",
+    "Pink",
+    "Red",
+    "Yellow"
+  ],
+  "model_path": "E:\\Git\\masterschemestealer\\ml-pipeline\\models\\random_forest_20260201_213817.joblib"
+}

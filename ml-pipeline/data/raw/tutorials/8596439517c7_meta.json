@@ -1,0 +1,132 @@
+{
+  "source": "goonhammer",
+  "url": "https://www.goonhammer.com/how-to-paint-everything-napoleonics/",
+  "title": "How to Paint Everything: Napoleonic British",
+  "paints": [
+    {
+      "brand": "Citadel",
+      "name": "Contrast",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Wraithbone",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Blood Angels Red",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Contrast Black",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Apothecary White",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Wyldwood Contrast",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Snakebite",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Skeleton Horde",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Black Templar",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Wyldwood",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Cadian Flesh",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Steel Legion",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Nuln",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Reikland Fleshshade",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Agrax Earthshade",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Averland",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Orruk",
+      "confidence": 0.9
+    }
+  ],
+  "steps": [],
+  "images": [
+    {
+      "filename": "8596439517c7_2.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/10/HTPEnewBritish.png.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "8596439517c7_4.jpeg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/09/1595428B-BC07-40A2-9AF1-E76CB49A0F0F-750x750.jpeg",
+      "alt_text": ""
+    },
+    {
+      "filename": "8596439517c7_12.jpeg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/09/AF7427D0-0C83-4848-B835-0A06FF780B6D-750x750.jpeg",
+      "alt_text": ""
+    },
+    {
+      "filename": "8596439517c7_14.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/09/IMG_20200929_104309.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "8596439517c7_16.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/09/IMG_20200929_104230-750x750.jpg",
+      "alt_text": "Highlander basecoats"
+    },
+    {
+      "filename": "8596439517c7_18.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/08/IMG_20200823_211922-750x455.jpg",
+      "alt_text": "tartan step by step"
+    },
+    {
+      "filename": "8596439517c7_20.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/09/IMG_20200929_104825-750x750.jpg",
+      "alt_text": "Napoleonic Highlander"
+    }
+  ],
+  "scraped_at": "2026-02-01T20:48:18.356262",
+  "has_ground_truth": true
+}

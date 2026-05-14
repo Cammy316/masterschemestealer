@@ -1,0 +1,772 @@
+{
+  "source": "goonhammer",
+  "url": "https://www.goonhammer.com/how-to-paint-everything-deathwatch/",
+  "title": "How to Paint Everything \u2013 Deathwatch Space Marines",
+  "paints": [
+    {
+      "brand": "Citadel",
+      "name": "Militarum",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Genestealer",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Kantor Blue",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Contrast",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Leadbelcher",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Mephiston Red",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Retributor",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Lothern Blue",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Khorne Red",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Evil Sunz",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Nuln",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Drakenhof",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Agrax Earthshade",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Runefang",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Apothecary",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Blood Angels",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Abaddon Black",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Salamander",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Ultramarine",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Ulthuan Grey",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Macragge Blue",
+      "confidence": 0.9
+    }
+  ],
+  "steps": [
+    {
+      "text": "This article is part of a larger series on how to paint Space Marines. To return to that series, click here . In our How to Paint Everything series, we take a look at different armies of the Warhammer universe, examine their history and heraldry, and look at several different methods for painting them. In this week\u2019s article, we\u2019re looking at the Deathwatch. Founded by decree of the High Lords of Terra in the wake of the Ork campaign led by the tyrant known as The Beast, the Deathwatch are an el",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Militarum",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Genestealer",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Kantor Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Mephiston Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Retributor",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Lothern Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Khorne Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Evil Sunz",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Runefang",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Apothecary",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Blood Angels",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/10/Deathwatch_HTPE_Header.png"
+    },
+    {
+      "text": "This article is part of a larger series on how to paint Space Marines. To return to that series, click here . In our How to Paint Everything series, we take a look at different armies of the Warhammer universe, examine their history and heraldry, and look at several different methods for painting them. In this week\u2019s article, we\u2019re looking at the Deathwatch. Founded by decree of the High Lords of Terra in the wake of the Ork campaign led by the tyrant known as The Beast, the Deathwatch are an el",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Militarum",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Genestealer",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Kantor Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Mephiston Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Retributor",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Lothern Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Khorne Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Evil Sunz",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Runefang",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Apothecary",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Blood Angels",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/10/Deathwatch_HTPE_Header.png"
+    },
+    {
+      "text": "This article is part of a larger series on how to paint Space Marines. To return to that series, click here . In our How to Paint Everything series, we take a look at different armies of the Warhammer universe, examine their history and heraldry, and look at several different methods for painting them. In this week\u2019s article, we\u2019re looking at the Deathwatch. Founded by decree of the High Lords of Terra in the wake of the Ork campaign led by the tyrant known as The Beast, the Deathwatch are an el",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Militarum",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Genestealer",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Kantor Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Mephiston Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Retributor",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Lothern Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Khorne Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Evil Sunz",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Runefang",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Apothecary",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Blood Angels",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/10/Deathwatch_HTPE_Header.png"
+    },
+    {
+      "text": "This article is part of a larger series on how to paint Space Marines. To return to that series, click here . In our How to Paint Everything series, we take a look at different armies of the Warhammer universe, examine their history and heraldry, and look at several different methods for painting them. In this week\u2019s article, we\u2019re looking at the Deathwatch. Founded by decree of the High Lords of Terra in the wake of the Ork campaign led by the tyrant known as The Beast, the Deathwatch are an el",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Militarum",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Genestealer",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Kantor Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Mephiston Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Retributor",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Lothern Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Khorne Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Evil Sunz",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Runefang",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Apothecary",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Blood Angels",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/10/Deathwatch_HTPE_Header.png"
+    },
+    {
+      "text": "This article is part of a larger series on how to paint Space Marines. To return to that series, click here . In our How to Paint Everything series, we take a look at different armies of the Warhammer universe, examine their history and heraldry, and look at several different methods for painting them. In this week\u2019s article, we\u2019re looking at the Deathwatch. Founded by decree of the High Lords of Terra in the wake of the Ork campaign led by the tyrant known as The Beast, the Deathwatch are an el",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Militarum",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Genestealer",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Kantor Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Mephiston Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Retributor",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Lothern Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Khorne Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Evil Sunz",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Runefang",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Apothecary",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Blood Angels",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/10/Deathwatch_HTPE_Header.png"
+    },
+    {
+      "text": "This article is part of a larger series on how to paint Space Marines. To return to that series, click here . In our How to Paint Everything series, we take a look at different armies of the Warhammer universe, examine their history and heraldry, and look at several different methods for painting them. In this week\u2019s article, we\u2019re looking at the Deathwatch. Founded by decree of the High Lords of Terra in the wake of the Ork campaign led by the tyrant known as The Beast, the Deathwatch are an el",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Militarum",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Genestealer",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Kantor Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Mephiston Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Retributor",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Lothern Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Khorne Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Evil Sunz",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Runefang",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Apothecary",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Blood Angels",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/10/Deathwatch_HTPE_Header.png"
+    },
+    {
+      "text": "Step 2 Highlight the black with Dawnstone Grey Wash the silver with Drakenhof",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/RichyP_DW2.jpg"
+    },
+    {
+      "text": "Step 3 Spot highlights of Ulthuan Grey on the black armour Highlight the metal with VMA Silver",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Ulthuan Grey",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/RichyP_DW2.jpg"
+    },
+    {
+      "text": "Step 4 Add text and markings with Ulthuan Grey",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Ulthuan Grey",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/RichyP_DW2.jpg"
+    }
+  ],
+  "images": [
+    {
+      "filename": "6b747403dcd7_1.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/10/Deathwatch_HTPE_Header.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "6b747403dcd7_2.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/Deathwatch_Heraldry_Header.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "6b747403dcd7_4.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/20210223_222611-1024x474.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "6b747403dcd7_6.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/Deathwatch_TheChirurgeon_Header.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "6b747403dcd7_8.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/Deathwatch_TheChirurgeon_Step1.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "6b747403dcd7_10.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/Deathwatch_TheChirurgeon_Step2.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "6b747403dcd7_12.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/Deathwatch_TheChirurgeon_Step3.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "6b747403dcd7_14.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/Deathwatch_TheChirurgeon_Step4.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "6b747403dcd7_16.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/Deathwatch_TheChirurgeon_Step5.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "6b747403dcd7_18.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/Deathwatch_TheChirurgeon_Step6.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "6b747403dcd7_20.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/Deathwatch_TheChirurgeon_Step7.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "6b747403dcd7_22.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/DW_Veterans_Chirurgeon1.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "6b747403dcd7_24.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/Deathwatch_AlfredoRamirez_Header.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "6b747403dcd7_26.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/Deathwatch_Alfredo.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "6b747403dcd7_28.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/DSC_0209.jpg",
+      "alt_text": "Deathwatch Lamenter Reiver"
+    },
+    {
+      "filename": "6b747403dcd7_30.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/DSC_0210.jpg",
+      "alt_text": "Deathwatch Salamander with Frag Canon"
+    },
+    {
+      "filename": "6b747403dcd7_32.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/DSC_0211.jpg",
+      "alt_text": "Deathwatch Raptors Sniper with Stalker Bolt Rifle"
+    },
+    {
+      "filename": "6b747403dcd7_34.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/Deathwatch_RichyP_Header.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "6b747403dcd7_36.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/RIchyP_DW.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "6b747403dcd7_38.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/RichyP_DW2.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "6b747403dcd7_48.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2025/11/TC-Title-100x70.png",
+      "alt_text": ""
+    }
+  ],
+  "scraped_at": "2026-02-01T20:50:29.081512",
+  "has_ground_truth": true
+}

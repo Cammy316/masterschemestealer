@@ -1,0 +1,634 @@
+{
+  "source": "goonhammer",
+  "url": "https://www.goonhammer.com/how-to-paint-everything-napoleonic-russians/",
+  "title": "How to Paint Everything: Napoleonic Russians",
+  "paints": [
+    {
+      "brand": "Citadel",
+      "name": "Russ",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "contrast",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Wraithbone",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "White Scar Red",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Word Bearers Red",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Contrast Black",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Abaddon Black",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Militarum Green",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Apothecary White",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Nuln",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "White Scar",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "White Scar White",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Kislev Flesh",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Stormhost Silver",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army painter Uniform Grey Trousers and Gaiters",
+      "confidence": 0.8
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army Painter Barbarian Flesh Shako Side Chevrons",
+      "confidence": 0.8
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army Painter Dark Tone Now",
+      "confidence": 0.8
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army Painter Dark Tone Musket",
+      "confidence": 0.8
+    }
+  ],
+  "steps": [
+    {
+      "text": "So you\u2019ve seen the movie and now you know with absolute certainty where Napoleon went wrong. You can, and will, do better. It\u2019s time to get into real wargaming. Welcome to Napoleonics. This article is part of our Getting Started: Napoleonics guide . Your Generals are blessed by God, your soldiers are the toughest infantry in Europe, and you\u2019re determined to form the bulwark upon which the upstart French will break. You\u2019re playing the blessed Rossiyskaya Imperiya and if you\u2019re going to pull it of",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Russ",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Wraithbone",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "White Scar Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Word Bearers Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast Black",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Abaddon Black",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Militarum Green",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Apothecary White",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "White Scar",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "White Scar White",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Kislev Flesh",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Stormhost Silver",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army painter Uniform Grey Trousers and Gaiters",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Barbarian Flesh Shako Side Chevrons",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Dark Tone Now",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Dark Tone Musket",
+          "confidence": 0.8
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/HTPEnewrussian.png"
+    },
+    {
+      "text": "So you\u2019ve seen the movie and now you know with absolute certainty where Napoleon went wrong. You can, and will, do better. It\u2019s time to get into real wargaming. Welcome to Napoleonics. This article is part of our Getting Started: Napoleonics guide . Your Generals are blessed by God, your soldiers are the toughest infantry in Europe, and you\u2019re determined to form the bulwark upon which the upstart French will break. You\u2019re playing the blessed Rossiyskaya Imperiya and if you\u2019re going to pull it of",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Russ",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Wraithbone",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "White Scar Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Word Bearers Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast Black",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Abaddon Black",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Militarum Green",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Apothecary White",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "White Scar",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "White Scar White",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Kislev Flesh",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Stormhost Silver",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army painter Uniform Grey Trousers and Gaiters",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Barbarian Flesh Shako Side Chevrons",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Dark Tone Now",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Dark Tone Musket",
+          "confidence": 0.8
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/HTPEnewrussian.png"
+    },
+    {
+      "text": "So you\u2019ve seen the movie and now you know with absolute certainty where Napoleon went wrong. You can, and will, do better. It\u2019s time to get into real wargaming. Welcome to Napoleonics. This article is part of our Getting Started: Napoleonics guide . Your Generals are blessed by God, your soldiers are the toughest infantry in Europe, and you\u2019re determined to form the bulwark upon which the upstart French will break. You\u2019re playing the blessed Rossiyskaya Imperiya and if you\u2019re going to pull it of",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Russ",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Wraithbone",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "White Scar Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Word Bearers Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast Black",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Abaddon Black",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Militarum Green",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Apothecary White",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "White Scar",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "White Scar White",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Kislev Flesh",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Stormhost Silver",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army painter Uniform Grey Trousers and Gaiters",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Barbarian Flesh Shako Side Chevrons",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Dark Tone Now",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Dark Tone Musket",
+          "confidence": 0.8
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/HTPEnewrussian.png"
+    },
+    {
+      "text": "This is the second coat for smaller blocks of colour. Here, you want to try and preserve the shadows between areas created by Step 2, so neatness counts. If you don\u2019t manage it, water down some Fireslayer Flesh contrast and place the brush on the line you want to mark \u2013 capillary action should do the rest.",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "contrast",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/step-4-700x1024.jpg"
+    },
+    {
+      "text": "So you\u2019ve seen the movie and now you know with absolute certainty where Napoleon went wrong. You can, and will, do better. It\u2019s time to get into real wargaming. Welcome to Napoleonics. This article is part of our Getting Started: Napoleonics guide . Your Generals are blessed by God, your soldiers are the toughest infantry in Europe, and you\u2019re determined to form the bulwark upon which the upstart French will break. You\u2019re playing the blessed Rossiyskaya Imperiya and if you\u2019re going to pull it of",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Russ",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Wraithbone",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "White Scar Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Word Bearers Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast Black",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Abaddon Black",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Militarum Green",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Apothecary White",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "White Scar",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "White Scar White",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Kislev Flesh",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Stormhost Silver",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army painter Uniform Grey Trousers and Gaiters",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Barbarian Flesh Shako Side Chevrons",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Dark Tone Now",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Dark Tone Musket",
+          "confidence": 0.8
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/HTPEnewrussian.png"
+    },
+    {
+      "text": "So you\u2019ve seen the movie and now you know with absolute certainty where Napoleon went wrong. You can, and will, do better. It\u2019s time to get into real wargaming. Welcome to Napoleonics. This article is part of our Getting Started: Napoleonics guide . Your Generals are blessed by God, your soldiers are the toughest infantry in Europe, and you\u2019re determined to form the bulwark upon which the upstart French will break. You\u2019re playing the blessed Rossiyskaya Imperiya and if you\u2019re going to pull it of",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Russ",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Wraithbone",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "White Scar Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Word Bearers Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast Black",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Abaddon Black",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Militarum Green",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Apothecary White",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "White Scar",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "White Scar White",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Kislev Flesh",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Stormhost Silver",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army painter Uniform Grey Trousers and Gaiters",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Barbarian Flesh Shako Side Chevrons",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Dark Tone Now",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Dark Tone Musket",
+          "confidence": 0.8
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/HTPEnewrussian.png"
+    }
+  ],
+  "images": [
+    {
+      "filename": "6f69debf0656_2.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/HTPEnewrussian.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "6f69debf0656_4.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2022/02/uniform-1024x538.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "6f69debf0656_6.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/step1-725x1024.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "6f69debf0656_8.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/step-2-576x1024.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "6f69debf0656_10.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/step-3-546x1024.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "6f69debf0656_12.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/step-4-700x1024.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "6f69debf0656_14.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/step-5-597x1024.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "6f69debf0656_16.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/done-660x1024.jpg",
+      "alt_text": ""
+    }
+  ],
+  "scraped_at": "2026-02-01T20:47:50.470922",
+  "has_ground_truth": true
+}

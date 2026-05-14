@@ -1,0 +1,1194 @@
+{
+  "source": "goonhammer",
+  "url": "https://www.goonhammer.com/how-to-paint-everything-the-old-world-bretonnia-colour-scheme/",
+  "title": "How to Paint Everything \u2013 The Old World Bretonnia Knights of the Realm",
+  "paints": [
+    {
+      "brand": "Citadel",
+      "name": "contrast",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Nuln",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Agrax Earthshade",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Drakenhof",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Vallejo",
+      "name": "Vallejo 70.846 Mahogany Brown",
+      "confidence": 0.8
+    },
+    {
+      "brand": "Vallejo",
+      "name": "Vallejo 70.950 Black",
+      "confidence": 0.8
+    },
+    {
+      "brand": "Vallejo",
+      "name": "Vallejo 70.988 Khaki",
+      "confidence": 0.8
+    },
+    {
+      "brand": "Vallejo",
+      "name": "Vallejo 72.920 Imperial Blue",
+      "confidence": 0.8
+    },
+    {
+      "brand": "Vallejo",
+      "name": "Vallejo 70.918 Ivory",
+      "confidence": 0.8
+    },
+    {
+      "brand": "Vallejo",
+      "name": "Vallejo 70.871 Leather Brown or Vallejo 70",
+      "confidence": 0.8
+    },
+    {
+      "brand": "Vallejo",
+      "name": "Vallejo 72.006 Sun Yellow",
+      "confidence": 0.8
+    },
+    {
+      "brand": "Vallejo",
+      "name": "Vallejo 70.843 Cork Brown",
+      "confidence": 0.8
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army Painter Angel Green",
+      "confidence": 0.8
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army Painter Mithril",
+      "confidence": 0.8
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army Painter Bright Gold",
+      "confidence": 0.8
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army Painter True Brass for metallic parts",
+      "confidence": 0.8
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army Painter Ash Grey mixed in with a bit of black on the horse",
+      "confidence": 0.8
+    }
+  ],
+  "steps": [
+    {
+      "text": "In our How to Paint Everything series we look at how to paint, well, everything, with different techniques and approaches from different artists. In this article we\u2019re looking at how to paint a Bretonnian Knight of the Realm. Table of Contents BananaLee\u2019s Method Step 1: Choosing the Colour Scheme Step 2: Assembly Step 3: Priming Step 4: Base Coats Step 4a) The Steed Step 4b) The Knight Step 5: Wash Step 6: Relayer and Highlight Step 7: Drybrush as Necessary Step 8: Decals and Charges Step 9: Bas",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.846 Mahogany Brown",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.950 Black",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.988 Khaki",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 72.920 Imperial Blue",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.918 Ivory",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.871 Leather Brown or Vallejo 70",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 72.006 Sun Yellow",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.843 Cork Brown",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Angel Green",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Mithril",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Bright Gold",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter True Brass for metallic parts",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Ash Grey mixed in with a bit of black on the horse",
+          "confidence": 0.8
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/10/Screenshot-2024-10-21-212738.png"
+    },
+    {
+      "text": "In our How to Paint Everything series we look at how to paint, well, everything, with different techniques and approaches from different artists. In this article we\u2019re looking at how to paint a Bretonnian Knight of the Realm. Table of Contents BananaLee\u2019s Method Step 1: Choosing the Colour Scheme Step 2: Assembly Step 3: Priming Step 4: Base Coats Step 4a) The Steed Step 4b) The Knight Step 5: Wash Step 6: Relayer and Highlight Step 7: Drybrush as Necessary Step 8: Decals and Charges Step 9: Bas",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.846 Mahogany Brown",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.950 Black",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.988 Khaki",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 72.920 Imperial Blue",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.918 Ivory",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.871 Leather Brown or Vallejo 70",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 72.006 Sun Yellow",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.843 Cork Brown",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Angel Green",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Mithril",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Bright Gold",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter True Brass for metallic parts",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Ash Grey mixed in with a bit of black on the horse",
+          "confidence": 0.8
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/10/Screenshot-2024-10-21-212738.png"
+    },
+    {
+      "text": "In our How to Paint Everything series we look at how to paint, well, everything, with different techniques and approaches from different artists. In this article we\u2019re looking at how to paint a Bretonnian Knight of the Realm. Table of Contents BananaLee\u2019s Method Step 1: Choosing the Colour Scheme Step 2: Assembly Step 3: Priming Step 4: Base Coats Step 4a) The Steed Step 4b) The Knight Step 5: Wash Step 6: Relayer and Highlight Step 7: Drybrush as Necessary Step 8: Decals and Charges Step 9: Bas",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.846 Mahogany Brown",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.950 Black",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.988 Khaki",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 72.920 Imperial Blue",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.918 Ivory",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.871 Leather Brown or Vallejo 70",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 72.006 Sun Yellow",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.843 Cork Brown",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Angel Green",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Mithril",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Bright Gold",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter True Brass for metallic parts",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Ash Grey mixed in with a bit of black on the horse",
+          "confidence": 0.8
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/10/Screenshot-2024-10-21-212738.png"
+    },
+    {
+      "text": "In our How to Paint Everything series we look at how to paint, well, everything, with different techniques and approaches from different artists. In this article we\u2019re looking at how to paint a Bretonnian Knight of the Realm. Table of Contents BananaLee\u2019s Method Step 1: Choosing the Colour Scheme Step 2: Assembly Step 3: Priming Step 4: Base Coats Step 4a) The Steed Step 4b) The Knight Step 5: Wash Step 6: Relayer and Highlight Step 7: Drybrush as Necessary Step 8: Decals and Charges Step 9: Bas",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.846 Mahogany Brown",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.950 Black",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.988 Khaki",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 72.920 Imperial Blue",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.918 Ivory",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.871 Leather Brown or Vallejo 70",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 72.006 Sun Yellow",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.843 Cork Brown",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Angel Green",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Mithril",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Bright Gold",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter True Brass for metallic parts",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Ash Grey mixed in with a bit of black on the horse",
+          "confidence": 0.8
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/10/Screenshot-2024-10-21-212738.png"
+    },
+    {
+      "text": "In our How to Paint Everything series we look at how to paint, well, everything, with different techniques and approaches from different artists. In this article we\u2019re looking at how to paint a Bretonnian Knight of the Realm. Table of Contents BananaLee\u2019s Method Step 1: Choosing the Colour Scheme Step 2: Assembly Step 3: Priming Step 4: Base Coats Step 4a) The Steed Step 4b) The Knight Step 5: Wash Step 6: Relayer and Highlight Step 7: Drybrush as Necessary Step 8: Decals and Charges Step 9: Bas",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.846 Mahogany Brown",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.950 Black",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.988 Khaki",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 72.920 Imperial Blue",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.918 Ivory",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.871 Leather Brown or Vallejo 70",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 72.006 Sun Yellow",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.843 Cork Brown",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Angel Green",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Mithril",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Bright Gold",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter True Brass for metallic parts",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Ash Grey mixed in with a bit of black on the horse",
+          "confidence": 0.8
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/10/Screenshot-2024-10-21-212738.png"
+    },
+    {
+      "text": "In our How to Paint Everything series we look at how to paint, well, everything, with different techniques and approaches from different artists. In this article we\u2019re looking at how to paint a Bretonnian Knight of the Realm. Table of Contents BananaLee\u2019s Method Step 1: Choosing the Colour Scheme Step 2: Assembly Step 3: Priming Step 4: Base Coats Step 4a) The Steed Step 4b) The Knight Step 5: Wash Step 6: Relayer and Highlight Step 7: Drybrush as Necessary Step 8: Decals and Charges Step 9: Bas",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.846 Mahogany Brown",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.950 Black",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.988 Khaki",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 72.920 Imperial Blue",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.918 Ivory",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.871 Leather Brown or Vallejo 70",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 72.006 Sun Yellow",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.843 Cork Brown",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Angel Green",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Mithril",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Bright Gold",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter True Brass for metallic parts",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Ash Grey mixed in with a bit of black on the horse",
+          "confidence": 0.8
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/10/Screenshot-2024-10-21-212738.png"
+    },
+    {
+      "text": "In our How to Paint Everything series we look at how to paint, well, everything, with different techniques and approaches from different artists. In this article we\u2019re looking at how to paint a Bretonnian Knight of the Realm. Table of Contents BananaLee\u2019s Method Step 1: Choosing the Colour Scheme Step 2: Assembly Step 3: Priming Step 4: Base Coats Step 4a) The Steed Step 4b) The Knight Step 5: Wash Step 6: Relayer and Highlight Step 7: Drybrush as Necessary Step 8: Decals and Charges Step 9: Bas",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.846 Mahogany Brown",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.950 Black",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.988 Khaki",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 72.920 Imperial Blue",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.918 Ivory",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.871 Leather Brown or Vallejo 70",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 72.006 Sun Yellow",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.843 Cork Brown",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Angel Green",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Mithril",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Bright Gold",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter True Brass for metallic parts",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Ash Grey mixed in with a bit of black on the horse",
+          "confidence": 0.8
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/10/Screenshot-2024-10-21-212738.png"
+    },
+    {
+      "text": "In our How to Paint Everything series we look at how to paint, well, everything, with different techniques and approaches from different artists. In this article we\u2019re looking at how to paint a Bretonnian Knight of the Realm. Table of Contents BananaLee\u2019s Method Step 1: Choosing the Colour Scheme Step 2: Assembly Step 3: Priming Step 4: Base Coats Step 4a) The Steed Step 4b) The Knight Step 5: Wash Step 6: Relayer and Highlight Step 7: Drybrush as Necessary Step 8: Decals and Charges Step 9: Bas",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.846 Mahogany Brown",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.950 Black",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.988 Khaki",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 72.920 Imperial Blue",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.918 Ivory",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.871 Leather Brown or Vallejo 70",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 72.006 Sun Yellow",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.843 Cork Brown",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Angel Green",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Mithril",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Bright Gold",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter True Brass for metallic parts",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Ash Grey mixed in with a bit of black on the horse",
+          "confidence": 0.8
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/10/Screenshot-2024-10-21-212738.png"
+    },
+    {
+      "text": "In our How to Paint Everything series we look at how to paint, well, everything, with different techniques and approaches from different artists. In this article we\u2019re looking at how to paint a Bretonnian Knight of the Realm. Table of Contents BananaLee\u2019s Method Step 1: Choosing the Colour Scheme Step 2: Assembly Step 3: Priming Step 4: Base Coats Step 4a) The Steed Step 4b) The Knight Step 5: Wash Step 6: Relayer and Highlight Step 7: Drybrush as Necessary Step 8: Decals and Charges Step 9: Bas",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.846 Mahogany Brown",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.950 Black",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.988 Khaki",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 72.920 Imperial Blue",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.918 Ivory",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.871 Leather Brown or Vallejo 70",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 72.006 Sun Yellow",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.843 Cork Brown",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Angel Green",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Mithril",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Bright Gold",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter True Brass for metallic parts",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Ash Grey mixed in with a bit of black on the horse",
+          "confidence": 0.8
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/10/Screenshot-2024-10-21-212738.png"
+    },
+    {
+      "text": "In our How to Paint Everything series we look at how to paint, well, everything, with different techniques and approaches from different artists. In this article we\u2019re looking at how to paint a Bretonnian Knight of the Realm. Table of Contents BananaLee\u2019s Method Step 1: Choosing the Colour Scheme Step 2: Assembly Step 3: Priming Step 4: Base Coats Step 4a) The Steed Step 4b) The Knight Step 5: Wash Step 6: Relayer and Highlight Step 7: Drybrush as Necessary Step 8: Decals and Charges Step 9: Bas",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.846 Mahogany Brown",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.950 Black",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.988 Khaki",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 72.920 Imperial Blue",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.918 Ivory",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.871 Leather Brown or Vallejo 70",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 72.006 Sun Yellow",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.843 Cork Brown",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Angel Green",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Mithril",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Bright Gold",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter True Brass for metallic parts",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Ash Grey mixed in with a bit of black on the horse",
+          "confidence": 0.8
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/10/Screenshot-2024-10-21-212738.png"
+    },
+    {
+      "text": "In our How to Paint Everything series we look at how to paint, well, everything, with different techniques and approaches from different artists. In this article we\u2019re looking at how to paint a Bretonnian Knight of the Realm. Table of Contents BananaLee\u2019s Method Step 1: Choosing the Colour Scheme Step 2: Assembly Step 3: Priming Step 4: Base Coats Step 4a) The Steed Step 4b) The Knight Step 5: Wash Step 6: Relayer and Highlight Step 7: Drybrush as Necessary Step 8: Decals and Charges Step 9: Bas",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.846 Mahogany Brown",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.950 Black",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.988 Khaki",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 72.920 Imperial Blue",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.918 Ivory",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.871 Leather Brown or Vallejo 70",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 72.006 Sun Yellow",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Vallejo",
+          "name": "Vallejo 70.843 Cork Brown",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Angel Green",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Mithril",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Bright Gold",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter True Brass for metallic parts",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Ash Grey mixed in with a bit of black on the horse",
+          "confidence": 0.8
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/10/Screenshot-2024-10-21-212738.png"
+    }
+  ],
+  "images": [
+    {
+      "filename": "2928667c9020_1.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/02/Old-World-V2-3-696x392.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "2928667c9020_2.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/10/Screenshot-2024-10-21-212738.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "2928667c9020_4.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/10/20241020_125902-scaled.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "2928667c9020_6.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/10/20241021_225143-scaled.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "2928667c9020_8.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/10/20241023_132655-1024x1024.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "2928667c9020_10.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/10/20241023_230206-scaled.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "2928667c9020_12.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/11/20241101_111254-1024x1024.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "2928667c9020_14.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/11/20241103_121343-scaled.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "2928667c9020_16.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/11/20241103_122358-scaled.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "2928667c9020_18.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/11/20241103_190946-scaled.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "2928667c9020_20.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/11/20241107_185456-scaled.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "2928667c9020_22.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/11/20241107_185503-scaled.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "2928667c9020_24.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/11/20241107_194540-scaled.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "2928667c9020_26.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/11/20241107_231637-scaled.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "2928667c9020_28.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/11/20241108_113813-scaled.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "2928667c9020_30.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/11/20241108_114606-scaled.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "2928667c9020_32.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/11/20241108_202343-scaled.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "2928667c9020_34.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/11/20241114_223911-scaled.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "2928667c9020_36.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/11/20241114_223924-scaled.jpg",
+      "alt_text": ""
+    }
+  ],
+  "scraped_at": "2026-02-01T20:53:10.317398",
+  "has_ground_truth": true
+}

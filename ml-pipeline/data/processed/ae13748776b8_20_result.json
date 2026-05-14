@@ -1,0 +1,297 @@
+{
+  "filename": "ae13748776b8_20.png",
+  "source_dir": "tutorials",
+  "api_result": {
+    "mode": "miniature",
+    "colors": [
+      {
+        "rgb": [
+          223,
+          220,
+          224
+        ],
+        "lab": [
+          87.82374637474796,
+          1.6217831281469168,
+          -1.7914342526912062
+        ],
+        "hex": "#dfdce0",
+        "percentage": 58.899811754862995,
+        "family": "Grey",
+        "reticle": "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",
+        "paintRecipe": {
+          "citadel": {
+            "base": {
+              "name": "Valhallan Blizzard",
+              "hex": "#E1E1E1",
+              "type": "paint",
+              "deltaE": 3.0
+            },
+            "shade": {
+              "name": "Codex Grey",
+              "hex": "#808285",
+              "type": "paint",
+              "deltaE": 33.6
+            },
+            "highlight": {
+              "name": "Dechala Lilac",
+              "hex": "#B598C9",
+              "type": "paint",
+              "deltaE": 33.9
+            },
+            "wash": {
+              "name": "Nuln Oil",
+              "hex": "#9E9A98",
+              "type": "wash",
+              "deltaE": 24.2
+            }
+          },
+          "vallejo": {
+            "base": {
+              "name": "72.053",
+              "hex": "#E4E5E9",
+              "type": "paint",
+              "deltaE": 3.4
+            },
+            "shade": {
+              "name": "72.750",
+              "hex": "#828385",
+              "type": "paint",
+              "deltaE": 33.1
+            },
+            "highlight": {
+              "name": "85.051",
+              "hex": "#DDABD9",
+              "type": "paint",
+              "deltaE": 30.7
+            },
+            "wash": {
+              "name": "Black Shade",
+              "hex": "#000000",
+              "type": "wash",
+              "deltaE": 0
+            }
+          },
+          "army_painter": {
+            "base": {
+              "name": "WP1454",
+              "hex": "#D6D6D6",
+              "type": "paint",
+              "deltaE": 3.3
+            },
+            "shade": {
+              "name": "Army Painter Grey (#86888C)",
+              "hex": "#86888C",
+              "type": "paint",
+              "deltaE": 31.2
+            },
+            "highlight": {
+              "name": "Army Painter Pink (#D59FC5)",
+              "hex": "#D59FC5",
+              "type": "paint",
+              "deltaE": 31.0
+            },
+            "wash": {
+              "name": "Dark Stone",
+              "hex": "#605752",
+              "type": "wash",
+              "deltaE": 50.5
+            }
+          }
+        }
+      },
+      {
+        "rgb": [
+          27,
+          49,
+          30
+        ],
+        "lab": [
+          18.19510739415444,
+          -12.94792464288406,
+          9.032449077475917
+        ],
+        "hex": "#1b311e",
+        "percentage": 41.100188245137,
+        "family": "Green",
+        "reticle": "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",
+        "paintRecipe": {
+          "citadel": {
+            "base": {
+              "name": "Vulkan Green",
+              "hex": "#223C2E",
+              "type": "paint",
+              "deltaE": 5.9
+            },
+            "shade": null,
+            "highlight": {
+              "name": "Vulkan Green",
+              "hex": "#223C2E",
+              "type": "paint",
+              "deltaE": 5.9
+            },
+            "wash": {
+              "name": "Biel-Tan Green",
+              "hex": "#7DA57A",
+              "type": "wash",
+              "deltaE": 47.5
+            }
+          },
+          "vallejo": {
+            "base": {
+              "name": "72.028",
+              "hex": "#1F3727",
+              "type": "paint",
+              "deltaE": 3.2
+            },
+            "shade": null,
+            "highlight": {
+              "name": "72.466",
+              "hex": "#1E462B",
+              "type": "paint",
+              "deltaE": 12.0
+            },
+            "wash": {
+              "name": "Green Shade",
+              "hex": "#000000",
+              "type": "wash",
+              "deltaE": 0
+            }
+          },
+          "army_painter": {
+            "base": {
+              "name": "Army Painter Green (#1F3625)",
+              "hex": "#1F3625",
+              "type": "paint",
+              "deltaE": 2.5
+            },
+            "shade": null,
+            "highlight": {
+              "name": "Army Painter Green (#214A28)",
+              "hex": "#214A28",
+              "type": "paint",
+              "deltaE": 15.5
+            },
+            "wash": {
+              "name": "Dark Stone",
+              "hex": "#605752",
+              "type": "wash",
+              "deltaE": 25.4
+            }
+          }
+        }
+      }
+    ],
+    "paints": [
+      {
+        "name": "Valhallan Blizzard",
+        "brand": "Citadel",
+        "hex": "#E1E1E1",
+        "type": "paint",
+        "deltaE": 2.9623150173858073,
+        "rgb": [
+          225,
+          225,
+          225
+        ],
+        "lab": [
+          89.5306319082935,
+          -0.002233371930004946,
+          0.004233435128653262
+        ]
+      },
+      {
+        "name": "72.053",
+        "brand": "Vallejo",
+        "hex": "#E4E5E9",
+        "type": "paint",
+        "deltaE": 3.390286779147884,
+        "rgb": [
+          228,
+          229,
+          233
+        ],
+        "lab": [
+          90.96923576845995,
+          0.3847831686186187,
+          -2.055578188902607
+        ]
+      },
+      {
+        "name": "WP1454",
+        "brand": "Army Painter",
+        "hex": "#D6D6D6",
+        "type": "paint",
+        "deltaE": 3.2689374407958764,
+        "rgb": [
+          214,
+          214,
+          214
+        ],
+        "lab": [
+          85.62717390620756,
+          -0.0021507620434624286,
+          0.004076845179978861
+        ]
+      },
+      {
+        "name": "Vulkan Green",
+        "brand": "Citadel",
+        "hex": "#223C2E",
+        "type": "paint",
+        "deltaE": 5.9044986357222085,
+        "rgb": [
+          34,
+          60,
+          46
+        ],
+        "lab": [
+          22.892243432561614,
+          -13.798518457714154,
+          5.557322124670483
+        ]
+      },
+      {
+        "name": "72.028",
+        "brand": "Vallejo",
+        "hex": "#1F3727",
+        "type": "paint",
+        "deltaE": 3.229851906966746,
+        "rgb": [
+          31,
+          55,
+          39
+        ],
+        "lab": [
+          20.712441365229942,
+          -13.678074313518195,
+          7.145161479498641
+        ]
+      },
+      {
+        "name": "Army Painter Green (#1F3625)",
+        "brand": "Army Painter",
+        "hex": "#1F3625",
+        "type": "paint",
+        "deltaE": 2.460576942320148,
+        "rgb": [
+          31,
+          54,
+          37
+        ],
+        "lab": [
+          20.294868278770224,
+          -13.560775611470955,
+          7.9055698440097855
+        ]
+      }
+    ],
+    "metadata": {
+      "color_count": 2,
+      "paint_count": 6,
+      "background_removed": true
+    }
+  },
+  "source_metadata": {},
+  "processed_at": "2026-02-02T09:56:38.207466"
+}

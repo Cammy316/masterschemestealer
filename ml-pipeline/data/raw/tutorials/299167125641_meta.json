@@ -1,0 +1,52 @@
+{
+  "source": "goonhammer",
+  "url": "https://www.goonhammer.com/how-to-paint-everything-kings-of-war-champions-faith-and-fury/",
+  "title": "How to Paint Everything Kings of War: Champions \u2013 Faith and Fury",
+  "paints": [
+    {
+      "brand": "Citadel",
+      "name": "contrast",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Agrax Earthshade",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army painter strong tone",
+      "confidence": 0.8
+    }
+  ],
+  "steps": [],
+  "images": [
+    {
+      "filename": "299167125641_1.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/12/Kings-of-War-696x392.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "299167125641_2.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2025/06/HTPEKOWCFAF-2-1024x768.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "299167125641_4.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2025/06/HTPEKOWCFAF-1-1024x768.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "299167125641_6.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2025/06/HTPEKOWCFAF-3-1024x768.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "299167125641_8.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2025/06/HTPEKOWCFAF-5-1024x476.jpg",
+      "alt_text": ""
+    }
+  ],
+  "scraped_at": "2026-02-01T20:55:20.824127",
+  "has_ground_truth": true
+}

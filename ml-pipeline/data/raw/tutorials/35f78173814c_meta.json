@@ -1,0 +1,42 @@
+{
+  "source": "goonhammer",
+  "url": "https://www.goonhammer.com/how-to-paint-everything-star-wars-shatterpoint-ahsoka-tano-jedi-no-more/",
+  "title": "How To Paint Everything: Star Wars Shatterpoint Ahsoka Tano, Jedi No More",
+  "paints": [
+    {
+      "brand": "Citadel",
+      "name": "Troll Slayer Orange",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Fire Dragon",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Macragge Blue",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Moot Green",
+      "confidence": 0.9
+    }
+  ],
+  "steps": [],
+  "images": [
+    {
+      "filename": "35f78173814c_1.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/05/HTPE_StarWars-696x435.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "35f78173814c_2.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/09/Ahsoka-1024x1024.png",
+      "alt_text": ""
+    }
+  ],
+  "scraped_at": "2026-02-01T20:47:53.006404",
+  "has_ground_truth": true
+}

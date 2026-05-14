@@ -1,0 +1,447 @@
+{
+  "source": "goonhammer",
+  "url": "https://www.goonhammer.com/how-to-paint-everything-daemons-of-nurgle/",
+  "title": "How to Paint Everything: Daemons of Nurgle",
+  "paints": [
+    {
+      "brand": "Citadel",
+      "name": "Nurgle",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Guilliman",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Death Guard",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Contrast",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Abaddon Black",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Castellan Green",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Nuln",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Death Guard Green",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Ogryn",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Agrax Earthshade",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Reikland Fleshshade",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Averland",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Flash Gitz Yellow",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Rakarth Flesh",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Leadbelcher",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Balthasar Gold",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Blood Angels Red",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Agrax",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Ironbreaker",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Wraithbone",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "MilitaruM Green",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Plaguebearer Flesh",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Wyldwood",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Waaagh Flesh",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Warboss Green",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Skarsnik Green",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Biel-Tan Green",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Plaguebearer",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Grey Seer",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Nazdreg Yellow",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Runefang",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Magos Purple",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Druchii",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Drakenhof",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Xereus Purple",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Screamer Pink",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Skrag Brown",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Reikland",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Evil Sunz",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army Painter Poisonous Cloud",
+      "confidence": 0.8
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army Painter Banshee Brown for most of the teeth and claws now because I found it and I like it",
+      "confidence": 0.8
+    }
+  ],
+  "steps": [],
+  "images": [
+    {
+      "filename": "b9c3ddf8ceb0_1.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/10/Painthowtoheader.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_2.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/demonsofnurglerob.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_4.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/Great_Unclean_One-750x750.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_6.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/GUO_WIP-750x563.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_8.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/Loincloth-750x563.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_10.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/GUO_Knife-750x563.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_12.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/GUO_Sores-750x563.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_14.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/GUO_Entrails-750x563.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_16.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/GUO_Tissue-e1592787147603-750x673.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_18.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/GUO_Yellow_Innards-e1592787274942-750x547.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_20.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/GUO_Sores2-563x750.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_22.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/GUO_FaceWIP-e1592787819185-750x557.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_24.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/GUO_FaceWIP2-e1592787898605-750x540.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_26.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/GUO_FaceWIP3-e1592788309393-750x498.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_28.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/GUO_Face_WIP5-e1592788478325-750x682.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_30.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/GUO_Knife2-563x750.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_32.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/GUO_Bell-e1592791160322-632x750.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_34.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/Great_Unclean_One2-750x750.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_36.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/Great_Unclean_One_Back-750x750.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_38.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/NurglingsWIP1-e1592791650152-750x634.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_40.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/NurglingsWIP1b-e1592791631347-750x695.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_42.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/NurglingsWIP2-e1592791776410-750x737.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_44.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/Nurglings_Complete-1024x518.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_46.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/demonsofnurgleliam.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_48.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/Bilepiper2.jpg",
+      "alt_text": "Sloppity Bilepiper of Nurgle"
+    },
+    {
+      "filename": "b9c3ddf8ceb0_50.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/demonsofnurglecharliea.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_52.jpeg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/IMG_2653-750x563.jpeg",
+      "alt_text": "Nurgle, Daemon Prince"
+    },
+    {
+      "filename": "b9c3ddf8ceb0_54.jpeg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/IMG_2654-750x563.jpeg",
+      "alt_text": "Nurgle, Daemon Prince"
+    },
+    {
+      "filename": "b9c3ddf8ceb0_56.jpeg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/IMG_2675-750x563.jpeg",
+      "alt_text": "Nurgle, Daemon Prince"
+    },
+    {
+      "filename": "b9c3ddf8ceb0_64.jpeg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/IMG_3028-750x563.jpeg",
+      "alt_text": "Nurgle, Plaguebearer"
+    },
+    {
+      "filename": "b9c3ddf8ceb0_66.jpeg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/IMG_3027-750x563.jpeg",
+      "alt_text": "Nurgling, Daemon"
+    },
+    {
+      "filename": "b9c3ddf8ceb0_68.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/demonsofnurglebeanith.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_70.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/Plague-Drones-fin-750x750.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_72.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/Plague-Drone-base-coat-750x750.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_74.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/Plague-Drones-wing-750x750.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_76.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/Plague-Drones-wing-test1-750x750.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_78.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/Plague-Drones-wing-test-750x750.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_80.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/Plague-Drone-Rider-750x750.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_82.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/demonsofnurglebrandonfox.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_84.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/Brandon_Nurglings-750x563.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_86.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/Brandon_Plaguebearers-750x563.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_88.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/Brandon_Slimux-750x563.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_90.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/Danzig-750x563.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_92.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/Brandon_Plague_Herald-750x563.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_94.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/Brandon_Plaguebearer-e1592792716289-533x750.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "b9c3ddf8ceb0_96.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/06/Brandon_GUO-750x563.jpg",
+      "alt_text": ""
+    }
+  ],
+  "scraped_at": "2026-02-01T20:48:53.513915",
+  "has_ground_truth": true
+}

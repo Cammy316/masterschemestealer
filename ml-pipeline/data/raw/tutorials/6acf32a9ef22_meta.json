@@ -1,0 +1,107 @@
+{
+  "source": "goonhammer",
+  "url": "https://www.goonhammer.com/how-to-paint-everything-marvel-crisis-protocol-black-panther-chosen-of-bast/",
+  "title": "How to Paint Everything: Marvel Crisis Protocol \u2013 Black Panther, Chosen of Bast",
+  "paints": [
+    {
+      "brand": "Citadel",
+      "name": "Kantor Blue",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Teclis Blue",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Ulthuan Grey",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "contrast",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Rhinox",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "XV-88",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Yriel Yellow",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Naggaroth",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Xereus Purple",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Genestealer Purple",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Warpstone",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Thousand Sons Blue",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Flash Gitz Yellow",
+      "confidence": 0.9
+    }
+  ],
+  "steps": [],
+  "images": [
+    {
+      "filename": "6acf32a9ef22_2.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/06/BPBlackSteps-1024x936.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "6acf32a9ef22_4.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/06/BPGoldSteps-1024x345.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "6acf32a9ef22_6.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/06/BPGemSteps-1024x276.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "6acf32a9ef22_8.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/06/BPPlantSteps-1024x651.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "6acf32a9ef22_10.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/06/BPFurSteps-1024x275.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "6acf32a9ef22_12.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/06/BlackPantherCoB_Finished-935x1024.jpg",
+      "alt_text": ""
+    }
+  ],
+  "scraped_at": "2026-02-01T20:54:09.008792",
+  "has_ground_truth": true
+}

@@ -1,0 +1,1006 @@
+{
+  "source": "goonhammer",
+  "url": "https://www.goonhammer.com/how-to-paint-everything-iron-hands/",
+  "title": "How to Paint Everything \u2013 Iron Hands Space Marines (Updated June 27th, 2025)",
+  "paints": [
+    {
+      "brand": "Citadel",
+      "name": "Ultramarines",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Blood Angels",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Dark Angels",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Space Wolves",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Nuln",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Rhinox",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Contrast Black",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Mephiston Red",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Agrax",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Zandri",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Skeleton Horde",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Troll Slayer Orange",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Fire Dragon",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Grey Seer",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Apothecary White",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "contrast",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Abaddon Black",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Abaddon",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Leadbelcher",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Celestra Grey",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Runefang",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Evil Sunz",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Ulthuan Grey",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Druchii",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Lothern Blue",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Black Templar Contrast",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Biel-Tan Green",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Guilliman",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Death Guard",
+      "confidence": 0.9
+    }
+  ],
+  "steps": [
+    {
+      "text": "This article is part of a larger series on how to paint Space Marines. To return to that series, click here . In our How to Paint Everything series we look at how to paint, well, everything, with a look at different styles and approaches from different artists. In this article we\u2019re looking at how to paint the Iron Hands Space Marines Chapter. Changelog 06-27-2025: Updated to include reference photos including the names of colors used. The Iron Hands are one of the less-explored of the First Fou",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Ultramarines",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Blood Angels",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Dark Angels",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Space Wolves",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Rhinox",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast Black",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Mephiston Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Zandri",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Skeleton Horde",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Troll Slayer Orange",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Fire Dragon",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Grey Seer",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Apothecary White",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Abaddon Black",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Abaddon",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Celestra Grey",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Runefang",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Evil Sunz",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/IronHands_Banner.png"
+    },
+    {
+      "text": "This article is part of a larger series on how to paint Space Marines. To return to that series, click here . In our How to Paint Everything series we look at how to paint, well, everything, with a look at different styles and approaches from different artists. In this article we\u2019re looking at how to paint the Iron Hands Space Marines Chapter. Changelog 06-27-2025: Updated to include reference photos including the names of colors used. The Iron Hands are one of the less-explored of the First Fou",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Ultramarines",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Blood Angels",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Dark Angels",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Space Wolves",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Rhinox",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast Black",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Mephiston Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Zandri",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Skeleton Horde",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Troll Slayer Orange",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Fire Dragon",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Grey Seer",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Apothecary White",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Abaddon Black",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Abaddon",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Celestra Grey",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Runefang",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Evil Sunz",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/IronHands_Banner.png"
+    },
+    {
+      "text": "This article is part of a larger series on how to paint Space Marines. To return to that series, click here . In our How to Paint Everything series we look at how to paint, well, everything, with a look at different styles and approaches from different artists. In this article we\u2019re looking at how to paint the Iron Hands Space Marines Chapter. Changelog 06-27-2025: Updated to include reference photos including the names of colors used. The Iron Hands are one of the less-explored of the First Fou",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Ultramarines",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Blood Angels",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Dark Angels",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Space Wolves",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Rhinox",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast Black",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Mephiston Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Zandri",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Skeleton Horde",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Troll Slayer Orange",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Fire Dragon",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Grey Seer",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Apothecary White",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Abaddon Black",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Abaddon",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Celestra Grey",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Runefang",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Evil Sunz",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/IronHands_Banner.png"
+    },
+    {
+      "text": "This article is part of a larger series on how to paint Space Marines. To return to that series, click here . In our How to Paint Everything series we look at how to paint, well, everything, with a look at different styles and approaches from different artists. In this article we\u2019re looking at how to paint the Iron Hands Space Marines Chapter. Changelog 06-27-2025: Updated to include reference photos including the names of colors used. The Iron Hands are one of the less-explored of the First Fou",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Ultramarines",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Blood Angels",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Dark Angels",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Space Wolves",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Rhinox",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast Black",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Mephiston Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Zandri",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Skeleton Horde",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Troll Slayer Orange",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Fire Dragon",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Grey Seer",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Apothecary White",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Abaddon Black",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Abaddon",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Celestra Grey",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Runefang",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Evil Sunz",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/IronHands_Banner.png"
+    },
+    {
+      "text": "This article is part of a larger series on how to paint Space Marines. To return to that series, click here . In our How to Paint Everything series we look at how to paint, well, everything, with a look at different styles and approaches from different artists. In this article we\u2019re looking at how to paint the Iron Hands Space Marines Chapter. Changelog 06-27-2025: Updated to include reference photos including the names of colors used. The Iron Hands are one of the less-explored of the First Fou",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Ultramarines",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Blood Angels",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Dark Angels",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Space Wolves",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Rhinox",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast Black",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Mephiston Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Zandri",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Skeleton Horde",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Troll Slayer Orange",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Fire Dragon",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Grey Seer",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Apothecary White",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Abaddon Black",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Abaddon",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Celestra Grey",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Runefang",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Evil Sunz",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/IronHands_Banner.png"
+    },
+    {
+      "text": "This article is part of a larger series on how to paint Space Marines. To return to that series, click here . In our How to Paint Everything series we look at how to paint, well, everything, with a look at different styles and approaches from different artists. In this article we\u2019re looking at how to paint the Iron Hands Space Marines Chapter. Changelog 06-27-2025: Updated to include reference photos including the names of colors used. The Iron Hands are one of the less-explored of the First Fou",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Ultramarines",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Blood Angels",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Dark Angels",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Space Wolves",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Rhinox",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast Black",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Mephiston Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Zandri",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Skeleton Horde",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Troll Slayer Orange",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Fire Dragon",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Grey Seer",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Apothecary White",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Abaddon Black",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Abaddon",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Celestra Grey",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Runefang",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Evil Sunz",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/IronHands_Banner.png"
+    },
+    {
+      "text": "Step 4) Add a couple of Ulthuan Grey dots in the centre of some of the Dawnstone to give a cheap specular highlight effect",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Ulthuan Grey",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": null
+    },
+    {
+      "text": "Step 5) Paint markings in Dawnstone and Mephiston Red",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Mephiston Red",
+          "confidence": 0.9
+        }
+      ],
+      "image_url": null
+    }
+  ],
+  "images": [
+    {
+      "filename": "348304db75a2_2.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/Heraldry_IronHands_Header.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "348304db75a2_4.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/Heraldry_IronHands.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "348304db75a2_6.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/IronHands_Jack_Header.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "348304db75a2_8.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/BIH1-1024x1024.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "348304db75a2_10.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/BIH2-1024x766.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "348304db75a2_12.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/BIH3-1024x1024.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "348304db75a2_14.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/BIH4-1024x1024.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "348304db75a2_16.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/BIH5-1024x1024.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "348304db75a2_18.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/BIH6-1024x1024.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "348304db75a2_20.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/jhih.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "348304db75a2_22.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/Iron_Hands_TheChirurgeon_Header-1.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "348304db75a2_24.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/IronHands_HTPE_Step1.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "348304db75a2_26.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/IronHands_HTPE_Step2.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "348304db75a2_28.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/IronHands_HTPE_Step3.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "348304db75a2_30.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/IronHands_HTPE_Step4.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "348304db75a2_32.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/IronHands_HTPE_Step5.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "348304db75a2_34.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/IronHands_HTPE_Step6.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "348304db75a2_36.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/RobIH.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "348304db75a2_38.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/IronHands_RichyP_Header.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "348304db75a2_40.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/richypih.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "348304db75a2_44.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/h58-8-750x645.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "348304db75a2_46.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/IXrSiuI-700x750.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "348304db75a2_48.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/h58-4-653x750.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "348304db75a2_50.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/h58-1-750x562.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "348304db75a2_52.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/09/h58-7-750x718.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "348304db75a2_54.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/TatroIH.png",
+      "alt_text": ""
+    }
+  ],
+  "scraped_at": "2026-02-01T20:50:17.012420",
+  "has_ground_truth": true
+}

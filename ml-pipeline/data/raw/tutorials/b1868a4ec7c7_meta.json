@@ -1,0 +1,112 @@
+{
+  "source": "goonhammer",
+  "url": "https://www.goonhammer.com/how-to-paint-everything-marvel-crisis-protocol-yondu/",
+  "title": "How to Paint Everything: Marvel Crisis Protocol \u2013 Yondu",
+  "paints": [
+    {
+      "brand": "Citadel",
+      "name": "Thousand Sons Blue",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Khorne Red",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Moot Green",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Lothern Blue",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Evil Sunz",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Wild Rider Red",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Fire Dragon",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Zandri",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Ushabti",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Screaming Skull",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Contrast",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Caliban Green",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Mournfang Brown",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "XV-88",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "XV-88 Black",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Warpstone",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Rhinox",
+      "confidence": 0.9
+    }
+  ],
+  "steps": [],
+  "images": [
+    {
+      "filename": "b1868a4ec7c7_1.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2025/02/YonduFeaturedImage-696x373.jpg",
+      "alt_text": "Yondu from Marvel Crisis Protocol"
+    },
+    {
+      "filename": "b1868a4ec7c7_2.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2025/02/YonduColorChart.jpg",
+      "alt_text": "How to Paint Everything color chart for Yondu from Marvel Crisis Protocol"
+    },
+    {
+      "filename": "b1868a4ec7c7_4.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2025/02/YonduAndStarlord-1024x532.jpg",
+      "alt_text": "Star-Lord and Yondu from Marvel Crisis Protocol"
+    }
+  ],
+  "scraped_at": "2026-02-01T20:53:13.083514",
+  "has_ground_truth": true
+}

@@ -1,0 +1,615 @@
+{
+  "source": "goonhammer",
+  "url": "https://www.goonhammer.com/how-to-paint-everything-the-emperors-spears/",
+  "title": "How to Paint Everything \u2013 The Emperor\u2019s Spears Space Marines",
+  "paints": [
+    {
+      "brand": "Citadel",
+      "name": "Ultramarines",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Dark Angels",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Grey Seer",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Caledor",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Lothern Blue",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Drakenhof",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Apothecary White",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Nuln",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Mephiston Red",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Evil Sunz",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Rakarth Flesh",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Agrax Earthshade",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Rakarth",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Leadbelcher",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Celestra Grey",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Contrast",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Talassar Blue",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Contrast Black",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Corax White",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Snakebite",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Ultramarine Blue",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Druchii",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army Painter Warpaints Air Sapphire Gem",
+      "confidence": 0.8
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army Painter Air Ionic Blue",
+      "confidence": 0.8
+    },
+    {
+      "brand": "Army Painter",
+      "name": "Army Painter Plate Mail and then picked out the lenses and seal with Contrast Blood Angel Red and the leather pouches with Contrast Snakebite Leather",
+      "confidence": 0.8
+    }
+  ],
+  "steps": [
+    {
+      "text": "In our How to Paint Everything series, we take a look at different armies of the Warhammer universe, examine their history and heraldry, and look at several different methods for painting them. The Emperor\u2019s Spears \u2013 from Aaron Dembski Bowden\u2019s wonderful book, Spear of the Emperor \u2013 are one of our favorite marine chapters. Created during the 25th Founding, the Emperor\u2019s Spears make their home on the ocean world of Nemeton, and were one of three chapters \u2013 along with the Celestial Lions and the S",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Ultramarines",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Dark Angels",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Grey Seer",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Caledor",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Lothern Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Apothecary White",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Mephiston Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Evil Sunz",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Rakarth Flesh",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Rakarth",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Celestra Grey",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Talassar Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast Black",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Corax White",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Snakebite",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Ultramarine Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Warpaints Air Sapphire Gem",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Air Ionic Blue",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Plate Mail and then picked out the lenses and seal with Contrast Blood Angel Red and the leather pouches with Contrast Snakebite Leather",
+          "confidence": 0.8
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/10/EmperorsSpears_HTPE_Header.png"
+    },
+    {
+      "text": "In our How to Paint Everything series, we take a look at different armies of the Warhammer universe, examine their history and heraldry, and look at several different methods for painting them. The Emperor\u2019s Spears \u2013 from Aaron Dembski Bowden\u2019s wonderful book, Spear of the Emperor \u2013 are one of our favorite marine chapters. Created during the 25th Founding, the Emperor\u2019s Spears make their home on the ocean world of Nemeton, and were one of three chapters \u2013 along with the Celestial Lions and the S",
+      "paints": [
+        {
+          "brand": "Citadel",
+          "name": "Ultramarines",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Dark Angels",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Grey Seer",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Caledor",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Lothern Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Drakenhof",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Apothecary White",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Nuln",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Mephiston Red",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Evil Sunz",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Rakarth Flesh",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Agrax Earthshade",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Rakarth",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Leadbelcher",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Celestra Grey",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Talassar Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Contrast Black",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Corax White",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Snakebite",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Citadel",
+          "name": "Ultramarine Blue",
+          "confidence": 0.9
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Warpaints Air Sapphire Gem",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Air Ionic Blue",
+          "confidence": 0.8
+        },
+        {
+          "brand": "Army Painter",
+          "name": "Army Painter Plate Mail and then picked out the lenses and seal with Contrast Blood Angel Red and the leather pouches with Contrast Snakebite Leather",
+          "confidence": 0.8
+        }
+      ],
+      "image_url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/10/EmperorsSpears_HTPE_Header.png"
+    }
+  ],
+  "images": [
+    {
+      "filename": "52a386e20414_1.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/10/EmperorsSpears_HTPE_Header.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_2.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/02/EmperorsSpears_Heraldry_Header.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_4.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/01/EmperorsSpears-750x685.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_6.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/02/EmperorsSpears_TheChirurgeon.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_8.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/01/20210115_201125-e1610894868710-724x750.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_10.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/01/20210115_202515-e1610894891100-660x750.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_12.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/01/20210115_204101-e1610894935699-609x750.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_14.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/01/20210115_231618-e1610895143369-645x750.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_16.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/01/20210116_200846-e1610896590861-750x717.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_18.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/01/20210116_210002-e1610896779970-750x535.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_20.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/01/20210116_211410-e1610896910341-750x714.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_22.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/01/20210116_224558-e1610897045687-750x727.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_24.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/ESKEEWA2.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_26.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/20251016_143324-1024x1024.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_28.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/20251016_153534-1024x1024.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_30.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/20251016_183218-300x300.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_32.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/20251017_092936-300x300.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_34.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/20251017_093258-300x300.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_36.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/20251017_094752-300x300.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_38.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/20251017_095056-300x300.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_40.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/20251017_191730-1024x1024.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_42.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/20251017_103828-1024x576.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_44.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/20251020_114151-1-1024x1024.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_46.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/20251020_141358-1-1024x1024.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_48.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2023/11/DSCF8004-1024x683.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_50.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/02/EmperorsSpears_Beanith_Header.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_52.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/01/Step-1-Spear-563x750.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_54.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/01/Step-1a-Spear-563x750.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_56.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/01/Smoosh-Complete-750x727.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_58.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/01/20210119171601_1-750x469.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_60.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/01/Fussy-Spear-750x750.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_62.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/02/EmperorsSpears_JackHunter_Header.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_64.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/02/1_Preshade.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_66.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/02/2_Blue.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_68.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/02/3_BaseWhite.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_70.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/02/4_WhiteHighlight.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_72.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/02/5_Pinwash.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_74.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/02/6_ChestEagleBase.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_76.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/02/7_ChestEagleHighlight.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_78.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/02/8_BlueHighlight.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_80.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/02/9_BlackSilverBase.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_82.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/02/10_NulnWash.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_84.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/02/11_BlackHighlight.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_86.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/02/12_Gold.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "52a386e20414_88.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/01/ES_AssaultIntercessor-1024x1024.jpg",
+      "alt_text": "Emperors Spears Assault Intercessor"
+    }
+  ],
+  "scraped_at": "2026-02-01T20:47:45.511619",
+  "has_ground_truth": true
+}

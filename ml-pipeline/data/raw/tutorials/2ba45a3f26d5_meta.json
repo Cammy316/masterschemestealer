@@ -1,0 +1,77 @@
+{
+  "source": "goonhammer",
+  "url": "https://www.goonhammer.com/how-to-paint-everything-using-clear-primer/",
+  "title": "How to Paint Everything: Using Clear Primer",
+  "paints": [
+    {
+      "brand": "Citadel",
+      "name": "Drakenhof",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Abaddon Black",
+      "confidence": 0.9
+    }
+  ],
+  "steps": [],
+  "images": [
+    {
+      "filename": "2ba45a3f26d5_1.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/10/Painthowtoheader.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "2ba45a3f26d5_2.jpeg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/05/Glamour-Shot-557x750.jpeg",
+      "alt_text": "Glamour Shots by Deb"
+    },
+    {
+      "filename": "2ba45a3f26d5_4.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/05/hotwheel.jpg",
+      "alt_text": "Gaslands Hot Wheel"
+    },
+    {
+      "filename": "2ba45a3f26d5_6.jpeg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/05/Unprimed-563x750.jpeg",
+      "alt_text": "Unprimed"
+    },
+    {
+      "filename": "2ba45a3f26d5_8.jpeg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/05/Primed-563x750.jpeg",
+      "alt_text": "Primed"
+    },
+    {
+      "filename": "2ba45a3f26d5_10.jpeg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/05/Washed-563x750.jpeg",
+      "alt_text": "Ninjor Washed"
+    },
+    {
+      "filename": "2ba45a3f26d5_12.jpeg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/05/Black-Details-563x750.jpeg",
+      "alt_text": "Black Details"
+    },
+    {
+      "filename": "2ba45a3f26d5_14.jpeg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/05/Silver-563x750.jpeg",
+      "alt_text": "Ninjor Silver"
+    },
+    {
+      "filename": "2ba45a3f26d5_16.jpeg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/05/Gold-563x750.jpeg",
+      "alt_text": "Ninjor Gold"
+    },
+    {
+      "filename": "2ba45a3f26d5_18.jpeg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/05/Finished-563x750.jpeg",
+      "alt_text": "Ninjor Finished"
+    },
+    {
+      "filename": "2ba45a3f26d5_20.jpeg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/05/Glossy-563x750.jpeg",
+      "alt_text": "Ninjor Glossy"
+    }
+  ],
+  "scraped_at": "2026-02-01T20:51:47.698784",
+  "has_ground_truth": true
+}

@@ -1,0 +1,97 @@
+{
+  "source": "goonhammer",
+  "url": "https://www.goonhammer.com/how-to-paint-everything-marvel-crisis-protocol-angel-and-archangel/",
+  "title": "How to Paint Everything: Marvel Crisis Protocol Angel and Archangel",
+  "paints": [
+    {
+      "brand": "Citadel",
+      "name": "Rhinox",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Mournfang Brown",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Balor Brown",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Macragge Blue",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Caledor",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "White Scar",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Abaddon Black",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Khorne Red",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Evil Sunz",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Kislev Flesh",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Skrag Brown",
+      "confidence": 0.9
+    }
+  ],
+  "steps": [],
+  "images": [
+    {
+      "filename": "d1e34c1f5f33_1.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/09/20240904_185813-696x522.jpg",
+      "alt_text": "Archangel from Marvel: Crisis Protocol Credit - Alfred_Pharius"
+    },
+    {
+      "filename": "d1e34c1f5f33_2.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/09/20240904_185813-1024x768.jpg",
+      "alt_text": "Archangel from Marvel: Crisis Protocol Credit - Alfred_Pharius"
+    },
+    {
+      "filename": "d1e34c1f5f33_4.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/09/20240904_185841-1024x768.jpg",
+      "alt_text": "Archangel from Marvel: Crisis Protocol Credit - Alfred_Pharius"
+    },
+    {
+      "filename": "d1e34c1f5f33_6.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/09/20240904_185955-1024x768.jpg",
+      "alt_text": "Angel from Marvel: Crisis Protocol Credit - Alfred_Pharius"
+    },
+    {
+      "filename": "d1e34c1f5f33_8.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/09/20240904_190010-1024x768.jpg",
+      "alt_text": "Angel from Marvel: Crisis Protocol Credit - Alfred_Pharius"
+    },
+    {
+      "filename": "d1e34c1f5f33_10.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2024/09/20240904_190029-768x1024.jpg",
+      "alt_text": ""
+    }
+  ],
+  "scraped_at": "2026-02-01T20:55:33.533257",
+  "has_ground_truth": true
+}

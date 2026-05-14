@@ -1,0 +1,177 @@
+{
+  "source": "goonhammer",
+  "url": "https://www.goonhammer.com/how-to-paint-everything-alaitoc/",
+  "title": "How to Paint Everything: Craftworld Alaitoc",
+  "paints": [
+    {
+      "brand": "Citadel",
+      "name": "Alaitoc",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Slaanesh",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Biel-Tan",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Grey Seer",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Altdorf",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Leadbelcher",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Karak",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Caledor",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Lothern Blue",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Nuln",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Yriel Yellow",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Flash Gitz Yellow",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Celestra Grey",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Kantor Blue",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Kantor",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Teclis",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Averland",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Rakarth Flesh",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Ushabti",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Khorne Red",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Mephiston Red",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Wild Rider Red",
+      "confidence": 0.9
+    }
+  ],
+  "steps": [],
+  "images": [
+    {
+      "filename": "3932db2a5efb_1.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/10/Painthowtoheader.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "3932db2a5efb_2.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/01/20201226_205356-750x563.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "3932db2a5efb_4.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/01/20201226_212756-750x563.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "3932db2a5efb_6.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/01/20201226_214454-750x563.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "3932db2a5efb_8.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/01/20201226_220639-e1611082018185-750x583.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "3932db2a5efb_10.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/01/20201226_221336-e1611082100872-750x620.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "3932db2a5efb_12.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/01/20201226_223438-750x563.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "3932db2a5efb_14.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/01/20201226_235115-e1611082359776-750x547.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "3932db2a5efb_16.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/01/20201227_004846-e1611082473842-750x599.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "3932db2a5efb_18.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/01/20201227_010231-750x579.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "3932db2a5efb_20.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2021/02/DSC_0005-750x629.jpg",
+      "alt_text": ""
+    }
+  ],
+  "scraped_at": "2026-02-01T20:54:15.180291",
+  "has_ground_truth": true
+}

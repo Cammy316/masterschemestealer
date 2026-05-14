@@ -1,0 +1,137 @@
+{
+  "source": "goonhammer",
+  "url": "https://www.goonhammer.com/how-to-paint-everything-house-escher-part-1/",
+  "title": "How to Paint Everything: House Escher \u2013 Part 1",
+  "paints": [
+    {
+      "brand": "Citadel",
+      "name": "Contrast",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Wraithbone",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Iyanden Yellow",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Magos Purple",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Skeleton Horde",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Black Templar",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Nazdreg Yellow",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Fyreslayer Flesh",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Abaddon Black",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Genestealer",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Ahriman Blue",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Temple Guard Blue",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Averland",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Incubi",
+      "confidence": 0.9
+    },
+    {
+      "brand": "Citadel",
+      "name": "Death Guard",
+      "confidence": 0.9
+    }
+  ],
+  "steps": [],
+  "images": [
+    {
+      "filename": "2b3d977923c4_1.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2019/10/Painthowtoheader.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "2b3d977923c4_2.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/08/Escher-6-623x750.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "2b3d977923c4_4.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/08/Escher-7-585x750.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "2b3d977923c4_6.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/08/Escher-3-750x723.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "2b3d977923c4_8.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/08/Escher-4-750x750.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "2b3d977923c4_10.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/08/20190629_053736-750x385.jpg",
+      "alt_text": ""
+    },
+    {
+      "filename": "2b3d977923c4_12.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/08/escher1-750x309.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "2b3d977923c4_14.png",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/08/escher-750x389.png",
+      "alt_text": ""
+    },
+    {
+      "filename": "2b3d977923c4_16.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/08/Escher-Gangers-750x500.jpg",
+      "alt_text": "Escher Gangers. Credit: Rockfish"
+    },
+    {
+      "filename": "2b3d977923c4_18.jpg",
+      "url": "https://d1w82usnq70pt2.cloudfront.net/wp-content/uploads/2020/08/All-contrast-750x452.jpg",
+      "alt_text": "Contrast Only Stage. Credit: Rockfish"
+    }
+  ],
+  "scraped_at": "2026-02-01T20:51:35.805240",
+  "has_ground_truth": true
+}

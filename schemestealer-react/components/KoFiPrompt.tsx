@@ -1,14 +1,16 @@
 /**
  * Ko-fi Prompt Component
  * W40K themed "Buy me a Recaf" / "Fuel the Machine Spirit" prompts
+ * Theme-aware: amber for miniature, purple for inspiration
  * Shows after scans (20% chance) or feedback submission (always)
  */
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { analytics } from '@/lib/analytics';
+import type { ScanMode } from '@/lib/types';
 
 // ============================================================================
 // Constants
@@ -29,6 +31,8 @@ interface KoFiPromptProps {
   forceShow?: boolean;
   /** Callback when dismissed */
   onDismiss?: () => void;
+  /** Theme mode - determines styling */
+  mode?: ScanMode;
 }
 
 interface KoFiBannerProps {
@@ -36,6 +40,163 @@ interface KoFiBannerProps {
   compact?: boolean;
   /** Source for analytics tracking */
   source?: string;
+  /** Theme mode - determines styling */
+  mode?: ScanMode;
+}
+
+// ============================================================================
+// Theme Configuration
+// ============================================================================
+
+function useThemeColors(mode: ScanMode = 'miniature') {
+  return useMemo(() => mode === 'miniature'
+    ? {
+        // Cogitator / Imperial theme
+        frameBorder: 'border-brass',
+        frameGradient: 'linear-gradient(135deg, var(--brass-dark) 0%, var(--bronze) 50%, var(--brass-dark) 100%)',
+        modalBg: 'bg-dark-gothic',
+        buttonBg: 'bg-brass',
+        buttonHover: 'hover:bg-amber-600',
+        buttonText: 'text-void-black',
+        buttonGlow: '0 0 15px var(--brass)',
+        accentColor: 'text-brass',
+        accentColorDim: 'text-cogitator-green-dim',
+        borderColor: 'border-brass/30',
+        hoverBg: 'hover:bg-brass/20',
+        title: 'Fuel the Machine Spirit',
+        subtitle: 'SchemeStealer is free to use. If it helps your hobby, consider buying me a Recaf to keep the cogitators running.',
+        buttonLabel: 'Buy me a Recaf',
+        dismissLabel: 'Maybe later',
+        flavorText: '"The Omnissiah rewards those who maintain the sacred machinery"',
+        icon: (
+          <svg
+            width="48"
+            height="48"
+            viewBox="0 0 24 24"
+            fill="none"
+            className="mx-auto text-brass"
+          >
+            {/* Coffee cup / Recaf icon */}
+            <path
+              d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M6 1v3M10 1v3M14 1v3"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        ),
+        iconSmall: (
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            className="text-brass"
+          >
+            <path
+              d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        ),
+        iconMedium: (
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            className="text-brass flex-shrink-0"
+          >
+            <path
+              d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M6 1v3M10 1v3M14 1v3"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        ),
+        bannerSubtitle: 'Support SchemeStealer on Ko-fi',
+      }
+    : {
+        // Warp / Chaos theme
+        frameBorder: 'border-warp-purple',
+        frameGradient: 'linear-gradient(135deg, var(--warp-purple-dark) 0%, var(--warp-pink) 50%, var(--warp-purple-dark) 100%)',
+        modalBg: 'bg-void-blue',
+        buttonBg: 'bg-warp-purple',
+        buttonHover: 'hover:bg-warp-purple-dark',
+        buttonText: 'text-white',
+        buttonGlow: '0 0 15px var(--ethereal-glow)',
+        accentColor: 'text-warp-purple-light',
+        accentColorDim: 'text-warp-purple-light/60',
+        borderColor: 'border-warp-purple/30',
+        hoverBg: 'hover:bg-warp-purple/20',
+        title: 'Empower the Warp',
+        subtitle: 'SchemeStealer is free to use. If it aids your artistic journey, consider offering tribute to fuel the Immaterium.',
+        buttonLabel: 'Offer Tribute',
+        dismissLabel: 'Perhaps another time',
+        flavorText: '"The Warp rewards those who tend to its pathways"',
+        icon: (
+          <svg
+            width="48"
+            height="48"
+            viewBox="0 0 24 24"
+            fill="none"
+            className="mx-auto text-warp-purple-light"
+          >
+            {/* Warp portal / eye icon */}
+            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" opacity="0.5" />
+            <circle cx="12" cy="12" r="6" stroke="currentColor" strokeWidth="1.5" opacity="0.7" />
+            <circle cx="12" cy="12" r="3" fill="currentColor" opacity="0.8" />
+            <path d="M2 12c3-2 5-4 5-7M22 12c-3-2-5-4-5-7M12 22c2-3 4-5 7-5M12 2c-2 3-4 5-7 5" stroke="var(--warp-pink)" strokeWidth="1" opacity="0.6" />
+          </svg>
+        ),
+        iconSmall: (
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            className="text-warp-purple-light"
+          >
+            <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="2" />
+            <circle cx="12" cy="12" r="3" fill="currentColor" />
+          </svg>
+        ),
+        iconMedium: (
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            className="text-warp-purple-light flex-shrink-0"
+          >
+            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" opacity="0.5" />
+            <circle cx="12" cy="12" r="5" stroke="currentColor" strokeWidth="1.5" opacity="0.7" />
+            <circle cx="12" cy="12" r="2" fill="currentColor" />
+          </svg>
+        ),
+        bannerSubtitle: 'Support SchemeStealer on Ko-fi',
+      }
+  , [mode]);
 }
 
 // ============================================================================
@@ -56,8 +217,9 @@ function markDismissedThisSession(): void {
 // Ko-fi Popup Component
 // ============================================================================
 
-export function KoFiPrompt({ trigger, forceShow = false, onDismiss }: KoFiPromptProps) {
+export function KoFiPrompt({ trigger, forceShow = false, onDismiss, mode = 'miniature' }: KoFiPromptProps) {
   const [isVisible, setIsVisible] = useState(false);
+  const theme = useThemeColors(mode);
 
   useEffect(() => {
     // Don't show if already dismissed this session
@@ -115,70 +277,48 @@ export function KoFiPrompt({ trigger, forceShow = false, onDismiss }: KoFiPrompt
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="gothic-frame rounded-lg p-1 max-w-sm w-full"
+            className={`rounded-lg p-1 max-w-sm w-full border-2 ${theme.frameBorder}`}
+            style={{ background: theme.frameGradient }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="bg-dark-gothic rounded-lg p-6 textured text-center">
+            <div className={`${theme.modalBg} rounded-lg p-6 textured text-center`}>
               {/* Icon */}
               <div className="mb-4">
-                <svg
-                  width="48"
-                  height="48"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  className="mx-auto text-brass"
-                >
-                  {/* Coffee cup / Recaf icon */}
-                  <path
-                    d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M6 1v3M10 1v3M14 1v3"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                {theme.icon}
               </div>
 
               {/* Title */}
-              <h3 className="text-xl font-bold gothic-text text-brass mb-2">
-                Fuel the Machine Spirit
+              <h3 className={`text-xl font-bold gothic-text ${theme.accentColor} mb-2`}>
+                {theme.title}
               </h3>
 
               {/* Description */}
-              <p className="text-cogitator-green-dim text-sm mb-4 tech-text">
-                SchemeStealer is free to use. If it helps your hobby,
-                consider buying me a Recaf to keep the cogitators running.
+              <p className={`${theme.accentColorDim} text-sm mb-4 tech-text`}>
+                {theme.subtitle}
               </p>
 
               {/* Buttons */}
               <div className="space-y-3">
                 <motion.button
                   onClick={handleKoFiClick}
-                  className="w-full py-3 px-6 rounded-lg bg-brass text-void-black font-bold gothic-text"
-                  whileHover={{ scale: 1.02, boxShadow: '0 0 15px var(--brass)' }}
+                  className={`w-full py-3 px-6 rounded-lg ${theme.buttonBg} ${theme.buttonText} font-bold gothic-text`}
+                  whileHover={{ scale: 1.02, boxShadow: theme.buttonGlow }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  Buy me a Recaf
+                  {theme.buttonLabel}
                 </motion.button>
 
                 <button
                   onClick={handleDismiss}
-                  className="w-full py-2 px-4 text-cogitator-green/50 text-sm hover:text-cogitator-green transition-colors"
+                  className={`w-full py-2 px-4 ${theme.accentColorDim} text-sm hover:${theme.accentColor} transition-colors`}
                 >
-                  Maybe later
+                  {theme.dismissLabel}
                 </button>
               </div>
 
               {/* Flavor text */}
-              <p className="text-xs text-cogitator-green/30 mt-4 italic">
-                &quot;The Omnissiah rewards those who maintain the sacred machinery&quot;
+              <p className={`text-xs ${theme.accentColorDim} mt-4 italic opacity-50`}>
+                {theme.flavorText}
               </p>
             </div>
           </motion.div>
@@ -192,7 +332,9 @@ export function KoFiPrompt({ trigger, forceShow = false, onDismiss }: KoFiPrompt
 // Ko-fi Banner Component (for footer/sidebar)
 // ============================================================================
 
-export function KoFiBanner({ compact = false, source = 'banner' }: KoFiBannerProps) {
+export function KoFiBanner({ compact = false, source = 'banner', mode = 'miniature' }: KoFiBannerProps) {
+  const theme = useThemeColors(mode);
+
   const handleClick = () => {
     analytics.trackKoFiClicked(source);
     window.open(KOFI_URL, '_blank', 'noopener,noreferrer');
@@ -202,26 +344,13 @@ export function KoFiBanner({ compact = false, source = 'banner' }: KoFiBannerPro
     return (
       <motion.button
         onClick={handleClick}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg border border-brass/30 bg-brass/10 hover:bg-brass/20 transition-colors"
+        className={`flex items-center gap-2 px-3 py-2 rounded-lg border ${theme.borderColor} ${theme.hoverBg} transition-colors`}
+        style={{ background: mode === 'miniature' ? 'rgba(184, 134, 11, 0.1)' : 'rgba(139, 92, 246, 0.1)' }}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
       >
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          className="text-brass"
-        >
-          <path
-            d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-        <span className="text-brass text-sm font-medium">Buy me a Recaf</span>
+        {theme.iconSmall}
+        <span className={`${theme.accentColor} text-sm font-medium`}>{theme.buttonLabel}</span>
       </motion.button>
     );
   }
@@ -229,39 +358,19 @@ export function KoFiBanner({ compact = false, source = 'banner' }: KoFiBannerPro
   return (
     <motion.button
       onClick={handleClick}
-      className="gothic-frame rounded-lg p-1 w-full"
+      className={`rounded-lg p-1 w-full border ${theme.frameBorder}`}
+      style={{ background: theme.frameGradient }}
       whileHover={{ scale: 1.01 }}
       whileTap={{ scale: 0.99 }}
     >
-      <div className="bg-brass/10 rounded-lg px-4 py-3 flex items-center gap-3 hover:bg-brass/20 transition-colors">
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          className="text-brass flex-shrink-0"
-        >
-          <path
-            d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M6 1v3M10 1v3M14 1v3"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+      <div className={`${theme.modalBg} rounded-lg px-4 py-3 flex items-center gap-3 ${theme.hoverBg} transition-colors`}>
+        {theme.iconMedium}
         <div className="text-left">
-          <div className="text-brass font-bold text-sm gothic-text">
-            Fuel the Machine Spirit
+          <div className={`${theme.accentColor} font-bold text-sm gothic-text`}>
+            {theme.title}
           </div>
-          <div className="text-brass/60 text-xs">
-            Support SchemeStealer on Ko-fi
+          <div className={`${theme.accentColorDim} text-xs`}>
+            {theme.bannerSubtitle}
           </div>
         </div>
       </div>
@@ -273,7 +382,9 @@ export function KoFiBanner({ compact = false, source = 'banner' }: KoFiBannerPro
 // Ko-fi Link Component (inline text link)
 // ============================================================================
 
-export function KoFiLink({ children, source = 'link' }: { children?: React.ReactNode; source?: string }) {
+export function KoFiLink({ children, source = 'link', mode = 'miniature' }: { children?: React.ReactNode; source?: string; mode?: ScanMode }) {
+  const theme = useThemeColors(mode);
+
   const handleClick = () => {
     analytics.trackKoFiClicked(source);
   };
@@ -284,9 +395,9 @@ export function KoFiLink({ children, source = 'link' }: { children?: React.React
       target="_blank"
       rel="noopener noreferrer"
       onClick={handleClick}
-      className="text-brass hover:text-brass/80 underline transition-colors"
+      className={`${theme.accentColor} hover:opacity-80 underline transition-colors`}
     >
-      {children || 'Buy me a Recaf'}
+      {children || theme.buttonLabel}
     </a>
   );
 }
