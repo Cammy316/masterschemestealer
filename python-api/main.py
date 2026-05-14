@@ -8,6 +8,7 @@ import json
 import base64
 import os
 import sys
+from contextlib import asynccontextmanager
 from pathlib import Path
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -32,11 +33,28 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+miniature_scanner = None
+inspiration_scanner = None
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    global miniature_scanner, inspiration_scanner
+    try:
+        logger.info("Initialising scanner services...")
+        miniature_scanner = MiniatureScannerService()
+        inspiration_scanner = InspirationScannerService()
+        logger.info("Services initialised successfully")
+    except Exception as e:
+        logger.critical(f"Failed to initialise services: {e}", exc_info=True)
+        sys.exit(1)
+    yield
+
 # Initialize FastAPI app
 app = FastAPI(
     title="SchemeStealer API",
     description="Color detection and paint matching for miniature painters",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan,
 )
 
 # Configure CORS for Next.js frontend
@@ -46,22 +64,13 @@ app.add_middleware(
         "http://localhost:3000",
         "http://127.0.0.1:3000",
         "http://localhost:3001",
-        "http://192.168.0.95:3000",  # Allow network access from frontend
-        "*",  # Allow all origins for testing (remove in production)
+        "http://192.168.0.95:3000",
+        "*",
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Initialize services
-try:
-    miniature_scanner = MiniatureScannerService()
-    inspiration_scanner = InspirationScannerService()
-    logger.info("Services initialised successfully")
-except Exception as e:
-    logger.critical(f"Failed to initialise services: {e}", exc_info=True)
-    sys.exit(1)
 
 # Include ML data collection router
 app.include_router(ml_data_router)
