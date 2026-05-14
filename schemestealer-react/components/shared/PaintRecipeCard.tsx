@@ -31,11 +31,46 @@ interface PaintRecipeCardProps {
 
 type BrandKey = 'citadel' | 'vallejo' | 'army_painter';
 
-const BRANDS: { key: BrandKey; name: string; icon: string }[] = [
-  { key: 'citadel', name: 'Citadel', icon: '🏛️' },
-  { key: 'vallejo', name: 'Vallejo', icon: '🎨' },
-  { key: 'army_painter', name: 'Army Painter', icon: '🖌️' },
+const BRANDS: { key: BrandKey; name: string }[] = [
+  { key: 'citadel', name: 'Citadel' },
+  { key: 'vallejo', name: 'Vallejo' },
+  { key: 'army_painter', name: 'Army Painter' },
 ];
+
+// Brand icon component - custom SVG icons for each brand
+function BrandIcon({ brand, isActive, mode }: { brand: BrandKey; isActive: boolean; mode: 'miniature' | 'inspiration' }) {
+  const activeColor = mode === 'miniature' ? 'var(--cogitator-green)' : 'var(--warp-purple-light)';
+  const inactiveColor = '#6b7280';
+  const color = isActive ? activeColor : inactiveColor;
+
+  const icons: Record<BrandKey, JSX.Element> = {
+    citadel: (
+      // Gothic archway / fortress icon
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
+        <path d="M3 21h18" strokeLinecap="round" />
+        <path d="M5 21V11l7-8 7 8v10" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M9 21v-6h6v6" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="12" cy="10" r="2" fill={isActive ? color : 'none'} />
+      </svg>
+    ),
+    vallejo: (
+      // Paint drop / artistic icon
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
+        <path d="M12 2C12 2 6 9 6 14a6 6 0 0 0 12 0c0-5-6-12-6-12z" strokeLinecap="round" strokeLinejoin="round" fill={isActive ? color : 'none'} fillOpacity={isActive ? 0.2 : 0} />
+        <circle cx="10" cy="14" r="1.5" fill={color} />
+      </svg>
+    ),
+    army_painter: (
+      // Shield / military icon
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
+        <path d="M12 3L4 7v6c0 5.5 3.8 10.3 8 11 4.2-.7 8-5.5 8-11V7l-8-4z" strokeLinecap="round" strokeLinejoin="round" fill={isActive ? color : 'none'} fillOpacity={isActive ? 0.2 : 0} />
+        <path d="M12 8v5M9.5 11h5" strokeLinecap="round" />
+      </svg>
+    ),
+  };
+
+  return icons[brand];
+}
 
 const RECIPE_STEPS = [
   { key: 'base' as const, label: 'BASE', description: 'Foundation layer' },
@@ -278,14 +313,14 @@ export function PaintRecipeCard({
           <button
             key={brand.key}
             onClick={() => handleBrandChange(brand.key)}
-            className={`flex-1 py-3 px-2 text-sm font-semibold transition-all touch-target ${
+            className={`flex-1 py-3 px-2 text-sm font-semibold transition-all touch-target flex items-center justify-center gap-1.5 ${
               selectedBrand === brand.key
                 ? `${themeColors.bg} text-white`
                 : 'text-gray-400 hover:text-white hover:bg-gray-800'
             }`}
             aria-pressed={selectedBrand === brand.key}
           >
-            <span className="mr-1">{brand.icon}</span>
+            <BrandIcon brand={brand.key} isActive={selectedBrand === brand.key} mode={mode} />
             <span className="hidden sm:inline">{brand.name}</span>
           </button>
         ))}

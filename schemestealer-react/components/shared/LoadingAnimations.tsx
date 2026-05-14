@@ -1,6 +1,7 @@
 /**
  * Loading Animations - Theme-specific loading screens
  * Servo-skull for Miniscan, Warp vortex for Inspiration
+ * Enhanced with detailed, grimdark SVG animations
  */
 
 'use client';
@@ -56,31 +57,244 @@ export function LoadingAnimation({ mode, message }: LoadingAnimationProps) {
   return <WarpVortexLoading phrase={message || phrases[currentPhrase]} />;
 }
 
+// ============================================================================
+// Enhanced Servo-Skull SVG Component
+// ============================================================================
+
+function ServoSkull({ className }: { className?: string }) {
+  return (
+    <svg
+      width="120"
+      height="120"
+      viewBox="0 0 120 120"
+      fill="none"
+      className={className}
+    >
+      {/* Definitions */}
+      <defs>
+        {/* Glow filter */}
+        <filter id="skullGlow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+        {/* Metal gradient */}
+        <linearGradient id="skullMetal" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#3a3a3a" />
+          <stop offset="50%" stopColor="#5a5a5a" />
+          <stop offset="100%" stopColor="#2a2a2a" />
+        </linearGradient>
+        {/* Brass gradient */}
+        <linearGradient id="brassAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#B8860B" />
+          <stop offset="50%" stopColor="#DAA520" />
+          <stop offset="100%" stopColor="#8B6508" />
+        </linearGradient>
+      </defs>
+
+      {/* Anti-grav suspensor field (subtle circle) */}
+      <circle
+        cx="60"
+        cy="60"
+        r="55"
+        stroke="var(--cogitator-green)"
+        strokeWidth="0.5"
+        fill="none"
+        opacity="0.3"
+        strokeDasharray="4 4"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          from="0 60 60"
+          to="360 60 60"
+          dur="10s"
+          repeatCount="indefinite"
+        />
+      </circle>
+
+      {/* Main skull cranium */}
+      <path
+        d="M60 15 C35 15 20 35 20 55 C20 70 28 82 38 90 L38 100 L82 100 L82 90 C92 82 100 70 100 55 C100 35 85 15 60 15Z"
+        fill="url(#skullMetal)"
+        stroke="#4a4a4a"
+        strokeWidth="1"
+      />
+
+      {/* Cranium ridges/details */}
+      <path
+        d="M40 25 Q60 20 80 25"
+        stroke="#5a5a5a"
+        strokeWidth="2"
+        fill="none"
+      />
+      <path
+        d="M35 35 Q60 30 85 35"
+        stroke="#4a4a4a"
+        strokeWidth="1"
+        fill="none"
+      />
+
+      {/* Left eye socket */}
+      <ellipse cx="45" cy="55" rx="12" ry="14" fill="#0d0d0d" />
+      {/* Left eye lens (mechanical) */}
+      <circle cx="45" cy="55" r="8" fill="#1a1a1a" stroke="url(#brassAccent)" strokeWidth="2" />
+      {/* Left eye glow */}
+      <circle cx="45" cy="55" r="5" fill="var(--cogitator-green)" filter="url(#skullGlow)">
+        <animate
+          attributeName="opacity"
+          values="0.6;1;0.6"
+          dur="2s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      {/* Left eye pupil */}
+      <circle cx="45" cy="55" r="2" fill="#0d0d0d" />
+
+      {/* Right eye socket */}
+      <ellipse cx="75" cy="55" rx="12" ry="14" fill="#0d0d0d" />
+      {/* Right eye lens (mechanical) */}
+      <circle cx="75" cy="55" r="8" fill="#1a1a1a" stroke="url(#brassAccent)" strokeWidth="2" />
+      {/* Right eye glow */}
+      <circle cx="75" cy="55" r="5" fill="var(--cogitator-green)" filter="url(#skullGlow)">
+        <animate
+          attributeName="opacity"
+          values="0.6;1;0.6"
+          dur="2s"
+          repeatCount="indefinite"
+          begin="0.5s"
+        />
+      </circle>
+      {/* Right eye pupil */}
+      <circle cx="75" cy="55" r="2" fill="#0d0d0d" />
+
+      {/* Nose cavity */}
+      <path d="M55 65 L60 78 L65 65 Z" fill="#0d0d0d" />
+
+      {/* Cheekbone details */}
+      <path d="M28 60 Q32 70 38 75" stroke="#5a5a5a" strokeWidth="1" fill="none" />
+      <path d="M92 60 Q88 70 82 75" stroke="#5a5a5a" strokeWidth="1" fill="none" />
+
+      {/* Jaw / lower skull */}
+      <path
+        d="M38 90 L38 105 Q40 112 50 112 L70 112 Q80 112 82 105 L82 90"
+        fill="url(#skullMetal)"
+        stroke="#4a4a4a"
+        strokeWidth="1"
+      />
+
+      {/* Teeth */}
+      <g fill="#e0e0e0">
+        <rect x="42" y="95" width="4" height="8" rx="1" />
+        <rect x="48" y="95" width="4" height="8" rx="1" />
+        <rect x="54" y="95" width="4" height="9" rx="1" />
+        <rect x="60" y="95" width="4" height="9" rx="1" />
+        <rect x="66" y="95" width="4" height="8" rx="1" />
+        <rect x="72" y="95" width="4" height="8" rx="1" />
+      </g>
+
+      {/* Mechanical augments - left side */}
+      <circle cx="22" cy="45" r="6" fill="url(#brassAccent)" />
+      <circle cx="22" cy="45" r="3" fill="#1a1a1a" />
+      <line x1="28" y1="45" x2="35" y2="50" stroke="url(#brassAccent)" strokeWidth="2" />
+
+      {/* Mechanical augments - right side */}
+      <circle cx="98" cy="45" r="6" fill="url(#brassAccent)" />
+      <circle cx="98" cy="45" r="3" fill="#1a1a1a" />
+      <line x1="92" y1="45" x2="85" y2="50" stroke="url(#brassAccent)" strokeWidth="2" />
+
+      {/* Top cogitator unit */}
+      <rect x="50" y="8" width="20" height="10" rx="2" fill="url(#brassAccent)" />
+      <circle cx="55" cy="13" r="2" fill="var(--cogitator-green)">
+        <animate
+          attributeName="opacity"
+          values="0.3;1;0.3"
+          dur="0.5s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle cx="65" cy="13" r="2" fill="var(--cogitator-green)">
+        <animate
+          attributeName="opacity"
+          values="1;0.3;1"
+          dur="0.5s"
+          repeatCount="indefinite"
+        />
+      </circle>
+
+      {/* Wiring/cables */}
+      <path
+        d="M22 51 Q15 70 20 90"
+        stroke="#2a2a2a"
+        strokeWidth="3"
+        fill="none"
+      />
+      <path
+        d="M98 51 Q105 70 100 90"
+        stroke="#2a2a2a"
+        strokeWidth="3"
+        fill="none"
+      />
+
+      {/* Scanner beam from eyes (animated) */}
+      <g opacity="0.4">
+        <path
+          d="M45 55 L30 80 L60 80 Z"
+          fill="var(--cogitator-green)"
+        >
+          <animate
+            attributeName="opacity"
+            values="0;0.3;0"
+            dur="3s"
+            repeatCount="indefinite"
+          />
+        </path>
+        <path
+          d="M75 55 L60 80 L90 80 Z"
+          fill="var(--cogitator-green)"
+        >
+          <animate
+            attributeName="opacity"
+            values="0;0.3;0"
+            dur="3s"
+            repeatCount="indefinite"
+            begin="1.5s"
+          />
+        </path>
+      </g>
+    </svg>
+  );
+}
+
+// ============================================================================
 // Miniscan loading - Spinning servo-skull
+// ============================================================================
+
 function ServoSkullLoading({ phrase }: { phrase: string }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-void-black/95 backdrop-blur-sm">
-      <div className="relative w-full max-w-md px-4">
-        {/* Scanline effect */}
-        <div className="scanline" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'var(--void-black)' }}>
+      {/* Scanline overlay */}
+      <div className="scanline" />
 
-        {/* Servo-skull container */}
+      <div className="relative w-full max-w-md px-4">
+        {/* Floating servo-skull with bob animation */}
         <div className="relative flex flex-col items-center">
-          {/* Skull icon (servo-skull effect) */}
           <motion.div
-            className="mb-8 servo-skull-spin"
+            animate={{
+              y: [0, -10, 0],
+              rotate: [0, 2, -2, 0],
+            }}
+            transition={{
+              y: { duration: 3, repeat: Infinity, ease: 'easeInOut' },
+              rotate: { duration: 4, repeat: Infinity, ease: 'easeInOut' },
+            }}
             style={{
               filter: 'drop-shadow(0 0 20px var(--cogitator-green-glow))',
             }}
           >
-            <svg width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="var(--cogitator-green)" strokeWidth="1.5">
-              <path d="M12 2C8 2 5 5 5 9c0 2.5 1 4 2 5v3h10v-3c1-1 2-2.5 2-5 0-4-3-7-7-7z" strokeLinecap="round" strokeLinejoin="round" />
-              <circle cx="9" cy="10" r="1.5" fill="var(--cogitator-green)" />
-              <circle cx="15" cy="10" r="1.5" fill="var(--cogitator-green)" />
-              <path d="M8 17h8v2c0 1-1 2-2 2h-4c-1 0-2-1-2-2v-2z" strokeLinecap="round" strokeLinejoin="round" />
-              <circle cx="12" cy="6" r="0.5" fill="var(--brass)" />
-              <path d="M9 14h6" strokeLinecap="round" />
-            </svg>
+            <ServoSkull />
           </motion.div>
 
           {/* Spinning cog behind skull */}
@@ -98,48 +312,52 @@ function ServoSkullLoading({ phrase }: { phrase: string }) {
             </svg>
           </motion.div>
 
-          {/* Loading phrase */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={phrase}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5 }}
-              className="text-center"
-            >
-              <div className="auspex-text text-lg font-bold mb-4 gothic-text">
-                {phrase}
-              </div>
-            </motion.div>
-          </AnimatePresence>
+          {/* Loading text */}
+          <motion.div
+            className="mt-6 text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={phrase}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5 }}
+              >
+                <motion.h2
+                  className="text-xl font-bold auspex-text gothic-text tracking-wider"
+                  animate={{ opacity: [0.7, 1, 0.7] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  {phrase}
+                </motion.h2>
+              </motion.div>
+            </AnimatePresence>
+          </motion.div>
 
           {/* Progress bar */}
-          <div className="w-full max-w-xs h-2 rounded-full overflow-hidden mt-4 gothic-frame">
+          <div className="mt-6 w-64 h-2 bg-void-black border border-cogitator-green-dim rounded-full overflow-hidden gothic-frame">
             <motion.div
-              className="h-full"
+              className="h-full bg-cogitator-green"
               style={{
-                background: 'linear-gradient(to right, var(--cogitator-green-dark), var(--cogitator-green))',
                 boxShadow: '0 0 10px var(--cogitator-green-glow)',
               }}
-              animate={{
-                x: ['-100%', '100%'],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: 'linear',
-              }}
+              initial={{ width: '0%' }}
+              animate={{ width: '100%' }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
             />
           </div>
 
-          {/* Sub-text */}
+          {/* Status text */}
           <motion.div
-            className="mt-4 text-cogitator-green-dim text-sm cyber-text"
+            className="mt-3 text-xs text-brass cyber-text"
             animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 2, repeat: Infinity }}
+            transition={{ duration: 1.5, repeat: Infinity }}
           >
-            ◆ PROCESSING ◆
+            &#9670; PROCESSING &#9670;
           </motion.div>
         </div>
 
@@ -154,7 +372,10 @@ function ServoSkullLoading({ phrase }: { phrase: string }) {
   );
 }
 
+// ============================================================================
 // Inspiration loading - Swirling warp vortex
+// ============================================================================
+
 function WarpVortexLoading({ phrase }: { phrase: string }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center void-bg">
@@ -297,7 +518,7 @@ function WarpVortexLoading({ phrase }: { phrase: string }) {
             }}
             transition={{ duration: 2, repeat: Infinity }}
           >
-            ✧ THE WARP STIRS ✧
+            &#10023; THE WARP STIRS &#10023;
           </motion.div>
         </div>
 

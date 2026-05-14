@@ -504,6 +504,46 @@ h1, h2, h3, h4, h5, h6 {
   min-height: var(--min-touch-target);
 }
 
+/* Safe container for bordered elements - prevents border clipping */
+.border-safe {
+  padding: 2px;
+  margin: -2px;
+}
+
+/* Protocol card specific fix */
+.protocol-card-container {
+  padding: 0 4px;
+}
+
+/* Overflow visible for containers with glowing elements */
+.overflow-glow {
+  overflow: visible;
+}
+
+/* ========================================
+   BUTTON CONTAINER - PREVENTS BORDER CLIPPING
+   Use this on containers that hold bordered buttons
+   ======================================== */
+
+/* Safe padding for button containers - ensures borders aren't clipped */
+.button-container-safe {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+/* Full-width buttons with safe margins - use instead of w-full for bordered buttons */
+.btn-full-safe {
+  width: calc(100% - 8px);
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+/* Alternative: margin-based approach for existing w-full buttons */
+.btn-margin-safe {
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
 .safe-area-bottom {
   padding-bottom: env(safe-area-inset-bottom, 0);
 }

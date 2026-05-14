@@ -99,7 +99,7 @@ export default function InspirationResultsPage() {
   };
 
   return (
-    <div className="min-h-screen pb-24 pt-8 px-4 void-bg">
+    <div className="min-h-screen pb-24 pt-8 px-6 void-bg">
       {/* Starfield background */}
       <div className="starfield-bg fixed inset-0 -z-10" />
 
@@ -382,7 +382,7 @@ export default function InspirationResultsPage() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.55 }}
         >
-          <KoFiBanner source="inspiration_results" />
+          <KoFiBanner source="inspiration_results" mode="inspiration" />
         </motion.div>
 
         {/* Info card */}
@@ -506,6 +506,7 @@ export default function InspirationResultsPage() {
           trigger={koFiTrigger}
           forceShow={koFiTrigger === 'feedback'}
           onDismiss={() => setShowKoFiPrompt(false)}
+          mode="inspiration"
         />
       )}
     </div>

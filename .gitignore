@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+venv/
+.venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# Logs
+*.log
+logs/
+
+# Environment
+.env
+.env.*
+
+# Claude Code (private conversation history and memory)
+.claude/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Next.js (handled by schemestealer-react/.gitignore but belt-and-suspenders)
+.next/
+node_modules/
+
+# Misc
+*.pem
+api.log

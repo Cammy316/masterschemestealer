@@ -100,7 +100,7 @@ export default function MiniscanResultsPage() {
   };
 
   return (
-    <div className="min-h-screen pb-24 pt-8 px-4" style={{ background: 'var(--void-black)' }}>
+    <div className="min-h-screen pb-24 pt-8 px-6" style={{ background: 'var(--void-black)' }}>
       {/* Scanline effect */}
       <div className="scanline" />
 
@@ -320,7 +320,7 @@ export default function MiniscanResultsPage() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.55 }}
         >
-          <KoFiBanner source="miniature_results" />
+          <KoFiBanner source="miniature_results" mode="miniature" />
         </motion.div>
 
         {/* Cogitator Report - Enhanced parchment panel */}
@@ -448,6 +448,7 @@ export default function MiniscanResultsPage() {
           trigger={koFiTrigger}
           forceShow={koFiTrigger === 'feedback'}
           onDismiss={() => setShowKoFiPrompt(false)}
+          mode="miniature"
         />
       )}
     </div>
