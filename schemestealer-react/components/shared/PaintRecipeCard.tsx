@@ -43,7 +43,7 @@ function BrandIcon({ brand, isActive, mode }: { brand: BrandKey; isActive: boole
   const inactiveColor = '#6b7280';
   const color = isActive ? activeColor : inactiveColor;
 
-  const icons: Record<BrandKey, JSX.Element> = {
+  const icons: Record<BrandKey, React.JSX.Element> = {
     citadel: (
       // Gothic archway / fortress icon
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
