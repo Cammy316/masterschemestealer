@@ -8,7 +8,6 @@ import json
 import base64
 import os
 import sys
-from contextlib import asynccontextmanager
 from pathlib import Path
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -31,53 +30,50 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-miniature_scanner = None
-inspiration_scanner = None
+# Services are lazy-initialised on first request so uvicorn can bind to the
+# port immediately without waiting for onnxruntime/rembg/opencv to load.
+_miniature_scanner = None
+_inspiration_scanner = None
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # Imports are intentionally deferred here so uvicorn can bind to the port
-    # before the slow onnxruntime/rembg/opencv initialisation runs.
-    global miniature_scanner, inspiration_scanner
-    try:
-        logger.info("Initialising scanner services...")
+
+def _get_miniature_scanner():
+    global _miniature_scanner
+    if _miniature_scanner is None:
+        logger.info("Lazy-loading miniature scanner (first request)...")
         from services.miniature_scanner import MiniatureScannerService
+        _miniature_scanner = MiniatureScannerService()
+        logger.info("Miniature scanner ready")
+    return _miniature_scanner
+
+
+def _get_inspiration_scanner():
+    global _inspiration_scanner
+    if _inspiration_scanner is None:
+        logger.info("Lazy-loading inspiration scanner (first request)...")
         from services.inspiration_scanner import InspirationScannerService
-        miniature_scanner = MiniatureScannerService()
-        inspiration_scanner = InspirationScannerService()
-        logger.info("Services initialised successfully")
-    except Exception as e:
-        logger.critical(f"Failed to initialise services: {e}", exc_info=True)
-        sys.exit(1)
-    yield
+        _inspiration_scanner = InspirationScannerService()
+        logger.info("Inspiration scanner ready")
+    return _inspiration_scanner
+
 
 # Initialize FastAPI app
 app = FastAPI(
     title="SchemeStealer API",
     description="Color detection and paint matching for miniature painters",
     version="1.0.0",
-    lifespan=lifespan,
 )
 
 # Configure CORS for Next.js frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "http://localhost:3001",
-        "http://192.168.0.95:3000",
-        "*",
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Include ML data collection router
+# Include routers
 app.include_router(ml_data_router)
-
-# Include analytics router
 app.include_router(analytics_router)
 
 
@@ -95,7 +91,7 @@ async def root():
 async def get_paints():
     """Get all paints from the database"""
     try:
-        with open('../SchemeStealer/paints.json', 'r') as f:
+        with open('paints.json', 'r') as f:
             paints = json.load(f)
         return {"paints": paints}
     except Exception as e:
@@ -106,79 +102,52 @@ async def get_paints():
 @app.post("/api/scan/miniature")
 async def scan_miniature(file: UploadFile = File(...)):
     """
-    Scan a painted miniature to detect colors
-    - Removes background using rembg
-    - Detects 3-5 dominant colors on the miniature
-    - Returns paint recommendations
+    Scan a painted miniature to detect colors.
+    Removes background using rembg, detects 3-5 dominant colors.
     """
     try:
-        # Read and validate image
         contents = await file.read()
         image = Image.open(io.BytesIO(contents))
-
-        # Convert to RGB if needed
         if image.mode != 'RGB':
             image = image.convert('RGB')
 
         logger.info(f"Processing miniature scan: {file.filename}, size: {image.size}")
-
-        # Process with miniature scanner (includes background removal)
-        result = miniature_scanner.scan(image)
-
+        result = _get_miniature_scanner().scan(image)
         logger.info(f"Miniature scan complete: {len(result['colors'])} colors detected")
-
         return JSONResponse(content=result)
 
     except Exception as e:
         logger.error(f"Miniature scan error: {str(e)}", exc_info=True)
-        raise HTTPException(
-            status_code=500,
-            detail=f"Failed to process miniature scan: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Failed to process miniature scan: {str(e)}")
 
 
 @app.post("/api/scan/inspiration")
 async def scan_inspiration(file: UploadFile = File(...)):
     """
-    Extract color palette from any image for inspiration
-    - NO background removal (analyzes entire image)
-    - Detects 5-8 dominant colors
-    - Returns paint recommendations
+    Extract color palette from any image for inspiration.
+    No background removal — analyses entire image.
     """
     try:
-        # Read and validate image
         contents = await file.read()
         image = Image.open(io.BytesIO(contents))
-
-        # Convert to RGB if needed
         if image.mode != 'RGB':
             image = image.convert('RGB')
 
         logger.info(f"Processing inspiration scan: {file.filename}, size: {image.size}")
-
-        # Process with inspiration scanner (NO background removal)
-        result = inspiration_scanner.scan(image)
-
+        result = _get_inspiration_scanner().scan(image)
         logger.info(f"Inspiration scan complete: {len(result['colors'])} colors detected")
-
         return JSONResponse(content=result)
 
     except Exception as e:
         logger.error(f"Inspiration scan error: {str(e)}", exc_info=True)
-        raise HTTPException(
-            status_code=500,
-            detail=f"Failed to process inspiration scan: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Failed to process inspiration scan: {str(e)}")
 
 
 @app.post("/api/feedback")
 async def submit_feedback(feedback: Dict[str, Any]):
-    """
-    Log user feedback about scan accuracy
-    """
+    """Log user feedback about scan accuracy"""
     try:
         logger.info(f"Feedback received: {feedback}")
-        # TODO: Implement feedback logging to file or database
         return {"status": "success", "message": "Feedback recorded"}
     except Exception as e:
         logger.error(f"Feedback error: {str(e)}")
@@ -187,10 +156,5 @@ async def submit_feedback(feedback: Dict[str, Any]):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(
-        "main:app",
-        host="0.0.0.0",
-        port=8000,
-        reload=True,
-        log_level="info"
-    )
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port, log_level="info")
