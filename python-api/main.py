@@ -21,8 +21,6 @@ import logging
 # Ensure CWD is the directory containing main.py so relative paths work
 os.chdir(Path(__file__).parent)
 
-from services.miniature_scanner import MiniatureScannerService
-from services.inspiration_scanner import InspirationScannerService
 from routes.ml_data import router as ml_data_router
 from routes.analytics import router as analytics_router
 
@@ -38,9 +36,13 @@ inspiration_scanner = None
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Imports are intentionally deferred here so uvicorn can bind to the port
+    # before the slow onnxruntime/rembg/opencv initialisation runs.
     global miniature_scanner, inspiration_scanner
     try:
         logger.info("Initialising scanner services...")
+        from services.miniature_scanner import MiniatureScannerService
+        from services.inspiration_scanner import InspirationScannerService
         miniature_scanner = MiniatureScannerService()
         inspiration_scanner = InspirationScannerService()
         logger.info("Services initialised successfully")
