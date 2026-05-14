@@ -9,3 +9,4 @@ scikit-learn>=1.5.2
 scikit-image>=0.24.0
 scipy>=1.14.1
 python-dotenv==1.0.1
+gunicorn>=21.2.0
