@@ -1,7 +1,10 @@
 """
 ML Data Logging Routes
-Endpoints for collecting training data for future ML models
-Captures scan features, colour features, and behavioural signals
+Endpoints for collecting training data for future ML models.
+
+Storage strategy:
+  - SUPABASE_URL + SUPABASE_SERVICE_KEY set → writes/reads go to Supabase (production)
+  - env vars absent → writes/reads go to local JSON/CSV files (local dev)
 """
 
 import os
@@ -15,7 +18,10 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 import logging
 
+from utils.supabase_client import get_supabase, supabase_enabled
+
 logger = logging.getLogger(__name__)
+
 
 # ============================================================================
 # Data Models
@@ -25,7 +31,7 @@ class ScanLevelFeatures(BaseModel):
     scan_id: str
     user_id: Optional[str] = None
     session_id: str
-    mode: str  # 'miniature' | 'inspiration'
+    mode: str
     timestamp: str
     processing_time_ms: int
     image_width: int
@@ -41,26 +47,21 @@ class ScanLevelFeatures(BaseModel):
 class ColourFeatures(BaseModel):
     scan_id: str
     colour_index: int
-    # RGB
     r: int
     g: int
     b: int
-    # HSV
     h: float
     s: float
     v: float
-    # LAB
     l: float
     a: float
     b_lab: float
-    # Derived
     chroma: float
     coverage_percent: float
     family_predicted: str
     is_metallic: bool
     is_detail: bool
     confidence: float
-    # Top paint match
     top_paint_name: Optional[str] = None
     top_paint_brand: Optional[str] = None
     top_paint_delta_e: Optional[float] = None
@@ -90,7 +91,7 @@ class FeedbackData(BaseModel):
     scan_id: str
     session_id: str
     colour_index: Optional[int] = None
-    feedback_type: str  # 'accuracy' | 'correction' | 'rating'
+    feedback_type: str
     original_value: Optional[str] = None
     corrected_value: Optional[str] = None
     rating: Optional[int] = None
@@ -99,13 +100,12 @@ class FeedbackData(BaseModel):
 
 
 class CompleteFeedback(BaseModel):
-    """Enhanced feedback with colour-level corrections for ML training"""
     scan_id: str
     session_id: str
-    rating: int  # 1-5 skull rating
+    rating: int
     colour_corrections: List[ColourCorrection] = []
-    issue_categories: List[str] = []  # e.g., ['wrong_colours', 'poor_recommendations']
-    experience_level: Optional[str] = None  # 'beginner' | 'intermediate' | 'advanced'
+    issue_categories: List[str] = []
+    experience_level: Optional[str] = None
     comment: Optional[str] = None
     email: Optional[str] = None
     timestamp: str
@@ -134,11 +134,10 @@ class MLStats(BaseModel):
 
 
 class FeedbackStats(BaseModel):
-    """Detailed feedback statistics for admin dashboard"""
     total_feedback: int
-    feedback_rate: float  # percentage of scans with feedback
+    feedback_rate: float
     average_rating: float
-    rating_distribution: Dict[int, int]  # 1-5 star counts
+    rating_distribution: Dict[int, int]
     most_common_issues: Dict[str, int]
     colour_families_corrected: Dict[str, int]
     feedback_today: int
@@ -146,10 +145,9 @@ class FeedbackStats(BaseModel):
 
 
 # ============================================================================
-# File Storage Helpers
+# File storage helpers (local dev)
 # ============================================================================
 
-# Data directories
 DATA_BASE_DIR = Path(__file__).parent.parent / "data" / "ml"
 SCANS_DIR = DATA_BASE_DIR / "scans"
 COLOURS_CSV = DATA_BASE_DIR / "colours" / "colours_training.csv"
@@ -157,250 +155,363 @@ FEEDBACK_DIR = DATA_BASE_DIR / "feedback"
 BEHAVIOUR_DIR = DATA_BASE_DIR / "behaviour"
 
 
-def ensure_directories():
-    """Create data directories if they don't exist"""
+def _ensure_directories():
     SCANS_DIR.mkdir(parents=True, exist_ok=True)
     COLOURS_CSV.parent.mkdir(parents=True, exist_ok=True)
     FEEDBACK_DIR.mkdir(parents=True, exist_ok=True)
     BEHAVIOUR_DIR.mkdir(parents=True, exist_ok=True)
 
 
-def save_scan_json(scan_data: ScanLevelFeatures, colours: List[ColourFeatures]):
-    """Save scan data as JSON file"""
-    ensure_directories()
-
-    filename = f"{scan_data.scan_id}.json"
-    filepath = SCANS_DIR / filename
-
+def _save_scan_json(scan_data: ScanLevelFeatures, colours: List[ColourFeatures]):
+    _ensure_directories()
+    filepath = SCANS_DIR / f"{scan_data.scan_id}.json"
     data = {
         "scan": scan_data.model_dump(),
         "colours": [c.model_dump() for c in colours],
-        "saved_at": datetime.utcnow().isoformat()
+        "saved_at": datetime.utcnow().isoformat(),
     }
-
     with open(filepath, 'w') as f:
         json.dump(data, f, indent=2)
+    logger.info(f"Saved scan: {filepath}")
 
-    logger.info(f"Saved scan data: {filepath}")
 
-
-def append_colours_csv(colours: List[ColourFeatures]):
-    """Append colour features to CSV for ML training"""
-    ensure_directories()
-
-    # CSV columns
+def _append_colours_csv(colours: List[ColourFeatures]):
+    _ensure_directories()
     fieldnames = [
         'scan_id', 'colour_index', 'r', 'g', 'b', 'h', 's', 'v',
         'l', 'a', 'b_lab', 'chroma', 'coverage_percent', 'family_predicted',
         'is_metallic', 'is_detail', 'confidence',
-        'top_paint_name', 'top_paint_brand', 'top_paint_delta_e'
+        'top_paint_name', 'top_paint_brand', 'top_paint_delta_e',
     ]
-
     file_exists = COLOURS_CSV.exists()
-
     with open(COLOURS_CSV, 'a', newline='', encoding='utf-8') as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
-
         if not file_exists:
             writer.writeheader()
-
         for colour in colours:
-            row = colour.model_dump()
-            writer.writerow(row)
-
+            writer.writerow(colour.model_dump())
     logger.info(f"Appended {len(colours)} colours to CSV")
 
 
-def save_feedback_json(feedback: FeedbackData):
-    """Save feedback as JSON file"""
-    ensure_directories()
-
+def _save_feedback_json(feedback: FeedbackData):
+    _ensure_directories()
     filename = f"{feedback.scan_id}_{feedback.timestamp.replace(':', '-')}.json"
-    filepath = FEEDBACK_DIR / filename
-
     data = feedback.model_dump()
     data['saved_at'] = datetime.utcnow().isoformat()
-
-    with open(filepath, 'w') as f:
+    with open(FEEDBACK_DIR / filename, 'w') as f:
         json.dump(data, f, indent=2)
 
-    logger.info(f"Saved feedback: {filepath}")
 
-
-def save_complete_feedback(feedback: CompleteFeedback):
-    """Save complete feedback with colour corrections"""
-    ensure_directories()
-
-    timestamp_safe = feedback.timestamp.replace(':', '-').replace('.', '-')
-    filename = f"{feedback.scan_id}_{timestamp_safe}_complete.json"
-    filepath = FEEDBACK_DIR / filename
-
+def _save_complete_feedback_json(feedback: CompleteFeedback):
+    _ensure_directories()
+    ts = feedback.timestamp.replace(':', '-').replace('.', '-')
+    filename = f"{feedback.scan_id}_{ts}_complete.json"
+    ground_truth = [
+        {
+            'colour_index': c.colour_index,
+            'original_family': c.original_family,
+            'correct_family': c.corrected_family,
+            'actual_paint': c.actual_paint_used,
+        }
+        for c in feedback.colour_corrections
+        if not c.was_correct and c.corrected_family
+    ]
     data = feedback.model_dump()
     data['saved_at'] = datetime.utcnow().isoformat()
     data['has_corrections'] = len(feedback.colour_corrections) > 0
-
-    # Extract ground truth labels for ML training
-    ground_truth = []
-    for correction in feedback.colour_corrections:
-        if not correction.was_correct and correction.corrected_family:
-            ground_truth.append({
-                'colour_index': correction.colour_index,
-                'original_family': correction.original_family,
-                'correct_family': correction.corrected_family,
-                'actual_paint': correction.actual_paint_used
-            })
     data['ground_truth_labels'] = ground_truth
-
-    with open(filepath, 'w', encoding='utf-8') as f:
+    with open(FEEDBACK_DIR / filename, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2)
+    logger.info(f"Saved complete feedback with {len(ground_truth)} corrections")
 
-    logger.info(f"Saved complete feedback: {filepath} with {len(ground_truth)} corrections")
 
-
-def save_behaviour_json(behaviour: BehaviouralSignals):
-    """Save behavioural data as JSON file"""
-    ensure_directories()
-
-    # Use scan_id + timestamp for unique filename
-    timestamp = datetime.utcnow().strftime('%Y%m%d_%H%M%S')
-    filename = f"{behaviour.scan_id}_{timestamp}.json"
-    filepath = BEHAVIOUR_DIR / filename
-
+def _save_behaviour_json(behaviour: BehaviouralSignals):
+    _ensure_directories()
+    ts = datetime.utcnow().strftime('%Y%m%d_%H%M%S')
+    filename = f"{behaviour.scan_id}_{ts}.json"
     data = behaviour.model_dump()
     data['saved_at'] = datetime.utcnow().isoformat()
-
-    with open(filepath, 'w') as f:
+    with open(BEHAVIOUR_DIR / filename, 'w') as f:
         json.dump(data, f, indent=2)
 
-    logger.info(f"Saved behaviour: {filepath}")
+
+def _get_stats_from_files() -> MLStats:
+    _ensure_directories()
+    scan_files = list(SCANS_DIR.glob("*.json"))
+    scans_by_mode = {"miniature": 0, "inspiration": 0}
+    sessions: set = set()
+    today = datetime.utcnow().date().isoformat()
+    scans_today = 0
+    for sf in scan_files:
+        try:
+            with open(sf) as f:
+                data = json.load(f)
+            scan = data.get('scan', {})
+            mode = scan.get('mode', 'unknown')
+            if mode in scans_by_mode:
+                scans_by_mode[mode] += 1
+            sessions.add(scan.get('session_id', ''))
+            if scan.get('timestamp', '').startswith(today):
+                scans_today += 1
+        except Exception as e:
+            logger.warning(f"Error reading {sf}: {e}")
+
+    total_colours = 0
+    if COLOURS_CSV.exists():
+        with open(COLOURS_CSV, 'r', encoding='utf-8') as f:
+            total_colours = max(0, sum(1 for _ in f) - 1)
+
+    return MLStats(
+        total_scans=len(scan_files),
+        total_colours=total_colours,
+        total_feedback=len(list(FEEDBACK_DIR.glob("*.json"))),
+        total_behaviour_logs=len(list(BEHAVIOUR_DIR.glob("*.json"))),
+        scans_by_mode=scans_by_mode,
+        scans_today=scans_today,
+        unique_sessions=len(sessions),
+    )
 
 
-def get_feedback_stats() -> FeedbackStats:
-    """Calculate detailed feedback statistics"""
-    ensure_directories()
-
+def _get_feedback_stats_from_files() -> FeedbackStats:
+    _ensure_directories()
     feedback_files = list(FEEDBACK_DIR.glob("*.json"))
-    total_feedback = len(feedback_files)
-
     rating_distribution = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}
     issue_counts: Dict[str, int] = {}
     family_corrections: Dict[str, int] = {}
-    total_ratings = 0
     sum_ratings = 0
+    total_ratings = 0
     feedback_with_corrections = 0
     today = datetime.utcnow().date().isoformat()
     feedback_today = 0
 
-    for feedback_file in feedback_files:
+    for fp in feedback_files:
         try:
-            with open(feedback_file, 'r', encoding='utf-8') as f:
+            with open(fp, 'r', encoding='utf-8') as f:
                 data = json.load(f)
-
-            # Count ratings
             rating = data.get('rating')
             if rating and 1 <= rating <= 5:
                 rating_distribution[rating] += 1
                 sum_ratings += rating
                 total_ratings += 1
-
-            # Count issues
             for issue in data.get('issue_categories', []):
                 issue_counts[issue] = issue_counts.get(issue, 0) + 1
-
-            # Count colour family corrections
-            corrections = data.get('colour_corrections', [])
-            if corrections:
-                for correction in corrections:
-                    if not correction.get('was_correct') and correction.get('corrected_family'):
-                        original = correction.get('original_family', 'Unknown')
-                        family_corrections[original] = family_corrections.get(original, 0) + 1
-                        feedback_with_corrections += 1
-
-            # Check if today
-            timestamp = data.get('timestamp', '')
-            if timestamp.startswith(today):
+            for correction in data.get('colour_corrections', []):
+                if not correction.get('was_correct') and correction.get('corrected_family'):
+                    orig = correction.get('original_family', 'Unknown')
+                    family_corrections[orig] = family_corrections.get(orig, 0) + 1
+                    feedback_with_corrections += 1
+            if data.get('timestamp', '').startswith(today):
                 feedback_today += 1
-
         except Exception as e:
-            logger.warning(f"Error reading feedback file {feedback_file}: {e}")
+            logger.warning(f"Error reading {fp}: {e}")
 
-    # Calculate feedback rate
-    scan_files = list(SCANS_DIR.glob("*.json"))
-    total_scans = len(scan_files)
-    feedback_rate = (total_feedback / total_scans * 100) if total_scans > 0 else 0
-
-    # Sort issues by count
-    sorted_issues = dict(sorted(issue_counts.items(), key=lambda x: x[1], reverse=True))
-    sorted_families = dict(sorted(family_corrections.items(), key=lambda x: x[1], reverse=True))
+    total_scans = len(list(SCANS_DIR.glob("*.json")))
+    feedback_rate = (len(feedback_files) / total_scans * 100) if total_scans > 0 else 0
 
     return FeedbackStats(
-        total_feedback=total_feedback,
+        total_feedback=len(feedback_files),
         feedback_rate=round(feedback_rate, 2),
         average_rating=round(sum_ratings / total_ratings, 2) if total_ratings > 0 else 0,
         rating_distribution=rating_distribution,
-        most_common_issues=sorted_issues,
-        colour_families_corrected=sorted_families,
+        most_common_issues=dict(sorted(issue_counts.items(), key=lambda x: x[1], reverse=True)),
+        colour_families_corrected=dict(sorted(family_corrections.items(), key=lambda x: x[1], reverse=True)),
         feedback_today=feedback_today,
-        feedback_with_corrections=feedback_with_corrections
+        feedback_with_corrections=feedback_with_corrections,
     )
+
+
+# ============================================================================
+# Supabase storage helpers (production)
+# ============================================================================
+
+def _insert_scan_supabase(scan: ScanLevelFeatures, colours: List[ColourFeatures]):
+    sb = get_supabase()
+    sb.table("ml_scans").upsert(scan.model_dump(), on_conflict="scan_id").execute()
+    if colours:
+        colour_rows = [c.model_dump() for c in colours]
+        sb.table("ml_colours").insert(colour_rows).execute()
+    logger.info(f"Inserted scan {scan.scan_id} to Supabase ({len(colours)} colours)")
+
+
+def _insert_feedback_supabase(feedback: FeedbackData):
+    sb = get_supabase()
+    sb.table("ml_feedback").insert({
+        **feedback.model_dump(),
+        "is_complete": False,
+        "has_corrections": False,
+    }).execute()
+
+
+def _insert_complete_feedback_supabase(feedback: CompleteFeedback):
+    sb = get_supabase()
+    ground_truth = [
+        {
+            'colour_index': c.colour_index,
+            'original_family': c.original_family,
+            'correct_family': c.corrected_family,
+            'actual_paint': c.actual_paint_used,
+        }
+        for c in feedback.colour_corrections
+        if not c.was_correct and c.corrected_family
+    ]
+    data = feedback.model_dump()
+    sb.table("ml_feedback").insert({
+        **data,
+        "feedback_type": "complete",
+        "is_complete": True,
+        "has_corrections": len(feedback.colour_corrections) > 0,
+        "ground_truth_labels": ground_truth,
+    }).execute()
+    logger.info(f"Inserted complete feedback for {feedback.scan_id} ({len(ground_truth)} corrections)")
+
+
+def _insert_behaviour_supabase(behaviour: BehaviouralSignals):
+    sb = get_supabase()
+    sb.table("ml_behaviour").insert(behaviour.model_dump()).execute()
+
+
+def _get_stats_from_supabase() -> MLStats:
+    sb = get_supabase()
+    scans_resp = sb.table("ml_scans").select("scan_id, mode, session_id, timestamp").execute()
+    scans = scans_resp.data or []
+
+    scans_by_mode = {"miniature": 0, "inspiration": 0}
+    sessions: set = set()
+    today = datetime.utcnow().date().isoformat()
+    scans_today = 0
+    for s in scans:
+        mode = s.get("mode", "unknown")
+        if mode in scans_by_mode:
+            scans_by_mode[mode] += 1
+        sessions.add(s.get("session_id", ""))
+        if s.get("timestamp", "").startswith(today):
+            scans_today += 1
+
+    colours_resp = sb.table("ml_colours").select("id", count="exact").execute()
+    feedback_resp = sb.table("ml_feedback").select("id", count="exact").execute()
+    behaviour_resp = sb.table("ml_behaviour").select("id", count="exact").execute()
+
+    return MLStats(
+        total_scans=len(scans),
+        total_colours=colours_resp.count or 0,
+        total_feedback=feedback_resp.count or 0,
+        total_behaviour_logs=behaviour_resp.count or 0,
+        scans_by_mode=scans_by_mode,
+        scans_today=scans_today,
+        unique_sessions=len(sessions),
+    )
+
+
+def _get_feedback_stats_from_supabase() -> FeedbackStats:
+    sb = get_supabase()
+    feedback_resp = sb.table("ml_feedback").select("*").eq("is_complete", True).execute()
+    feedback_data = feedback_resp.data or []
+
+    scans_resp = sb.table("ml_scans").select("id", count="exact").execute()
+    total_scans = scans_resp.count or 0
+
+    rating_distribution = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}
+    issue_counts: Dict[str, int] = {}
+    family_corrections: Dict[str, int] = {}
+    sum_ratings = 0
+    total_ratings = 0
+    feedback_with_corrections = 0
+    today = datetime.utcnow().date().isoformat()
+    feedback_today = 0
+
+    for row in feedback_data:
+        rating = row.get("rating")
+        if rating and 1 <= rating <= 5:
+            rating_distribution[rating] += 1
+            sum_ratings += rating
+            total_ratings += 1
+        for issue in (row.get("issue_categories") or []):
+            issue_counts[issue] = issue_counts.get(issue, 0) + 1
+        corrections = row.get("colour_corrections") or []
+        for correction in corrections:
+            if not correction.get("was_correct") and correction.get("corrected_family"):
+                orig = correction.get("original_family", "Unknown")
+                family_corrections[orig] = family_corrections.get(orig, 0) + 1
+                feedback_with_corrections += 1
+        ts = row.get("timestamp", "")
+        if isinstance(ts, str) and ts.startswith(today):
+            feedback_today += 1
+
+    feedback_rate = (len(feedback_data) / total_scans * 100) if total_scans > 0 else 0
+
+    return FeedbackStats(
+        total_feedback=len(feedback_data),
+        feedback_rate=round(feedback_rate, 2),
+        average_rating=round(sum_ratings / total_ratings, 2) if total_ratings > 0 else 0,
+        rating_distribution=rating_distribution,
+        most_common_issues=dict(sorted(issue_counts.items(), key=lambda x: x[1], reverse=True)),
+        colour_families_corrected=dict(sorted(family_corrections.items(), key=lambda x: x[1], reverse=True)),
+        feedback_today=feedback_today,
+        feedback_with_corrections=feedback_with_corrections,
+    )
+
+
+# ============================================================================
+# Public write helpers (route handlers call these)
+# ============================================================================
+
+def save_scan(scan: ScanLevelFeatures, colours: List[ColourFeatures]):
+    if supabase_enabled():
+        try:
+            _insert_scan_supabase(scan, colours)
+            return
+        except Exception as e:
+            logger.error(f"Supabase scan insert failed, falling back to files: {e}")
+    _save_scan_json(scan, colours)
+    _append_colours_csv(colours)
+
+
+def save_feedback(feedback: FeedbackData):
+    if supabase_enabled():
+        try:
+            _insert_feedback_supabase(feedback)
+            return
+        except Exception as e:
+            logger.error(f"Supabase feedback insert failed, falling back to files: {e}")
+    _save_feedback_json(feedback)
+
+
+def save_complete_feedback(feedback: CompleteFeedback):
+    if supabase_enabled():
+        try:
+            _insert_complete_feedback_supabase(feedback)
+            return
+        except Exception as e:
+            logger.error(f"Supabase complete feedback insert failed, falling back to files: {e}")
+    _save_complete_feedback_json(feedback)
+
+
+def save_behaviour(behaviour: BehaviouralSignals):
+    if supabase_enabled():
+        try:
+            _insert_behaviour_supabase(behaviour)
+            return
+        except Exception as e:
+            logger.error(f"Supabase behaviour insert failed, falling back to files: {e}")
+    _save_behaviour_json(behaviour)
 
 
 def get_stats() -> MLStats:
-    """Calculate statistics about collected ML data"""
-    ensure_directories()
-
-    # Count scans
-    scan_files = list(SCANS_DIR.glob("*.json"))
-    total_scans = len(scan_files)
-
-    # Count by mode and unique sessions
-    scans_by_mode = {"miniature": 0, "inspiration": 0}
-    sessions = set()
-    today = datetime.utcnow().date().isoformat()
-    scans_today = 0
-
-    for scan_file in scan_files:
+    if supabase_enabled():
         try:
-            with open(scan_file, 'r') as f:
-                data = json.load(f)
-                scan = data.get('scan', {})
-                mode = scan.get('mode', 'unknown')
-                if mode in scans_by_mode:
-                    scans_by_mode[mode] += 1
-                sessions.add(scan.get('session_id', ''))
-
-                # Check if scan was today
-                timestamp = scan.get('timestamp', '')
-                if timestamp.startswith(today):
-                    scans_today += 1
+            return _get_stats_from_supabase()
         except Exception as e:
-            logger.warning(f"Error reading scan file {scan_file}: {e}")
+            logger.error(f"Supabase stats query failed, falling back to files: {e}")
+    return _get_stats_from_files()
 
-    # Count colours from CSV
-    total_colours = 0
-    if COLOURS_CSV.exists():
-        with open(COLOURS_CSV, 'r', encoding='utf-8') as f:
-            total_colours = sum(1 for _ in f) - 1  # Subtract header
-            if total_colours < 0:
-                total_colours = 0
 
-    # Count feedback files
-    feedback_files = list(FEEDBACK_DIR.glob("*.json"))
-    total_feedback = len(feedback_files)
-
-    # Count behaviour files
-    behaviour_files = list(BEHAVIOUR_DIR.glob("*.json"))
-    total_behaviour = len(behaviour_files)
-
-    return MLStats(
-        total_scans=total_scans,
-        total_colours=total_colours,
-        total_feedback=total_feedback,
-        total_behaviour_logs=total_behaviour,
-        scans_by_mode=scans_by_mode,
-        scans_today=scans_today,
-        unique_sessions=len(sessions)
-    )
+def get_feedback_stats() -> FeedbackStats:
+    if supabase_enabled():
+        try:
+            return _get_feedback_stats_from_supabase()
+        except Exception as e:
+            logger.error(f"Supabase feedback stats query failed, falling back to files: {e}")
+    return _get_feedback_stats_from_files()
 
 
 # ============================================================================
@@ -412,28 +523,15 @@ router = APIRouter(prefix="/api/ml", tags=["ML Data Collection"])
 
 @router.post("/log-scan")
 async def log_scan(data: MLLogBatch):
-    """
-    Log a complete scan with all features
-    - Saves scan metadata as JSON
-    - Appends colour features to CSV for ML training
-    """
     try:
-        # Save scan data
-        save_scan_json(data.scan, data.colours)
-
-        # Append colours to CSV
-        append_colours_csv(data.colours)
-
-        # Save behaviour if present
+        save_scan(data.scan, data.colours)
         if data.behaviour:
-            save_behaviour_json(data.behaviour)
-
+            save_behaviour(data.behaviour)
         return {
             "status": "success",
             "scan_id": data.scan.scan_id,
-            "colours_logged": len(data.colours)
+            "colours_logged": len(data.colours),
         }
-
     except Exception as e:
         logger.error(f"Error logging scan: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Failed to log scan: {str(e)}")
@@ -441,20 +539,9 @@ async def log_scan(data: MLLogBatch):
 
 @router.post("/log-feedback")
 async def log_feedback(feedback: FeedbackData):
-    """
-    Log user feedback about scan accuracy
-    - Corrections to colour family predictions
-    - Ratings of paint recommendations
-    """
     try:
-        save_feedback_json(feedback)
-
-        return {
-            "status": "success",
-            "scan_id": feedback.scan_id,
-            "feedback_type": feedback.feedback_type
-        }
-
+        save_feedback(feedback)
+        return {"status": "success", "scan_id": feedback.scan_id, "feedback_type": feedback.feedback_type}
     except Exception as e:
         logger.error(f"Error logging feedback: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Failed to log feedback: {str(e)}")
@@ -462,31 +549,19 @@ async def log_feedback(feedback: FeedbackData):
 
 @router.post("/log-complete-feedback")
 async def log_complete_feedback(feedback: CompleteFeedback):
-    """
-    Log complete feedback with colour-level corrections
-    - 1-5 skull rating
-    - Per-colour corrections with correct family
-    - Issue categories
-    - Experience level
-    - Ground truth labels extracted for ML training
-    """
     try:
         save_complete_feedback(feedback)
-
-        # Count corrections for response
         corrections_count = sum(
             1 for c in feedback.colour_corrections
             if not c.was_correct and c.corrected_family
         )
-
         return {
             "status": "success",
             "scan_id": feedback.scan_id,
             "rating": feedback.rating,
             "corrections_logged": corrections_count,
-            "issues_logged": len(feedback.issue_categories)
+            "issues_logged": len(feedback.issue_categories),
         }
-
     except Exception as e:
         logger.error(f"Error logging complete feedback: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Failed to log feedback: {str(e)}")
@@ -494,21 +569,9 @@ async def log_complete_feedback(feedback: CompleteFeedback):
 
 @router.post("/log-behavior")
 async def log_behaviour(behaviour: BehaviouralSignals):
-    """
-    Log behavioural signals
-    - Time on results page
-    - Cart actions (add/remove)
-    - Affiliate link clicks
-    - Share/save actions
-    """
     try:
-        save_behaviour_json(behaviour)
-
-        return {
-            "status": "success",
-            "scan_id": behaviour.scan_id
-        }
-
+        save_behaviour(behaviour)
+        return {"status": "success", "scan_id": behaviour.scan_id}
     except Exception as e:
         logger.error(f"Error logging behaviour: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Failed to log behaviour: {str(e)}")
@@ -516,46 +579,27 @@ async def log_behaviour(behaviour: BehaviouralSignals):
 
 @router.post("/batch-log")
 async def batch_log(request: BatchLogRequest):
-    """
-    Batch endpoint for logging multiple items at once
-    Used by frontend to flush queued data
-    """
     try:
-        results = {
-            "scans_logged": 0,
-            "colours_logged": 0,
-            "behaviours_logged": 0,
-            "feedbacks_logged": 0
-        }
+        results = {"scans_logged": 0, "colours_logged": 0, "behaviours_logged": 0, "feedbacks_logged": 0}
 
-        # Process scans
         for scan_batch in (request.scans or []):
-            save_scan_json(scan_batch.scan, scan_batch.colours)
-            append_colours_csv(scan_batch.colours)
+            save_scan(scan_batch.scan, scan_batch.colours)
             results["scans_logged"] += 1
             results["colours_logged"] += len(scan_batch.colours)
-
             if scan_batch.behaviour:
-                save_behaviour_json(scan_batch.behaviour)
+                save_behaviour(scan_batch.behaviour)
                 results["behaviours_logged"] += 1
 
-        # Process standalone behaviours
         for behaviour in (request.behaviours or []):
-            save_behaviour_json(behaviour)
+            save_behaviour(behaviour)
             results["behaviours_logged"] += 1
 
-        # Process feedbacks
         for feedback in (request.feedbacks or []):
-            save_feedback_json(feedback)
+            save_feedback(feedback)
             results["feedbacks_logged"] += 1
 
-        logger.info(f"Batch log results: {results}")
-
-        return {
-            "status": "success",
-            **results
-        }
-
+        logger.info(f"Batch log: {results}")
+        return {"status": "success", **results}
     except Exception as e:
         logger.error(f"Error in batch log: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Failed to batch log: {str(e)}")
@@ -563,16 +607,8 @@ async def batch_log(request: BatchLogRequest):
 
 @router.get("/stats", response_model=MLStats)
 async def get_ml_stats():
-    """
-    Get statistics about collected ML training data
-    - Total scans, colours, feedback entries
-    - Breakdown by mode
-    - Today's activity
-    """
     try:
-        stats = get_stats()
-        return stats
-
+        return get_stats()
     except Exception as e:
         logger.error(f"Error getting stats: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Failed to get stats: {str(e)}")
@@ -580,17 +616,8 @@ async def get_ml_stats():
 
 @router.get("/feedback-stats", response_model=FeedbackStats)
 async def get_ml_feedback_stats():
-    """
-    Get detailed feedback statistics
-    - Rating distribution (1-5 skulls)
-    - Most common issues reported
-    - Colour families most often corrected
-    - Feedback rate vs total scans
-    """
     try:
-        stats = get_feedback_stats()
-        return stats
-
+        return get_feedback_stats()
     except Exception as e:
         logger.error(f"Error getting feedback stats: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Failed to get feedback stats: {str(e)}")
@@ -598,14 +625,16 @@ async def get_ml_feedback_stats():
 
 @router.get("/health")
 async def ml_health():
-    """Health check for ML data endpoints"""
-    ensure_directories()
+    if supabase_enabled():
+        return {"status": "ok", "storage": "supabase"}
+    _ensure_directories()
     return {
         "status": "ok",
+        "storage": "local_files",
         "directories_exist": {
             "scans": SCANS_DIR.exists(),
             "colours": COLOURS_CSV.parent.exists(),
             "feedback": FEEDBACK_DIR.exists(),
-            "behaviour": BEHAVIOUR_DIR.exists()
-        }
+            "behaviour": BEHAVIOUR_DIR.exists(),
+        },
     }
