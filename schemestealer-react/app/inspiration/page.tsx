@@ -15,10 +15,12 @@ import { WarpPortal } from '@/components/inspiration/WarpPortal';
 import { LoadingAnimation } from '@/components/shared/LoadingAnimations';
 import { motion } from 'framer-motion';
 import { mlLogger } from '@/lib/mlDataLogger';
+import { useApiReady } from '@/hooks/useApiReady';
 
 export default function InspirationPage() {
   const router = useRouter();
   const { setMode, setScanResult, offlineMode } = useAppStore();
+  const apiReady = useApiReady(offlineMode);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasUploaded, setHasUploaded] = useState(false);
@@ -82,6 +84,42 @@ export default function InspirationPage() {
     const file = e.target.files?.[0];
     if (file) handleFileSelect(file);
   };
+
+  // Show warm-up screen while backend scanner is initialising
+  if (!apiReady) {
+    return (
+      <div className="min-h-screen flex items-center justify-center void-bg">
+        <div className="starfield-bg fixed inset-0 pointer-events-none overflow-hidden" />
+        <div className="text-center px-8 relative z-10">
+          <motion.div
+            className="text-5xl mb-6"
+            animate={{ scale: [1, 1.3, 1], opacity: [0.6, 1, 0.6] }}
+            transition={{ duration: 3, repeat: Infinity }}
+          >
+            ◆
+          </motion.div>
+          <h2 className="text-xl font-bold gothic-text warp-text mb-2">
+            WARP CONDUIT STABILISING
+          </h2>
+          <p className="text-warp-purple-light gothic-text text-sm mb-6">
+            Communing with the Immaterium... please wait
+          </p>
+          <motion.div
+            className="flex gap-2 justify-center"
+            animate={{ opacity: [0.3, 1, 0.3] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="w-2 h-2 rounded-full bg-purple-500" />
+            ))}
+          </motion.div>
+          <p className="text-warp-purple-light/40 gothic-text text-xs mt-6">
+            First activation after dormancy takes ~60 seconds
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (isProcessing) {
     return <LoadingAnimation mode="inspiration" />;

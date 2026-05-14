@@ -65,7 +65,7 @@ export const apiClient = {
   async postForm<T>(endpoint: string, formData: FormData, config?: RequestConfig): Promise<T> {
     const url = this.getUrl(endpoint);
     const controller = new AbortController();
-    const timeout = config?.timeout || 60000; // 60s default for uploads
+    const timeout = config?.timeout || 180000; // 180s default for uploads
 
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
