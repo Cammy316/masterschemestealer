@@ -8,7 +8,7 @@ import numpy as np
 import colorsys
 import json
 from PIL import Image
-from rembg import remove
+from rembg import remove, new_session
 from typing import List, Dict, Tuple
 from skimage import color as sk_color
 
@@ -46,7 +46,8 @@ class SchemeStealerEngine:
         self.smart_extractor = SmartColorExtractor()
         self.matcher = PaintMatcher(self.paint_db)
         self.viz_engine = VisualizationEngine()
-        
+        self._rembg_session = new_session('u2netp')
+
         logger.info("Engine initialization complete - ML features enabled")
 
     def analyze_miniature(self, img_np: np.ndarray, mode: str = "mini",
@@ -71,7 +72,7 @@ class SchemeStealerEngine:
         # 3. Background Removal
         if mode == "mini":
             img_pil = Image.fromarray(img_np)
-            no_bg_image = remove(img_pil)
+            no_bg_image = remove(img_pil, session=self._rembg_session)
             img_rgba = np.array(no_bg_image)
             alpha = img_rgba[:, :, 3]
             coords = cv2.findNonZero(alpha)
