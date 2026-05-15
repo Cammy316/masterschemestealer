@@ -10,6 +10,7 @@ import os
 import sys
 import threading
 import asyncio
+from contextlib import asynccontextmanager
 from pathlib import Path
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -62,9 +63,6 @@ def _prewarm():
         _scanner_ready.set()
 
 
-threading.Thread(target=_prewarm, daemon=True, name="scanner-prewarm").start()
-
-
 async def _await_scanner_ready(timeout: int = 250):
     """Yield to the event loop while waiting for the background init thread."""
     if not _scanner_ready.is_set():
@@ -75,12 +73,24 @@ async def _await_scanner_ready(timeout: int = 250):
 
 # ============================================================================
 # App
+# lifespan ensures the pre-warm thread starts inside the ASGI worker process,
+# not in the gunicorn master. Threads do not survive a fork, so starting the
+# thread at module level (which runs in the master) means the worker never
+# has a warm scanner.
 # ============================================================================
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    t = threading.Thread(target=_prewarm, daemon=True, name="scanner-prewarm")
+    t.start()
+    yield
+
 
 app = FastAPI(
     title="SchemeStealer API",
     description="Color detection and paint matching for miniature painters",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 app.add_middleware(
