@@ -53,7 +53,9 @@ async function compressImage(file: File, maxDimension = 1024, quality = 0.85): P
  */
 export async function scanMiniature(imageFile: File): Promise<ScanResult> {
   try {
-    const compressed = await compressImage(imageFile);
+    // Skip JPEG compression for PNG files — bg-removed images are PNG with alpha channel
+    // that must not be re-encoded to JPEG (which strips alpha)
+    const compressed = imageFile.type === 'image/png' ? imageFile : await compressImage(imageFile);
     const formData = new FormData();
     formData.append('file', compressed);
 

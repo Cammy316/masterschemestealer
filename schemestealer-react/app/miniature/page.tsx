@@ -9,6 +9,7 @@ import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { scanMiniature, ApiError } from '@/lib/api';
+import { removeBackground } from '@imgly/background-removal';
 import { detectColorsOffline } from '@/lib/offlineColorDetection';
 import { enhanceWithMultiBrandMatches } from '@/lib/paintMatcher';
 import { CogitatorUpload } from '@/components/miniscan/CogitatorUpload';
@@ -55,8 +56,20 @@ export default function MiniscanPage() {
           numPaintMatches: 5,
         });
       } else {
-        // Call API to scan miniature
-        result = await scanMiniature(file);
+        // Remove background in the browser, then send RGBA PNG to backend
+        // Fall back to server-side removal if the browser path fails (e.g. no WebGL)
+        let fileToScan = file;
+        try {
+          const bgRemovedBlob = await removeBackground(file);
+          fileToScan = new File(
+            [bgRemovedBlob],
+            file.name.replace(/\.[^.]+$/, '.png'),
+            { type: 'image/png' }
+          );
+        } catch {
+          // Browser bg removal failed — server will handle it
+        }
+        result = await scanMiniature(fileToScan);
       }
 
       // Enhance with multi-brand matches

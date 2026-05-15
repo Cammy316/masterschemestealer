@@ -66,22 +66,33 @@ class MiniatureScannerService:
             - metadata: Scan information
         """
         try:
-            # Convert PIL to numpy array (RGB)
-            img_rgb = np.array(image.convert('RGB'))
-
-            logger.info("Analyzing miniature with background removal...")
-
-            # Call the engine's analyze_miniature method
-            # mode="mini" enables background removal
-            recipes, cropped_rgba, quality_report = self.engine.analyze_miniature(
-                img_np=img_rgb,
-                mode="mini",  # Enable background removal
-                remove_base=True,
-                use_awb=True,
-                sat_boost=1.3,
-                detect_details=True,
-                brands=['Citadel', 'Vallejo', 'Army Painter']  # Use main brands
-            )
+            if image.mode == 'RGBA':
+                # Client already removed background — pass RGBA array directly
+                img_rgba_np = np.array(image)
+                img_rgb = img_rgba_np[:, :, :3]
+                logger.info("Analyzing miniature (client-side background removal)...")
+                recipes, cropped_rgba, quality_report = self.engine.analyze_miniature(
+                    img_np=img_rgb,
+                    mode="mini",
+                    remove_base=True,
+                    use_awb=True,
+                    sat_boost=1.3,
+                    detect_details=True,
+                    brands=['Citadel', 'Vallejo', 'Army Painter'],
+                    precomputed_rgba=img_rgba_np,
+                )
+            else:
+                img_rgb = np.array(image.convert('RGB'))
+                logger.info("Analyzing miniature with background removal...")
+                recipes, cropped_rgba, quality_report = self.engine.analyze_miniature(
+                    img_np=img_rgb,
+                    mode="mini",
+                    remove_base=True,
+                    use_awb=True,
+                    sat_boost=1.3,
+                    detect_details=True,
+                    brands=['Citadel', 'Vallejo', 'Army Painter'],
+                )
 
             logger.info(f"Detected {len(recipes)} color regions")
 

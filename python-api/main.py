@@ -169,10 +169,11 @@ async def scan_miniature(file: UploadFile = File(...)):
     try:
         contents = await file.read()
         image = Image.open(io.BytesIO(contents))
-        if image.mode != 'RGB':
+        if image.mode not in ('RGB', 'RGBA'):
             image = image.convert('RGB')
+        # RGBA means client already removed the background — preserve alpha channel
 
-        logger.info(f"Processing miniature scan: {file.filename}, size: {image.size}")
+        logger.info(f"Processing miniature scan: {file.filename}, size: {image.size}, mode: {image.mode}")
         result = _miniature_scanner.scan(image)
         logger.info(f"Miniature scan complete: {len(result['colors'])} colors detected")
         return JSONResponse(content=result)
