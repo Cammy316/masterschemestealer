@@ -8,7 +8,6 @@ import numpy as np
 import colorsys
 import json
 from PIL import Image
-from rembg import remove, new_session
 from typing import List, Dict, Tuple
 from skimage import color as sk_color
 
@@ -76,6 +75,8 @@ class SchemeStealerEngine:
                 # Client already removed background — skip rembg entirely
                 img_rgba = precomputed_rgba
             else:
+                # Lazy import — avoids onnxruntime GPU scan blocking startup
+                from rembg import remove, new_session
                 if self._rembg_session is None:
                     logger.info("Initialising u2netp ONNX session (first mini scan)...")
                     self._rembg_session = new_session(
