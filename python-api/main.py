@@ -23,9 +23,12 @@ import threading
 import asyncio
 from contextlib import asynccontextmanager
 from pathlib import Path
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi import FastAPI, File, UploadFile, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 from PIL import Image
 import numpy as np
 from typing import List, Dict, Any
@@ -97,16 +100,23 @@ async def lifespan(app: FastAPI):
     yield
 
 
+limiter = Limiter(key_func=get_remote_address)
+
 app = FastAPI(
     title="SchemeStealer API",
     description="Color detection and paint matching for miniature painters",
     version="1.0.0",
     lifespan=lifespan,
 )
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://schemestealer.vercel.app",
+        "http://localhost:3000",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -155,8 +165,19 @@ async def get_paints():
         raise HTTPException(status_code=500, detail="Failed to load paint database")
 
 
+_MAX_UPLOAD_BYTES = 10 * 1024 * 1024  # 10 MB
+
+
+def _validate_upload(file: UploadFile, contents: bytes):
+    if not (file.content_type or "").startswith("image/"):
+        raise HTTPException(status_code=400, detail="Only image files are accepted.")
+    if len(contents) > _MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail="Image exceeds 10 MB limit.")
+
+
 @app.post("/api/scan/miniature")
-async def scan_miniature(file: UploadFile = File(...)):
+@limiter.limit("10/minute")
+async def scan_miniature(request: Request, file: UploadFile = File(...)):
     """
     Scan a painted miniature to detect colors.
     Removes background using rembg, detects 3-5 dominant colors.
@@ -168,6 +189,7 @@ async def scan_miniature(file: UploadFile = File(...)):
 
     try:
         contents = await file.read()
+        _validate_upload(file, contents)
         image = Image.open(io.BytesIO(contents))
         if image.mode not in ('RGB', 'RGBA'):
             image = image.convert('RGB')
@@ -178,13 +200,16 @@ async def scan_miniature(file: UploadFile = File(...)):
         logger.info(f"Miniature scan complete: {len(result['colors'])} colors detected")
         return JSONResponse(content=result)
 
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Miniature scan error: {str(e)}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to process miniature scan: {str(e)}")
+        raise HTTPException(status_code=500, detail="Scan processing failed.")
 
 
 @app.post("/api/scan/inspiration")
-async def scan_inspiration(file: UploadFile = File(...)):
+@limiter.limit("10/minute")
+async def scan_inspiration(request: Request, file: UploadFile = File(...)):
     """
     Extract color palette from any image for inspiration.
     No background removal — analyses entire image.
@@ -196,6 +221,7 @@ async def scan_inspiration(file: UploadFile = File(...)):
 
     try:
         contents = await file.read()
+        _validate_upload(file, contents)
         image = Image.open(io.BytesIO(contents))
         if image.mode != 'RGB':
             image = image.convert('RGB')
@@ -205,9 +231,11 @@ async def scan_inspiration(file: UploadFile = File(...)):
         logger.info(f"Inspiration scan complete: {len(result['colors'])} colors detected")
         return JSONResponse(content=result)
 
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Inspiration scan error: {str(e)}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to process inspiration scan: {str(e)}")
+        raise HTTPException(status_code=500, detail="Scan processing failed.")
 
 
 @app.post("/api/feedback")
