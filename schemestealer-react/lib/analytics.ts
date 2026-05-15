@@ -91,7 +91,7 @@ function saveQueue(queue: QueuedEvent[]): void {
     const limitedQueue = queue.slice(-MAX_QUEUE_SIZE);
     localStorage.setItem(ANALYTICS_QUEUE_KEY, JSON.stringify(limitedQueue));
   } catch (error) {
-    console.warn('Analytics: Failed to save queue', error);
+    if (process.env.NODE_ENV === 'development') console.warn('Analytics: Failed to save queue', error);
   }
 }
 
@@ -267,9 +267,9 @@ class AnalyticsService {
 
       // Success - clear queue
       saveQueue([]);
-      console.log(`Analytics: Flushed ${queue.length} events`);
+      if (process.env.NODE_ENV === 'development') console.log(`Analytics: Flushed ${queue.length} events`);
     } catch (error) {
-      console.warn('Analytics: Failed to flush events, will retry', error);
+      if (process.env.NODE_ENV === 'development') console.warn('Analytics: Failed to flush events, will retry', error);
 
       // Increment retry count and keep events that haven't exceeded max retries
       const updatedQueue = queue

@@ -6,7 +6,7 @@
  *
  * DO NOT EDIT MANUALLY - run `node scripts/generatePaintDatabase.js` to regenerate.
  *
- * Last generated: 2026-02-01T20:31:14.733Z
+ * Last generated: 2026-05-15T13:17:50.504Z
  */
 
 import type { RGB, LAB } from './colorConversion';
@@ -16770,5 +16770,5 @@ export const PAINT_DATABASE_STATS = {
   brands: ["Army Painter","Citadel","Scale75","Vallejo"],
   types: ["Air","Base","Contrast","Layer","Metallic","Shade"],
   families: ["Black","Blue","Bone","Bronze","Brown","Copper","Cyan","Flesh","Gold","Green","Grey","Orange","Pink","Purple","Red","Silver","White","Yellow"],
-  generatedAt: '2026-02-01T20:31:14.739Z',
+  generatedAt: '2026-05-15T13:17:50.506Z',
 };

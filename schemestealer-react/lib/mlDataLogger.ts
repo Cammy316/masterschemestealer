@@ -420,7 +420,7 @@ class MLDataLogger {
    */
   logScanComplete(scanResult: ScanResult): void {
     if (!this.activeScan) {
-      console.warn('MLLogger: No active scan to complete');
+      if (process.env.NODE_ENV === 'development') console.warn('MLLogger: No active scan to complete');
       return;
     }
 
@@ -694,7 +694,7 @@ class MLDataLogger {
       };
 
       await apiClient.post('/api/ml/log-complete-feedback', payload);
-      console.log('MLLogger: Complete feedback submitted successfully');
+      if (process.env.NODE_ENV === 'development') console.log('MLLogger: Complete feedback submitted successfully');
       return true;
     } catch (error) {
       console.error('MLLogger: Failed to submit complete feedback:', error);
@@ -752,11 +752,11 @@ class MLDataLogger {
 
         // Success - clear queue
         saveQueue([]);
-        console.log(`MLLogger: Flushed ${queue.length} items to backend`);
+        if (process.env.NODE_ENV === 'development') console.log(`MLLogger: Flushed ${queue.length} items to backend`);
       }
     } catch (error) {
       // Backend unavailable - keep items in queue with retry count
-      console.warn('MLLogger: Failed to flush queue, will retry later', error);
+      if (process.env.NODE_ENV === 'development') console.warn('MLLogger: Failed to flush queue, will retry later', error);
 
       for (const item of queue) {
         if (item.retryCount < 5) {
