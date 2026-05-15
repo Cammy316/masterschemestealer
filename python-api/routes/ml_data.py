@@ -46,22 +46,22 @@ class ScanLevelFeatures(BaseModel):
 
 class ColourFeatures(BaseModel):
     scan_id: str
-    colour_index: int
-    r: int
-    g: int
-    b: int
-    h: float
-    s: float
-    v: float
+    colour_index: int = Field(ge=0, le=20)
+    r: int = Field(ge=0, le=255)
+    g: int = Field(ge=0, le=255)
+    b: int = Field(ge=0, le=255)
+    h: float = Field(ge=0.0, le=1.0)
+    s: float = Field(ge=0.0, le=1.0)
+    v: float = Field(ge=0.0, le=1.0)
     l: float
     a: float
     b_lab: float
-    chroma: float
-    coverage_percent: float
+    chroma: float = Field(ge=0.0)
+    coverage_percent: float = Field(ge=0.0, le=100.0)
     family_predicted: str
     is_metallic: bool
     is_detail: bool
-    confidence: float
+    confidence: float = Field(ge=0.0, le=1.0)
     top_paint_name: Optional[str] = None
     top_paint_brand: Optional[str] = None
     top_paint_delta_e: Optional[float] = None
@@ -87,27 +87,30 @@ class ColourCorrection(BaseModel):
     actual_paint_used: Optional[str] = None
 
 
+FEEDBACK_TYPES = {"colour_correction", "paint_correction", "rating", "issue", "general"}
+
+
 class FeedbackData(BaseModel):
     scan_id: str
     session_id: str
-    colour_index: Optional[int] = None
+    colour_index: Optional[int] = Field(default=None, ge=0, le=20)
     feedback_type: str
-    original_value: Optional[str] = None
-    corrected_value: Optional[str] = None
-    rating: Optional[int] = None
-    comment: Optional[str] = None
+    original_value: Optional[str] = Field(default=None, max_length=200)
+    corrected_value: Optional[str] = Field(default=None, max_length=200)
+    rating: Optional[int] = Field(default=None, ge=1, le=5)
+    comment: Optional[str] = Field(default=None, max_length=2000)
     timestamp: str
 
 
 class CompleteFeedback(BaseModel):
     scan_id: str
     session_id: str
-    rating: int
+    rating: int = Field(ge=1, le=5)
     colour_corrections: List[ColourCorrection] = []
     issue_categories: List[str] = []
-    experience_level: Optional[str] = None
-    comment: Optional[str] = None
-    email: Optional[str] = None
+    experience_level: Optional[str] = Field(default=None, max_length=50)
+    comment: Optional[str] = Field(default=None, max_length=2000)
+    email: Optional[str] = Field(default=None, max_length=200)
     timestamp: str
 
 
