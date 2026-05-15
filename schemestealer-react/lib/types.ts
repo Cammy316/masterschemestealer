@@ -53,6 +53,7 @@ export interface PaintRecipe {
   citadel: BrandRecipe;
   vallejo: BrandRecipe;
   army_painter: BrandRecipe;
+  scale75: BrandRecipe;
 }
 
 export interface Paint {

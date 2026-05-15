@@ -12,6 +12,7 @@ export interface MultiBrandMatches {
   citadel: Paint[];
   vallejo: Paint[];
   armyPainter: Paint[];
+  scale75: Paint[];
 }
 
 // Wash mapping by color family - mirrors backend WashMapping
@@ -73,6 +74,25 @@ const WASH_MAPPING: Record<string, Record<string, string>> = {
     bronze: 'Strong Tone',
     default: 'Dark Tone',
   },
+  scale75: {
+    red: 'Burgundy Ink',
+    orange: 'Sepia Ink',
+    yellow: 'Yellow Ink',
+    brown: 'Sepia Ink',
+    green: 'Green Ink',
+    cyan: 'Green Ink',
+    blue: 'Blue Ink',
+    purple: 'Burgundy Ink',
+    pink: 'Burgundy Ink',
+    flesh: 'Sepia Ink',
+    black: 'Black Ink',
+    grey: 'Smoky Ink',
+    white: 'Black Ink',
+    gold: 'Sepia Ink',
+    silver: 'Smoky Ink',
+    bronze: 'Sepia Ink',
+    default: 'Black Ink',
+  },
 };
 
 /**
@@ -90,16 +110,19 @@ export function getMultiBrandMatches(
   const armyPainterPaints = paintDatabase.filter(
     (p) => p.brand.toLowerCase() === 'army painter'
   );
+  const scale75Paints = paintDatabase.filter((p) => p.brand.toLowerCase() === 'scale75');
 
   // Find top matches for each brand
   const citadelMatches = findTopMatches(colorLab, citadelPaints, matchesPerBrand);
   const vallejoMatches = findTopMatches(colorLab, vallejoPaints, matchesPerBrand);
   const armyPainterMatches = findTopMatches(colorLab, armyPainterPaints, matchesPerBrand);
+  const scale75Matches = findTopMatches(colorLab, scale75Paints, matchesPerBrand);
 
   return {
     citadel: citadelMatches,
     vallejo: vallejoMatches,
     armyPainter: armyPainterMatches,
+    scale75: scale75Matches,
   };
 }
 
@@ -149,7 +172,7 @@ function adjustLightness(
  */
 function getWashForFamily(
   family: string,
-  brand: 'citadel' | 'vallejo' | 'army-painter'
+  brand: 'citadel' | 'vallejo' | 'army-painter' | 'scale75'
 ): string {
   const brandMap = WASH_MAPPING[brand] || WASH_MAPPING.citadel;
   const familyLower = family.toLowerCase();
@@ -202,7 +225,7 @@ function findWashPaint(washName: string, brand: string): PaintMatch | null {
 export function getRecipeForColor(
   colorLab: [number, number, number],
   colorFamily: string,
-  brand: 'citadel' | 'vallejo' | 'army-painter'
+  brand: 'citadel' | 'vallejo' | 'army-painter' | 'scale75'
 ): BrandRecipe {
   const paintDatabase = getPaintDatabase();
   const brandName = brand.replace('-', ' ');
@@ -285,6 +308,7 @@ export function getFullPaintRecipe(
     citadel: getRecipeForColor(colorLab, colorFamily, 'citadel'),
     vallejo: getRecipeForColor(colorLab, colorFamily, 'vallejo'),
     army_painter: getRecipeForColor(colorLab, colorFamily, 'army-painter'),
+    scale75: getRecipeForColor(colorLab, colorFamily, 'scale75'),
   };
 }
 
