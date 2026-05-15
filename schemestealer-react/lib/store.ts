@@ -43,7 +43,7 @@ export const useAppStore = create<AppStore>()(
         } catch (error) {
           // If still quota exceeded, clear history and try again
           if (error instanceof Error && error.name === 'QuotaExceededError') {
-            console.warn('LocalStorage quota exceeded, clearing scan history');
+            if (process.env.NODE_ENV === 'development') console.warn('LocalStorage quota exceeded, clearing scan history');
             set((state) => ({
               currentScan: result,
               scanHistory: [], // Clear history to free space
