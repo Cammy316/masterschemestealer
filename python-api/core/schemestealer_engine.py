@@ -45,8 +45,6 @@ class SchemeStealerEngine:
         self.smart_extractor = SmartColorExtractor()
         self.matcher = PaintMatcher(self.paint_db)
         self.viz_engine = VisualizationEngine()
-        self._rembg_session = None  # initialised lazily on first mini scan
-
         logger.info("Engine initialization complete - ML features enabled")
 
     def analyze_miniature(self, img_np: np.ndarray, mode: str = "mini",
@@ -71,22 +69,9 @@ class SchemeStealerEngine:
         
         # 3. Background Removal
         if mode == "mini":
-            if precomputed_rgba is not None:
-                # Client already removed background — skip rembg entirely
-                img_rgba = precomputed_rgba
-            else:
-                # Lazy import — avoids onnxruntime GPU scan blocking startup
-                from rembg import remove, new_session
-                if self._rembg_session is None:
-                    logger.info("Initialising u2netp ONNX session (first mini scan)...")
-                    self._rembg_session = new_session(
-                        'u2netp',
-                        providers=['CPUExecutionProvider'],
-                    )
-                    logger.info("u2netp session ready")
-                img_pil = Image.fromarray(img_np)
-                no_bg_image = remove(img_pil, session=self._rembg_session)
-                img_rgba = np.array(no_bg_image)
+            if precomputed_rgba is None:
+                raise ValueError("precomputed_rgba is required — background must be removed client-side")
+            img_rgba = precomputed_rgba
             alpha = img_rgba[:, :, 3]
             coords = cv2.findNonZero(alpha)
             if coords is None: return [], None, quality_report.__dict__
