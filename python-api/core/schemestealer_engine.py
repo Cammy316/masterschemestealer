@@ -73,7 +73,10 @@ class SchemeStealerEngine:
         if mode == "mini":
             if self._rembg_session is None:
                 logger.info("Initialising u2netp ONNX session (first mini scan)...")
-                self._rembg_session = new_session('u2netp')
+                self._rembg_session = new_session(
+                    'u2netp',
+                    providers=['CPUExecutionProvider'],
+                )
                 logger.info("u2netp session ready")
             img_pil = Image.fromarray(img_np)
             no_bg_image = remove(img_pil, session=self._rembg_session)

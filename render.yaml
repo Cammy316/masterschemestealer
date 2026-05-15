@@ -9,3 +9,9 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: "3.11"
+      - key: CUDA_VISIBLE_DEVICES
+        value: ""
+      - key: OMP_NUM_THREADS
+        value: "1"
+      - key: ORT_DISABLE_PROVIDERS
+        value: "TensorrtExecutionProvider,CUDAExecutionProvider,MIGraphXExecutionProvider"

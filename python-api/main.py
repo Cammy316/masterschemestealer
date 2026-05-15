@@ -3,10 +3,21 @@ FastAPI backend for SchemeStealer
 Provides color detection endpoints for both Miniscan and Inspiration modes
 """
 
+import os
+
+# Force onnxruntime to use CPU only — prevents device_discovery.cc from
+# hanging indefinitely on Render's shared Linux containers which have no GPU
+# but expose partial /sys/class/drm paths that cause the C++ scan to block.
+os.environ.setdefault("CUDA_VISIBLE_DEVICES", "")
+os.environ.setdefault("OMP_NUM_THREADS", "1")
+os.environ.setdefault(
+    "ORT_DISABLE_PROVIDERS",
+    "TensorrtExecutionProvider,CUDAExecutionProvider,MIGraphXExecutionProvider",
+)
+
 import io
 import json
 import base64
-import os
 import sys
 import threading
 import asyncio
