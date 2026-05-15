@@ -78,7 +78,7 @@ class MiniatureScannerService:
                     use_awb=True,
                     sat_boost=1.3,
                     detect_details=True,
-                    brands=['Citadel', 'Vallejo', 'Army Painter'],
+                    brands=['Citadel', 'Vallejo', 'Army Painter', 'Scale75'],
                     precomputed_rgba=img_rgba_np,
                 )
             else:
@@ -91,7 +91,7 @@ class MiniatureScannerService:
                     use_awb=True,
                     sat_boost=1.3,
                     detect_details=True,
-                    brands=['Citadel', 'Vallejo', 'Army Painter'],
+                    brands=['Citadel', 'Vallejo', 'Army Painter', 'Scale75'],
                 )
 
             logger.info(f"Detected {len(recipes)} color regions")
@@ -210,7 +210,8 @@ class MiniatureScannerService:
         brand_mapping = {
             'Citadel': 'citadel',
             'Vallejo': 'vallejo',
-            'Army Painter': 'army_painter'
+            'Army Painter': 'army_painter',
+            'Scale75': 'scale75',
         }
 
         paint_recipe = {}

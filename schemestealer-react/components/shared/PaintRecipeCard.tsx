@@ -29,12 +29,13 @@ interface PaintRecipeCardProps {
   mode: 'miniature' | 'inspiration';
 }
 
-type BrandKey = 'citadel' | 'vallejo' | 'army_painter';
+type BrandKey = 'citadel' | 'vallejo' | 'army_painter' | 'scale75';
 
 const BRANDS: { key: BrandKey; name: string }[] = [
   { key: 'citadel', name: 'Citadel' },
   { key: 'vallejo', name: 'Vallejo' },
   { key: 'army_painter', name: 'Army Painter' },
+  { key: 'scale75', name: 'Scale75' },
 ];
 
 // Brand icon component - custom SVG icons for each brand
@@ -65,6 +66,13 @@ function BrandIcon({ brand, isActive, mode }: { brand: BrandKey; isActive: boole
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
         <path d="M12 3L4 7v6c0 5.5 3.8 10.3 8 11 4.2-.7 8-5.5 8-11V7l-8-4z" strokeLinecap="round" strokeLinejoin="round" fill={isActive ? color : 'none'} fillOpacity={isActive ? 0.2 : 0} />
         <path d="M12 8v5M9.5 11h5" strokeLinecap="round" />
+      </svg>
+    ),
+    scale75: (
+      // Scale / ruler icon
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
+        <rect x="2" y="8" width="20" height="8" rx="1" strokeLinecap="round" strokeLinejoin="round" fill={isActive ? color : 'none'} fillOpacity={isActive ? 0.2 : 0} />
+        <path d="M6 8V6M10 8V5M14 8V6M18 8V5" strokeLinecap="round" />
       </svg>
     ),
   };
