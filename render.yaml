@@ -4,7 +4,7 @@ services:
     runtime: python
     rootDir: python-api
     buildCommand: pip install -r requirements.txt && python -c "from rembg import new_session; new_session('u2netp')"
-    startCommand: gunicorn main:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT --timeout 120
+    startCommand: gunicorn main:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT --timeout 300
     healthCheckPath: /
     envVars:
       - key: PYTHON_VERSION

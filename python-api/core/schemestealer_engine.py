@@ -46,7 +46,7 @@ class SchemeStealerEngine:
         self.smart_extractor = SmartColorExtractor()
         self.matcher = PaintMatcher(self.paint_db)
         self.viz_engine = VisualizationEngine()
-        self._rembg_session = new_session('u2netp')
+        self._rembg_session = None  # initialised lazily on first mini scan
 
         logger.info("Engine initialization complete - ML features enabled")
 
@@ -71,6 +71,10 @@ class SchemeStealerEngine:
         
         # 3. Background Removal
         if mode == "mini":
+            if self._rembg_session is None:
+                logger.info("Initialising u2netp ONNX session (first mini scan)...")
+                self._rembg_session = new_session('u2netp')
+                logger.info("u2netp session ready")
             img_pil = Image.fromarray(img_np)
             no_bg_image = remove(img_pil, session=self._rembg_session)
             img_rgba = np.array(no_bg_image)
