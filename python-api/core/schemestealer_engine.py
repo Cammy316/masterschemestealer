@@ -53,7 +53,8 @@ class SchemeStealerEngine:
     def analyze_miniature(self, img_np: np.ndarray, mode: str = "mini",
                          remove_base: bool = True, use_awb: bool = True,
                          sat_boost: float = 1.3, detect_details: bool = True,
-                         brands: List[str] = None) -> Tuple[List[dict], np.ndarray, Dict]:
+                         brands: List[str] = None,
+                         precomputed_rgba: np.ndarray = None) -> Tuple[List[dict], np.ndarray, Dict]:
         
         if brands is None:
             brands = Affiliate.SUPPORTED_BRANDS
@@ -71,16 +72,20 @@ class SchemeStealerEngine:
         
         # 3. Background Removal
         if mode == "mini":
-            if self._rembg_session is None:
-                logger.info("Initialising u2netp ONNX session (first mini scan)...")
-                self._rembg_session = new_session(
-                    'u2netp',
-                    providers=['CPUExecutionProvider'],
-                )
-                logger.info("u2netp session ready")
-            img_pil = Image.fromarray(img_np)
-            no_bg_image = remove(img_pil, session=self._rembg_session)
-            img_rgba = np.array(no_bg_image)
+            if precomputed_rgba is not None:
+                # Client already removed background — skip rembg entirely
+                img_rgba = precomputed_rgba
+            else:
+                if self._rembg_session is None:
+                    logger.info("Initialising u2netp ONNX session (first mini scan)...")
+                    self._rembg_session = new_session(
+                        'u2netp',
+                        providers=['CPUExecutionProvider'],
+                    )
+                    logger.info("u2netp session ready")
+                img_pil = Image.fromarray(img_np)
+                no_bg_image = remove(img_pil, session=self._rembg_session)
+                img_rgba = np.array(no_bg_image)
             alpha = img_rgba[:, :, 3]
             coords = cv2.findNonZero(alpha)
             if coords is None: return [], None, quality_report.__dict__
