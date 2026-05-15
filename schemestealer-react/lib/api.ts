@@ -19,12 +19,43 @@ export class ApiError extends Error {
 }
 
 /**
+ * Compress an image to JPEG, capped at maxDimension px on the longest side.
+ * Keeps original if it's already small enough to avoid unnecessary re-encoding.
+ */
+async function compressImage(file: File, maxDimension = 1024, quality = 0.85): Promise<File> {
+  return new Promise((resolve) => {
+    const img = new window.Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const { naturalWidth: w, naturalHeight: h } = img;
+      if (w <= maxDimension && h <= maxDimension) {
+        resolve(file);
+        return;
+      }
+      const scale = maxDimension / Math.max(w, h);
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(w * scale);
+      canvas.height = Math.round(h * scale);
+      canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(
+        (blob) => resolve(new File([blob!], file.name, { type: 'image/jpeg' })),
+        'image/jpeg',
+        quality
+      );
+    };
+    img.src = url;
+  });
+}
+
+/**
  * Scan a miniature image (with background removal)
  */
 export async function scanMiniature(imageFile: File): Promise<ScanResult> {
   try {
+    const compressed = await compressImage(imageFile);
     const formData = new FormData();
-    formData.append('file', imageFile);
+    formData.append('file', compressed);
 
     const response = await fetch(`${API_BASE_URL}/api/scan/miniature`, {
       method: 'POST',
@@ -67,8 +98,9 @@ export async function scanMiniature(imageFile: File): Promise<ScanResult> {
  */
 export async function scanInspiration(imageFile: File): Promise<ScanResult> {
   try {
+    const compressed = await compressImage(imageFile);
     const formData = new FormData();
-    formData.append('file', imageFile);
+    formData.append('file', compressed);
 
     const response = await fetch(`${API_BASE_URL}/api/scan/inspiration`, {
       method: 'POST',

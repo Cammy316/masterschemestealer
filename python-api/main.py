@@ -119,12 +119,16 @@ async def readiness():
     }
 
 
+_paints_cache: list | None = None
+
 @app.get("/api/paints")
 async def get_paints():
+    global _paints_cache
     try:
-        with open('paints.json', 'r') as f:
-            paints = json.load(f)
-        return {"paints": paints}
+        if _paints_cache is None:
+            with open('paints.json', 'r') as f:
+                _paints_cache = json.load(f)
+        return {"paints": _paints_cache}
     except Exception as e:
         logger.error(f"Error loading paints: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to load paint database")
