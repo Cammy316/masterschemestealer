@@ -14,14 +14,15 @@ import numpy as np
 import colorsys
 import json
 from sklearn.cluster import KMeans
-from sklearn.neighbors import KDTree
 from skimage import color
+from skimage.color import deltaE_ciede2000
 from typing import List, Dict, Tuple, Optional
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from scipy import ndimage
 
 from config import ColorDetection, Visualization, ShadeRules
 from utils.logging_config import logger
+from core.colour_maths import circular_mean_hue
 
 
 # ============================================================================
@@ -35,16 +36,23 @@ class Paint:
     brand: str
     hex: str
     type: str
-    
+
+    # Curated metadata loaded from paints.json
+    color_family: str = ''
+    category: str = ''
+    finish: str = ''
+    transparency: float = 0.0
+
+    # Computed colour-space properties (populated by compute_properties)
     rgb: np.ndarray = None
     lab: np.ndarray = None
     hsv: np.ndarray = None
     chroma: float = None
     saturation: float = None
     brightness: float = None
-    
+
     def compute_properties(self):
-        """Compute color properties"""
+        """Compute colour properties from hex."""
         h = self.hex.lstrip('#')
         self.rgb = np.array([int(h[i:i+2], 16) for i in (0, 2, 4)]) / 255.0
         self.lab = color.rgb2lab(np.array([[self.rgb]]))[0][0]
@@ -247,11 +255,14 @@ class ColorAnalyzer:
         brightness_std = np.std(brightness_values)
         median_sat = np.median(pixels_hsv[:, 1])
         median_val = np.median(pixels_hsv[:, 2])
-        median_hue = np.median(pixels_hsv[:, 0]) * 360
-        
-        # Check if metallic
+        # Use circular mean so red pixels near 0°/360° are not misclassified as cyan.
+        median_hue = circular_mean_hue(pixels_hsv[:, 0]) * 360
+
+        # Check if metallic.
         is_std_metallic = (brightness_std > 25)
-        is_dark_gunmetal = (median_val < 0.65 and median_sat < 0.25)
+        # Require meaningful brightness variance to avoid flagging flat dark-grey
+        # surfaces (shaded armour, black cloaks) as gunmetal.
+        is_dark_gunmetal = (brightness_std > 18) and (median_val < 0.65) and (median_sat < 0.25)
         is_metallic = is_std_metallic or is_dark_gunmetal
         
         logger.debug(f"Metallic check: std={brightness_std:.1f}, sat={median_sat:.2f}, "
@@ -366,76 +377,100 @@ class ShadeTypeAnalyser:
 
 
 # ============================================================================
-# PAINT MATCHER (UNCHANGED FROM ORIGINAL)
+# PAINT MATCHER — vectorised CIEDE2000 (replaces Euclidean KDTree)
 # ============================================================================
 
+_METALLIC_KEYWORDS = ("Silver", "Steel", "Gold", "Bronze", "Metal",
+                      "Retributor", "Leadbelcher", "Iron")
+
+
 class PaintMatcher:
-    """Match colors to paint database"""
-    
+    """Match colours to paint database using vectorised CIEDE2000."""
+
     def __init__(self, paint_db: List[Paint]):
         self.paint_db = paint_db
-        lab_matrix = np.array([p.lab for p in paint_db])
-        self.kdtree = KDTree(lab_matrix, leaf_size=2)
-        logger.info(f"Paint matcher initialized with {len(paint_db)} paints")
-    
+        # Precompute LAB matrix once; rows match paint_db order.
+        self.lab_matrix = np.array([p.lab for p in paint_db], dtype=float)  # (N, 3)
+        self.brands_arr = np.array([p.brand for p in paint_db])             # (N,)
+        self.types_arr = np.array([p.type for p in paint_db])               # (N,)
+        logger.info(f"Paint matcher initialised with {len(paint_db)} paints "
+                    "(vectorised CIEDE2000)")
+
+    # ------------------------------------------------------------------
+    # Internal helpers
+    # ------------------------------------------------------------------
+
+    def _candidates_mask(self, brand: str, paint_type: str) -> np.ndarray:
+        return (self.brands_arr == brand) & (self.types_arr == paint_type)
+
+    @staticmethod
+    def _ciede2000_vs_matrix(target_lab: np.ndarray,
+                              candidate_labs: np.ndarray) -> np.ndarray:
+        """Vectorised CIEDE2000 of one target against N candidates — returns (N,) array."""
+        n = len(candidate_labs)
+        t = np.tile(target_lab, (n, 1)).reshape(n, 1, 3)
+        c = candidate_labs.reshape(n, 1, 3)
+        return deltaE_ciede2000(t, c).flatten()
+
+    @staticmethod
+    def _is_metallic_paint(name: str) -> bool:
+        return any(kw in name for kw in _METALLIC_KEYWORDS)
+
+    # ------------------------------------------------------------------
+    # Public API
+    # ------------------------------------------------------------------
+
     def match_color(self, target_rgb: np.ndarray, brand: str,
-                    paint_type: str = 'paint', context: Dict = None) -> Optional[Paint]:
-        """Find best matching paint"""
+                    paint_type: str = 'paint',
+                    context: Dict = None) -> Optional[Paint]:
+        """Return the best-matching paint for target_rgb in the given brand/type."""
         target_rgb_norm = target_rgb / 255.0 if target_rgb.max() > 1 else target_rgb
         target_lab = color.rgb2lab(np.array([[target_rgb_norm]]))[0][0]
-        
-        distances, indices = self.kdtree.query([target_lab], k=50)
-        
-        candidates = []
-        for idx in indices[0]:
-            paint = self.paint_db[idx]
-            if paint.brand == brand and paint.type == paint_type:
-                candidates.append((idx, paint))
-        
-        if not candidates:
+
+        mask = self._candidates_mask(brand, paint_type)
+        candidate_indices = np.where(mask)[0]
+        if len(candidate_indices) == 0:
             return None
-        
-        best_paint = None
-        best_score = float('inf')
-        
-        for idx, paint in candidates:
-            distance = color.deltaE_ciede2000(
-                np.array([[target_lab]]),
-                np.array([[paint.lab]])
-            )[0][0]
-            
-            # Context-aware penalties
-            if context:
-                target_hsv = np.array(colorsys.rgb_to_hsv(*target_rgb_norm))
-                target_chroma = np.sqrt(target_lab[1]**2 + target_lab[2]**2)
-                
-                # Don't match colorful targets to metallics
-                if not context.get('is_metallic', False):
-                    is_paint_metallic = ("Silver" in paint.name or "Steel" in paint.name or 
-                                       "Gold" in paint.name or "Bronze" in paint.name or 
-                                       "Metal" in paint.name or "Retributor" in paint.name or
-                                       "Leadbelcher" in paint.name or "Iron" in paint.name)
-                    
-                    if is_paint_metallic:
-                        distance += 100
-                
-                # Metallic targets should prefer metallics
-                if context.get('is_metallic', False):
-                    is_paint_metallic = ("Silver" in paint.name or "Steel" in paint.name or 
-                                       "Gold" in paint.name or "Bronze" in paint.name or 
-                                       "Metal" in paint.name or "Retributor" in paint.name or
-                                       "Leadbelcher" in paint.name or "Iron" in paint.name)
-                    
-                    if is_paint_metallic:
-                        distance -= 30
-                    else:
-                        distance += 50
-            
-            if distance < best_score:
-                best_score = distance
-                best_paint = paint
-        
-        return best_paint
+
+        candidate_labs = self.lab_matrix[candidate_indices]
+        distances = self._ciede2000_vs_matrix(target_lab, candidate_labs).copy()
+
+        # Context-aware penalties applied across the full candidate set.
+        if context:
+            is_target_metallic = context.get('is_metallic', False)
+            for local_i, global_i in enumerate(candidate_indices):
+                paint_metallic = self._is_metallic_paint(self.paint_db[global_i].name)
+                if not is_target_metallic and paint_metallic:
+                    distances[local_i] += 100
+                elif is_target_metallic:
+                    distances[local_i] += -30 if paint_metallic else 50
+
+        best_local = int(np.argmin(distances))
+        return self.paint_db[candidate_indices[best_local]]
+
+    def match_top_n(self, target_lab: np.ndarray, brand: str = None,
+                    paint_type: str = None, n: int = 5) -> List[Tuple[Paint, float]]:
+        """Return top-N closest paints by CIEDE2000, optionally filtered by brand/type."""
+        if brand is not None and paint_type is not None:
+            mask = self._candidates_mask(brand, paint_type)
+        elif brand is not None:
+            mask = self.brands_arr == brand
+        elif paint_type is not None:
+            mask = self.types_arr == paint_type
+        else:
+            mask = np.ones(len(self.paint_db), dtype=bool)
+
+        candidate_indices = np.where(mask)[0]
+        if len(candidate_indices) == 0:
+            return []
+
+        candidate_labs = self.lab_matrix[candidate_indices]
+        distances = self._ciede2000_vs_matrix(
+            np.asarray(target_lab, dtype=float), candidate_labs
+        )
+        top_local = np.argsort(distances)[:n]
+        return [(self.paint_db[candidate_indices[i]], float(distances[i]))
+                for i in top_local]
 
 
 # ============================================================================

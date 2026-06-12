@@ -8,19 +8,39 @@ from typing import Tuple
 import urllib.parse
 from config import Affiliate
 
-def apply_white_balance(img: np.ndarray) -> np.ndarray:
+def apply_white_balance(img_rgb: np.ndarray,
+                        alpha_mask: np.ndarray = None,
+                        p: int = 6) -> np.ndarray:
+    """Shades-of-Grey white balance (Finlayson & Trezzi, Minkowski norm p=6).
+
+    img_rgb   – uint8 HxWx3 RGB array.
+    alpha_mask – optional uint8 or bool HxW mask; when provided (e.g. for
+                 miniature scans where the background was already removed),
+                 the illuminant is estimated only over non-transparent pixels
+                 (alpha >= 128) but the correction is applied to the whole image.
+                 Both arrays must have the same spatial dimensions.
+    p         – Minkowski norm (default 6 gives good results for hobby photos).
     """
-    Apply LAB-based auto white balance
-    Corrects color casts (especially yellow indoor lighting)
-    """
-    result = cv2.cvtColor(img, cv2.COLOR_RGB2LAB)
-    avg_a = np.average(result[:, :, 1])
-    avg_b = np.average(result[:, :, 2])
-    
-    result[:, :, 1] = result[:, :, 1] - ((avg_a - 128) * (result[:, :, 0] / 255.0) * 1.1)
-    result[:, :, 2] = result[:, :, 2] - ((avg_b - 128) * (result[:, :, 0] / 255.0) * 1.1)
-    
-    return cv2.cvtColor(result, cv2.COLOR_LAB2RGB)
+    img = img_rgb.astype(np.float64) / 255.0
+    flat = img.reshape(-1, 3)
+
+    if alpha_mask is not None and alpha_mask.shape == img_rgb.shape[:2]:
+        opaque = (alpha_mask.reshape(-1) >= 128)
+        sample = flat[opaque]
+        if len(sample) < 100:
+            # Fall back to full image if almost no opaque pixels remain.
+            sample = flat
+    else:
+        sample = flat
+
+    # Estimate illuminant via Minkowski mean.
+    illum = np.power(np.mean(np.power(sample, p), axis=0), 1.0 / p)
+    # Normalise so neutral grey maps to grey (not white).
+    illum = illum / (np.sqrt(np.sum(illum ** 2)) / np.sqrt(3.0))
+    illum = np.clip(illum, 1e-6, None)
+
+    corrected = np.clip(img / illum, 0.0, 1.0)
+    return (corrected * 255.0).astype(np.uint8)
 
 
 def increase_saturation(img: np.ndarray, scale: float = 1.3) -> np.ndarray:

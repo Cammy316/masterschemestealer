@@ -19,10 +19,17 @@ class SmartColorExtractor:
     WITH COMPLETE FIX SUITE FOR WARHAMMER MINIATURES
     """
     
+    # Percentile bounds for specular and deep-shadow filtering.
+    # Applied before k-means so phantom "White" clusters from gloss varnish
+    # and flash don't drag cluster medians lighter.
+    _SPECULAR_L_HIGH = 98
+    _SPECULAR_L_LOW = 2
+    _MIN_PIXELS_AFTER_FILTER = 5000
+
     def __init__(self):
         self.min_cluster_size = 0.03
         self.detail_threshold = 0.05
-        
+
         # Configurable thresholds
         self.SHADOW_V_THRESHOLD = 0.10
         self.GOLD_CHROMA_THRESHOLD = 22
@@ -44,7 +51,26 @@ class SmartColorExtractor:
         pixels_lab = color.rgb2lab(
             pixels_rgb.reshape(-1, 1, 3) / 255.0
         ).reshape(-1, 3)
-        
+
+        # Filter specular highlights (gloss varnish, flash) and deep shadows
+        # before clustering so they don't form phantom clusters or drag medians.
+        # surviving_indices maps filtered-array positions → original positions
+        # so that pixel_indices stored in clusters still address valid_coords.
+        L_vals = pixels_lab[:, 0]
+        p_lo, p_hi = np.percentile(L_vals, [self._SPECULAR_L_LOW,
+                                             self._SPECULAR_L_HIGH])
+        keep = (L_vals >= p_lo) & (L_vals <= p_hi)
+        if keep.sum() >= self._MIN_PIXELS_AFTER_FILTER:
+            surviving_indices = np.where(keep)[0]
+            pixels_rgb = pixels_rgb[keep]
+            pixels_lab = pixels_lab[keep]
+            n_pixels = len(pixels_rgb)
+            logger.debug(f"Specular filter: kept {n_pixels} pixels "
+                         f"(L* {p_lo:.1f}–{p_hi:.1f})")
+        else:
+            surviving_indices = np.arange(n_pixels)
+            logger.warning("Specular filter skipped: too few pixels would remain")
+
         # STEP 1: Initial clustering in LAB space
         n_initial_clusters = self._determine_optimal_k(n_pixels)
         logger.info(f"Initial clustering into {n_initial_clusters} clusters...")
@@ -73,6 +99,11 @@ class SmartColorExtractor:
             chroma = np.sqrt(median_lab[1]**2 + median_lab[2]**2)
             median_hsv = np.array(colorsys.rgb_to_hsv(*(median_rgb / 255.0)))
             
+            # Remap local (post-filter) indices back to original pixel positions
+            # so that spatial-mask reconstruction in the engine works correctly.
+            local_indices = np.where(cluster_mask)[0]
+            original_indices = surviving_indices[local_indices]
+
             initial_clusters.append({
                 'id': i,
                 'coverage': coverage,
@@ -83,7 +114,7 @@ class SmartColorExtractor:
                 'chroma': chroma,
                 'brightness_std': brightness_std,
                 'median_hsv': median_hsv,
-                'pixel_indices': np.where(cluster_mask)[0]
+                'pixel_indices': original_indices,
             })
         
         # STEP 2: Perceptual merging

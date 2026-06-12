@@ -12,6 +12,7 @@ import io
 import cv2
 
 from core.schemestealer_engine import SchemeStealerEngine
+from core.colour_maths import ciede2000_single
 from config import WashMapping
 
 logger = logging.getLogger(__name__)
@@ -167,8 +168,8 @@ class MiniatureScannerService:
                         paint_rgb = self._hex_to_rgb(paint_hex)
                         paint_lab = self._rgb_to_lab(paint_rgb)
 
-                        # Calculate Delta-E
-                        delta_e = np.sqrt(sum((paint_lab[i] - lab[i])**2 for i in range(3)))
+                        # Calculate Delta-E (CIEDE2000)
+                        delta_e = ciede2000_single(paint_lab, lab)
 
                         paints.append({
                             'name': match_data['name'],
@@ -249,7 +250,7 @@ class MiniatureScannerService:
             try:
                 paint_rgb = self._hex_to_rgb(match['hex'])
                 paint_lab = self._rgb_to_lab(paint_rgb)
-                delta_e = np.sqrt(sum((paint_lab[i] - color_lab[i])**2 for i in range(3)))
+                delta_e = ciede2000_single(paint_lab, color_lab)
                 result['deltaE'] = round(float(delta_e), 1)
             except Exception:
                 result['deltaE'] = 0
@@ -312,7 +313,7 @@ class MiniatureScannerService:
                 wash_rgb = self._hex_to_rgb(matching_wash['hex'])
                 wash_lab = self._rgb_to_lab(wash_rgb)
                 # Washes don't need precise color matching, so deltaE is informational
-                delta_e = np.sqrt(sum((wash_lab[i] - color_lab[i])**2 for i in range(3)))
+                delta_e = ciede2000_single(wash_lab, color_lab)
                 result['deltaE'] = round(float(delta_e), 1)
             except Exception:
                 result['deltaE'] = 0

@@ -9,6 +9,7 @@ import logging
 from typing import Dict, List, Any, Optional
 
 from core.schemestealer_engine import SchemeStealerEngine
+from core.colour_maths import ciede2000_single
 from config import WashMapping
 
 logger = logging.getLogger(__name__)
@@ -76,8 +77,8 @@ class InspirationScannerService:
                 remove_base=False,
                 use_awb=True,
                 sat_boost=1.2,
-                detect_details=False,  # Don't need detail detection for inspiration
-                brands=['Citadel', 'Vallejo', 'Army Painter']  # Use main brands
+                detect_details=False,
+                brands=['Citadel', 'Vallejo', 'Army Painter', 'Scale75'],
             )
 
             logger.info(f"Detected {len(recipes)} colors")
@@ -150,7 +151,7 @@ class InspirationScannerService:
                         paint_lab = self._rgb_to_lab(paint_rgb)
 
                         # Calculate Delta-E
-                        delta_e = np.sqrt(sum((paint_lab[i] - lab[i])**2 for i in range(3)))
+                        delta_e = ciede2000_single(paint_lab, lab)
 
                         paints.append({
                             'name': match_data['name'],
@@ -192,7 +193,8 @@ class InspirationScannerService:
         brand_mapping = {
             'Citadel': 'citadel',
             'Vallejo': 'vallejo',
-            'Army Painter': 'army_painter'
+            'Army Painter': 'army_painter',
+            'Scale75': 'scale75',
         }
 
         paint_recipe = {}
@@ -230,7 +232,7 @@ class InspirationScannerService:
             try:
                 paint_rgb = self._hex_to_rgb(match['hex'])
                 paint_lab = self._rgb_to_lab(paint_rgb)
-                delta_e = np.sqrt(sum((paint_lab[i] - color_lab[i])**2 for i in range(3)))
+                delta_e = ciede2000_single(paint_lab, color_lab)
                 result['deltaE'] = round(float(delta_e), 1)
             except Exception:
                 result['deltaE'] = 0
@@ -291,7 +293,7 @@ class InspirationScannerService:
             try:
                 wash_rgb = self._hex_to_rgb(matching_wash['hex'])
                 wash_lab = self._rgb_to_lab(wash_rgb)
-                delta_e = np.sqrt(sum((wash_lab[i] - color_lab[i])**2 for i in range(3)))
+                delta_e = ciede2000_single(wash_lab, color_lab)
                 result['deltaE'] = round(float(delta_e), 1)
             except Exception:
                 result['deltaE'] = 0

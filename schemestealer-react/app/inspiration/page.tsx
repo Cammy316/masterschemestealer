@@ -42,18 +42,16 @@ export default function InspirationPage() {
       let result;
 
       if (offlineMode) {
-        // Use offline colour detection
+        // Use offline colour detection and fill in multi-brand matches locally.
         result = await detectColorsOffline(file, 'inspiration', {
           numColors: 5,
           numPaintMatches: 5,
         });
+        result = enhanceWithMultiBrandMatches(result, 3);
       } else {
-        // Call API to scan inspiration image
+        // Backend results are used as-is — no client-side paint-DB override.
         result = await scanInspiration(file);
       }
-
-      // Enhance with multi-brand matches
-      result = enhanceWithMultiBrandMatches(result, 3);
 
       // Log completed scan for ML training
       mlLogger.logScanComplete(result);
