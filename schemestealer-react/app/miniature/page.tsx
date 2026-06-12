@@ -50,14 +50,15 @@ export default function MiniscanPage() {
       let result;
 
       if (offlineMode) {
-        // Use offline colour detection
+        // Use offline colour detection and fill in multi-brand matches locally.
         result = await detectColorsOffline(file, 'miniature', {
           numColors: 6,
           numPaintMatches: 5,
         });
+        result = enhanceWithMultiBrandMatches(result, 3);
       } else {
-        // Remove background in the browser, then send RGBA PNG to backend
-        // Fall back to server-side removal if the browser path fails (e.g. no WebGL)
+        // Remove background in the browser, then send RGBA PNG to backend.
+        // Backend results are used as-is — no client-side paint-DB override.
         let fileToScan = file;
         try {
           const bgRemovedBlob = await removeBackground(file);
@@ -71,9 +72,6 @@ export default function MiniscanPage() {
         }
         result = await scanMiniature(fileToScan);
       }
-
-      // Enhance with multi-brand matches
-      result = enhanceWithMultiBrandMatches(result, 3);
 
       // Log completed scan for ML training
       mlLogger.logScanComplete(result);

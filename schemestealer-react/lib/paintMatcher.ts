@@ -4,7 +4,7 @@
  * Now supports structured paint recipes with BASE/SHADE/HIGHLIGHT/WASH
  */
 
-import type { Paint, PaintMatch, BrandRecipe, PaintRecipe } from './types';
+import type { Paint, PaintMatch, BrandRecipe, PaintRecipe, ScanResult } from './types';
 import { getPaintDatabase, type PaintData } from './paintDatabase';
 import { deltaE2000 } from './deltaE';
 
@@ -313,59 +313,39 @@ export function getFullPaintRecipe(
 }
 
 /**
- * Enhance scan result with multi-brand matches (legacy format)
- * Takes existing result and adds matches from all brands
+ * Enhance scan result with multi-brand matches (legacy format — offline mode only).
+ * In online mode the backend's 3,022-paint results are used as-is.
  */
 export function enhanceWithMultiBrandMatches(
-  scanResult: any,
+  scanResult: ScanResult,
   matchesPerBrand: number = 3
-): any {
-  // If result already has multi-brand matches, return as is
-  if (
-    scanResult.detectedColors &&
-    scanResult.detectedColors[0]?.paintMatches?.citadel
-  ) {
+): ScanResult {
+  // Already has multi-brand matches — return unchanged.
+  if (scanResult.detectedColors[0]?.paintMatches?.citadel) {
     return scanResult;
   }
 
-  // Add multi-brand matches to each color
-  const enhancedColors = scanResult.detectedColors.map((color: any) => {
-    const matches = getMultiBrandMatches(color.lab, matchesPerBrand);
-
-    return {
-      ...color,
-      paintMatches: matches,
-    };
+  const detectedColors = scanResult.detectedColors.map((colour) => {
+    const matches = getMultiBrandMatches(colour.lab, matchesPerBrand);
+    return { ...colour, paintMatches: matches };
   });
 
-  return {
-    ...scanResult,
-    detectedColors: enhancedColors,
-  };
+  return { ...scanResult, detectedColors };
 }
 
 /**
- * Enhance scan result with structured paint recipes (new format)
- * Takes existing result and adds paintRecipe to each color
+ * Enhance scan result with structured paint recipes (new format — offline mode only).
  */
-export function enhanceWithPaintRecipes(scanResult: any): any {
-  // If result already has paintRecipe, return as is
-  if (scanResult.detectedColors && scanResult.detectedColors[0]?.paintRecipe) {
+export function enhanceWithPaintRecipes(scanResult: ScanResult): ScanResult {
+  // Already has recipes — return unchanged.
+  if (scanResult.detectedColors[0]?.paintRecipe) {
     return scanResult;
   }
 
-  // Add paintRecipe to each color
-  const enhancedColors = scanResult.detectedColors.map((color: any) => {
-    const recipe = getFullPaintRecipe(color.lab, color.family || 'Unknown');
-
-    return {
-      ...color,
-      paintRecipe: recipe,
-    };
+  const detectedColors = scanResult.detectedColors.map((colour) => {
+    const recipe = getFullPaintRecipe(colour.lab, colour.family ?? 'Unknown');
+    return { ...colour, paintRecipe: recipe };
   });
 
-  return {
-    ...scanResult,
-    detectedColors: enhancedColors,
-  };
+  return { ...scanResult, detectedColors };
 }

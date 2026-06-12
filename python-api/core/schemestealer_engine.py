@@ -35,7 +35,11 @@ class SchemeStealerEngine:
                 name=p['name'],
                 brand=p['brand'],
                 hex=p['hex'],
-                type=p.get('type', 'paint')
+                type=p.get('type', p.get('category', 'paint')),
+                color_family=p.get('color_family', ''),
+                category=p.get('category', ''),
+                finish=p.get('finish', ''),
+                transparency=float(p.get('transparency', 0.0)),
             )
             paint.compute_properties()
             self.paint_db.append(paint)
@@ -63,9 +67,14 @@ class SchemeStealerEngine:
         
         img_np = quality_report.enhanced_image
         
-        # 2. Preprocessing
+        # 2. Preprocessing — pass alpha mask when available so the illuminant
+        #    estimate is computed only over non-transparent foreground pixels.
         if use_awb:
-            img_np = apply_white_balance(img_np)
+            alpha_for_awb = None
+            if (precomputed_rgba is not None
+                    and precomputed_rgba.shape[:2] == img_np.shape[:2]):
+                alpha_for_awb = precomputed_rgba[:, :, 3]
+            img_np = apply_white_balance(img_np, alpha_mask=alpha_for_awb)
         
         # 3. Background Removal
         if mode == "mini":
@@ -172,6 +181,18 @@ class SchemeStealerEngine:
             highlight_matches = {b: self._match_and_format(layers['highlight'], b, 'paint', context) for b in brands}
             shade_matches = {b: self._match_and_format(layers['shade'], b, shade_type, context) for b in brands}
 
+            # Derive the displayed colour family from the best base match's
+            # curated color_family field — more reliable than the heuristic
+            # classifier for display and wash selection.
+            paint_derived_family = None
+            for b in brands:
+                bm = base_matches.get(b)
+                if bm and bm.get('color_family'):
+                    cf = bm['color_family']
+                    paint_derived_family = cf[0].upper() + cf[1:] if cf else None
+                    break
+            display_family = paint_derived_family or family
+
             # Calculate spatial features
             spatial_mask = np.zeros(img_rgb.shape[:2], dtype=bool)
             indices = color_data.get('pixel_indices')
@@ -200,7 +221,8 @@ class SchemeStealerEngine:
             # Build comprehensive recipe with ML features
             recipe = {
                 # UI/Display data
-                'family': family,
+                'family': display_family,          # paint-curated family for API response
+                'heuristic_family': family,         # classifier output kept for internal use
                 'dominance': color_data['coverage'],
                 'base': base_matches,
                 'highlight': highlight_matches,
@@ -259,6 +281,13 @@ class SchemeStealerEngine:
         }
 
     def _match_and_format(self, rgb, brand, p_type, context):
-        """Match color to paint and format for UI"""
+        """Match colour to paint and format for UI, including color_family."""
         match = self.matcher.match_color(rgb, brand, p_type, context)
-        return {'name': match.name, 'hex': match.hex, 'type': match.type} if match else None
+        if not match:
+            return None
+        return {
+            'name': match.name,
+            'hex': match.hex,
+            'type': match.type,
+            'color_family': match.color_family,
+        }

@@ -1,0 +1,21 @@
+[
+  {
+    "_comment": "Delete this entry and replace with real fixtures. See README.md for format.",
+    "image": "example_ultramarines.jpg",
+    "mode": "miniature",
+    "source": "own_photo",
+    "lighting": "desk_lamp",
+    "expected_colours": [
+      {
+        "family": "blue",
+        "acceptable_paints": ["Macragge Blue", "Ultramarines Blue", "Kantor Blue"],
+        "metallic": false
+      },
+      {
+        "family": "gold",
+        "acceptable_paints": ["Retributor Armour", "Greedy Gold", "Brassy Brass"],
+        "metallic": true
+      }
+    ]
+  }
+]

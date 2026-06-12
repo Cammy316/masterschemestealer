@@ -24,11 +24,12 @@ export interface Color {
   family?: string; // Color family (e.g., "Blue", "Gold", "Red")
   reticle?: string | null; // Base64 encoded JPEG showing color location on miniature
   paintRecipe?: PaintRecipe; // NEW: Structured recipe per brand
-  // Legacy support for old paint matches format
+  // Legacy support for old paint matches format (offline mode only)
   paintMatches?: {
     citadel: Paint[];
     vallejo: Paint[];
     armyPainter: Paint[];
+    scale75: Paint[];
   };
 }
 
