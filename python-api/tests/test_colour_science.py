@@ -167,3 +167,74 @@ def test_metallic_flat_dark_grey_is_not_metallic():
     assert not is_metallic, (
         f"Flat dark grey incorrectly flagged as metallic (type={metallic_type})"
     )
+
+
+# ============================================================================
+# PaintMatcher — type/category mapping regression
+# ============================================================================
+
+@pytest.fixture(scope="module")
+def paint_matcher_live():
+    """Load the real paints.json and build a PaintMatcher.
+
+    Skipped automatically when paints.json is not present (CI without assets).
+    """
+    import json
+    db_path = Path(__file__).resolve().parent.parent / "paints.json"
+    if not db_path.exists():
+        pytest.skip("paints.json not found — skipping live matcher tests")
+
+    from core.color_engine import Paint, PaintMatcher
+
+    with open(db_path, encoding="utf-8") as f:
+        raw = json.load(f)
+
+    paint_db = []
+    for p in raw:
+        paint = Paint(
+            name=p["name"],
+            brand=p["brand"],
+            hex=p["hex"],
+            type=p.get("type", p.get("category", "paint")),
+            color_family=p.get("color_family", ""),
+            category=p.get("category", ""),
+            finish=p.get("finish", ""),
+            transparency=float(p.get("transparency", 0.0)),
+        )
+        paint.compute_properties()
+        paint_db.append(paint)
+
+    return PaintMatcher(paint_db)
+
+
+_MID_RED_RGB = np.array([154, 17, 21], dtype=np.uint8)
+_BRANDS = ["Citadel", "Vallejo", "Army Painter", "Scale75"]
+
+# Categories that should be returned by paint_type='paint'
+_PAINT_CATS = {"base", "layer", "air", "contrast", "technical"}
+# Categories that should be returned by paint_type='wash'
+_WASH_CATS = {"wash", "shade", "ink"}
+
+
+@pytest.mark.parametrize("brand", _BRANDS)
+def test_match_color_paint_returns_result(paint_matcher_live, brand):
+    """paint_type='paint' must return a non-None match for each brand."""
+    result = paint_matcher_live.match_color(_MID_RED_RGB, brand, paint_type="paint")
+    assert result is not None, (
+        f"match_color returned None for brand={brand!r}, paint_type='paint'. "
+        "Likely TYPE_CATEGORIES mapping is broken."
+    )
+    assert result.type.lower() in _PAINT_CATS, (
+        f"Returned paint has unexpected type {result.type!r} for brand={brand!r}"
+    )
+
+
+@pytest.mark.parametrize("brand", _BRANDS)
+def test_match_color_wash_returns_wash_category(paint_matcher_live, brand):
+    """paint_type='wash' must return a wash/shade/ink category paint."""
+    result = paint_matcher_live.match_color(_MID_RED_RGB, brand, paint_type="wash")
+    if result is None:
+        pytest.skip(f"No wash-category paints for brand={brand!r} — acceptable")
+    assert result.type.lower() in _WASH_CATS, (
+        f"Returned paint has type {result.type!r}, expected a wash category"
+    )

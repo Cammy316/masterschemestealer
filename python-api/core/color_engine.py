@@ -383,6 +383,15 @@ class ShadeTypeAnalyser:
 _METALLIC_KEYWORDS = ("Silver", "Steel", "Gold", "Bronze", "Metal",
                       "Retributor", "Leadbelcher", "Iron")
 
+# Maps the legacy caller strings ('paint', 'wash') to the DB category values
+# now stored in Paint.type (loaded from paints.json 'category' field).
+# Without this mapping, _candidates_mask returns zero hits because nothing
+# in the DB has type exactly equal to 'paint'.
+TYPE_CATEGORIES: Dict[str, set] = {
+    'paint': {'base', 'layer', 'air', 'contrast', 'technical'},
+    'wash':  {'wash', 'shade', 'ink'},
+}
+
 
 class PaintMatcher:
     """Match colours to paint database using vectorised CIEDE2000."""
@@ -392,7 +401,8 @@ class PaintMatcher:
         # Precompute LAB matrix once; rows match paint_db order.
         self.lab_matrix = np.array([p.lab for p in paint_db], dtype=float)  # (N, 3)
         self.brands_arr = np.array([p.brand for p in paint_db])             # (N,)
-        self.types_arr = np.array([p.type for p in paint_db])               # (N,)
+        # Lowercase so lookups are case-insensitive.
+        self.types_arr = np.array([p.type.lower() for p in paint_db])       # (N,)
         logger.info(f"Paint matcher initialised with {len(paint_db)} paints "
                     "(vectorised CIEDE2000)")
 
@@ -401,7 +411,8 @@ class PaintMatcher:
     # ------------------------------------------------------------------
 
     def _candidates_mask(self, brand: str, paint_type: str) -> np.ndarray:
-        return (self.brands_arr == brand) & (self.types_arr == paint_type)
+        cats = TYPE_CATEGORIES.get(paint_type.lower(), {paint_type.lower()})
+        return (self.brands_arr == brand) & np.isin(self.types_arr, list(cats))
 
     @staticmethod
     def _ciede2000_vs_matrix(target_lab: np.ndarray,
@@ -456,7 +467,8 @@ class PaintMatcher:
         elif brand is not None:
             mask = self.brands_arr == brand
         elif paint_type is not None:
-            mask = self.types_arr == paint_type
+            cats = TYPE_CATEGORIES.get(paint_type.lower(), {paint_type.lower()})
+            mask = np.isin(self.types_arr, list(cats))
         else:
             mask = np.ones(len(self.paint_db), dtype=bool)
 
