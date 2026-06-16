@@ -42,6 +42,8 @@ class Paint:
     category: str = ''
     finish: str = ''
     transparency: float = 0.0
+    matchable: bool = True
+    discontinued: bool = False
 
     # Computed colour-space properties (populated by compute_properties)
     rgb: np.ndarray = None
@@ -383,35 +385,55 @@ class ShadeTypeAnalyser:
 _METALLIC_KEYWORDS = ("Silver", "Steel", "Gold", "Bronze", "Metal",
                       "Retributor", "Leadbelcher", "Iron")
 
-# Maps the legacy caller strings ('paint', 'wash') to the DB category values
-# now stored in Paint.type (loaded from paints.json 'category' field).
-# Without this mapping, _candidates_mask returns zero hits because nothing
-# in the DB has type exactly equal to 'paint'.
-TYPE_CATEGORIES: Dict[str, set] = {
-    'paint': {'base', 'layer', 'air', 'contrast', 'technical'},
-    'wash':  {'wash', 'shade', 'ink'},
+# Role → DB category sets.  Callers request a semantic role; the matcher
+# expands it to the relevant DB category strings stored in Paint.type.
+ROLE_CATEGORIES: Dict[str, set] = {
+    'dominant':  {'base', 'layer', 'air', 'contrast'},
+    'highlight': {'base', 'layer', 'air', 'contrast'},
+    'shade':     {'wash', 'shade', 'ink', 'contrast'},
+    'wash':      {'wash', 'shade', 'ink'},
 }
+
+# Backward-compat shim: old paint_type strings → new role names.
+_TYPE_TO_ROLE: Dict[str, str] = {
+    'paint': 'dominant',
+    'wash':  'wash',
+}
+
+# ΔE penalty per unit transparency for dominant/highlight roles.
+# Contrast paint with transparency=0.7 → +5.6 ΔE penalty.
+TRANSPARENCY_PENALTY: float = 8.0
+
+# ΔE threshold below which two same-brand paints are considered duplicates
+# (used in match_top_n deduplication).
+_DEDUP_THRESHOLD: float = 2.0
+
+from core.colour_maths import ciede2000_single as _ciede2000_single
 
 
 class PaintMatcher:
     """Match colours to paint database using vectorised CIEDE2000."""
 
     def __init__(self, paint_db: List[Paint]):
-        self.paint_db = paint_db
-        # Precompute LAB matrix once; rows match paint_db order.
-        self.lab_matrix = np.array([p.lab for p in paint_db], dtype=float)  # (N, 3)
-        self.brands_arr = np.array([p.brand for p in paint_db])             # (N,)
-        # Lowercase so lookups are case-insensitive.
-        self.types_arr = np.array([p.type.lower() for p in paint_db])       # (N,)
-        logger.info(f"Paint matcher initialised with {len(paint_db)} paints "
-                    "(vectorised CIEDE2000)")
+        # Exclude non-matchable paints from the search index.
+        matchable = [p for p in paint_db if p.matchable]
+        self.paint_db = matchable
+        # Precompute arrays once — rows correspond to paint_db order.
+        self.lab_matrix = np.array([p.lab for p in matchable], dtype=float)   # (N, 3)
+        self.brands_arr = np.array([p.brand for p in matchable])               # (N,)
+        self.types_arr  = np.array([p.type.lower() for p in matchable])        # (N,) lowercase
+        self.finish_arr = np.array([p.finish.lower() for p in matchable])      # (N,)
+        self.transp_arr = np.array([p.transparency for p in matchable],
+                                   dtype=float)                                 # (N,)
+        logger.info(f"Paint matcher initialised: {len(matchable)}/{len(paint_db)} "
+                    "matchable paints (vectorised CIEDE2000)")
 
     # ------------------------------------------------------------------
     # Internal helpers
     # ------------------------------------------------------------------
 
-    def _candidates_mask(self, brand: str, paint_type: str) -> np.ndarray:
-        cats = TYPE_CATEGORIES.get(paint_type.lower(), {paint_type.lower()})
+    def _candidates_mask(self, brand: str, role: str) -> np.ndarray:
+        cats = ROLE_CATEGORIES.get(role.lower(), {role.lower()})
         return (self.brands_arr == brand) & np.isin(self.types_arr, list(cats))
 
     @staticmethod
@@ -432,13 +454,42 @@ class PaintMatcher:
     # ------------------------------------------------------------------
 
     def match_color(self, target_rgb: np.ndarray, brand: str,
-                    paint_type: str = 'paint',
-                    context: Dict = None) -> Optional[Paint]:
-        """Return the best-matching paint for target_rgb in the given brand/type."""
+                    role: str = 'dominant',
+                    context: Dict = None,
+                    paint_type: str = None) -> Optional[Paint]:
+        """Return the best-matching paint for target_rgb in the given brand/role.
+
+        paint_type is accepted for backward compatibility and mapped to role.
+        """
+        if paint_type is not None:
+            role = _TYPE_TO_ROLE.get(paint_type.lower(), paint_type.lower())
+
         target_rgb_norm = target_rgb / 255.0 if target_rgb.max() > 1 else target_rgb
         target_lab = color.rgb2lab(np.array([[target_rgb_norm]]))[0][0]
 
-        mask = self._candidates_mask(brand, paint_type)
+        mask = self._candidates_mask(brand, role)
+
+        # ── Metallic finish gate (skip for shade/wash roles) ─────────────
+        if role not in ('shade', 'wash') and context:
+            # Accept both legacy bool and new float metallic_score
+            raw = context.get('metallic_score')
+            if raw is None:
+                raw = float(bool(context.get('is_metallic', False)))
+            metallic_score = float(raw)
+
+            if metallic_score >= 0.5:
+                metallic_mask = mask & (self.finish_arr == 'metallic')
+                if metallic_mask.any():
+                    mask = metallic_mask
+                else:
+                    logger.info(f"Metallic pool empty for {brand}/{role}, "
+                                "falling back to unrestricted candidates")
+            elif metallic_score == 0.0:
+                mask = mask & (self.finish_arr != 'metallic')
+        elif role not in ('shade', 'wash'):
+            # No context → exclude metallics from opaque paint matches
+            mask = mask & (self.finish_arr != 'metallic')
+
         candidate_indices = np.where(mask)[0]
         if len(candidate_indices) == 0:
             return None
@@ -446,9 +497,14 @@ class PaintMatcher:
         candidate_labs = self.lab_matrix[candidate_indices]
         distances = self._ciede2000_vs_matrix(target_lab, candidate_labs).copy()
 
-        # Context-aware penalties applied across the full candidate set.
-        if context:
-            is_target_metallic = context.get('is_metallic', False)
+        # ── Transparency penalty (dominant/highlight only) ────────────────
+        if role in ('dominant', 'highlight'):
+            distances += self.transp_arr[candidate_indices] * TRANSPARENCY_PENALTY
+
+        # ── Legacy context-aware metallic name penalties ──────────────────
+        if context and role not in ('shade', 'wash'):
+            is_target_metallic = bool(context.get('metallic_score',
+                                                   context.get('is_metallic', False)))
             for local_i, global_i in enumerate(candidate_indices):
                 paint_metallic = self._is_metallic_paint(self.paint_db[global_i].name)
                 if not is_target_metallic and paint_metallic:
@@ -460,14 +516,22 @@ class PaintMatcher:
         return self.paint_db[candidate_indices[best_local]]
 
     def match_top_n(self, target_lab: np.ndarray, brand: str = None,
-                    paint_type: str = None, n: int = 5) -> List[Tuple[Paint, float]]:
-        """Return top-N closest paints by CIEDE2000, optionally filtered by brand/type."""
-        if brand is not None and paint_type is not None:
-            mask = self._candidates_mask(brand, paint_type)
+                    role: str = None, n: int = 5,
+                    paint_type: str = None) -> List[Tuple[Paint, float]]:
+        """Return top-N closest paints by CIEDE2000, optionally filtered by brand/role.
+
+        paint_type accepted for backward compatibility.
+        Results within ΔE 2.0 of each other (same brand) are deduplicated.
+        """
+        if paint_type is not None and role is None:
+            role = _TYPE_TO_ROLE.get(paint_type.lower(), paint_type.lower())
+
+        if brand is not None and role is not None:
+            mask = self._candidates_mask(brand, role)
         elif brand is not None:
             mask = self.brands_arr == brand
-        elif paint_type is not None:
-            cats = TYPE_CATEGORIES.get(paint_type.lower(), {paint_type.lower()})
+        elif role is not None:
+            cats = ROLE_CATEGORIES.get(role.lower(), {role.lower()})
             mask = np.isin(self.types_arr, list(cats))
         else:
             mask = np.ones(len(self.paint_db), dtype=bool)
@@ -480,9 +544,29 @@ class PaintMatcher:
         distances = self._ciede2000_vs_matrix(
             np.asarray(target_lab, dtype=float), candidate_labs
         )
-        top_local = np.argsort(distances)[:n]
-        return [(self.paint_db[candidate_indices[i]], float(distances[i]))
-                for i in top_local]
+
+        # Deduplicate: skip same-brand candidates within ΔE 2.0 of an already-
+        # included paint to avoid returning near-identical colours.
+        results: List[Tuple[Paint, float]] = []
+        included: List[Paint] = []  # paints already in results
+
+        for local_i in np.argsort(distances):
+            if len(results) >= n:
+                break
+            global_i = candidate_indices[local_i]
+            paint = self.paint_db[global_i]
+            dist = float(distances[local_i])
+
+            too_similar = any(
+                inc.brand == paint.brand
+                and _ciede2000_single(paint.lab, inc.lab) < _DEDUP_THRESHOLD
+                for inc in included
+            )
+            if not too_similar:
+                results.append((paint, dist))
+                included.append(paint)
+
+        return results
 
 
 # ============================================================================

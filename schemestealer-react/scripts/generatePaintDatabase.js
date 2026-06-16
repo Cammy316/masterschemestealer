@@ -228,6 +228,9 @@ function generateTypeScript(paints) {
       family: mapFamily(paint),
       rgb: rgb,  // { r, g, b } object
       lab: lab,  // { l, a, b } object
+      finish: (paint.finish || '').toLowerCase(),
+      transparency: typeof paint.transparency === 'number' ? paint.transparency : 0,
+      matchable: paint.matchable !== false,  // default true
     };
   });
 
@@ -258,6 +261,9 @@ export interface PaintData {
   lab: LAB;
   type: string;
   family: string;
+  finish: string;
+  transparency: number;
+  matchable: boolean;
 }
 
 /**
@@ -328,15 +334,21 @@ export const PAINT_DATABASE_STATS = {
 // ============================================================================
 
 async function main() {
-  const paintsJsonPath = path.join(__dirname, '../../python-api/paints.json');
+  const cleanedPath = path.join(__dirname, '../../python-api/paints_cleaned.json');
+  const fallbackPath = path.join(__dirname, '../../python-api/paints.json');
   const outputPath = path.join(__dirname, '../lib/paintDatabase.ts');
 
-  console.log('Reading paints database...');
+  const paintsJsonPath = fs.existsSync(cleanedPath) ? cleanedPath : fallbackPath;
+  console.log(`Reading paints database from: ${path.basename(paintsJsonPath)}`);
   const rawData = fs.readFileSync(paintsJsonPath, 'utf-8');
   const allPaints = JSON.parse(rawData);
 
+  // Exclude paints explicitly marked non-matchable
+  const matchablePaints = allPaints.filter(p => p.matchable !== false);
+  console.log(`Matchable paints: ${matchablePaints.length} / ${allPaints.length} total`);
+
   console.log('Selecting optimal paint subset...');
-  const selectedPaints = selectPaints(allPaints, 1000);
+  const selectedPaints = selectPaints(matchablePaints, 1000);
 
   console.log('\nGenerating TypeScript file...');
   const tsContent = generateTypeScript(selectedPaints);

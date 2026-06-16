@@ -40,6 +40,8 @@ class SchemeStealerEngine:
                 category=p.get('category', ''),
                 finish=p.get('finish', ''),
                 transparency=float(p.get('transparency', 0.0)),
+                matchable=bool(p.get('matchable', True)),
+                discontinued=bool(p.get('discontinued', False)),
             )
             paint.compute_properties()
             self.paint_db.append(paint)
@@ -176,10 +178,15 @@ class SchemeStealerEngine:
                 'high_chroma': chroma > 30
             }
 
+            # Map ShadeTypeAnalyser output to engine role names.
+            # 'wash' → 'wash' (dedicated wash/shade/ink products)
+            # 'paint' → 'shade' (shade + contrast paints acceptable)
+            shade_role = shade_type if shade_type == 'wash' else 'shade'
+
             # Match paints
-            base_matches = {b: self._match_and_format(layers['base'], b, 'paint', context) for b in brands}
-            highlight_matches = {b: self._match_and_format(layers['highlight'], b, 'paint', context) for b in brands}
-            shade_matches = {b: self._match_and_format(layers['shade'], b, shade_type, context) for b in brands}
+            base_matches = {b: self._match_and_format(layers['base'], b, 'dominant', context) for b in brands}
+            highlight_matches = {b: self._match_and_format(layers['highlight'], b, 'highlight', context) for b in brands}
+            shade_matches = {b: self._match_and_format(layers['shade'], b, shade_role, context) for b in brands}
 
             # Derive the displayed colour family from the best base match's
             # curated color_family field — more reliable than the heuristic
@@ -280,9 +287,9 @@ class SchemeStealerEngine:
             'shade': np.clip(shade_rgb, 0, 255)
         }
 
-    def _match_and_format(self, rgb, brand, p_type, context):
+    def _match_and_format(self, rgb, brand, role, context):
         """Match colour to paint and format for UI, including color_family."""
-        match = self.matcher.match_color(rgb, brand, p_type, context)
+        match = self.matcher.match_color(rgb, brand, role=role, context=context)
         if not match:
             return None
         return {

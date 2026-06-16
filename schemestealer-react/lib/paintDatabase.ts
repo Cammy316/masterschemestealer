@@ -1,12 +1,12 @@
 /**
  * Paint Database - Auto-generated
  *
- * Contains 982 pre-computed paints with RGB and LAB values.
+ * Contains 963 pre-computed paints with RGB and LAB values.
  * Generated from the master paints.json database.
  *
  * DO NOT EDIT MANUALLY - run `node scripts/generatePaintDatabase.js` to regenerate.
  *
- * Last generated: 2026-05-15T13:17:50.504Z
+ * Last generated: 2026-06-16T20:45:40.892Z
  */
 
 import type { RGB, LAB } from './colorConversion';
@@ -19,11 +19,14 @@ export interface PaintData {
   lab: LAB;
   type: string;
   family: string;
+  finish: string;
+  transparency: number;
+  matchable: boolean;
 }
 
 /**
  * Pre-computed paint database with LAB values
- * Optimized subset of ~982 paints for fast offline matching
+ * Optimized subset of ~963 paints for fast offline matching
  */
 export const PAINT_DATABASE: PaintData[] = [
   {
@@ -41,7 +44,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 24.18,
       a: 33.81,
       b: 28.28
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Alien Purple',
@@ -58,7 +64,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 27.66,
       a: 30.76,
       b: -37.16
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Angel Green',
@@ -75,7 +84,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 20.41,
       a: -22.78,
       b: 13.16
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Arid Earth',
@@ -92,7 +104,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 93.56,
       a: -1.6,
       b: 21.62
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Army Green',
@@ -109,7 +124,250 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 47.88,
       a: -11.4,
       b: 25.97
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Black (#000000)',
+    brand: 'Army Painter',
+    hex: '#121212',
+    type: 'Base',
+    family: 'Black',
+    rgb: {
+      r: 18,
+      g: 18,
+      b: 18
+    },
+    lab: {
+      l: 5.46,
+      a: 0,
+      b: 0
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Blue (#0273BC)',
+    brand: 'Army Painter',
+    hex: '#0273BC',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 2,
+      g: 115,
+      b: 188
+    },
+    lab: {
+      l: 46.85,
+      a: 0.68,
+      b: -45.77
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Blue (#055E8F)',
+    brand: 'Army Painter',
+    hex: '#055E8F',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 5,
+      g: 94,
+      b: 143
+    },
+    lab: {
+      l: 37.88,
+      a: -4.16,
+      b: -33.44
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Blue (#063565)',
+    brand: 'Army Painter',
+    hex: '#063565',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 6,
+      g: 53,
+      b: 101
+    },
+    lab: {
+      l: 22.03,
+      a: 5.47,
+      b: -32.39
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Blue (#094073)',
+    brand: 'Army Painter',
+    hex: '#094073',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 9,
+      g: 64,
+      b: 115
+    },
+    lab: {
+      l: 26.63,
+      a: 4.1,
+      b: -34.01
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Blue (#1995D4)',
+    brand: 'Army Painter',
+    hex: '#1995D4',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 25,
+      g: 149,
+      b: 212
+    },
+    lab: {
+      l: 58.46,
+      a: -9.26,
+      b: -41.02
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Blue (#1B3044)',
+    brand: 'Army Painter',
+    hex: '#1B3044',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 27,
+      g: 48,
+      b: 68
+    },
+    lab: {
+      l: 19.07,
+      a: -1.46,
+      b: -15.07
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Blue (#2E3E79)',
+    brand: 'Army Painter',
+    hex: '#2E3E79',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 46,
+      g: 62,
+      b: 121
+    },
+    lab: {
+      l: 27.86,
+      a: 13.28,
+      b: -35.74
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Blue (#304358)',
+    brand: 'Army Painter',
+    hex: '#304358',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 48,
+      g: 67,
+      b: 88
+    },
+    lab: {
+      l: 27.7,
+      a: -1.18,
+      b: -14.89
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Blue (#3A9DD5)',
+    brand: 'Army Painter',
+    hex: '#3A9DD5',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 58,
+      g: 157,
+      b: 213
+    },
+    lab: {
+      l: 61.49,
+      a: -10.25,
+      b: -36.78
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Blue (#4B5164)',
+    brand: 'Army Painter',
+    hex: '#4B5164',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 75,
+      g: 81,
+      b: 100
+    },
+    lab: {
+      l: 34.6,
+      a: 2.32,
+      b: -11.81
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Blue (#5A7F93)',
+    brand: 'Army Painter',
+    hex: '#5A7F93',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 90,
+      g: 127,
+      b: 147
+    },
+    lab: {
+      l: 51.22,
+      a: -7.63,
+      b: -14.9
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Army Painter Blue (#6154A3)',
@@ -126,7 +384,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 40.45,
       a: 25.11,
       b: -41.08
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Army Painter Blue (#667DC0)',
@@ -143,7 +404,130 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 53.27,
       a: 9.91,
       b: -37.69
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Blue (#6962AB)',
+    brand: 'Army Painter',
+    hex: '#6962AB',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 105,
+      g: 98,
+      b: 171
+    },
+    lab: {
+      l: 45.19,
+      a: 20.92,
+      b: -38.25
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Blue (#6D7FA3)',
+    brand: 'Army Painter',
+    hex: '#6D7FA3',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 109,
+      g: 127,
+      b: 163
+    },
+    lab: {
+      l: 53.03,
+      a: 2.33,
+      b: -21.34
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Blue (#7C95CC)',
+    brand: 'Army Painter',
+    hex: '#7C95CC',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 124,
+      g: 149,
+      b: 204
+    },
+    lab: {
+      l: 61.77,
+      a: 5.03,
+      b: -31.1
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Blue (#8D81BE)',
+    brand: 'Army Painter',
+    hex: '#8D81BE',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 141,
+      g: 129,
+      b: 190
+    },
+    lab: {
+      l: 57.15,
+      a: 17.88,
+      b: -30.27
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Blue (#9ABEDE)',
+    brand: 'Army Painter',
+    hex: '#9ABEDE',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 154,
+      g: 190,
+      b: 222
+    },
+    lab: {
+      l: 75.43,
+      a: -4.63,
+      b: -19.91
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Blue (#ACBCE2)',
+    brand: 'Army Painter',
+    hex: '#ACBCE2',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 172,
+      g: 188,
+      b: 226
+    },
+    lab: {
+      l: 76.21,
+      a: 2.7,
+      b: -20.78
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Army Painter Bronze (#003D81)',
@@ -160,7 +544,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 26.51,
       a: 11.67,
       b: -43.02
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Army Painter Bronze (#005D78)',
@@ -177,7 +564,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 36.34,
       a: -13.02,
       b: -21.83
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Army Painter Bronze (#007B3A)',
@@ -194,7 +584,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 44.9,
       a: -44.79,
       b: 27.31
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Army Painter Bronze (#312C2F)',
@@ -211,7 +604,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 18.63,
       a: 2.94,
       b: -1.11
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Army Painter Bronze (#701B55)',
@@ -228,7 +624,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 26.41,
       a: 42.67,
       b: -14.25
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Army Painter Bronze (#A46049)',
@@ -245,7 +644,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 47.93,
       a: 25.24,
       b: 24.94
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Army Painter Bronze (#A93C27)',
@@ -262,7 +664,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 40.92,
       a: 43.61,
       b: 36.21
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Army Painter Bronze (#AE1C28)',
@@ -279,7 +684,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 37.82,
       a: 56.52,
       b: 32.56
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Army Painter Bronze (#B4406F)',
@@ -296,7 +704,310 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 44.97,
       a: 51.13,
       b: -1.72
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Brown (#5B3B2F)',
+    brand: 'Army Painter',
+    hex: '#5B3B2F',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 91,
+      g: 59,
+      b: 47
+    },
+    lab: {
+      l: 28.27,
+      a: 12.52,
+      b: 13.19
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Brown (#6D1F0C)',
+    brand: 'Army Painter',
+    hex: '#6D1F0C',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 109,
+      g: 31,
+      b: 12
+    },
+    lab: {
+      l: 24.51,
+      a: 33.61,
+      b: 30.69
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Brown (#745218)',
+    brand: 'Army Painter',
+    hex: '#745218',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 116,
+      g: 82,
+      b: 24
+    },
+    lab: {
+      l: 37.51,
+      a: 8.4,
+      b: 37.69
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Brown (#7B482A)',
+    brand: 'Army Painter',
+    hex: '#7B482A',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 123,
+      g: 72,
+      b: 42
+    },
+    lab: {
+      l: 36.01,
+      a: 18.77,
+      b: 26.97
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Brown (#7B561E)',
+    brand: 'Army Painter',
+    hex: '#7B561E',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 123,
+      g: 86,
+      b: 30
+    },
+    lab: {
+      l: 39.52,
+      a: 9.66,
+      b: 37.21
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Brown (#856D45)',
+    brand: 'Army Painter',
+    hex: '#856D45',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 133,
+      g: 109,
+      b: 69
+    },
+    lab: {
+      l: 47.44,
+      a: 3.88,
+      b: 25.84
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Brown (#8B7C68)',
+    brand: 'Army Painter',
+    hex: '#8B7C68',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 139,
+      g: 124,
+      b: 104
+    },
+    lab: {
+      l: 52.84,
+      a: 2.4,
+      b: 13.03
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Brown (#AC835D)',
+    brand: 'Army Painter',
+    hex: '#AC835D',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 172,
+      g: 131,
+      b: 93
+    },
+    lab: {
+      l: 57.84,
+      a: 10.83,
+      b: 26.6
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Brown (#B49488)',
+    brand: 'Army Painter',
+    hex: '#B49488',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 180,
+      g: 148,
+      b: 136
+    },
+    lab: {
+      l: 63.89,
+      a: 10.1,
+      b: 10.84
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Brown (#D0C3A3)',
+    brand: 'Army Painter',
+    hex: '#D0C3A3',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 208,
+      g: 195,
+      b: 163
+    },
+    lab: {
+      l: 79.09,
+      a: -0.57,
+      b: 17.75
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Brown (#DEBB72)',
+    brand: 'Army Painter',
+    hex: '#DEBB72',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 222,
+      g: 187,
+      b: 114
+    },
+    lab: {
+      l: 77.45,
+      a: 3.31,
+      b: 41.45
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Brown (#E6D4C1)',
+    brand: 'Army Painter',
+    hex: '#E6D4C1',
+    type: 'Base',
+    family: 'White',
+    rgb: {
+      r: 230,
+      g: 212,
+      b: 193
+    },
+    lab: {
+      l: 85.89,
+      a: 3.15,
+      b: 11.65
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Brown (#EACDAD)',
+    brand: 'Army Painter',
+    hex: '#EACDAD',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 234,
+      g: 205,
+      b: 173
+    },
+    lab: {
+      l: 84.06,
+      a: 5.38,
+      b: 19.69
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Brown (#EEC79E)',
+    brand: 'Army Painter',
+    hex: '#EEC79E',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 238,
+      g: 199,
+      b: 158
+    },
+    lab: {
+      l: 82.64,
+      a: 8.11,
+      b: 25.71
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Brown (#F69B7F)',
+    brand: 'Army Painter',
+    hex: '#F69B7F',
+    type: 'Base',
+    family: 'Pink',
+    rgb: {
+      r: 246,
+      g: 155,
+      b: 127
+    },
+    lab: {
+      l: 72.61,
+      a: 31.05,
+      b: 28.92
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Army Painter Cyan (#00506C)',
@@ -313,7 +1024,150 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 31.39,
       a: -10.01,
       b: -22.06
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Cyan (#006B79)',
+    brand: 'Army Painter',
+    hex: '#006B79',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 0,
+      g: 107,
+      b: 121
+    },
+    lab: {
+      l: 41.05,
+      a: -20.5,
+      b: -15.18
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Cyan (#0080BF)',
+    brand: 'Army Painter',
+    hex: '#0080BF',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 0,
+      g: 128,
+      b: 191
+    },
+    lab: {
+      l: 50.92,
+      a: -6.07,
+      b: -41.04
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Cyan (#019096)',
+    brand: 'Army Painter',
+    hex: '#019096',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 1,
+      g: 144,
+      b: 150
+    },
+    lab: {
+      l: 54.19,
+      a: -29.44,
+      b: -12.38
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Cyan (#149398)',
+    brand: 'Army Painter',
+    hex: '#149398',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 20,
+      g: 147,
+      b: 152
+    },
+    lab: {
+      l: 55.36,
+      a: -29.3,
+      b: -11.75
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Cyan (#173E31)',
+    brand: 'Army Painter',
+    hex: '#173E31',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 23,
+      g: 62,
+      b: 49
+    },
+    lab: {
+      l: 23.17,
+      a: -17.58,
+      b: 3.88
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Cyan (#24BBA6)',
+    brand: 'Army Painter',
+    hex: '#24BBA6',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 36,
+      g: 187,
+      b: 166
+    },
+    lab: {
+      l: 68.51,
+      a: -42.3,
+      b: -0.11
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Cyan (#2E4249)',
+    brand: 'Army Painter',
+    hex: '#2E4249',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 46,
+      g: 66,
+      b: 73
+    },
+    lab: {
+      l: 26.62,
+      a: -5.84,
+      b: -6.77
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Army Painter Cyan (#32B3D5)',
@@ -330,7 +1184,230 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 67.81,
       a: -22.96,
       b: -27.01
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Cyan (#396360)',
+    brand: 'Army Painter',
+    hex: '#396360',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 57,
+      g: 99,
+      b: 96
+    },
+    lab: {
+      l: 38.96,
+      a: -15.44,
+      b: -2.91
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Cyan (#437C6D)',
+    brand: 'Army Painter',
+    hex: '#437C6D',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 67,
+      g: 124,
+      b: 109
+    },
+    lab: {
+      l: 47.89,
+      a: -22.63,
+      b: 2.38
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Cyan (#56C4CD)',
+    brand: 'Army Painter',
+    hex: '#56C4CD',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 86,
+      g: 196,
+      b: 205
+    },
+    lab: {
+      l: 73.46,
+      a: -28.6,
+      b: -13.97
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Cyan (#68C5B6)',
+    brand: 'Army Painter',
+    hex: '#68C5B6',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 104,
+      g: 197,
+      b: 182
+    },
+    lab: {
+      l: 73.71,
+      a: -31.33,
+      b: -1.04
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Cyan (#75CED4)',
+    brand: 'Army Painter',
+    hex: '#75CED4',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 117,
+      g: 206,
+      b: 212
+    },
+    lab: {
+      l: 77.68,
+      a: -25.13,
+      b: -11.31
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Cyan (#84CEF0)',
+    brand: 'Army Painter',
+    hex: '#84CEF0',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 132,
+      g: 206,
+      b: 240
+    },
+    lab: {
+      l: 79.23,
+      a: -14.24,
+      b: -23.92
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Cyan (#94D6D7)',
+    brand: 'Army Painter',
+    hex: '#94D6D7',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 148,
+      g: 214,
+      b: 215
+    },
+    lab: {
+      l: 81.45,
+      a: -20.45,
+      b: -7.16
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Cyan (#A5C5C0)',
+    brand: 'Army Painter',
+    hex: '#A5C5C0',
+    type: 'Base',
+    family: 'White',
+    rgb: {
+      r: 165,
+      g: 197,
+      b: 192
+    },
+    lab: {
+      l: 77.12,
+      a: -11.71,
+      b: -1.08
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Flesh (#81655A)',
+    brand: 'Army Painter',
+    hex: '#81655A',
+    type: 'Base',
+    family: 'Flesh',
+    rgb: {
+      r: 129,
+      g: 101,
+      b: 90
+    },
+    lab: {
+      l: 45.24,
+      a: 9.52,
+      b: 10.52
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Flesh (#A97761)',
+    brand: 'Army Painter',
+    hex: '#A97761',
+    type: 'Base',
+    family: 'Flesh',
+    rgb: {
+      r: 169,
+      g: 119,
+      b: 97
+    },
+    lab: {
+      l: 54.55,
+      a: 16.78,
+      b: 19.91
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Flesh (#B3756A)',
+    brand: 'Army Painter',
+    hex: '#B3756A',
+    type: 'Base',
+    family: 'Flesh',
+    rgb: {
+      r: 179,
+      g: 117,
+      b: 106
+    },
+    lab: {
+      l: 55.43,
+      a: 23.03,
+      b: 16.12
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Army Painter Flesh (#C4A083)',
@@ -347,7 +1424,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 68.4,
       a: 9.12,
       b: 20.14
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Army Painter Flesh (#D7877B)',
@@ -364,7 +1444,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 64.33,
       a: 29.27,
       b: 19.35
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Army Painter Gold (#686139)',
@@ -381,7 +1464,1690 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 40.88,
       a: -3.57,
       b: 23.77
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Green (#006E40)',
+    brand: 'Army Painter',
+    hex: '#006E40',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 0,
+      g: 110,
+      b: 64
+    },
+    lab: {
+      l: 40.44,
+      a: -38.82,
+      b: 18.24
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Green (#1F7843)',
+    brand: 'Army Painter',
+    hex: '#1F7843',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 31,
+      g: 120,
+      b: 67
+    },
+    lab: {
+      l: 44.42,
+      a: -38.64,
+      b: 21.82
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Green (#226248)',
+    brand: 'Army Painter',
+    hex: '#226248',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 34,
+      g: 98,
+      b: 72
+    },
+    lab: {
+      l: 37.01,
+      a: -27.25,
+      b: 8.89
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Green (#279A4C)',
+    brand: 'Army Painter',
+    hex: '#279A4C',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 39,
+      g: 154,
+      b: 76
+    },
+    lab: {
+      l: 56.15,
+      a: -48.86,
+      b: 31.94
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Green (#2E794A)',
+    brand: 'Army Painter',
+    hex: '#2E794A',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 46,
+      g: 121,
+      b: 74
+    },
+    lab: {
+      l: 45.29,
+      a: -34.61,
+      b: 19.07
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Green (#3B4A25)',
+    brand: 'Army Painter',
+    hex: '#3B4A25',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 59,
+      g: 74,
+      b: 37
+    },
+    lab: {
+      l: 29.31,
+      a: -13.29,
+      b: 20.1
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Green (#41630C)',
+    brand: 'Army Painter',
+    hex: '#41630C',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 65,
+      g: 99,
+      b: 12
+    },
+    lab: {
+      l: 37.97,
+      a: -26.02,
+      b: 40.83
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Green (#5BBB4D)',
+    brand: 'Army Painter',
+    hex: '#5BBB4D',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 91,
+      g: 187,
+      b: 77
+    },
+    lab: {
+      l: 68.24,
+      a: -49.63,
+      b: 46.31
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Green (#5D7554)',
+    brand: 'Army Painter',
+    hex: '#5D7554',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 93,
+      g: 117,
+      b: 84
+    },
+    lab: {
+      l: 46.56,
+      a: -15.57,
+      b: 15.41
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Green (#6E8358)',
+    brand: 'Army Painter',
+    hex: '#6E8358',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 110,
+      g: 131,
+      b: 88
+    },
+    lab: {
+      l: 52.12,
+      a: -15.79,
+      b: 20.82
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Green (#75AD98)',
+    brand: 'Army Painter',
+    hex: '#75AD98',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 117,
+      g: 173,
+      b: 152
+    },
+    lab: {
+      l: 66.47,
+      a: -23,
+      b: 4.97
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Green (#75C377)',
+    brand: 'Army Painter',
+    hex: '#75C377',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 117,
+      g: 195,
+      b: 119
+    },
+    lab: {
+      l: 72.32,
+      a: -39.59,
+      b: 30.84
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Green (#76C045)',
+    brand: 'Army Painter',
+    hex: '#76C045',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 118,
+      g: 192,
+      b: 69
+    },
+    lab: {
+      l: 70.86,
+      a: -44.1,
+      b: 53.1
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Green (#7A905F)',
+    brand: 'Army Painter',
+    hex: '#7A905F',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 122,
+      g: 144,
+      b: 95
+    },
+    lab: {
+      l: 56.99,
+      a: -16.89,
+      b: 23.53
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Green (#81AC36)',
+    brand: 'Army Painter',
+    hex: '#81AC36',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 129,
+      g: 172,
+      b: 54
+    },
+    lab: {
+      l: 65.31,
+      a: -32.38,
+      b: 53.56
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Green (#9AA984)',
+    brand: 'Army Painter',
+    hex: '#9AA984',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 154,
+      g: 169,
+      b: 132
+    },
+    lab: {
+      l: 67.21,
+      a: -12,
+      b: 17.38
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Green (#A1C7AF)',
+    brand: 'Army Painter',
+    hex: '#A1C7AF',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 161,
+      g: 199,
+      b: 175
+    },
+    lab: {
+      l: 76.99,
+      a: -17.41,
+      b: 7.87
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Green (#B1DCC0)',
+    brand: 'Army Painter',
+    hex: '#B1DCC0',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 177,
+      g: 220,
+      b: 192
+    },
+    lab: {
+      l: 84.14,
+      a: -19.49,
+      b: 9.17
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Green (#B3C29D)',
+    brand: 'Army Painter',
+    hex: '#B3C29D',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 179,
+      g: 194,
+      b: 157
+    },
+    lab: {
+      l: 76.44,
+      a: -11.74,
+      b: 16.92
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Grey (#1F2224)',
+    brand: 'Army Painter',
+    hex: '#1F2224',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 31,
+      g: 34,
+      b: 36
+    },
+    lab: {
+      l: 13,
+      a: -0.84,
+      b: -1.82
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Grey (#21201D)',
+    brand: 'Army Painter',
+    hex: '#21201D',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 33,
+      g: 32,
+      b: 29
+    },
+    lab: {
+      l: 12.25,
+      a: -0.24,
+      b: 2.21
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Grey (#2B2B2B)',
+    brand: 'Army Painter',
+    hex: '#2B2B2B',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 43,
+      g: 43,
+      b: 43
+    },
+    lab: {
+      l: 17.53,
+      a: 0,
+      b: 0
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Grey (#363231)',
+    brand: 'Army Painter',
+    hex: '#363231',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 54,
+      g: 50,
+      b: 49
+    },
+    lab: {
+      l: 21.16,
+      a: 1.55,
+      b: 1.27
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Grey (#443A40)',
+    brand: 'Army Painter',
+    hex: '#443A40',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 68,
+      g: 58,
+      b: 64
+    },
+    lab: {
+      l: 25.64,
+      a: 5.62,
+      b: -2.09
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Grey (#4A4046)',
+    brand: 'Army Painter',
+    hex: '#4A4046',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 74,
+      g: 64,
+      b: 70
+    },
+    lab: {
+      l: 28.29,
+      a: 5.53,
+      b: -2.06
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Grey (#4F5053)',
+    brand: 'Army Painter',
+    hex: '#4F5053',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 79,
+      g: 80,
+      b: 83
+    },
+    lab: {
+      l: 34.03,
+      a: 0.26,
+      b: -1.9
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Grey (#666D74)',
+    brand: 'Army Painter',
+    hex: '#666D74',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 102,
+      g: 109,
+      b: 116
+    },
+    lab: {
+      l: 45.67,
+      a: -1.11,
+      b: -4.8
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Grey (#808182)',
+    brand: 'Army Painter',
+    hex: '#808182',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 128,
+      g: 129,
+      b: 130
+    },
+    lab: {
+      l: 53.92,
+      a: -0.17,
+      b: -0.67
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Grey (#83827B)',
+    brand: 'Army Painter',
+    hex: '#83827B',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 131,
+      g: 130,
+      b: 123
+    },
+    lab: {
+      l: 54.26,
+      a: -0.97,
+      b: 3.92
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Grey (#84878F)',
+    brand: 'Army Painter',
+    hex: '#84878F',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 132,
+      g: 135,
+      b: 143
+    },
+    lab: {
+      l: 56.3,
+      a: 0.54,
+      b: -4.66
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Grey (#919296)',
+    brand: 'Army Painter',
+    hex: '#919296',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 145,
+      g: 146,
+      b: 150
+    },
+    lab: {
+      l: 60.59,
+      a: 0.43,
+      b: -2.24
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Grey (#929286)',
+    brand: 'Army Painter',
+    hex: '#929286',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 146,
+      g: 146,
+      b: 134
+    },
+    lab: {
+      l: 60.24,
+      a: -2.24,
+      b: 6.36
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Grey (#9E9FA3)',
+    brand: 'Army Painter',
+    hex: '#9E9FA3',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 158,
+      g: 159,
+      b: 163
+    },
+    lab: {
+      l: 65.52,
+      a: 0.42,
+      b: -2.2
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Grey (#A8A292)',
+    brand: 'Army Painter',
+    hex: '#A8A292',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 168,
+      g: 162,
+      b: 146
+    },
+    lab: {
+      l: 66.7,
+      a: -0.66,
+      b: 9.1
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Grey (#B9BEC4)',
+    brand: 'Army Painter',
+    hex: '#B9BEC4',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 185,
+      g: 190,
+      b: 196
+    },
+    lab: {
+      l: 76.76,
+      a: -0.58,
+      b: -3.62
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Grey (#BBB4A6)',
+    brand: 'Army Painter',
+    hex: '#BBB4A6',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 187,
+      g: 180,
+      b: 166
+    },
+    lab: {
+      l: 73.52,
+      a: 0.04,
+      b: 8.02
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Grey (#BCBEC2)',
+    brand: 'Army Painter',
+    hex: '#BCBEC2',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 188,
+      g: 190,
+      b: 194
+    },
+    lab: {
+      l: 76.93,
+      a: 0.06,
+      b: -2.25
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Grey (#C1AFBB)',
+    brand: 'Army Painter',
+    hex: '#C1AFBB',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 193,
+      g: 175,
+      b: 187
+    },
+    lab: {
+      l: 73.28,
+      a: 8.58,
+      b: -3.76
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Grey (#C7CFE3)',
+    brand: 'Army Painter',
+    hex: '#C7CFE3',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 199,
+      g: 207,
+      b: 227
+    },
+    lab: {
+      l: 83.08,
+      a: 1.2,
+      b: -10.79
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Grey (#D0D0D2)',
+    brand: 'Army Painter',
+    hex: '#D0D0D2',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 208,
+      g: 208,
+      b: 210
+    },
+    lab: {
+      l: 83.53,
+      a: 0.37,
+      b: -0.99
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Grey (#D5CAE5)',
+    brand: 'Army Painter',
+    hex: '#D5CAE5',
+    type: 'Base',
+    family: 'Purple',
+    rgb: {
+      r: 213,
+      g: 202,
+      b: 229
+    },
+    lab: {
+      l: 82.94,
+      a: 8.81,
+      b: -11.96
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Grey (#DEDBD3)',
+    brand: 'Army Painter',
+    hex: '#DEDBD3',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 222,
+      g: 219,
+      b: 211
+    },
+    lab: {
+      l: 87.43,
+      a: -0.38,
+      b: 4.29
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Grey (#F9D9E6)',
+    brand: 'Army Painter',
+    hex: '#F9D9E6',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 249,
+      g: 217,
+      b: 230
+    },
+    lab: {
+      l: 89.62,
+      a: 13.19,
+      b: -2.27
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Orange (#A34521)',
+    brand: 'Army Painter',
+    hex: '#A34521',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 163,
+      g: 69,
+      b: 33
+    },
+    lab: {
+      l: 41.46,
+      a: 36.82,
+      b: 39.6
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Orange (#AF8102)',
+    brand: 'Army Painter',
+    hex: '#AF8102',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 175,
+      g: 129,
+      b: 2
+    },
+    lab: {
+      l: 56.9,
+      a: 8.43,
+      b: 62.08
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Orange (#BE9859)',
+    brand: 'Army Painter',
+    hex: '#BE9859',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 190,
+      g: 152,
+      b: 89
+    },
+    lab: {
+      l: 65.06,
+      a: 6.46,
+      b: 38.27
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Orange (#CD601F)',
+    brand: 'Army Painter',
+    hex: '#CD601F',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 205,
+      g: 96,
+      b: 31
+    },
+    lab: {
+      l: 53.44,
+      a: 39.66,
+      b: 53.92
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Orange (#D17B41)',
+    brand: 'Army Painter',
+    hex: '#D17B41',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 209,
+      g: 123,
+      b: 65
+    },
+    lab: {
+      l: 59.98,
+      a: 28.58,
+      b: 45.14
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Orange (#E69D63)',
+    brand: 'Army Painter',
+    hex: '#E69D63',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 230,
+      g: 157,
+      b: 99
+    },
+    lab: {
+      l: 70.76,
+      a: 21.26,
+      b: 41.04
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Orange (#EC9A44)',
+    brand: 'Army Painter',
+    hex: '#EC9A44',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 236,
+      g: 154,
+      b: 68
+    },
+    lab: {
+      l: 70.43,
+      a: 23.38,
+      b: 55.97
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Orange (#F5792C)',
+    brand: 'Army Painter',
+    hex: '#F5792C',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 245,
+      g: 121,
+      b: 44
+    },
+    lab: {
+      l: 64.38,
+      a: 43.08,
+      b: 60.68
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Orange (#F58B3D)',
+    brand: 'Army Painter',
+    hex: '#F58B3D',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 245,
+      g: 139,
+      b: 61
+    },
+    lab: {
+      l: 68.18,
+      a: 34.58,
+      b: 57.14
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Orange (#F6AA0D)',
+    brand: 'Army Painter',
+    hex: '#F6AA0D',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 246,
+      g: 170,
+      b: 13
+    },
+    lab: {
+      l: 75.06,
+      a: 17.63,
+      b: 77.05
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Orange (#F79D42)',
+    brand: 'Army Painter',
+    hex: '#F79D42',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 247,
+      g: 157,
+      b: 66
+    },
+    lab: {
+      l: 72.42,
+      a: 26.25,
+      b: 59.32
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Orange (#FDCB5F)',
+    brand: 'Army Painter',
+    hex: '#FDCB5F',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 253,
+      g: 203,
+      b: 95
+    },
+    lab: {
+      l: 84.19,
+      a: 6.25,
+      b: 59.25
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Purple (#562D74)',
+    brand: 'Army Painter',
+    hex: '#562D74',
+    type: 'Base',
+    family: 'Purple',
+    rgb: {
+      r: 86,
+      g: 45,
+      b: 116
+    },
+    lab: {
+      l: 27.06,
+      a: 32.84,
+      b: -33.64
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Purple (#704099)',
+    brand: 'Army Painter',
+    hex: '#704099',
+    type: 'Base',
+    family: 'Purple',
+    rgb: {
+      r: 112,
+      g: 64,
+      b: 153
+    },
+    lab: {
+      l: 36.76,
+      a: 38.27,
+      b: -40.87
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Purple (#A893B3)',
+    brand: 'Army Painter',
+    hex: '#A893B3',
+    type: 'Base',
+    family: 'Purple',
+    rgb: {
+      r: 168,
+      g: 147,
+      b: 179
+    },
+    lab: {
+      l: 63.71,
+      a: 13.83,
+      b: -13.8
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Red (#39262A)',
+    brand: 'Army Painter',
+    hex: '#39262A',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 57,
+      g: 38,
+      b: 42
+    },
+    lab: {
+      l: 17.57,
+      a: 9.7,
+      b: 0.95
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Red (#402828)',
+    brand: 'Army Painter',
+    hex: '#402828',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 64,
+      g: 40,
+      b: 40
+    },
+    lab: {
+      l: 19.06,
+      a: 11.27,
+      b: 4.62
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Red (#582121)',
+    brand: 'Army Painter',
+    hex: '#582121',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 88,
+      g: 33,
+      b: 33
+    },
+    lab: {
+      l: 21.1,
+      a: 25.43,
+      b: 12.88
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Red (#5D4D4D)',
+    brand: 'Army Painter',
+    hex: '#5D4D4D',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 93,
+      g: 77,
+      b: 77
+    },
+    lab: {
+      l: 34.34,
+      a: 6.69,
+      b: 2.5
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Red (#613630)',
+    brand: 'Army Painter',
+    hex: '#613630',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 97,
+      g: 54,
+      b: 48
+    },
+    lab: {
+      l: 27.83,
+      a: 18.48,
+      b: 12.1
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Red (#752330)',
+    brand: 'Army Painter',
+    hex: '#752330',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 117,
+      g: 35,
+      b: 48
+    },
+    lab: {
+      l: 27.29,
+      a: 36.74,
+      b: 11.95
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Red (#774544)',
+    brand: 'Army Painter',
+    hex: '#774544',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 119,
+      g: 69,
+      b: 68
+    },
+    lab: {
+      l: 35.2,
+      a: 21.36,
+      b: 9.87
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Red (#7C5B54)',
+    brand: 'Army Painter',
+    hex: '#7C5B54',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 124,
+      g: 91,
+      b: 84
+    },
+    lab: {
+      l: 41.86,
+      a: 12.48,
+      b: 9.33
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Red (#821D23)',
+    brand: 'Army Painter',
+    hex: '#821D23',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 130,
+      g: 29,
+      b: 35
+    },
+    lab: {
+      l: 28.77,
+      a: 42.69,
+      b: 22.91
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Red (#834641)',
+    brand: 'Army Painter',
+    hex: '#834641',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 131,
+      g: 70,
+      b: 65
+    },
+    lab: {
+      l: 37.09,
+      a: 25.45,
+      b: 14.63
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Red (#9C1A1D)',
+    brand: 'Army Painter',
+    hex: '#9C1A1D',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 156,
+      g: 26,
+      b: 29
+    },
+    lab: {
+      l: 33.77,
+      a: 51.43,
+      b: 33.63
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Red (#BA7372)',
+    brand: 'Army Painter',
+    hex: '#BA7372',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 186,
+      g: 115,
+      b: 114
+    },
+    lab: {
+      l: 56.01,
+      a: 27.85,
+      b: 12.42
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Red (#BF283B)',
+    brand: 'Army Painter',
+    hex: '#BF283B',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 191,
+      g: 40,
+      b: 59
+    },
+    lab: {
+      l: 42.63,
+      a: 59.02,
+      b: 27.54
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Red (#C57B74)',
+    brand: 'Army Painter',
+    hex: '#C57B74',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 197,
+      g: 123,
+      b: 116
+    },
+    lab: {
+      l: 59.25,
+      a: 28,
+      b: 15.98
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Red (#CF2529)',
+    brand: 'Army Painter',
+    hex: '#CF2529',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 207,
+      g: 37,
+      b: 41
+    },
+    lab: {
+      l: 45.29,
+      a: 63.66,
+      b: 41.88
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Red (#D42C39)',
+    brand: 'Army Painter',
+    hex: '#D42C39',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 212,
+      g: 44,
+      b: 57
+    },
+    lab: {
+      l: 47.1,
+      a: 63.81,
+      b: 35.04
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Red (#DB4B50)',
+    brand: 'Army Painter',
+    hex: '#DB4B50',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 219,
+      g: 75,
+      b: 80
+    },
+    lab: {
+      l: 52.59,
+      a: 56.4,
+      b: 28.54
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Red (#E7B4B1)',
+    brand: 'Army Painter',
+    hex: '#E7B4B1',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 231,
+      g: 180,
+      b: 177
+    },
+    lab: {
+      l: 77.76,
+      a: 18.03,
+      b: 8.64
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Red (#EF4B3E)',
+    brand: 'Army Painter',
+    hex: '#EF4B3E',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 239,
+      g: 75,
+      b: 62
+    },
+    lab: {
+      l: 55.82,
+      a: 61.92,
+      b: 43.39
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Red (#F05A3E)',
+    brand: 'Army Painter',
+    hex: '#F05A3E',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 240,
+      g: 90,
+      b: 62
+    },
+    lab: {
+      l: 58.22,
+      a: 56.24,
+      b: 46.05
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Red (#F2653E)',
+    brand: 'Army Painter',
+    hex: '#F2653E',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 242,
+      g: 101,
+      b: 62
+    },
+    lab: {
+      l: 60.37,
+      a: 52.09,
+      b: 48.45
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter White (#E7F0F9)',
+    brand: 'Army Painter',
+    hex: '#E7F0F9',
+    type: 'Base',
+    family: 'White',
+    rgb: {
+      r: 231,
+      g: 240,
+      b: 249
+    },
+    lab: {
+      l: 94.38,
+      a: -1.3,
+      b: -5.36
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter White (#F5F4F0)',
+    brand: 'Army Painter',
+    hex: '#F5F4F0',
+    type: 'Base',
+    family: 'White',
+    rgb: {
+      r: 245,
+      g: 244,
+      b: 240
+    },
+    lab: {
+      l: 96.16,
+      a: -0.37,
+      b: 2.04
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter White (#FEFFFF)',
+    brand: 'Army Painter',
+    hex: '#FEFFFF',
+    type: 'Base',
+    family: 'White',
+    rgb: {
+      r: 254,
+      g: 255,
+      b: 255
+    },
+    lab: {
+      l: 99.93,
+      a: -0.33,
+      b: -0.12
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Yellow (#987B1A)',
+    brand: 'Army Painter',
+    hex: '#987B1A',
+    type: 'Base',
+    family: 'Yellow',
+    rgb: {
+      r: 152,
+      g: 123,
+      b: 26
+    },
+    lab: {
+      l: 52.86,
+      a: 1.67,
+      b: 52.52
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Yellow (#BDD532)',
+    brand: 'Army Painter',
+    hex: '#BDD532',
+    type: 'Base',
+    family: 'Yellow',
+    rgb: {
+      r: 189,
+      g: 213,
+      b: 50
+    },
+    lab: {
+      l: 81.09,
+      a: -27.77,
+      b: 71.66
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Army Painter Yellow (#E4EA8D)',
@@ -398,7 +3164,90 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 90.44,
       a: -15.54,
       b: 44.44
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Yellow (#F9DF1C)',
+    brand: 'Army Painter',
+    hex: '#F9DF1C',
+    type: 'Base',
+    family: 'Yellow',
+    rgb: {
+      r: 249,
+      g: 223,
+      b: 28
+    },
+    lab: {
+      l: 88.45,
+      a: -8.19,
+      b: 84.92
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Yellow (#FDEAA9)',
+    brand: 'Army Painter',
+    hex: '#FDEAA9',
+    type: 'Base',
+    family: 'Yellow',
+    rgb: {
+      r: 253,
+      g: 234,
+      b: 169
+    },
+    lab: {
+      l: 92.84,
+      a: -2.83,
+      b: 33.96
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Yellow (#FECE2A)',
+    brand: 'Army Painter',
+    hex: '#FECE2A',
+    type: 'Base',
+    family: 'Yellow',
+    rgb: {
+      r: 254,
+      g: 206,
+      b: 42
+    },
+    lab: {
+      l: 84.68,
+      a: 2.82,
+      b: 79.12
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Army Painter Yellow (#FFEDAD)',
+    brand: 'Army Painter',
+    hex: '#FFEDAD',
+    type: 'Base',
+    family: 'Yellow',
+    rgb: {
+      r: 255,
+      g: 237,
+      b: 173
+    },
+    lab: {
+      l: 93.82,
+      a: -3.11,
+      b: 33.27
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Ash Grey',
@@ -415,7 +3264,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 67.48,
       a: -1.26,
       b: 0.14
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Babe Blonde',
@@ -432,7 +3284,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 87.82,
       a: -7.81,
       b: 86.38
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Banshee Brown',
@@ -449,7 +3304,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 72.82,
       a: 2.83,
       b: 15.3
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Barbarian Flesh',
@@ -466,7 +3324,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 70.88,
       a: 23.33,
       b: 36.54
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Basilisk Brown',
@@ -483,7 +3344,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 61.02,
       a: 20.97,
       b: 63.14
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Brainmatter Beige',
@@ -500,7 +3364,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 94.48,
       a: -2.4,
       b: 7.85
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Castle Grey',
@@ -517,7 +3384,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 94.48,
       a: -2.4,
       b: 7.85
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Centaur Skin',
@@ -534,7 +3404,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 74.31,
       a: 17.1,
       b: 12.87
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Chaotic Red',
@@ -551,7 +3424,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 24.18,
       a: 33.81,
       b: 28.28
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Combat Fatigue',
@@ -568,7 +3444,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 57.34,
       a: -11,
       b: 25.83
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Commando Green',
@@ -585,7 +3464,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 50.93,
       a: -6.62,
       b: 36.51
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Corpse Pale',
@@ -602,415 +3484,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 84.07,
       a: 7.03,
       b: 19.75
-    }
-  },
-  {
-    name: 'CP3001',
-    brand: 'Army Painter',
-    hex: '#000000',
-    type: 'Base',
-    family: 'Black',
-    rgb: {
-      r: 0,
-      g: 0,
-      b: 0
     },
-    lab: {
-      l: 0,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: 'CP3002',
-    brand: 'Army Painter',
-    hex: '#FFFFFF',
-    type: 'Base',
-    family: 'White',
-    rgb: {
-      r: 255,
-      g: 255,
-      b: 255
-    },
-    lab: {
-      l: 100,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: 'CP3003',
-    brand: 'Army Painter',
-    hex: '#F0F0F0',
-    type: 'Base',
-    family: 'White',
-    rgb: {
-      r: 240,
-      g: 240,
-      b: 240
-    },
-    lab: {
-      l: 94.8,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: 'CP3004',
-    brand: 'Army Painter',
-    hex: '#713E29',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 113,
-      g: 62,
-      b: 41
-    },
-    lab: {
-      l: 32.07,
-      a: 20.13,
-      b: 22.47
-    }
-  },
-  {
-    name: 'CP3005',
-    brand: 'Army Painter',
-    hex: '#66693A',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 102,
-      g: 105,
-      b: 58
-    },
-    lab: {
-      l: 43.11,
-      a: -8.98,
-      b: 25.97
-    }
-  },
-  {
-    name: 'CP3006',
-    brand: 'Army Painter',
-    hex: '#C3231E',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 195,
-      g: 35,
-      b: 30
-    },
-    lab: {
-      l: 42.61,
-      a: 60.47,
-      b: 44.3
-    }
-  },
-  {
-    name: 'CP3007',
-    brand: 'Army Painter',
-    hex: '#E59B66',
-    type: 'Base',
-    family: 'Flesh',
-    rgb: {
-      r: 229,
-      g: 155,
-      b: 102
-    },
-    lab: {
-      l: 70.22,
-      a: 22.16,
-      b: 38.79
-    }
-  },
-  {
-    name: 'CP3008',
-    brand: 'Army Painter',
-    hex: '#858584',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 133,
-      g: 133,
-      b: 132
-    },
-    lab: {
-      l: 55.51,
-      a: -0.2,
-      b: 0.54
-    }
-  },
-  {
-    name: 'CP3011',
-    brand: 'Army Painter',
-    hex: '#C18C17',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 193,
-      g: 140,
-      b: 23
-    },
-    lab: {
-      l: 61.79,
-      a: 10.81,
-      b: 62.64
-    }
-  },
-  {
-    name: 'CP3012',
-    brand: 'Army Painter',
-    hex: '#D0C59A',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 208,
-      g: 197,
-      b: 154
-    },
-    lab: {
-      l: 79.43,
-      a: -2.89,
-      b: 23.01
-    }
-  },
-  {
-    name: 'CP3013',
-    brand: 'Army Painter',
-    hex: '#BCBE8C',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 188,
-      g: 190,
-      b: 140
-    },
-    lab: {
-      l: 75.71,
-      a: -8.83,
-      b: 25.1
-    }
-  },
-  {
-    name: 'CP3014',
-    brand: 'Army Painter',
-    hex: '#1B613A',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 27,
-      g: 97,
-      b: 58
-    },
-    lab: {
-      l: 36.15,
-      a: -31.52,
-      b: 16.13
-    }
-  },
-  {
-    name: 'CP3015',
-    brand: 'Army Painter',
-    hex: '#F7D201',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 247,
-      g: 210,
-      b: 1
-    },
-    lab: {
-      l: 84.93,
-      a: -2.79,
-      b: 85.29
-    }
-  },
-  {
-    name: 'CP3016',
-    brand: 'Army Painter',
-    hex: '#993822',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 153,
-      g: 56,
-      b: 34
-    },
-    lab: {
-      l: 37.33,
-      a: 39.37,
-      b: 34.3
-    }
-  },
-  {
-    name: 'CP3017',
-    brand: 'Army Painter',
-    hex: '#2580BA',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 37,
-      g: 128,
-      b: 186
-    },
-    lab: {
-      l: 51.12,
-      a: -5.73,
-      b: -37.82
-    }
-  },
-  {
-    name: 'CP3018',
-    brand: 'Army Painter',
-    hex: '#952526',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 149,
-      g: 37,
-      b: 38
-    },
-    lab: {
-      l: 33.68,
-      a: 46.15,
-      b: 27.74
-    }
-  },
-  {
-    name: 'CP3019',
-    brand: 'Army Painter',
-    hex: '#492B79',
-    type: 'Base',
-    family: 'Purple',
-    rgb: {
-      r: 73,
-      g: 43,
-      b: 121
-    },
-    lab: {
-      l: 25.33,
-      a: 32.03,
-      b: -39.68
-    }
-  },
-  {
-    name: 'CP3020',
-    brand: 'Army Painter',
-    hex: '#273B2F',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 39,
-      g: 59,
-      b: 47
-    },
-    lab: {
-      l: 22.88,
-      a: -11.09,
-      b: 4.91
-    }
-  },
-  {
-    name: 'CP3021',
-    brand: 'Army Painter',
-    hex: '#517383',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 81,
-      g: 115,
-      b: 131
-    },
-    lab: {
-      l: 46.51,
-      a: -7.8,
-      b: -12.65
-    }
-  },
-  {
-    name: 'CP3022',
-    brand: 'Army Painter',
-    hex: '#154275',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 21,
-      g: 66,
-      b: 117
-    },
-    lab: {
-      l: 27.68,
-      a: 4.73,
-      b: -33.57
-    }
-  },
-  {
-    name: 'CP3024',
-    brand: 'Army Painter',
-    hex: '#1E8430',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 30,
-      g: 132,
-      b: 48
-    },
-    lab: {
-      l: 48.25,
-      a: -46.37,
-      b: 36.47
-    }
-  },
-  {
-    name: 'CP3025',
-    brand: 'Army Painter',
-    hex: '#858180',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 133,
-      g: 129,
-      b: 128
-    },
-    lab: {
-      l: 54.29,
-      a: 1.31,
-      b: 1.07
-    }
-  },
-  {
-    name: 'CP3026',
-    brand: 'Army Painter',
-    hex: '#6C2A31',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 108,
-      g: 42,
-      b: 49
-    },
-    lab: {
-      l: 26.92,
-      a: 30.08,
-      b: 10.51
-    }
-  },
-  {
-    name: 'CP3027',
-    brand: 'Army Painter',
-    hex: '#F4F7F7',
-    type: 'Base',
-    family: 'White',
-    rgb: {
-      r: 244,
-      g: 247,
-      b: 247
-    },
-    lab: {
-      l: 97.01,
-      a: -0.99,
-      b: -0.35
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Crusted Sore',
@@ -1027,7 +3504,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 20.99,
       a: 34.36,
       b: 10.98
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Crypt Wraith',
@@ -1044,7 +3524,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 40.3,
       a: -3.1,
       b: 9.17
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Crystal Blue',
@@ -1061,7 +3544,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 51.98,
       a: -6.68,
       b: -41.08
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Cultist Robe',
@@ -1078,7 +3564,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 46.68,
       a: 0.16,
       b: 8.79
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Daemonic Yellow',
@@ -1095,7 +3584,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 87.23,
       a: -5.52,
       b: 86.63
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Dark Sky',
@@ -1112,7 +3604,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 30.33,
       a: -5.41,
       b: -15.37
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Deep Blue',
@@ -1129,7 +3624,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 19.75,
       a: -1.05,
       b: -22.84
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Desert Yellow',
@@ -1146,7 +3644,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 64.82,
       a: 9.19,
       b: 58.92
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Dirt Spatter',
@@ -1163,7 +3664,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 27.72,
       a: 14.92,
       b: 17.68
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Dragon Red',
@@ -1180,7 +3684,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 33.46,
       a: 50.6,
       b: 32.6
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Drake Tooth',
@@ -1197,7 +3704,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 81.44,
       a: -2.53,
       b: 11.98
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Dungeon Grey',
@@ -1214,7 +3724,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 45.44,
       a: -0.46,
       b: -3.32
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Electric Blue',
@@ -1231,7 +3744,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 56.26,
       a: -4.6,
       b: -31.95
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Elemental Bolt',
@@ -1248,7 +3764,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 56.8,
       a: -40.15,
       b: 2.95
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Elf Green',
@@ -1265,7 +3784,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 32.74,
       a: -11.22,
       b: 26.22
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Elven Flesh',
@@ -1282,7 +3804,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 32.74,
       a: -11.22,
       b: 26.22
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Field Grey',
@@ -1299,7 +3824,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 51.57,
       a: -2.31,
       b: 1.66
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Filthy Cape',
@@ -1316,7 +3844,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 50.24,
       a: -2.26,
       b: 12.11
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Fire Lizard',
@@ -1333,7 +3864,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 58.29,
       a: 34.82,
       b: 55.13
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Fog Grey',
@@ -1350,7 +3884,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 57.86,
       a: -4.75,
       b: -19.13
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Fur Brown',
@@ -1367,7 +3904,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 40.75,
       a: 37.08,
       b: 38.27
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Goblin Green',
@@ -1384,7 +3924,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 50.69,
       a: -41.49,
       b: 30.97
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Gorgon Hide',
@@ -1401,7 +3944,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 83.88,
       a: -0.17,
       b: -10.13
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Greenskin',
@@ -1418,7 +3964,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 36.18,
       a: -34.97,
       b: 20.82
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Griffon Blue',
@@ -1435,7 +3984,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 34.29,
       a: 0.67,
       b: -31.76
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Grimoire Purple',
@@ -1452,7 +4004,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 40.16,
       a: 20.25,
       b: 3.91
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Hardened Carapace',
@@ -1469,7 +4024,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 30.4,
       a: 0.5,
       b: 5.57
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Hemp Rope',
@@ -1486,7 +4044,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 51.34,
       a: 4.43,
       b: 36.93
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Hydra Turquoise',
@@ -1503,7 +4064,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 58.31,
       a: -29.35,
       b: -13.58
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Ice Storm',
@@ -1520,7 +4084,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 62.78,
       a: -7.22,
       b: -27.98
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Jungle Green',
@@ -1537,7 +4104,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 65.7,
       a: -30.1,
       b: 57.13
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Kobold Skin',
@@ -1554,7 +4124,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 69.92,
       a: 9.06,
       b: 21.75
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Kraken Skin',
@@ -1571,7 +4144,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 73.21,
       a: -37.11,
       b: 18.28
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Lava Orange',
@@ -1588,7 +4164,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 55.54,
       a: 54.13,
       b: 54.87
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Leather Brown',
@@ -1605,7 +4184,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 35.22,
       a: 16,
       b: 29.84
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Mars Red',
@@ -1622,7 +4204,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 43.47,
       a: 49.66,
       b: 30.59
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Matt Black',
@@ -1639,24 +4224,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 12.23,
       a: 2.14,
       b: 0.01
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Matt White',
     brand: 'Army Painter',
-    hex: '#FFFFFF',
+    hex: '#F4F4F2',
     type: 'Base',
     family: 'White',
     rgb: {
-      r: 255,
-      g: 255,
-      b: 255
+      r: 244,
+      g: 244,
+      b: 242
     },
     lab: {
-      l: 100,
-      a: 0,
-      b: 0
-    }
+      l: 96.14,
+      a: -0.35,
+      b: 0.96
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Monster Brown',
@@ -1673,7 +4264,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 42.47,
       a: 11.5,
       b: 34.73
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Moon Dust',
@@ -1690,7 +4284,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 84.61,
       a: -6.36,
       b: 55.11
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Mouldy Clothes',
@@ -1707,7 +4304,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 46.58,
       a: -31.89,
       b: 29.75
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Mummy Robes',
@@ -1724,7 +4324,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 89.26,
       a: 2.92,
       b: 6
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Mutant Hue',
@@ -1741,7 +4344,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 57.18,
       a: 14.88,
       b: 3.33
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Mythical Orange',
@@ -1758,7 +4364,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 52.35,
       a: 63.58,
       b: 52.62
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Necromance Cloak',
@@ -1775,7 +4384,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 25.48,
       a: -1.74,
       b: 3.55
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Necrotic Flesh',
@@ -1792,7 +4404,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 77.12,
       a: -8.92,
       b: 23.88
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Oak Brown',
@@ -1809,7 +4424,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 16.82,
       a: 15.24,
       b: 17.94
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Oozing Purple',
@@ -1826,7 +4444,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 64.18,
       a: 14.16,
       b: -13.64
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Orc Blood',
@@ -1843,7 +4464,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 46.21,
       a: 22.99,
       b: 0.12
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Phoenix Flames',
@@ -1860,7 +4484,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 74.62,
       a: 21.59,
       b: 74.72
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Poisonous Cloud',
@@ -1877,7 +4504,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 84.85,
       a: -24.37,
       b: 67.48
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Pure Red',
@@ -1894,7 +4524,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 44.95,
       a: 64.54,
       b: 42.63
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Royal Cloak',
@@ -1911,7 +4544,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 57.41,
       a: -30.88,
       b: -10.97
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Scaly Hide',
@@ -1928,7 +4564,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 59.94,
       a: -18.35,
       b: 34.47
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Scar Tissue',
@@ -1945,7 +4584,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 62.59,
       a: 23.2,
       b: 21.78
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Skeleton Bone',
@@ -1962,7 +4604,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 80.51,
       a: -2.9,
       b: 22.94
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Snake Scales',
@@ -1979,7 +4624,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 67.68,
       a: -31.44,
       b: 54.99
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Spaceship Exterior',
@@ -1996,7 +4644,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 82.74,
       a: 0.03,
       b: -1.11
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Sulphide Ochre',
@@ -2013,7 +4664,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 60.63,
       a: 16.77,
       b: 63.16
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Tanned Flesh',
@@ -2030,7 +4684,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 56.08,
       a: 25.94,
       b: 24.08
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Toxic Boils',
@@ -2047,7 +4704,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 53.82,
       a: 23.23,
       b: -1.54
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Toxic Mist',
@@ -2064,7 +4724,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 71.28,
       a: -33.48,
       b: -12.96
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Troglodyte Blue',
@@ -2081,7 +4744,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 53.48,
       a: -12.84,
       b: -34.15
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Troll Claws',
@@ -2098,7 +4764,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 63.11,
       a: 18.22,
       b: 41.93
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Ultramarine Blue',
@@ -2115,7 +4784,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 32.35,
       a: 2.68,
       b: -36.1
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Uniform Grey',
@@ -2132,7 +4804,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 44.13,
       a: -2.45,
       b: -6.56
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Vampire Red',
@@ -2149,7 +4824,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 33.57,
       a: 50.45,
       b: 18.89
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Venom Wyrm',
@@ -2166,7 +4844,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 42.34,
       a: -4.39,
       b: 22.79
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Viking Blue',
@@ -2183,7 +4864,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 39.07,
       a: -1.21,
       b: -38.17
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Voidshield Blue',
@@ -2200,7 +4884,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 62.83,
       a: -13.23,
       b: -36.94
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Warlock Purple',
@@ -2217,7 +4904,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 50.65,
       a: 39.5,
       b: 13.21
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Wasteland Soil',
@@ -2234,7 +4924,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 37.22,
       a: 20.62,
       b: 0.14
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Werewolf Fur',
@@ -2251,7 +4944,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 42.08,
       a: 8.1,
       b: 13.21
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Witch Brew',
@@ -2268,7 +4964,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 60.13,
       a: -13.76,
       b: 44.9
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Wizards Orb',
@@ -2285,7 +4984,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 42.87,
       a: -29.15,
       b: -3.37
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Wolf Grey',
@@ -2302,296 +5004,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 51.57,
       a: -7.92,
       b: -14.36
-    }
-  },
-  {
-    name: 'WP1101',
-    brand: 'Army Painter',
-    hex: '#000000',
-    type: 'Base',
-    family: 'Black',
-    rgb: {
-      r: 0,
-      g: 0,
-      b: 0
     },
-    lab: {
-      l: 0,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: 'WP1102',
-    brand: 'Army Painter',
-    hex: '#FFFFFF',
-    type: 'Base',
-    family: 'White',
-    rgb: {
-      r: 255,
-      g: 255,
-      b: 255
-    },
-    lab: {
-      l: 100,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: 'WP1104',
-    brand: 'Army Painter',
-    hex: '#CA1913',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 202,
-      g: 25,
-      b: 19
-    },
-    lab: {
-      l: 43.22,
-      a: 64.37,
-      b: 50.44
-    }
-  },
-  {
-    name: 'WP1105',
-    brand: 'Army Painter',
-    hex: '#B91130',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 185,
-      g: 17,
-      b: 48
-    },
-    lab: {
-      l: 39.47,
-      a: 61.96,
-      b: 30.19
-    }
-  },
-  {
-    name: 'WP1106',
-    brand: 'Army Painter',
-    hex: '#E24606',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 226,
-      g: 70,
-      b: 6
-    },
-    lab: {
-      l: 52.47,
-      a: 58.37,
-      b: 62.19
-    }
-  },
-  {
-    name: 'WP1107',
-    brand: 'Army Painter',
-    hex: '#F8BF3E',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 248,
-      g: 191,
-      b: 62
-    },
-    lab: {
-      l: 80.5,
-      a: 8.68,
-      b: 68.91
-    }
-  },
-  {
-    name: 'WP1108',
-    brand: 'Army Painter',
-    hex: '#B6A789',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 182,
-      g: 167,
-      b: 137
-    },
-    lab: {
-      l: 69.03,
-      a: 0.61,
-      b: 17.51
-    }
-  },
-  {
-    name: 'WP1109',
-    brand: 'Army Painter',
-    hex: '#338E46',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 51,
-      g: 142,
-      b: 70
-    },
-    lab: {
-      l: 52.39,
-      a: -42.95,
-      b: 30.44
-    }
-  },
-  {
-    name: 'WP1110',
-    brand: 'Army Painter',
-    hex: '#747260',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 116,
-      g: 114,
-      b: 96
-    },
-    lab: {
-      l: 47.74,
-      a: -2.58,
-      b: 10.27
-    }
-  },
-  {
-    name: 'WP1111',
-    brand: 'Army Painter',
-    hex: '#04662B',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 4,
-      g: 102,
-      b: 43
-    },
-    lab: {
-      l: 37.3,
-      a: -39.49,
-      b: 26.08
-    }
-  },
-  {
-    name: 'WP1112',
-    brand: 'Army Painter',
-    hex: '#0F3515',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 15,
-      g: 53,
-      b: 21
-    },
-    lab: {
-      l: 18.81,
-      a: -21.75,
-      b: 16.18
-    }
-  },
-  {
-    name: 'WP1113',
-    brand: 'Army Painter',
-    hex: '#5288B8',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 82,
-      g: 136,
-      b: 184
-    },
-    lab: {
-      l: 54.93,
-      a: -3.78,
-      b: -30.61
-    }
-  },
-  {
-    name: 'WP1114',
-    brand: 'Army Painter',
-    hex: '#2579BB',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 37,
-      g: 121,
-      b: 187
-    },
-    lab: {
-      l: 49.07,
-      a: -1.19,
-      b: -41.63
-    }
-  },
-  {
-    name: 'WP1115',
-    brand: 'Army Painter',
-    hex: '#3B57A5',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 59,
-      g: 87,
-      b: 165
-    },
-    lab: {
-      l: 38.66,
-      a: 15.24,
-      b: -45.3
-    }
-  },
-  {
-    name: 'WP1116',
-    brand: 'Army Painter',
-    hex: '#0E4E76',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 14,
-      g: 78,
-      b: 118
-    },
-    lab: {
-      l: 31.46,
-      a: -3.58,
-      b: -28.2
-    }
-  },
-  {
-    name: 'WP1117',
-    brand: 'Army Painter',
-    hex: '#95959F',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 149,
-      g: 149,
-      b: 159
-    },
-    lab: {
-      l: 61.99,
-      a: 1.99,
-      b: -5.24
-    }
-  },
-  {
-    name: 'WP1118',
-    brand: 'Army Painter',
-    hex: '#70737F',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 112,
-      g: 115,
-      b: 127
-    },
-    lab: {
-      l: 48.56,
-      a: 1.45,
-      b: -6.98
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'WP1118P',
@@ -2608,1690 +5024,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 38.89,
       a: -2.34,
       b: -4.05
-    }
-  },
-  {
-    name: 'WP1119',
-    brand: 'Army Painter',
-    hex: '#5E7F9F',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 94,
-      g: 127,
-      b: 159
     },
-    lab: {
-      l: 51.91,
-      a: -3.13,
-      b: -20.82
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'WP1120',
-    brand: 'Army Painter',
-    hex: '#9D6A5F',
-    type: 'Base',
-    family: 'Flesh',
-    rgb: {
-      r: 157,
-      g: 106,
-      b: 95
-    },
-    lab: {
-      l: 49.86,
-      a: 18.98,
-      b: 14.46
-    }
-  },
-  {
-    name: 'WP1121',
-    brand: 'Army Painter',
-    hex: '#D7955A',
-    type: 'Base',
-    family: 'Flesh',
-    rgb: {
-      r: 215,
-      g: 149,
-      b: 90
-    },
-    lab: {
-      l: 67.04,
-      a: 18.69,
-      b: 40.77
-    }
-  },
-  {
-    name: 'WP1122',
-    brand: 'Army Painter',
-    hex: '#A13A0F',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 161,
-      g: 58,
-      b: 15
-    },
-    lab: {
-      l: 38.97,
-      a: 40.86,
-      b: 45.31
-    }
-  },
-  {
-    name: 'WP1123',
-    brand: 'Army Painter',
-    hex: '#7C4F10',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 124,
-      g: 79,
-      b: 16
-    },
-    lab: {
-      l: 37.69,
-      a: 13.72,
-      b: 41.49
-    }
-  },
-  {
-    name: 'WP1124',
-    brand: 'Army Painter',
-    hex: '#48240A',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 72,
-      g: 36,
-      b: 10
-    },
-    lab: {
-      l: 18.63,
-      a: 14.78,
-      b: 23.2
-    }
-  },
-  {
-    name: 'WP1125',
-    brand: 'Army Painter',
-    hex: '#C2AE9D',
-    type: 'Base',
-    family: 'White',
-    rgb: {
-      r: 194,
-      g: 174,
-      b: 157
-    },
-    lab: {
-      l: 72.35,
-      a: 4.43,
-      b: 11.35
-    }
-  },
-  {
-    name: 'WP1126',
-    brand: 'Army Painter',
-    hex: '#E38C7F',
-    type: 'Base',
-    family: 'Flesh',
-    rgb: {
-      r: 227,
-      g: 140,
-      b: 127
-    },
-    lab: {
-      l: 66.99,
-      a: 31.65,
-      b: 20.99
-    }
-  },
-  {
-    name: 'WP1127',
-    brand: 'Army Painter',
-    hex: '#BB6F51',
-    type: 'Base',
-    family: 'Flesh',
-    rgb: {
-      r: 187,
-      g: 111,
-      b: 81
-    },
-    lab: {
-      l: 54.59,
-      a: 27.11,
-      b: 29.48
-    }
-  },
-  {
-    name: 'WP1128',
-    brand: 'Army Painter',
-    hex: '#462D59',
-    type: 'Base',
-    family: 'Purple',
-    rgb: {
-      r: 70,
-      g: 45,
-      b: 89
-    },
-    lab: {
-      l: 23.34,
-      a: 21.06,
-      b: -22.18
-    }
-  },
-  {
-    name: 'WP1129',
-    brand: 'Army Painter',
-    hex: '#B1B1AF',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 177,
-      g: 177,
-      b: 175
-    },
-    lab: {
-      l: 72.15,
-      a: -0.37,
-      b: 1.02
-    }
-  },
-  {
-    name: 'WP1130',
-    brand: 'Army Painter',
-    hex: '#949494',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 148,
-      g: 148,
-      b: 148
-    },
-    lab: {
-      l: 61.32,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: 'WP1131',
-    brand: 'Army Painter',
-    hex: '#7E7C7B',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 126,
-      g: 124,
-      b: 123
-    },
-    lab: {
-      l: 52.15,
-      a: 0.56,
-      b: 0.81
-    }
-  },
-  {
-    name: 'WP1132',
-    brand: 'Army Painter',
-    hex: '#CC7D00',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 204,
-      g: 125,
-      b: 0
-    },
-    lab: {
-      l: 59.44,
-      a: 23.52,
-      b: 65.81
-    }
-  },
-  {
-    name: 'WP1133',
-    brand: 'Army Painter',
-    hex: '#E47533',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 228,
-      g: 117,
-      b: 51
-    },
-    lab: {
-      l: 61.19,
-      a: 38.71,
-      b: 53.86
-    }
-  },
-  {
-    name: 'WP1134',
-    brand: 'Army Painter',
-    hex: '#532814',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 83,
-      g: 40,
-      b: 20
-    },
-    lab: {
-      l: 21.61,
-      a: 18.14,
-      b: 21.8
-    }
-  },
-  {
-    name: 'WP1135',
-    brand: 'Army Painter',
-    hex: '#3A2A11',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 58,
-      g: 42,
-      b: 17
-    },
-    lab: {
-      l: 18.35,
-      a: 4.02,
-      b: 18.9
-    }
-  },
-  {
-    name: 'WP1136',
-    brand: 'Army Painter',
-    hex: '#050505',
-    type: 'Base',
+    name: 'Abaddon Black',
+    brand: 'Citadel',
+    hex: '#121212',
+    type: 'Air',
     family: 'Black',
     rgb: {
-      r: 5,
-      g: 5,
-      b: 5
-    },
-    lab: {
-      l: 1.37,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: 'WP1137',
-    brand: 'Army Painter',
-    hex: '#162F12',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 22,
-      g: 47,
+      r: 18,
+      g: 18,
       b: 18
     },
     lab: {
-      l: 16.73,
-      a: -16.9,
-      b: 15.56
-    }
-  },
-  {
-    name: 'WP1138',
-    brand: 'Army Painter',
-    hex: '#502114',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 80,
-      g: 33,
-      b: 20
-    },
-    lab: {
-      l: 19.41,
-      a: 20.99,
-      b: 19.15
-    }
-  },
-  {
-    name: 'WP1139',
-    brand: 'Army Painter',
-    hex: '#112A47',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 17,
-      g: 42,
-      b: 71
-    },
-    lab: {
-      l: 16.65,
-      a: 1.68,
-      b: -20.96
-    }
-  },
-  {
-    name: 'WP1140',
-    brand: 'Army Painter',
-    hex: '#2A1C4D',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 42,
-      g: 28,
-      b: 77
-    },
-    lab: {
-      l: 14.73,
-      a: 20.29,
-      b: -28.03
-    }
-  },
-  {
-    name: 'WP1141',
-    brand: 'Army Painter',
-    hex: '#1E939C',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 30,
-      g: 147,
-      b: 156
-    },
-    lab: {
-      l: 55.63,
-      a: -27.2,
-      b: -13.64
-    }
-  },
-  {
-    name: 'WP1142',
-    brand: 'Army Painter',
-    hex: '#6F1D06',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 111,
-      g: 29,
-      b: 6
-    },
-    lab: {
-      l: 24.55,
-      a: 35.07,
-      b: 33.37
-    }
-  },
-  {
-    name: 'WP1143',
-    brand: 'Army Painter',
-    hex: '#4A1B0E',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 74,
-      g: 27,
-      b: 14
-    },
-    lab: {
-      l: 16.85,
-      a: 21.43,
-      b: 19.33
-    }
-  },
-  {
-    name: 'WP1144',
-    brand: 'Army Painter',
-    hex: '#BB8702',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 187,
-      g: 135,
-      b: 2
-    },
-    lab: {
-      l: 59.8,
-      a: 10.55,
-      b: 64.72
-    }
-  },
-  {
-    name: 'WP1401',
-    brand: 'Army Painter',
-    hex: '#A32F26',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 163,
-      g: 47,
-      b: 38
-    },
-    lab: {
-      l: 37.77,
-      a: 46.98,
-      b: 33.06
-    }
-  },
-  {
-    name: 'WP1402',
-    brand: 'Army Painter',
-    hex: '#FDEDC7',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 253,
-      g: 237,
-      b: 199
-    },
-    lab: {
-      l: 94.13,
-      a: -0.46,
-      b: 20.39
-    }
-  },
-  {
-    name: 'WP1403',
-    brand: 'Army Painter',
-    hex: '#FBDC04',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 251,
-      g: 220,
-      b: 4
-    },
-    lab: {
-      l: 87.83,
-      a: -6.11,
-      b: 87.27
-    }
-  },
-  {
-    name: 'WP1404',
-    brand: 'Army Painter',
-    hex: '#BFA59B',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 191,
-      g: 165,
-      b: 155
-    },
-    lab: {
-      l: 69.72,
-      a: 7.86,
-      b: 8.68
-    }
-  },
-  {
-    name: 'WP1405',
-    brand: 'Army Painter',
-    hex: '#CF8100',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 207,
-      g: 129,
-      b: 0
-    },
-    lab: {
-      l: 60.75,
-      a: 22.65,
-      b: 66.85
-    }
-  },
-  {
-    name: 'WP1407',
-    brand: 'Army Painter',
-    hex: '#8D887F',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 141,
-      g: 136,
-      b: 127
-    },
-    lab: {
-      l: 56.88,
-      a: 0.2,
-      b: 5.49
-    }
-  },
-  {
-    name: 'WP1408',
-    brand: 'Army Painter',
-    hex: '#E3B1A5',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 227,
-      g: 177,
-      b: 165
-    },
-    lab: {
-      l: 76.37,
-      a: 16.46,
-      b: 13.12
-    }
-  },
-  {
-    name: 'WP1409',
-    brand: 'Army Painter',
-    hex: '#868E59',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 134,
-      g: 142,
-      b: 89
-    },
-    lab: {
-      l: 57.21,
-      a: -11.81,
-      b: 27.29
-    }
-  },
-  {
-    name: 'WP1410',
-    brand: 'Army Painter',
-    hex: '#847F37',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 132,
-      g: 127,
-      b: 55
-    },
-    lab: {
-      l: 52.24,
-      a: -8.11,
-      b: 39.07
-    }
-  },
-  {
-    name: 'WP1411',
-    brand: 'Army Painter',
-    hex: '#EFD0AF',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 239,
-      g: 208,
-      b: 175
-    },
-    lab: {
-      l: 85.28,
-      a: 5.96,
-      b: 20.4
-    }
-  },
-  {
-    name: 'WP1412',
-    brand: 'Army Painter',
-    hex: '#843046',
-    type: 'Base',
-    family: 'Pink',
-    rgb: {
-      r: 132,
-      g: 48,
-      b: 70
-    },
-    lab: {
-      l: 32.84,
-      a: 38.06,
-      b: 5.57
-    }
-  },
-  {
-    name: 'WP1413',
-    brand: 'Army Painter',
-    hex: '#5D5F4D',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 93,
-      g: 95,
-      b: 77
-    },
-    lab: {
-      l: 39.66,
-      a: -4.3,
-      b: 10.06
-    }
-  },
-  {
-    name: 'WP1414',
-    brand: 'Army Painter',
-    hex: '#787164',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 120,
-      g: 113,
-      b: 100
-    },
-    lab: {
-      l: 47.91,
-      a: 0.32,
-      b: 8.19
-    }
-  },
-  {
-    name: 'WP1415',
-    brand: 'Army Painter',
-    hex: '#314F5E',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 49,
-      g: 79,
-      b: 94
-    },
-    lab: {
-      l: 31.93,
-      a: -6.59,
-      b: -12.26
-    }
-  },
-  {
-    name: 'WP1416',
-    brand: 'Army Painter',
-    hex: '#603920',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 96,
-      g: 57,
-      b: 32
-    },
-    lab: {
-      l: 28.16,
-      a: 14.62,
-      b: 22.62
-    }
-  },
-  {
-    name: 'WP1417',
-    brand: 'Army Painter',
-    hex: '#D5D2BD',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 213,
-      g: 210,
-      b: 189
-    },
-    lab: {
-      l: 83.92,
-      a: -2.56,
-      b: 10.78
-    }
-  },
-  {
-    name: 'WP1419',
-    brand: 'Army Painter',
-    hex: '#158E76',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 21,
-      g: 142,
-      b: 118
-    },
-    lab: {
-      l: 52.74,
-      a: -37.05,
-      b: 3.98
-    }
-  },
-  {
-    name: 'WP1420',
-    brand: 'Army Painter',
-    hex: '#4B5212',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 75,
-      g: 82,
-      b: 18
-    },
-    lab: {
-      l: 33.08,
-      a: -12.15,
-      b: 34.47
-    }
-  },
-  {
-    name: 'WP1421',
-    brand: 'Army Painter',
-    hex: '#F9BE94',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 249,
-      g: 190,
-      b: 148
-    },
-    lab: {
-      l: 81.35,
-      a: 15.94,
-      b: 29.41
-    }
-  },
-  {
-    name: 'WP1422',
-    brand: 'Army Painter',
-    hex: '#904B7A',
-    type: 'Base',
-    family: 'Pink',
-    rgb: {
-      r: 144,
-      g: 75,
-      b: 122
-    },
-    lab: {
-      l: 41.79,
-      a: 35.5,
-      b: -13.8
-    }
-  },
-  {
-    name: 'WP1424',
-    brand: 'Army Painter',
-    hex: '#7D785A',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 125,
-      g: 120,
-      b: 90
-    },
-    lab: {
-      l: 50.13,
-      a: -3.24,
-      b: 17.21
-    }
-  },
-  {
-    name: 'WP1425',
-    brand: 'Army Painter',
-    hex: '#49383C',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 73,
-      g: 56,
-      b: 60
-    },
-    lab: {
-      l: 25.48,
-      a: 8.29,
-      b: 0.4
-    }
-  },
-  {
-    name: 'WP1426',
-    brand: 'Army Painter',
-    hex: '#F07000',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 240,
-      g: 112,
-      b: 0
-    },
-    lab: {
-      l: 61.76,
-      a: 44.87,
-      b: 69.78
-    }
-  },
-  {
-    name: 'WP1427',
-    brand: 'Army Painter',
-    hex: '#7A97B1',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 122,
-      g: 151,
-      b: 177
-    },
-    lab: {
-      l: 61.17,
-      a: -3.85,
-      b: -16.85
-    }
-  },
-  {
-    name: 'WP1429',
-    brand: 'Army Painter',
-    hex: '#20477A',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 32,
-      g: 71,
-      b: 122
-    },
-    lab: {
-      l: 29.96,
-      a: 4.91,
-      b: -33.06
-    }
-  },
-  {
-    name: 'WP1431',
-    brand: 'Army Painter',
-    hex: '#977C3A',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 151,
-      g: 124,
-      b: 58
-    },
-    lab: {
-      l: 53.28,
-      a: 2.38,
-      b: 39.24
-    }
-  },
-  {
-    name: 'WP1432',
-    brand: 'Army Painter',
-    hex: '#3BA0CB',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 59,
-      g: 160,
-      b: 203
-    },
-    lab: {
-      l: 61.98,
-      a: -15.13,
-      b: -30.45
-    }
-  },
-  {
-    name: 'WP1433',
-    brand: 'Army Painter',
-    hex: '#8EA901',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 142,
-      g: 169,
-      b: 1
-    },
-    lab: {
-      l: 65.06,
-      a: -27.57,
-      b: 66.83
-    }
-  },
-  {
-    name: 'WP1434',
-    brand: 'Army Painter',
-    hex: '#D89D8F',
-    type: 'Base',
-    family: 'Flesh',
-    rgb: {
-      r: 216,
-      g: 157,
-      b: 143
-    },
-    lab: {
-      l: 69.96,
-      a: 20.13,
-      b: 16.01
-    }
-  },
-  {
-    name: 'WP1435',
-    brand: 'Army Painter',
-    hex: '#71BF87',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 113,
-      g: 191,
-      b: 135
-    },
-    lab: {
-      l: 71.23,
-      a: -36.26,
-      b: 20.9
-    }
-  },
-  {
-    name: 'WP1436',
-    brand: 'Army Painter',
-    hex: '#D33830',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 211,
-      g: 56,
-      b: 48
-    },
-    lab: {
-      l: 48.13,
-      a: 59.48,
-      b: 41.21
-    }
-  },
-  {
-    name: 'WP1437',
-    brand: 'Army Painter',
-    hex: '#40BAC0',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 64,
-      g: 186,
-      b: 192
-    },
-    lab: {
-      l: 69.48,
-      a: -31.12,
-      b: -12.91
-    }
-  },
-  {
-    name: 'WP1438',
-    brand: 'Army Painter',
-    hex: '#F0D45F',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 240,
-      g: 212,
-      b: 95
-    },
-    lab: {
-      l: 85.22,
-      a: -3.72,
-      b: 60.06
-    }
-  },
-  {
-    name: 'WP1439',
-    brand: 'Army Painter',
-    hex: '#3A7529',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 58,
-      g: 117,
-      b: 41
-    },
-    lab: {
-      l: 43.92,
-      a: -34.62,
-      b: 35.15
-    }
-  },
-  {
-    name: 'WP1442',
-    brand: 'Army Painter',
-    hex: '#E22E0D',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 226,
-      g: 46,
-      b: 13
-    },
-    lab: {
-      l: 49.69,
-      a: 66.21,
-      b: 58.96
-    }
-  },
-  {
-    name: 'WP1443',
-    brand: 'Army Painter',
-    hex: '#413C47',
-    type: 'Base',
-    family: 'Purple',
-    rgb: {
-      r: 65,
-      g: 60,
-      b: 71
-    },
-    lab: {
-      l: 26.19,
-      a: 4.66,
-      b: -5.94
-    }
-  },
-  {
-    name: 'WP1444',
-    brand: 'Army Painter',
-    hex: '#724860',
-    type: 'Base',
-    family: 'Pink',
-    rgb: {
-      r: 114,
-      g: 72,
-      b: 96
-    },
-    lab: {
-      l: 36.09,
-      a: 21.81,
-      b: -6.64
-    }
-  },
-  {
-    name: 'WP1445',
-    brand: 'Army Painter',
-    hex: '#B29DB7',
-    type: 'Base',
-    family: 'Purple',
-    rgb: {
-      r: 178,
-      g: 157,
-      b: 183
-    },
-    lab: {
-      l: 67.28,
-      a: 12.48,
-      b: -10.6
-    }
-  },
-  {
-    name: 'WP1446',
-    brand: 'Army Painter',
-    hex: '#F7A103',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 247,
-      g: 161,
-      b: 3
-    },
-    lab: {
-      l: 73.07,
-      a: 22.69,
-      b: 76.91
-    }
-  },
-  {
-    name: 'WP1447',
-    brand: 'Army Painter',
-    hex: '#D67B83',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 214,
-      g: 123,
-      b: 131
-    },
-    lab: {
-      l: 61.74,
-      a: 36.17,
-      b: 11.2
-    }
-  },
-  {
-    name: 'WP1448',
-    brand: 'Army Painter',
-    hex: '#CFDA2F',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 207,
-      g: 218,
-      b: 47
-    },
-    lab: {
-      l: 83.76,
-      a: -22.88,
-      b: 75.42
-    }
-  },
-  {
-    name: 'WP1449',
-    brand: 'Army Painter',
-    hex: '#1C9095',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 28,
-      g: 144,
-      b: 149
-    },
-    lab: {
-      l: 54.41,
-      a: -28.13,
-      b: -11.45
-    }
-  },
-  {
-    name: 'WP1450',
-    brand: 'Army Painter',
-    hex: '#939F8C',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 147,
-      g: 159,
-      b: 140
-    },
-    lab: {
-      l: 64.07,
-      a: -7.91,
-      b: 8.47
-    }
-  },
-  {
-    name: 'WP1451',
-    brand: 'Army Painter',
-    hex: '#C34D81',
-    type: 'Base',
-    family: 'Pink',
-    rgb: {
-      r: 195,
-      g: 77,
-      b: 129
-    },
-    lab: {
-      l: 50.09,
-      a: 52.19,
-      b: -4.81
-    }
-  },
-  {
-    name: 'WP1452',
-    brand: 'Army Painter',
-    hex: '#5BBCD7',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 91,
-      g: 188,
-      b: 215
-    },
-    lab: {
-      l: 71.62,
-      a: -20.8,
-      b: -22.18
-    }
-  },
-  {
-    name: 'WP1453',
-    brand: 'Army Painter',
-    hex: '#8EAE11',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 142,
-      g: 174,
-      b: 17
-    },
-    lab: {
-      l: 66.57,
-      a: -29.7,
-      b: 65.83
-    }
-  },
-  {
-    name: 'WP1456',
-    brand: 'Army Painter',
-    hex: '#C78600',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 199,
-      g: 134,
-      b: 0
-    },
-    lab: {
-      l: 60.95,
-      a: 16.43,
-      b: 66.49
-    }
-  },
-  {
-    name: 'WP1457',
-    brand: 'Army Painter',
-    hex: '#A66E7D',
-    type: 'Base',
-    family: 'Pink',
-    rgb: {
-      r: 166,
-      g: 110,
-      b: 125
-    },
-    lab: {
-      l: 52.66,
-      a: 24.41,
-      b: 0.88
-    }
-  },
-  {
-    name: 'WP1458',
-    brand: 'Army Painter',
-    hex: '#2588B9',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 37,
-      g: 136,
-      b: 185
-    },
-    lab: {
-      l: 53.49,
-      a: -10.72,
-      b: -33.52
-    }
-  },
-  {
-    name: 'WP1459',
-    brand: 'Army Painter',
-    hex: '#CB883E',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 203,
-      g: 136,
-      b: 62
-    },
-    lab: {
-      l: 62.22,
-      a: 18.86,
-      b: 48.82
-    }
-  },
-  {
-    name: 'WP1460',
-    brand: 'Army Painter',
-    hex: '#98172A',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 152,
-      g: 23,
-      b: 42
-    },
-    lab: {
-      l: 32.83,
-      a: 51.54,
-      b: 24.39
-    }
-  },
-  {
-    name: 'WP1461',
-    brand: 'Army Painter',
-    hex: '#6A653E',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 106,
-      g: 101,
-      b: 62
-    },
-    lab: {
-      l: 42.34,
-      a: -4.39,
-      b: 22.79
-    }
-  },
-  {
-    name: 'WP1462',
-    brand: 'Army Painter',
-    hex: '#1C5B98',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 28,
-      g: 91,
-      b: 152
-    },
-    lab: {
-      l: 37.83,
-      a: 3.1,
-      b: -38.91
-    }
-  },
-  {
-    name: 'WP1463',
-    brand: 'Army Painter',
-    hex: '#844857',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 132,
-      g: 72,
-      b: 87
-    },
-    lab: {
-      l: 38.25,
-      a: 27.38,
-      b: 2.48
-    }
-  },
-  {
-    name: 'WP1464',
-    brand: 'Army Painter',
-    hex: '#796352',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 121,
-      g: 99,
-      b: 82
-    },
-    lab: {
-      l: 43.65,
-      a: 6.12,
-      b: 12.99
-    }
-  },
-  {
-    name: 'WP1465',
-    brand: 'Army Painter',
-    hex: '#919634',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 145,
-      g: 150,
-      b: 52
-    },
-    lab: {
-      l: 59.96,
-      a: -14.93,
-      b: 49.18
-    }
-  },
-  {
-    name: 'WP1466',
-    brand: 'Army Painter',
-    hex: '#0F7260',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 15,
-      g: 114,
-      b: 96
-    },
-    lab: {
-      l: 42.73,
-      a: -31.11,
-      b: 2.45
-    }
-  },
-  {
-    name: 'WP1467',
-    brand: 'Army Painter',
-    hex: '#E07D2D',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 224,
-      g: 125,
-      b: 45
-    },
-    lab: {
-      l: 62.26,
-      a: 32.78,
-      b: 57.25
-    }
-  },
-  {
-    name: 'WP1468',
-    brand: 'Army Painter',
-    hex: '#22130F',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 34,
-      g: 19,
-      b: 15
-    },
-    lab: {
-      l: 7.59,
-      a: 7.1,
-      b: 5.04
-    }
-  },
-  {
-    name: 'WP1469',
-    brand: 'Army Painter',
-    hex: '#925A11',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 146,
-      g: 90,
-      b: 17
-    },
-    lab: {
-      l: 43.46,
-      a: 17.55,
-      b: 47.17
-    }
-  },
-  {
-    name: 'WP1470',
-    brand: 'Army Painter',
-    hex: '#B03812',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 176,
-      g: 56,
-      b: 18
-    },
-    lab: {
-      l: 41.38,
-      a: 47.2,
-      b: 47.19
-    }
-  },
-  {
-    name: 'WP1471',
-    brand: 'Army Painter',
-    hex: '#4C631C',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 76,
-      g: 99,
-      b: 28
-    },
-    lab: {
-      l: 38.8,
-      a: -20.32,
-      b: 35.95
-    }
-  },
-  {
-    name: 'WP1473',
-    brand: 'Army Painter',
-    hex: '#F7F7F7',
-    type: 'Base',
-    family: 'White',
-    rgb: {
-      r: 247,
-      g: 247,
-      b: 247
-    },
-    lab: {
-      l: 97.23,
+      l: 5.46,
       a: 0,
       b: 0
-    }
-  },
-  {
-    name: 'WP1475',
-    brand: 'Army Painter',
-    hex: '#EFEFEF',
-    type: 'Base',
-    family: 'White',
-    rgb: {
-      r: 239,
-      g: 239,
-      b: 239
     },
-    lab: {
-      l: 94.45,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: 'WP1476',
-    brand: 'Army Painter',
-    hex: '#B3082D',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 179,
-      g: 8,
-      b: 45
-    },
-    lab: {
-      l: 37.75,
-      a: 61.45,
-      b: 29.73
-    }
-  },
-  {
-    name: 'WP1477',
-    brand: 'Army Painter',
-    hex: '#CBB503',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 203,
-      g: 181,
-      b: 3
-    },
-    lab: {
-      l: 73.38,
-      a: -6.96,
-      b: 74.96
-    }
-  },
-  {
-    name: 'WP1478',
-    brand: 'Army Painter',
-    hex: '#9E3E35',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 158,
-      g: 62,
-      b: 53
-    },
-    lab: {
-      l: 39.54,
-      a: 39.36,
-      b: 26
-    }
-  },
-  {
-    name: 'WP1479',
-    brand: 'Army Painter',
-    hex: '#E74F35',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 231,
-      g: 79,
-      b: 53
-    },
-    lab: {
-      l: 54.91,
-      a: 57.44,
-      b: 46.75
-    }
-  },
-  {
-    name: 'WP1480',
-    brand: 'Army Painter',
-    hex: '#CF8C73',
-    type: 'Base',
-    family: 'Flesh',
-    rgb: {
-      r: 207,
-      g: 140,
-      b: 115
-    },
-    lab: {
-      l: 64.37,
-      a: 22.57,
-      b: 23.71
-    }
-  },
-  {
-    name: 'WP1712',
-    brand: 'Army Painter',
-    hex: '#826D8D',
-    type: 'Base',
-    family: 'Purple',
-    rgb: {
-      r: 130,
-      g: 109,
-      b: 141
-    },
-    lab: {
-      l: 49.02,
-      a: 14.56,
-      b: -14.43
-    }
-  },
-  {
-    name: 'WP1720',
-    brand: 'Army Painter',
-    hex: '#E0B26A',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 224,
-      g: 178,
-      b: 106
-    },
-    lab: {
-      l: 75.28,
-      a: 8.17,
-      b: 42.86
-    }
-  },
-  {
-    name: 'WP1731',
-    brand: 'Army Painter',
-    hex: '#9DC29E',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 157,
-      g: 194,
-      b: 158
-    },
-    lab: {
-      l: 74.96,
-      a: -19.38,
-      b: 14.1
-    }
-  },
-  {
-    name: 'Adeptus Battlegrey',
-    brand: 'Citadel',
-    hex: '#4A4C58',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 74,
-      g: 76,
-      b: 88
-    },
-    lab: {
-      l: 32.54,
-      a: 2.02,
-      b: -7.33
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Administratum Grey',
@@ -4308,7 +5064,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 63.83,
       a: -2.97,
       b: 3.68
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Aethermatic Blue',
@@ -4325,7 +5084,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 48.56,
       a: -19.85,
       b: -18.57
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
   },
   {
     name: 'Aggaros Dunes',
@@ -4342,7 +5104,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 42.98,
       a: -1.19,
       b: 21.41
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
   },
   {
     name: 'Agrax Earthshade',
@@ -4359,7 +5124,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 65.34,
       a: 1.64,
       b: 9.95
-    }
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
+  },
+  {
+    name: 'Agrax Earthshade Gloss',
+    brand: 'Citadel',
+    hex: '#B4AA9E',
+    type: 'Shade',
+    family: 'Grey',
+    rgb: {
+      r: 180,
+      g: 170,
+      b: 158
+    },
+    lab: {
+      l: 70.12,
+      a: 1.5,
+      b: 7.47
+    },
+    finish: 'gloss',
+    transparency: 0.85,
+    matchable: true
   },
   {
     name: 'Ahriman Blue',
@@ -4376,7 +5164,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 43.39,
       a: -17.01,
       b: -21.81
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Akhelian Green',
@@ -4393,7 +5184,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 30.62,
       a: -13.02,
       b: -17.56
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
   },
   {
     name: 'Alaitoc Blue',
@@ -4410,7 +5204,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 33.75,
       a: 6.49,
       b: -33.81
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Altdorf Guard Blue',
@@ -4427,7 +5224,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 32.12,
       a: 18.56,
       b: -46.83
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Angron Red Clear',
+    brand: 'Citadel',
+    hex: '#E21823',
+    type: 'Air',
+    family: 'Red',
+    rgb: {
+      r: 226,
+      g: 24,
+      b: 35
+    },
+    lab: {
+      l: 48.2,
+      a: 71.12,
+      b: 49.11
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Apothecary White',
@@ -4444,7 +5264,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 75.81,
       a: -3.71,
       b: -13.85
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
   },
   {
     name: 'Astronomicon Grey',
@@ -4461,7 +5284,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 68.33,
       a: -7.41,
       b: -4.84
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Asurmen Blue Wash',
@@ -4478,7 +5304,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 25.17,
       a: -2.9,
       b: -14.27
-    }
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
   },
   {
     name: 'Athonian Camoshade',
@@ -4495,7 +5324,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 73.28,
       a: -8.05,
       b: 23.87
-    }
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
   },
   {
     name: 'Auric Armour Gold',
@@ -4512,7 +5344,50 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 82.56,
       a: 9.89,
       b: 63.67
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Averland Sunset',
+    brand: 'Citadel',
+    hex: '#FBB81C',
+    type: 'Air',
+    family: 'Orange',
+    rgb: {
+      r: 251,
+      g: 184,
+      b: 28
+    },
+    lab: {
+      l: 78.97,
+      a: 12.63,
+      b: 77.66
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Baal Red Wash',
+    brand: 'Citadel',
+    hex: '#630808',
+    type: 'Shade',
+    family: 'Red',
+    rgb: {
+      r: 99,
+      g: 8,
+      b: 8
+    },
+    lab: {
+      l: 19.41,
+      a: 38.11,
+      b: 26.3
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
   },
   {
     name: 'Bad Moon Yellow',
@@ -4529,7 +5404,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 93.78,
       a: -15.32,
       b: 92.03
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Badab Black Wash',
+    brand: 'Citadel',
+    hex: '#121212',
+    type: 'Shade',
+    family: 'Black',
+    rgb: {
+      r: 18,
+      g: 18,
+      b: 18
+    },
+    lab: {
+      l: 5.46,
+      a: 0,
+      b: 0
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
   },
   {
     name: 'Baharroth Blue',
@@ -4546,7 +5444,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 71.24,
       a: -26.37,
       b: -15.68
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Balor Brown',
@@ -4563,7 +5464,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 40.43,
       a: 15.75,
       b: 46.76
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Balthasar Gold',
@@ -4580,7 +5484,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 53.06,
       a: 16.71,
       b: 25.89
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Baneblade Brown',
+    brand: 'Citadel',
+    hex: '#8F7C68',
+    type: 'Air',
+    family: 'Brown',
+    rgb: {
+      r: 143,
+      g: 124,
+      b: 104
+    },
+    lab: {
+      l: 53.23,
+      a: 4.04,
+      b: 13.62
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Barak-Nar Burgundy',
@@ -4597,7 +5524,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 16.03,
       a: 26.79,
       b: -9.65
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Basilicanum Grey',
@@ -4614,7 +5544,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 12.74,
       a: 0,
       b: 0
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
   },
   {
     name: 'Beaten Copper',
@@ -4631,24 +5564,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 30.8,
       a: 25.41,
       b: 18.46
-    }
-  },
-  {
-    name: 'Bestial Brown',
-    brand: 'Citadel',
-    hex: '#7B4A39',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 123,
-      g: 74,
-      b: 57
     },
-    lab: {
-      l: 36.75,
-      a: 18.88,
-      b: 18.92
-    }
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Bestigor Flesh',
@@ -4665,7 +5584,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 63.26,
       a: 21.62,
       b: 40.71
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Biel-Tan Green',
+    brand: 'Citadel',
+    hex: '#7DA57A',
+    type: 'Shade',
+    family: 'Green',
+    rgb: {
+      r: 125,
+      g: 165,
+      b: 122
+    },
+    lab: {
+      l: 63.9,
+      a: -22.22,
+      b: 18
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
   },
   {
     name: 'Bilious Green',
@@ -4682,7 +5624,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 79.17,
       a: -28.96,
       b: 43.18
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Black Legion',
@@ -4699,7 +5644,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 13.75,
       a: 0.25,
       b: -0.67
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
   },
   {
     name: 'Black Templar',
@@ -4716,7 +5664,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 7.74,
       a: 0,
       b: 0
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
   },
   {
     name: 'Blazing Orange',
@@ -4733,24 +5684,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 56.19,
       a: 52.39,
       b: 55.43
-    }
-  },
-  {
-    name: 'Bleached Bone',
-    brand: 'Citadel',
-    hex: '#EED5AC',
-    type: 'Base',
-    family: 'Bone',
-    rgb: {
-      r: 238,
-      g: 213,
-      b: 172
     },
-    lab: {
-      l: 86.38,
-      a: 2.6,
-      b: 23.47
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Blood Angels Red',
@@ -4767,24 +5704,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 27.69,
       a: 47.99,
       b: 34.6
-    }
-  },
-  {
-    name: 'Blood Red',
-    brand: 'Citadel',
-    hex: '#D2223E',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 210,
-      g: 34,
-      b: 62
     },
-    lab: {
-      l: 45.9,
-      a: 65.96,
-      b: 30.56
-    }
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
   },
   {
     name: 'Bloodreaver Flesh',
@@ -4801,7 +5724,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 34.33,
       a: 14.54,
       b: 5.86
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Blue Horror',
@@ -4818,24 +5744,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 72.74,
       a: -2.39,
       b: -15.25
-    }
-  },
-  {
-    name: 'Boltgun Metal',
-    brand: 'Citadel',
-    hex: '#888789',
-    type: 'Base',
-    family: 'Silver',
-    rgb: {
-      r: 136,
-      g: 135,
-      b: 137
     },
-    lab: {
-      l: 56.45,
-      a: 0.76,
-      b: -0.94
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Brass Scorpion',
@@ -4852,7 +5764,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 47.13,
       a: 25.76,
       b: 40.03
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Brazen Brass',
@@ -4869,41 +5784,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 47.8,
       a: 15.09,
       b: 25.57
-    }
-  },
-  {
-    name: 'Bronzed Flesh',
-    brand: 'Citadel',
-    hex: '#EC9A36',
-    type: 'Base',
-    family: 'Bronze',
-    rgb: {
-      r: 236,
-      g: 154,
-      b: 54
     },
-    lab: {
-      l: 70.33,
-      a: 22.78,
-      b: 61.79
-    }
-  },
-  {
-    name: 'Bubonic Brown',
-    brand: 'Citadel',
-    hex: '#B89142',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 184,
-      g: 145,
-      b: 66
-    },
-    lab: {
-      l: 62.37,
-      a: 5.92,
-      b: 46.48
-    }
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Bugman Glow',
@@ -4920,7 +5804,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 38.14,
       a: 20.93,
       b: 14.72
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Bugmans Glow',
@@ -4937,24 +5824,70 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 41.02,
       a: 23.22,
       b: 18.27
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Burnished Gold',
+    name: 'Cadian Fleshtone',
     brand: 'Citadel',
-    hex: '#E0C068',
-    type: 'Base',
-    family: 'Gold',
+    hex: '#C47652',
+    type: 'Shade',
+    family: 'Flesh',
     rgb: {
-      r: 224,
-      g: 192,
-      b: 104
+      r: 196,
+      g: 118,
+      b: 82
     },
     lab: {
-      l: 78.78,
-      a: 0.64,
-      b: 48.08
-    }
+      l: 57.37,
+      a: 27.06,
+      b: 32.67
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
+  },
+  {
+    name: 'Caledor Sky',
+    brand: 'Citadel',
+    hex: '#366699',
+    type: 'Air',
+    family: 'Blue',
+    rgb: {
+      r: 54,
+      g: 102,
+      b: 153
+    },
+    lab: {
+      l: 42.13,
+      a: 0.4,
+      b: -32.64
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Calgar Blue',
+    brand: 'Citadel',
+    hex: '#2A497F',
+    type: 'Air',
+    family: 'Blue',
+    rgb: {
+      r: 42,
+      g: 73,
+      b: 127
+    },
+    lab: {
+      l: 31.32,
+      a: 7.26,
+      b: -33.98
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Caliban Green',
@@ -4971,7 +5904,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 21.55,
       a: -28.47,
       b: 19.39
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Calth Blue Clear',
+    brand: 'Citadel',
+    hex: '#0087D1',
+    type: 'Air',
+    family: 'Blue',
+    rgb: {
+      r: 0,
+      g: 135,
+      b: 209
+    },
+    lab: {
+      l: 53.95,
+      a: -3.29,
+      b: -46.47
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Calthan Brown',
@@ -4988,24 +5944,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 34.51,
       a: 22.41,
       b: 20.91
-    }
-  },
-  {
-    name: 'Camo Green',
-    brand: 'Citadel',
-    hex: '#878D52',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 135,
-      g: 141,
-      b: 82
     },
-    lab: {
-      l: 56.89,
-      a: -11.72,
-      b: 30.69
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Canoptek Alloy',
@@ -5022,7 +5964,70 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 73.82,
       a: 5.05,
       b: 5.26
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Carroburg Crimson',
+    brand: 'Citadel',
+    hex: '#BE80A4',
+    type: 'Shade',
+    family: 'Pink',
+    rgb: {
+      r: 190,
+      g: 128,
+      b: 164
+    },
+    lab: {
+      l: 60.84,
+      a: 29.39,
+      b: -9.37
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
+  },
+  {
+    name: 'Cassandora Yellow',
+    brand: 'Citadel',
+    hex: '#F5CC92',
+    type: 'Shade',
+    family: 'Brown',
+    rgb: {
+      r: 245,
+      g: 204,
+      b: 146
+    },
+    lab: {
+      l: 84.32,
+      a: 6.85,
+      b: 34.31
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
+  },
+  {
+    name: 'Castellan Green',
+    brand: 'Citadel',
+    hex: '#264715',
+    type: 'Air',
+    family: 'Green',
+    rgb: {
+      r: 38,
+      g: 71,
+      b: 21
+    },
+    lab: {
+      l: 26.66,
+      a: -22.62,
+      b: 25.59
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Castellax Bronze',
@@ -5039,24 +6044,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 60.64,
       a: 20.71,
       b: 37.27
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Catachan Green',
+    name: 'Catachan Fleshtone',
     brand: 'Citadel',
-    hex: '#455440',
-    type: 'Base',
-    family: 'Green',
+    hex: '#442B25',
+    type: 'Shade',
+    family: 'Flesh',
     rgb: {
-      r: 69,
-      g: 84,
-      b: 64
+      r: 68,
+      g: 43,
+      b: 37
     },
     lab: {
-      l: 33.93,
-      a: -10.24,
-      b: 9.8
-    }
+      l: 20.4,
+      a: 10.72,
+      b: 8.64
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
   },
   {
     name: 'Celestra Grey',
@@ -5073,92 +6084,90 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 65.22,
       a: -8.33,
       b: -2.81
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Ceramite White',
     brand: 'Citadel',
-    hex: '#FFFFFF',
+    hex: '#F4F4F2',
     type: 'Layer',
     family: 'White',
     rgb: {
-      r: 255,
-      g: 255,
-      b: 255
+      r: 244,
+      g: 244,
+      b: 242
     },
     lab: {
-      l: 100,
-      a: 0,
-      b: 0
-    }
+      l: 96.14,
+      a: -0.35,
+      b: 0.96
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Chainmail',
+    name: 'Changeling Pink',
     brand: 'Citadel',
-    hex: '#8E8C91',
+    hex: '#F3ABCA',
     type: 'Base',
-    family: 'Grey',
+    family: 'Pink',
     rgb: {
-      r: 142,
-      g: 140,
-      b: 145
+      r: 243,
+      g: 171,
+      b: 202
     },
     lab: {
-      l: 58.56,
-      a: 1.72,
-      b: -2.4
-    }
+      l: 77.55,
+      a: 30.84,
+      b: -5.11
+    },
+    finish: 'matte',
+    transparency: 0.7,
+    matchable: true
   },
   {
-    name: 'Chaos Black',
+    name: 'Chemos Purple',
     brand: 'Citadel',
-    hex: '#001522',
-    type: 'Base',
-    family: 'Blue',
+    hex: '#4F356C',
+    type: 'Air',
+    family: 'Purple',
     rgb: {
-      r: 0,
-      g: 21,
-      b: 34
+      r: 79,
+      g: 53,
+      b: 108
     },
     lab: {
-      l: 5.89,
-      a: -2.57,
-      b: -11.35
-    }
-  },
-  {
-    name: 'Charadon Granite',
-    brand: 'Citadel',
-    hex: '#463F39',
-    type: 'Base',
-    family: 'Black',
-    rgb: {
-      r: 70,
-      g: 63,
-      b: 57
+      l: 27.55,
+      a: 23.89,
+      b: -27.81
     },
-    lab: {
-      l: 27.17,
-      a: 1.81,
-      b: 4.77
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Codex Grey',
+    name: 'Coelia Greenshade',
     brand: 'Citadel',
-    hex: '#808285',
-    type: 'Base',
-    family: 'Grey',
+    hex: '#1B8F85',
+    type: 'Shade',
+    family: 'Cyan',
     rgb: {
-      r: 128,
-      g: 130,
+      r: 27,
+      g: 143,
       b: 133
     },
     lab: {
-      l: 54.29,
-      a: -0.14,
-      b: -1.88
-    }
+      l: 53.57,
+      a: -32.66,
+      b: -3.47
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
   },
   {
     name: 'Commando Khaki',
@@ -5175,41 +6184,50 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 59.03,
       a: 2.34,
       b: 10.99
-    }
-  },
-  {
-    name: 'Contrast Medium',
-    brand: 'Citadel',
-    hex: '#F9F9F9',
-    type: 'Contrast',
-    family: 'White',
-    rgb: {
-      r: 249,
-      g: 249,
-      b: 249
     },
-    lab: {
-      l: 97.93,
-      a: 0,
-      b: 0
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Corax White',
     brand: 'Citadel',
-    hex: '#FFFFFF',
+    hex: '#F4F4F2',
     type: 'Base',
     family: 'White',
     rgb: {
-      r: 255,
-      g: 255,
-      b: 255
+      r: 244,
+      g: 244,
+      b: 242
     },
     lab: {
-      l: 100,
-      a: 0,
-      b: 0
-    }
+      l: 96.14,
+      a: -0.35,
+      b: 0.96
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Corvus Black',
+    brand: 'Citadel',
+    hex: '#171314',
+    type: 'Air',
+    family: 'Black',
+    rgb: {
+      r: 23,
+      g: 19,
+      b: 20
+    },
+    lab: {
+      l: 6.31,
+      a: 1.99,
+      b: 0.02
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Creed Camo',
@@ -5226,7 +6244,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 34.34,
       a: -33.53,
       b: 20.79
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
+  },
+  {
+    name: 'Cryptek Armourshade Gloss',
+    brand: 'Citadel',
+    hex: '#856A67',
+    type: 'Shade',
+    family: 'Red',
+    rgb: {
+      r: 133,
+      g: 106,
+      b: 103
+    },
+    lab: {
+      l: 47.33,
+      a: 10.24,
+      b: 5.76
+    },
+    finish: 'gloss',
+    transparency: 0.85,
+    matchable: true
   },
   {
     name: 'Cygor Brown',
@@ -5243,7 +6284,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 14.54,
       a: 17.27,
       b: 10.35
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
   },
   {
     name: 'Daemonette Hide',
@@ -5260,41 +6304,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 42.06,
       a: 10.12,
       b: -18.11
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Dark Angels Green',
+    name: 'Dark Green Ink',
     brand: 'Citadel',
-    hex: '#00110F',
-    type: 'Contrast',
+    hex: '#108473',
+    type: 'Base',
     family: 'Cyan',
     rgb: {
-      r: 0,
-      g: 17,
-      b: 15
+      r: 16,
+      g: 132,
+      b: 115
     },
     lab: {
-      l: 3.93,
-      a: -5.21,
-      b: -0.67
-    }
-  },
-  {
-    name: 'Dark Flesh',
-    brand: 'Citadel',
-    hex: '#683B31',
-    type: 'Base',
-    family: 'Flesh',
-    rgb: {
-      r: 104,
-      g: 59,
-      b: 49
+      l: 49.31,
+      a: -33.81,
+      b: 0.74
     },
-    lab: {
-      l: 30.14,
-      a: 18.65,
-      b: 14.73
-    }
+    finish: 'matte',
+    transparency: 0.7,
+    matchable: true
   },
   {
     name: 'Dark Reaper',
@@ -5311,7 +6344,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 30.85,
       a: -9.4,
       b: -2.37
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Darkoath Flesh',
@@ -5328,7 +6364,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 46.95,
       a: 21.59,
       b: 12.72
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
+  },
+  {
+    name: 'Dawnstone',
+    brand: 'Citadel',
+    hex: '#697068',
+    type: 'Shade',
+    family: 'Grey',
+    rgb: {
+      r: 105,
+      g: 112,
+      b: 104
+    },
+    lab: {
+      l: 46.43,
+      a: -4.31,
+      b: 3.53
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
   },
   {
     name: 'Death Guard Armor',
@@ -5345,7 +6404,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 56.13,
       a: -8.62,
       b: 18.6
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Death Guard Green',
@@ -5362,7 +6424,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 39.29,
       a: -14.59,
       b: 30.32
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Death Korps Drab',
+    brand: 'Citadel',
+    hex: '#3D4539',
+    type: 'Air',
+    family: 'Green',
+    rgb: {
+      r: 61,
+      g: 69,
+      b: 57
+    },
+    lab: {
+      l: 28.23,
+      a: -5.95,
+      b: 6.16
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Death World Forest',
@@ -5379,7 +6464,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 43.86,
       a: -12.03,
       b: 33.86
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Deathclaw Brown',
@@ -5396,7 +6484,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 50.22,
       a: 28.62,
       b: 24.71
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Deathshroud Clear',
+    brand: 'Citadel',
+    hex: '#1C1C1B',
+    type: 'Air',
+    family: 'Black',
+    rgb: {
+      r: 28,
+      g: 28,
+      b: 27
+    },
+    lab: {
+      l: 10.23,
+      a: -0.25,
+      b: 0.69
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Deathworld Forest',
@@ -5413,7 +6524,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 39.29,
       a: -14.59,
       b: 30.32
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Dechala Lilac',
@@ -5430,7 +6544,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 66.9,
       a: 19.93,
       b: -21.17
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Deepkin Flesh',
@@ -5447,24 +6564,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 72.76,
       a: -9.31,
       b: 10.57
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Desert Yellow',
+    name: 'Devlan Mud Wash',
     brand: 'Citadel',
-    hex: '#9C8855',
-    type: 'Base',
+    hex: '#393121',
+    type: 'Shade',
     family: 'Brown',
     rgb: {
-      r: 156,
-      g: 136,
-      b: 85
+      r: 57,
+      g: 49,
+      b: 33
     },
     lab: {
-      l: 57.4,
-      a: 0.33,
-      b: 30.1
-    }
+      l: 20.74,
+      a: 0.72,
+      b: 11.55
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
   },
   {
     name: 'Doombull Brown',
@@ -5481,7 +6604,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 15.66,
       a: 36.68,
       b: 23.13
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Dorn Yellow',
@@ -5498,7 +6624,50 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 94.87,
       a: -14.32,
       b: 72.85
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Drakenhof Nightshade',
+    brand: 'Citadel',
+    hex: '#A1A5AF',
+    type: 'Shade',
+    family: 'Grey',
+    rgb: {
+      r: 161,
+      g: 165,
+      b: 175
+    },
+    lab: {
+      l: 67.71,
+      a: 0.57,
+      b: -5.65
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
+  },
+  {
+    name: 'Druchii Violet',
+    brand: 'Citadel',
+    hex: '#8F6592',
+    type: 'Shade',
+    family: 'Purple',
+    rgb: {
+      r: 143,
+      g: 101,
+      b: 146
+    },
+    lab: {
+      l: 48.54,
+      a: 24.89,
+      b: -17.99
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
   },
   {
     name: 'Dryad Bark',
@@ -5515,58 +6684,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 16.97,
       a: -0.88,
       b: 4.09
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Dwarf Bronze',
+    name: 'Eidolon Purple Clear',
     brand: 'Citadel',
-    hex: '#A26840',
-    type: 'Base',
-    family: 'Bronze',
+    hex: '#7D4D99',
+    type: 'Air',
+    family: 'Purple',
     rgb: {
-      r: 162,
-      g: 104,
-      b: 64
+      r: 125,
+      g: 77,
+      b: 153
     },
     lab: {
-      l: 49.44,
-      a: 19.13,
-      b: 31.87
-    }
-  },
-  {
-    name: 'Dwarf Flesh',
-    brand: 'Citadel',
-    hex: '#DA9382',
-    type: 'Base',
-    family: 'Flesh',
-    rgb: {
-      r: 218,
-      g: 147,
-      b: 130
+      l: 41.17,
+      a: 34.54,
+      b: -33.79
     },
-    lab: {
-      l: 67.57,
-      a: 24.76,
-      b: 19.93
-    }
-  },
-  {
-    name: 'Elf Flesh',
-    brand: 'Citadel',
-    hex: '#EDAE74',
-    type: 'Base',
-    family: 'Flesh',
-    rgb: {
-      r: 237,
-      g: 174,
-      b: 116
-    },
-    lab: {
-      l: 75.79,
-      a: 16.47,
-      b: 38.66
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Elysian Green',
@@ -5583,7 +6724,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 54.19,
       a: -25.73,
       b: 40.75
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Emperor Children',
@@ -5600,7 +6744,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 45.6,
       a: 52.51,
       b: -3.19
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Emperors Children',
@@ -5617,7 +6764,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 46.53,
       a: 54.96,
       b: -2.93
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Enchanted Blue',
@@ -5634,7 +6784,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 45.94,
       a: -0.15,
       b: -44.32
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Eshin Grey',
@@ -5651,7 +6804,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 31.72,
       a: -0.54,
       b: -2.2
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Evil Suns Scarlet',
@@ -5668,7 +6824,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 40.37,
       a: 63.68,
       b: 50.24
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Evil Sunz Scarlet',
@@ -5685,7 +6844,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 40.82,
       a: 62.52,
       b: 48.62
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Fenrisian Grey',
@@ -5702,7 +6864,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 59.6,
       a: -5.38,
       b: -20.44
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Fenrys Grey',
@@ -5719,7 +6884,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 27.98,
       a: 1.42,
       b: -21.57
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Fiery Orange',
@@ -5736,7 +6904,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 64.18,
       a: 42.41,
       b: 64.75
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Fire Dragon Bright',
@@ -5753,7 +6924,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 67.36,
       a: 37.04,
       b: 48.17
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Flash Gitz Yellow',
+    brand: 'Citadel',
+    hex: '#FFF300',
+    type: 'Air',
+    family: 'Yellow',
+    rgb: {
+      r: 255,
+      g: 243,
+      b: 0
+    },
+    lab: {
+      l: 94.04,
+      a: -15.8,
+      b: 92.22
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Flayed One Flesh',
@@ -5770,7 +6964,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 81.46,
       a: 6.69,
       b: 38.17
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Flesh Tearers Red',
@@ -5787,24 +6984,70 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 13.15,
       a: 31.58,
       b: 19.7
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
   },
   {
-    name: 'Fortress Grey',
+    name: 'Flesh Wash',
     brand: 'Citadel',
-    hex: '#BCBDC0',
-    type: 'Base',
-    family: 'Grey',
+    hex: '#CE8C42',
+    type: 'Shade',
+    family: 'Flesh',
     rgb: {
-      r: 188,
-      g: 189,
-      b: 192
+      r: 206,
+      g: 140,
+      b: 66
     },
     lab: {
-      l: 76.61,
-      a: 0.21,
-      b: -1.63
-    }
+      l: 63.57,
+      a: 18.18,
+      b: 48.49
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
+  },
+  {
+    name: 'Fuegan Orange',
+    brand: 'Citadel',
+    hex: '#BB7648',
+    type: 'Shade',
+    family: 'Orange',
+    rgb: {
+      r: 187,
+      g: 118,
+      b: 72
+    },
+    lab: {
+      l: 56.08,
+      a: 22.57,
+      b: 36.27
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
+  },
+  {
+    name: 'Fulgrim Pink',
+    brand: 'Citadel',
+    hex: '#F3ABCA',
+    type: 'Base',
+    family: 'Pink',
+    rgb: {
+      r: 243,
+      g: 171,
+      b: 202
+    },
+    lab: {
+      l: 77.55,
+      a: 30.84,
+      b: -5.11
+    },
+    finish: 'matte',
+    transparency: 0.7,
+    matchable: true
   },
   {
     name: 'Fulgurite Copper',
@@ -5821,7 +7064,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 63.97,
       a: 18.61,
       b: 41.5
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Fyreslayer Flesh',
@@ -5838,7 +7084,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 36.66,
       a: 12.8,
       b: 16.73
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
   },
   {
     name: 'Gal Vorbak Red',
@@ -5855,7 +7104,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 19.68,
       a: 23.83,
       b: -8.2
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Gauss Blaster Green',
@@ -5872,7 +7124,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 73.13,
       a: -27.14,
       b: 7.49
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Gehenna Gold',
@@ -5889,7 +7144,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 55.07,
       a: 32.22,
       b: 57.47
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Genestealer Purple',
+    brand: 'Citadel',
+    hex: '#7658A5',
+    type: 'Air',
+    family: 'Purple',
+    rgb: {
+      r: 118,
+      g: 88,
+      b: 165
+    },
+    lab: {
+      l: 43.58,
+      a: 29,
+      b: -37.18
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Ghostly Grey',
@@ -5906,41 +7184,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 79.84,
       a: 0.29,
       b: -3.85
-    }
-  },
-  {
-    name: 'Goblin Green',
-    brand: 'Citadel',
-    hex: '#3D9353',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 61,
-      g: 147,
-      b: 83
     },
-    lab: {
-      l: 54.54,
-      a: -40.49,
-      b: 26.29
-    }
-  },
-  {
-    name: 'Golden Griffon',
-    brand: 'Citadel',
-    hex: '#E1BA7F',
-    type: 'Metallic',
-    family: 'Gold',
-    rgb: {
-      r: 225,
-      g: 186,
-      b: 127
-    },
-    lab: {
-      l: 77.67,
-      a: 6.33,
-      b: 35.12
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Golden Yellow',
@@ -5957,7 +7204,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 81.77,
       a: 8.94,
       b: 82.17
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Gore-Grunta Fur',
@@ -5974,7 +7224,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 28.82,
       a: 13.77,
       b: 24.03
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
   },
   {
     name: 'Gorthor Brown',
@@ -5991,7 +7244,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 32.2,
       a: 9.6,
       b: 8.39
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Graveyard Earth',
@@ -6008,24 +7264,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 36.26,
       a: 4.39,
       b: 18.39
-    }
-  },
-  {
-    name: 'Gretchin Green',
-    brand: 'Citadel',
-    hex: '#7E6930',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 126,
-      g: 105,
-      b: 48
     },
-    lab: {
-      l: 45.29,
-      a: 1.05,
-      b: 34.56
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Grey Knights Steel',
@@ -6042,7 +7284,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 75.89,
       a: -2.67,
       b: -6.06
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Grey Seer',
@@ -6059,7 +7304,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 67.56,
       a: -0.68,
       b: -1.41
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Gryph-Charger Grey',
@@ -6076,7 +7324,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 41.74,
       a: -9.71,
       b: -24.33
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
   },
   {
     name: 'Gryph-Hound Orange',
@@ -6093,7 +7344,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 34.89,
       a: 40.56,
       b: 41.54
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
+  },
+  {
+    name: 'Gryphonne Sepia Wash',
+    brand: 'Citadel',
+    hex: '#843910',
+    type: 'Shade',
+    family: 'Orange',
+    rgb: {
+      r: 132,
+      g: 57,
+      b: 16
+    },
+    lab: {
+      l: 33.71,
+      a: 29.93,
+      b: 38.57
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
   },
   {
     name: 'Guilliman Flesh',
@@ -6110,7 +7384,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 41.29,
       a: 36.01,
       b: 25.81
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
   },
   {
     name: 'Hashut Copper',
@@ -6127,24 +7404,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 60.67,
       a: 14.14,
       b: 29.46
-    }
-  },
-  {
-    name: 'Hawk Turquoise',
-    brand: 'Citadel',
-    hex: '#008194',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 0,
-      g: 129,
-      b: 148
     },
-    lab: {
-      l: 49.3,
-      a: -22.57,
-      b: -18.65
-    }
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Hobgrot Hide',
@@ -6161,7 +7424,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 55.43,
       a: 1.33,
       b: 41.32
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Hoeth Blue',
@@ -6178,41 +7444,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 49.57,
       a: 1.44,
       b: -33.81
-    }
-  },
-  {
-    name: 'Hormagaunt Purple',
-    brand: 'Citadel',
-    hex: '#54496B',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 84,
-      g: 73,
-      b: 107
     },
-    lab: {
-      l: 33.37,
-      a: 12.45,
-      b: -18.02
-    }
-  },
-  {
-    name: 'Ice Blue',
-    brand: 'Citadel',
-    hex: '#81D3EB',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 129,
-      g: 211,
-      b: 235
-    },
-    lab: {
-      l: 80.32,
-      a: -18.84,
-      b: -19.62
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Imperial Purple',
@@ -6229,7 +7464,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 28.16,
       a: 34.28,
       b: -38.2
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Incubi Darkness',
@@ -6246,7 +7484,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 16.68,
       a: -11.32,
       b: -6.4
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Ionrach Skin',
@@ -6263,7 +7504,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 65.31,
       a: -9.95,
       b: 14.71
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Iron Hands Steel',
@@ -6280,7 +7524,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 69.19,
       a: 2.56,
       b: 5.55
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Iron Warriors',
@@ -6297,7 +7544,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 46.52,
       a: 0.17,
       b: 1.94
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Ironbreaker',
@@ -6314,24 +7564,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 59.29,
       a: -2.13,
       b: -1.94
-    }
-  },
-  {
-    name: 'Iyanden Darksun',
-    brand: 'Citadel',
-    hex: '#AD852E',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 173,
-      g: 133,
-      b: 46
     },
-    lab: {
-      l: 57.9,
-      a: 6.51,
-      b: 50.47
-    }
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Iyanden Yellow',
@@ -6348,7 +7584,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 61.89,
       a: 28.95,
       b: 66.45
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
   },
   {
     name: 'Jade Green',
@@ -6365,7 +7604,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 57.04,
       a: -41.66,
       b: 6.13
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Jokaero Orange',
@@ -6382,7 +7624,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 52.83,
       a: 66.66,
       b: 59.82
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Kabalite Green',
@@ -6399,7 +7644,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 50.42,
       a: -41.53,
       b: 12.17
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Kakophoni Purple',
@@ -6416,24 +7664,50 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 49.97,
       a: 26.52,
       b: -32.29
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Khemri Brown',
+    name: 'Kantor Blue',
     brand: 'Citadel',
-    hex: '#73614D',
-    type: 'Base',
-    family: 'Brown',
+    hex: '#02134E',
+    type: 'Air',
+    family: 'Blue',
     rgb: {
-      r: 115,
-      g: 97,
-      b: 77
+      r: 2,
+      g: 19,
+      b: 78
     },
     lab: {
-      l: 42.35,
-      a: 3.99,
-      b: 14.11
-    }
+      l: 9.23,
+      a: 20.27,
+      b: -37.82
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Karak Stone',
+    brand: 'Citadel',
+    hex: '#B7945C',
+    type: 'Shade',
+    family: 'Brown',
+    rgb: {
+      r: 183,
+      g: 148,
+      b: 92
+    },
+    lab: {
+      l: 63.36,
+      a: 5.95,
+      b: 34.42
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
   },
   {
     name: 'Khorne Red',
@@ -6450,7 +7724,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 19.1,
       a: 40.61,
       b: 28.92
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Kislev Flesh',
@@ -6467,24 +7744,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 70.62,
       a: 9.51,
       b: 33.58
-    }
-  },
-  {
-    name: 'Knarloc Green',
-    brand: 'Citadel',
-    hex: '#48563C',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 72,
-      g: 86,
-      b: 60
     },
-    lab: {
-      l: 34.72,
-      a: -10.9,
-      b: 13.39
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Knight-Questor Flesh',
@@ -6501,24 +7764,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 48.24,
       a: 20.73,
       b: 9.75
-    }
-  },
-  {
-    name: 'Kommando Khaki',
-    brand: 'Citadel',
-    hex: '#9E915C',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 158,
-      g: 145,
-      b: 92
     },
-    lab: {
-      l: 60.15,
-      a: -3.01,
-      b: 29.86
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Krieg Khaki',
@@ -6535,7 +7784,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 74.66,
       a: -9.11,
       b: 31.09
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Leadbelcher',
@@ -6552,7 +7804,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 55.93,
       a: 0,
       b: 0
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Leprous Brown',
@@ -6569,7 +7824,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 65.07,
       a: 20.4,
       b: 59.49
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Leviadon Blue',
@@ -6586,7 +7844,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 2.39,
       a: -1.02,
       b: -5.26
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
+  },
+  {
+    name: 'Leviathan Purple Wash',
+    brand: 'Citadel',
+    hex: '#842994',
+    type: 'Shade',
+    family: 'Purple',
+    rgb: {
+      r: 132,
+      g: 41,
+      b: 148
+    },
+    lab: {
+      l: 35.26,
+      a: 53.11,
+      b: -40.08
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
   },
   {
     name: 'Liberator Gold',
@@ -6603,24 +7884,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 77.67,
       a: 6.33,
       b: 35.12
-    }
-  },
-  {
-    name: 'Liche Purple',
-    brand: 'Citadel',
-    hex: '#2C2D8B',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 44,
-      g: 45,
-      b: 139
     },
-    lab: {
-      l: 24.56,
-      a: 31.04,
-      b: -52.36
-    }
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Lightning Bolt Blue',
@@ -6637,7 +7904,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 73.16,
       a: -6.38,
       b: -22.9
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Loren Forest',
@@ -6654,7 +7924,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 41.59,
       a: -25.79,
       b: 34.68
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Lothern Blue',
+    brand: 'Citadel',
+    hex: '#2C9BCC',
+    type: 'Air',
+    family: 'Cyan',
+    rgb: {
+      r: 44,
+      g: 155,
+      b: 204
+    },
+    lab: {
+      l: 60.19,
+      a: -13.9,
+      b: -33.82
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Lugganath Orange',
@@ -6671,7 +7964,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 72.66,
       a: 31.34,
       b: 27.37
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Lupercal Green',
@@ -6688,7 +7984,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 15.36,
       a: -14.48,
       b: -3.5
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Macharius Solar Orange',
@@ -6705,7 +8004,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 44.38,
       a: 47.4,
       b: 42.74
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Macragge Blue',
@@ -6722,7 +8024,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 26.76,
       a: 9.92,
       b: -39.46
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Magenta Ink',
+    brand: 'Citadel',
+    hex: '#DE007B',
+    type: 'Base',
+    family: 'Pink',
+    rgb: {
+      r: 222,
+      g: 0,
+      b: 123
+    },
+    lab: {
+      l: 48.22,
+      a: 77.11,
+      b: -3.42
+    },
+    finish: 'matte',
+    transparency: 0.7,
+    matchable: true
   },
   {
     name: 'Magos Purple',
@@ -6739,41 +8064,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 35.63,
       a: 32.51,
       b: -16.04
-    }
-  },
-  {
-    name: 'Martian Ironcrust',
-    brand: 'Citadel',
-    hex: '#CF705D',
-    type: 'Metallic',
-    family: 'Silver',
-    rgb: {
-      r: 207,
-      g: 112,
-      b: 93
     },
-    lab: {
-      l: 57.7,
-      a: 35.53,
-      b: 27.24
-    }
-  },
-  {
-    name: 'Martian Ironearth',
-    brand: 'Citadel',
-    hex: '#CF705D',
-    type: 'Metallic',
-    family: 'Silver',
-    rgb: {
-      r: 207,
-      g: 112,
-      b: 93
-    },
-    lab: {
-      l: 57.7,
-      a: 35.53,
-      b: 27.24
-    }
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
   },
   {
     name: 'Mechanicus Standard Grey',
@@ -6790,41 +8084,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 29.41,
       a: -5.43,
       b: -3.18
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Mechrite Red',
+    name: 'Mephiston Red',
     brand: 'Citadel',
-    hex: '#A82014',
-    type: 'Base',
+    hex: '#960C09',
+    type: 'Air',
     family: 'Red',
     rgb: {
-      r: 168,
-      g: 32,
-      b: 20
+      r: 150,
+      g: 12,
+      b: 9
     },
     lab: {
-      l: 36.76,
-      a: 53.14,
-      b: 42.05
-    }
-  },
-  {
-    name: 'Midnight Blue',
-    brand: 'Citadel',
-    hex: '#002561',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 0,
-      g: 37,
-      b: 97
+      l: 31.27,
+      a: 52.25,
+      b: 41.15
     },
-    lab: {
-      l: 16.43,
-      a: 14.96,
-      b: -38.84
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Militarum Green',
@@ -6841,41 +8124,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 47.44,
       a: -17.43,
       b: 48.87
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
   },
   {
-    name: 'Mithril Silver',
+    name: 'Moot Green',
     brand: 'Citadel',
-    hex: '#B7BEC5',
-    type: 'Base',
-    family: 'Silver',
+    hex: '#3DAF44',
+    type: 'Air',
+    family: 'Green',
     rgb: {
-      r: 183,
-      g: 190,
-      b: 197
+      r: 61,
+      g: 175,
+      b: 68
     },
     lab: {
-      l: 76.63,
-      a: -1.06,
-      b: -4.36
-    }
-  },
-  {
-    name: 'Mordian Blue',
-    brand: 'Citadel',
-    hex: '#244882',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 36,
-      g: 72,
-      b: 130
+      l: 63.4,
+      a: -53.53,
+      b: 44.62
     },
-    lab: {
-      l: 30.93,
-      a: 8.03,
-      b: -36.49
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Morghast Bone',
@@ -6892,7 +8164,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 70.05,
       a: 0.71,
       b: 30.93
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Mortarion Green Clear',
+    brand: 'Citadel',
+    hex: '#00832B',
+    type: 'Air',
+    family: 'Green',
+    rgb: {
+      r: 0,
+      g: 131,
+      b: 43
+    },
+    lab: {
+      l: 47.5,
+      a: -49.67,
+      b: 37.86
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Mournfang Brown',
@@ -6909,24 +8204,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 14.24,
       a: 26.81,
       b: 19.42
-    }
-  },
-  {
-    name: 'Munitorum Varnish',
-    brand: 'Citadel',
-    hex: '#FAFAFA',
-    type: 'Base',
-    family: 'White',
-    rgb: {
-      r: 250,
-      g: 250,
-      b: 250
     },
-    lab: {
-      l: 98.27,
-      a: 0,
-      b: 0
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Naggaroth Night',
@@ -6943,7 +8224,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 20.97,
       a: 16.23,
       b: -20.01
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Nauseating Blue',
@@ -6960,7 +8244,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 24.27,
       a: 31.09,
       b: -42.08
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Nazdreg Yellow',
@@ -6977,41 +8264,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 34.72,
       a: 7.33,
       b: 43.55
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
   },
   {
-    name: 'Necron Abyss',
+    name: 'Night Lords Blue',
     brand: 'Citadel',
-    hex: '#1A213D',
-    type: 'Base',
+    hex: '#002B5C',
+    type: 'Air',
     family: 'Blue',
     rgb: {
-      r: 26,
-      g: 33,
-      b: 61
+      r: 0,
+      g: 43,
+      b: 92
     },
     lab: {
-      l: 13.5,
-      a: 6.43,
-      b: -18.98
-    }
-  },
-  {
-    name: 'Necron Compound',
-    brand: 'Citadel',
-    hex: '#DADDDF',
-    type: 'Metallic',
-    family: 'Silver',
-    rgb: {
-      r: 218,
-      g: 221,
-      b: 223
+      l: 17.92,
+      a: 8.13,
+      b: -33.11
     },
-    lab: {
-      l: 87.94,
-      a: -0.65,
-      b: -1.33
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Nocturne Green',
@@ -7028,7 +8304,50 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 15.42,
       a: -8.38,
       b: -1.9
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Nuln Oil',
+    brand: 'Citadel',
+    hex: '#9E9A98',
+    type: 'Shade',
+    family: 'Grey',
+    rgb: {
+      r: 158,
+      g: 154,
+      b: 152
+    },
+    lab: {
+      l: 63.87,
+      a: 1.08,
+      b: 1.56
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
+  },
+  {
+    name: 'Nuln Oil Gloss',
+    brand: 'Citadel',
+    hex: '#B3AFAE',
+    type: 'Shade',
+    family: 'Grey',
+    rgb: {
+      r: 179,
+      g: 175,
+      b: 174
+    },
+    lab: {
+      l: 71.76,
+      a: 1.23,
+      b: 1.01
+    },
+    finish: 'gloss',
+    transparency: 0.85,
+    matchable: true
   },
   {
     name: 'Nurgling Green',
@@ -7045,7 +8364,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 59.32,
       a: -19.11,
       b: 27.2
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Ogryn Camo',
@@ -7062,7 +8384,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 65.14,
       a: -19.51,
       b: 45.93
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Ogryn Flesh Wash',
+    brand: 'Citadel',
+    hex: '#CE8C42',
+    type: 'Shade',
+    family: 'Flesh',
+    rgb: {
+      r: 206,
+      g: 140,
+      b: 66
+    },
+    lab: {
+      l: 63.57,
+      a: 18.18,
+      b: 48.49
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
   },
   {
     name: 'Ork Flesh',
@@ -7079,7 +8424,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 32.34,
       a: -37.31,
       b: 27.08
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
   },
   {
     name: 'Orruk Flesh',
@@ -7096,7 +8444,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 73.69,
       a: -26.19,
       b: 29.33
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Pallid Flesh',
@@ -7113,7 +8464,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 83.76,
       a: 13.25,
       b: 5.51
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Pallid Wych Flesh',
@@ -7130,7 +8484,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 81.47,
       a: -3.69,
       b: 8.23
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Phalanx Yellow',
@@ -7147,7 +8504,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 89.7,
       a: -7.45,
       b: 89.1
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Phoenician Purple',
@@ -7164,7 +8524,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 14.61,
       a: 40.59,
       b: -31.43
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Pink Horror',
+    brand: 'Citadel',
+    hex: '#8E2757',
+    type: 'Base',
+    family: 'Pink',
+    rgb: {
+      r: 142,
+      g: 39,
+      b: 87
+    },
+    lab: {
+      l: 33.76,
+      a: 47.07,
+      b: -3.91
+    },
+    finish: 'matte',
+    transparency: 0.7,
+    matchable: true
   },
   {
     name: 'Plaguebearer Flesh',
@@ -7181,7 +8564,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 50.78,
       a: -18.48,
       b: 45.24
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
+  },
+  {
+    name: 'Pyroclast Orange Clear',
+    brand: 'Citadel',
+    hex: '#ED8022',
+    type: 'Air',
+    family: 'Orange',
+    rgb: {
+      r: 237,
+      g: 128,
+      b: 34
+    },
+    lab: {
+      l: 64.61,
+      a: 36.17,
+      b: 64.04
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Rakarth Flesh',
@@ -7198,7 +8604,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 63.16,
       a: -1.1,
       b: 6.69
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Ratskin Flesh',
@@ -7215,41 +8624,50 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 49.85,
       a: 23.47,
       b: 28.07
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Red Gore',
+    name: 'Reikland Fleshshade',
     brand: 'Citadel',
-    hex: '#9D2B3F',
-    type: 'Base',
-    family: 'Red',
+    hex: '#BE9A80',
+    type: 'Shade',
+    family: 'Flesh',
     rgb: {
-      r: 157,
-      g: 43,
-      b: 63
+      r: 190,
+      g: 154,
+      b: 128
     },
     lab: {
-      l: 36.47,
-      a: 47.97,
-      b: 15.82
-    }
+      l: 66.23,
+      a: 9.62,
+      b: 18.72
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
   },
   {
-    name: 'Regal Blue',
+    name: 'Reikland Fleshshade Gloss',
     brand: 'Citadel',
-    hex: '#003F70',
-    type: 'Base',
-    family: 'Blue',
+    hex: '#C2A896',
+    type: 'Shade',
+    family: 'Flesh',
     rgb: {
-      r: 0,
-      g: 63,
-      b: 112
+      r: 194,
+      g: 168,
+      b: 150
     },
     lab: {
-      l: 25.93,
-      a: 2.79,
-      b: -33.22
-    }
+      l: 70.65,
+      a: 6.62,
+      b: 12.79
+    },
+    finish: 'gloss',
+    transparency: 0.85,
+    matchable: true
   },
   {
     name: 'Relictor Gold',
@@ -7266,7 +8684,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 81.52,
       a: 5.85,
       b: 31.98
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Retributor Armour',
@@ -7283,7 +8704,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 80.27,
       a: 5.55,
       b: 49.67
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Rhinox Hide',
@@ -7300,24 +8724,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 22.12,
       a: 10.7,
       b: 3.58
-    }
-  },
-  {
-    name: 'Rotting Flesh',
-    brand: 'Citadel',
-    hex: '#B8C39E',
-    type: 'Base',
-    family: 'Flesh',
-    rgb: {
-      r: 184,
-      g: 195,
-      b: 158
     },
-    lab: {
-      l: 77.09,
-      a: -10.27,
-      b: 17.36
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Runefang Steel',
@@ -7334,7 +8744,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 80.26,
       a: -1.3,
       b: -2.71
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Runelord Brass',
@@ -7351,24 +8764,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 54.29,
       a: 2.02,
       b: 11.03
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Scab Red',
+    name: 'Russ Grey',
     brand: 'Citadel',
-    hex: '#90263D',
-    type: 'Base',
-    family: 'Red',
+    hex: '#507085',
+    type: 'Air',
+    family: 'Blue',
     rgb: {
-      r: 144,
-      g: 38,
-      b: 61
+      r: 80,
+      g: 112,
+      b: 133
     },
     lab: {
-      l: 33.25,
-      a: 45.57,
-      b: 12.33
-    }
+      l: 45.62,
+      a: -5.78,
+      b: -15.21
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Scaly Green',
@@ -7385,24 +8804,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 36.49,
       a: -22.48,
       b: -8.61
-    }
-  },
-  {
-    name: 'Scorched Brown',
-    brand: 'Citadel',
-    hex: '#5A422F',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 90,
-      g: 66,
-      b: 47
     },
-    lab: {
-      l: 30.1,
-      a: 7.62,
-      b: 15.6
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Scorpion Green',
@@ -7419,7 +8824,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 66.09,
       a: -44.24,
       b: 47.6
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Screamer Pink',
+    brand: 'Citadel',
+    hex: '#7A0E44',
+    type: 'Base',
+    family: 'Pink',
+    rgb: {
+      r: 122,
+      g: 14,
+      b: 68
+    },
+    lab: {
+      l: 26.36,
+      a: 47.2,
+      b: -2.74
+    },
+    finish: 'matte',
+    transparency: 0.7,
+    matchable: true
   },
   {
     name: 'Screaming Bell',
@@ -7436,7 +8864,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 63.79,
       a: 22.49,
       b: 34.51
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Screaming Skull',
@@ -7453,41 +8884,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 76.26,
       a: -9.12,
       b: 18.89
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Shadow Grey',
+    name: 'Seraphim Sepia',
     brand: 'Citadel',
-    hex: '#106993',
-    type: 'Base',
-    family: 'Cyan',
+    hex: '#AE8158',
+    type: 'Shade',
+    family: 'Flesh',
     rgb: {
-      r: 16,
-      g: 105,
-      b: 147
+      r: 174,
+      g: 129,
+      b: 88
     },
     lab: {
-      l: 41.72,
-      a: -8.65,
-      b: -29.79
-    }
-  },
-  {
-    name: 'Shining Gold',
-    brand: 'Citadel',
-    hex: '#EFB736',
-    type: 'Base',
-    family: 'Gold',
-    rgb: {
-      r: 239,
-      g: 183,
-      b: 54
+      l: 57.47,
+      a: 12.29,
+      b: 28.93
     },
-    lab: {
-      l: 77.57,
-      a: 8.73,
-      b: 68.7
-    }
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
   },
   {
     name: 'Shyish Purple',
@@ -7504,7 +8924,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 10.71,
       a: 25.97,
       b: -26.86
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
+  },
+  {
+    name: 'Sigismund Yellow Clear',
+    brand: 'Citadel',
+    hex: '#FFE32F',
+    type: 'Air',
+    family: 'Yellow',
+    rgb: {
+      r: 255,
+      g: 227,
+      b: 47
+    },
+    lab: {
+      l: 90.05,
+      a: -7.24,
+      b: 82.4
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Skarsnik Green',
@@ -7521,7 +8964,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 54.85,
       a: -26.44,
       b: 13.54
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Skavenblight Dinge',
@@ -7538,7 +8984,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 27.74,
       a: 0.47,
       b: 4.27
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Skeleton Horde',
@@ -7555,7 +9004,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 62.38,
       a: -0.92,
       b: 22.49
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
+  },
+  {
+    name: 'Skink Blue',
+    brand: 'Citadel',
+    hex: '#54BDCA',
+    type: 'Base',
+    family: 'Flesh',
+    rgb: {
+      r: 84,
+      g: 189,
+      b: 202
+    },
+    lab: {
+      l: 71.24,
+      a: -26.37,
+      b: -15.68
+    },
+    finish: 'matte',
+    transparency: 0.7,
+    matchable: true
   },
   {
     name: 'Skrag Brown',
@@ -7572,24 +9044,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 38.09,
       a: 24.46,
       b: 45.91
-    }
-  },
-  {
-    name: 'Skull White',
-    brand: 'Citadel',
-    hex: '#FFFFFF',
-    type: 'Base',
-    family: 'White',
-    rgb: {
-      r: 255,
-      g: 255,
-      b: 255
     },
-    lab: {
-      l: 100,
-      a: 0,
-      b: 0
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Skullcrusher Brass',
@@ -7606,7 +9064,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 83.63,
       a: 4.62,
       b: 45.56
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Slaanesh Grey',
@@ -7623,41 +9084,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 57.27,
       a: 3.31,
       b: -5.47
-    }
-  },
-  {
-    name: 'Smelly Primer',
-    brand: 'Citadel',
-    hex: '#FFFFFF',
-    type: 'Base',
-    family: 'White',
-    rgb: {
-      r: 255,
-      g: 255,
-      b: 255
     },
-    lab: {
-      l: 100,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: 'Snakebite Leather',
-    brand: 'Citadel',
-    hex: '#8C6C40',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 140,
-      g: 108,
-      b: 64
-    },
-    lab: {
-      l: 47.84,
-      a: 7.1,
-      b: 29.32
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Snot Green',
@@ -7674,7 +9104,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 40.89,
       a: -38.09,
       b: 15.92
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Sotek Green',
@@ -7691,24 +9124,50 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 38.17,
       a: -18.3,
       b: -14.68
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Space Wolves Grey',
+    name: 'Soulstone Blue',
     brand: 'Citadel',
-    hex: '#1F486B',
-    type: 'Contrast',
+    hex: '#142758',
+    type: 'Shade',
     family: 'Blue',
     rgb: {
-      r: 31,
-      g: 72,
-      b: 107
+      r: 20,
+      g: 39,
+      b: 88
     },
     lab: {
-      l: 29.38,
-      a: -1.79,
-      b: -24.52
-    }
+      l: 17.01,
+      a: 11.68,
+      b: -31.89
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
+  },
+  {
+    name: 'Spiritstone Red',
+    brand: 'Citadel',
+    hex: '#8A2A1E',
+    type: 'Shade',
+    family: 'Red',
+    rgb: {
+      r: 138,
+      g: 42,
+      b: 30
+    },
+    lab: {
+      l: 32.16,
+      a: 40.05,
+      b: 30.25
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
   },
   {
     name: 'Squig Orange',
@@ -7725,7 +9184,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 44.12,
       a: 36.15,
       b: 24.26
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Steel Legion Drab',
@@ -7742,7 +9204,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 33.38,
       a: -1.05,
       b: 21
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Stegadon Scale Green',
@@ -7759,7 +9224,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 26.97,
       a: -8.77,
       b: -19.38
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Storm Blue',
@@ -7776,7 +9244,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 25.21,
       a: 20.06,
       b: -43.19
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Stormhost Silver',
@@ -7793,7 +9264,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 87.94,
       a: -0.65,
       b: -1.33
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Stormvermin Fur',
@@ -7810,24 +9284,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 43.34,
       a: 2.02,
       b: 4.53
-    }
-  },
-  {
-    name: 'Sunburst Yellow',
-    brand: 'Citadel',
-    hex: '#FFD400',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 255,
-      g: 212,
-      b: 0
     },
-    lab: {
-      l: 86.18,
-      a: -0.4,
-      b: 86.6
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Sycorax Bronze',
@@ -7844,7 +9304,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 67.3,
       a: 6.23,
       b: 17.94
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Talassar Blue',
@@ -7861,24 +9324,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 24.63,
       a: 5.58,
       b: -35.31
-    }
-  },
-  {
-    name: 'Tallarn Flesh',
-    brand: 'Citadel',
-    hex: '#B27B67',
-    type: 'Base',
-    family: 'Flesh',
-    rgb: {
-      r: 178,
-      g: 123,
-      b: 103
     },
-    lab: {
-      l: 56.7,
-      a: 18.92,
-      b: 19.55
-    }
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
   },
   {
     name: 'Tallarn Sand',
@@ -7895,41 +9344,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 51.82,
       a: 8.94,
       b: 56.39
-    }
-  },
-  {
-    name: 'Tanned Flesh',
-    brand: 'Citadel',
-    hex: '#A95C3E',
-    type: 'Base',
-    family: 'Flesh',
-    rgb: {
-      r: 169,
-      g: 92,
-      b: 62
     },
-    lab: {
-      l: 47.55,
-      a: 28.66,
-      b: 30.92
-    }
-  },
-  {
-    name: 'Tausept Ochre',
-    brand: 'Citadel',
-    hex: '#A06E3B',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 160,
-      g: 110,
-      b: 59
-    },
-    lab: {
-      l: 50.62,
-      a: 14.46,
-      b: 35.93
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Teclis Blue',
@@ -7946,7 +9364,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 49.25,
       a: 3.91,
       b: -43.62
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Temple Guard Blue',
@@ -7963,7 +9384,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 55.42,
       a: -32.95,
       b: -3.03
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Terminatus Stone',
+    brand: 'Citadel',
+    hex: '#C8B79D',
+    type: 'Shade',
+    family: 'Brown',
+    rgb: {
+      r: 200,
+      g: 183,
+      b: 157
+    },
+    lab: {
+      l: 75.19,
+      a: 1.87,
+      b: 15.43
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
   },
   {
     name: 'Terracotta',
@@ -7980,7 +9424,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 31.6,
       a: 27.1,
       b: 27.02
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Terradon Turquoise',
@@ -7997,7 +9444,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 33.69,
       a: -18.55,
       b: -12.22
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
   },
   {
     name: 'Thallax Gold',
@@ -8014,7 +9464,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 67.47,
       a: 27.71,
       b: 51.27
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Thondia Brown',
@@ -8031,7 +9484,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 24.08,
       a: 12.3,
       b: 9.21
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Thousand Sons Blue',
@@ -8048,24 +9504,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 31.54,
       a: -8.79,
       b: -23.71
-    }
-  },
-  {
-    name: 'Tin Bitz',
-    brand: 'Citadel',
-    hex: '#473F39',
-    type: 'Base',
-    family: 'Black',
-    rgb: {
-      r: 71,
-      g: 63,
-      b: 57
     },
-    lab: {
-      l: 27.27,
-      a: 2.26,
-      b: 4.93
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Ulthuan Grey',
@@ -8082,7 +9524,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 86.13,
       a: -9.81,
       b: 1.11
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Ultramarine Blue',
@@ -8099,7 +9544,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 42.39,
       a: 5.16,
       b: -47.66
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Ultramarines Blue',
@@ -8116,7 +9564,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 10.71,
       a: 13.79,
       b: -31.22
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
   },
   {
     name: 'Ungor Flesh',
@@ -8133,7 +9584,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 70.39,
       a: 8.03,
       b: 41.61
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Valdor Gold',
@@ -8150,24 +9604,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 63.97,
       a: 18.61,
       b: 41.5
-    }
-  },
-  {
-    name: 'Vermin Brown',
-    brand: 'Citadel',
-    hex: '#843910',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 132,
-      g: 57,
-      b: 16
     },
-    lab: {
-      l: 33.71,
-      a: 29.93,
-      b: 38.57
-    }
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Vermin Fur',
@@ -8184,7 +9624,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 40.77,
       a: 24.26,
       b: 31.02
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Vile Green',
@@ -8201,7 +9644,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 74.24,
       a: -30,
       b: 13.94
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Volupus Pink',
@@ -8218,24 +9664,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 18.24,
       a: 40.19,
       b: 12.98
-    }
-  },
-  {
-    name: 'Vomit Brown',
-    brand: 'Citadel',
-    hex: '#CE8B3C',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 206,
-      g: 139,
-      b: 60
     },
-    lab: {
-      l: 63.27,
-      a: 18.4,
-      b: 50.99
-    }
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
   },
   {
     name: 'Vulkan Green',
@@ -8252,7 +9684,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 22.89,
       a: -13.8,
       b: 5.56
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Waaagh! Flesh',
@@ -8269,7 +9704,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 21.82,
       a: -16.99,
       b: -1.47
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Warboss Green',
@@ -8286,24 +9724,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 47.32,
       a: -33.41,
       b: 14.34
-    }
-  },
-  {
-    name: 'Warlock Purple',
-    brand: 'Citadel',
-    hex: '#A43E8B',
-    type: 'Base',
-    family: 'Pink',
-    rgb: {
-      r: 164,
-      g: 62,
-      b: 139
     },
-    lab: {
-      l: 43.07,
-      a: 50.95,
-      b: -21.96
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Warp Lightning',
@@ -8320,7 +9744,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 34.28,
       a: -37.86,
       b: 25.13
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
   },
   {
     name: 'Warpfiend Grey',
@@ -8337,7 +9764,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 43.15,
       a: 2.31,
       b: -4.92
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Warplock Bronze',
@@ -8354,7 +9784,50 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 53.28,
       a: 24.2,
       b: 28.73
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Warpstone Glow',
+    brand: 'Citadel',
+    hex: '#0F702A',
+    type: 'Shade',
+    family: 'Green',
+    rgb: {
+      r: 15,
+      g: 112,
+      b: 42
+    },
+    lab: {
+      l: 40.99,
+      a: -42.13,
+      b: 31
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
+  },
+  {
+    name: 'Waystone Green',
+    brand: 'Citadel',
+    hex: '#23513D',
+    type: 'Shade',
+    family: 'Green',
+    rgb: {
+      r: 35,
+      g: 81,
+      b: 61
+    },
+    lab: {
+      l: 30.83,
+      a: -21.27,
+      b: 7.04
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
   },
   {
     name: 'Wazdakka Red',
@@ -8371,24 +9844,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 27.9,
       a: 48.89,
       b: 39.22
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'White Scar',
     brand: 'Citadel',
-    hex: '#FFFFFF',
+    hex: '#F4F4F2',
     type: 'Layer',
     family: 'White',
     rgb: {
-      r: 255,
-      g: 255,
-      b: 255
+      r: 244,
+      g: 244,
+      b: 242
     },
     lab: {
-      l: 100,
-      a: 0,
-      b: 0
-    }
+      l: 96.14,
+      a: -0.35,
+      b: 0.96
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Wild Rider Red',
@@ -8405,7 +9884,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 50.91,
       a: 68.1,
       b: 55.45
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Word Bearers Red',
@@ -8422,7 +9904,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 18.49,
       a: 39.57,
       b: 26.8
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Wraithbone',
@@ -8439,7 +9924,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 83.9,
       a: -1.57,
       b: 16.64
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Wyldwood',
@@ -8456,7 +9944,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 19.34,
       a: 11.83,
       b: 9.22
-    }
+    },
+    finish: 'satin',
+    transparency: 0.6,
+    matchable: true
   },
   {
     name: 'Xereus Purple',
@@ -8473,7 +9964,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 17.97,
       a: 36.59,
       b: -31.4
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Yriel Yellow',
@@ -8490,7 +9984,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 87.43,
       a: -2.93,
       b: 87.49
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Zamesi Desert',
@@ -8507,7 +10004,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 68.6,
       a: 11.82,
       b: 68.15
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Zandri Dust',
@@ -8524,7 +10024,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 58.69,
       a: -4.59,
       b: 31.12
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Abyssal Blue',
+    brand: 'Scale75',
+    hex: '#292A2F',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 41,
+      g: 42,
+      b: 47
+    },
+    lab: {
+      l: 17.14,
+      a: 0.82,
+      b: -3.4
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Acid Green',
@@ -8541,7 +10064,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 83.06,
       a: -23.7,
       b: 54.43
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Acid Pink',
@@ -8558,7 +10084,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 59.88,
       a: 94.66,
       b: -61.04
-    }
+    },
+    finish: 'matte',
+    transparency: 0.7,
+    matchable: true
   },
   {
     name: 'Adriatic Blue',
@@ -8575,7 +10104,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 52.59,
       a: -23.93,
       b: -17.69
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'African Shadow',
@@ -8592,7 +10124,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 30.36,
       a: 10.32,
       b: -2.11
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Airnrhod Blue',
@@ -8609,7 +10144,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 28.85,
       a: 26.79,
       b: -47.81
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Aldebaran Red',
@@ -8626,7 +10164,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 43.38,
       a: 54.08,
       b: 44.61
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Alizarin Green',
@@ -8643,7 +10184,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 54.13,
       a: -46.95,
       b: 29.92
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Amarth Blue',
@@ -8660,7 +10204,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 51.87,
       a: -4.77,
       b: -42.96
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Amber Alchemy',
@@ -8677,7 +10224,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 66.78,
       a: 5.72,
       b: 16.62
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'American Olive',
@@ -8694,7 +10244,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 43.69,
       a: -2.25,
       b: 28.62
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Amethyst Alchemy',
@@ -8711,7 +10264,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 61.53,
       a: 12.97,
       b: -15.48
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Ancestral Blue',
@@ -8728,7 +10284,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 66.25,
       a: -16.18,
       b: -19.89
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Antares Red',
@@ -8745,7 +10304,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 41.81,
       a: 61.18,
       b: 41.86
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Anthartic Grey',
+    brand: 'Scale75',
+    hex: '#42424C',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 66,
+      g: 66,
+      b: 76
+    },
+    lab: {
+      l: 28.32,
+      a: 2.36,
+      b: -6.02
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Arabic Shadow',
@@ -8762,7 +10344,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 44.84,
       a: 0.95,
       b: 32.4
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Arbuckles Brown',
@@ -8779,7 +10364,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 18.64,
       a: 7.75,
       b: 8.1
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Arcane Purple',
@@ -8796,7 +10384,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 13.03,
       a: 31.42,
       b: -30.02
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Ardenes Green',
@@ -8813,7 +10404,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 40.13,
       a: -10.95,
       b: 15.45
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Arphen Jade',
@@ -8830,7 +10424,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 34.95,
       a: -26.06,
       b: -0.95
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Art Black',
@@ -8847,24 +10444,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 4.68,
       a: 0,
       b: 0
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Art White',
     brand: 'Scale75',
-    hex: '#FEFEFE',
+    hex: '#F4F4F2',
     type: 'Base',
     family: 'White',
     rgb: {
-      r: 254,
-      g: 254,
-      b: 254
+      r: 244,
+      g: 244,
+      b: 242
     },
     lab: {
-      l: 99.65,
-      a: 0,
-      b: 0
-    }
+      l: 96.14,
+      a: -0.35,
+      b: 0.96
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Artic Blue',
@@ -8881,7 +10484,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 59.39,
       a: 1.3,
       b: -10.36
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Baal Crimson',
@@ -8898,7 +10504,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 48.32,
       a: 71.19,
       b: 37.11
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Basic Flesh',
@@ -8915,7 +10524,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 74.67,
       a: 5.68,
       b: 20.22
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Basilisk Green',
@@ -8932,7 +10544,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 32.89,
       a: -7.42,
       b: -3.12
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Beherit Red',
@@ -8949,7 +10564,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 50.84,
       a: 62.99,
       b: 59.36
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Belladonna Green',
@@ -8966,7 +10584,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 61.5,
       a: -37.24,
       b: 14.87
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Bering Blue',
@@ -8983,7 +10604,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 55.39,
       a: -6.84,
       b: -10.82
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Birch',
@@ -9000,7 +10624,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 85.8,
       a: 5.06,
       b: 20.59
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Black',
+    brand: 'Scale75',
+    hex: '#2C2C2C',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 44,
+      g: 44,
+      b: 44
+    },
+    lab: {
+      l: 18,
+      a: 0,
+      b: 0
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Black Forest Green',
@@ -9017,7 +10664,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 26.4,
       a: -25.85,
       b: 6.41
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Black Leather',
@@ -9034,7 +10684,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 19.97,
       a: 11.19,
       b: 4.56
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Black Metal',
+    brand: 'Scale75',
+    hex: '#484848',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 72,
+      g: 72,
+      b: 72
+    },
+    lab: {
+      l: 30.59,
+      a: 0,
+      b: 0
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Blackert Brown',
@@ -9051,7 +10724,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 58.91,
       a: 16.34,
       b: 28.8
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Blood Red',
@@ -9068,7 +10744,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 33.18,
       a: 44.12,
       b: 26.34
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Bloodfest Crimson',
@@ -9085,7 +10764,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 21.75,
       a: 44.52,
       b: -3.79
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Boreal Green',
@@ -9102,7 +10784,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 31.81,
       a: -29.37,
       b: 7.68
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Bosh Chesnut',
@@ -9119,7 +10804,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 32.84,
       a: 12.78,
       b: 19.53
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Braineater Azure',
@@ -9136,7 +10824,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 47.35,
       a: 16.63,
       b: -37.19
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Braun',
@@ -9153,24 +10844,50 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 82.08,
       a: 4.12,
       b: 24.8
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Brilli White',
     brand: 'Scale75',
-    hex: '#FEFEFE',
+    hex: '#F4F4F2',
     type: 'Base',
     family: 'White',
     rgb: {
-      r: 254,
-      g: 254,
-      b: 254
+      r: 244,
+      g: 244,
+      b: 242
     },
     lab: {
-      l: 99.65,
-      a: 0,
-      b: 0
-    }
+      l: 96.14,
+      a: -0.35,
+      b: 0.96
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Brown Gray',
+    brand: 'Scale75',
+    hex: '#7B7170',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 123,
+      g: 113,
+      b: 112
+    },
+    lab: {
+      l: 48.5,
+      a: 3.68,
+      b: 1.95
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Brown Leather',
@@ -9187,7 +10904,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 21.83,
       a: 13.48,
       b: 16.12
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Buff',
@@ -9204,7 +10924,70 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 65.9,
       a: 3.48,
       b: 16.98
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Burgundy Wine Red',
+    brand: 'Scale75',
+    hex: '#5A2212',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 90,
+      g: 34,
+      b: 18
+    },
+    lab: {
+      l: 21.44,
+      a: 24.69,
+      b: 23.19
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Burnt Sienna',
+    brand: 'Scale75',
+    hex: '#7C2D06',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 124,
+      g: 45,
+      b: 6
+    },
+    lab: {
+      l: 29.85,
+      a: 32.63,
+      b: 38.95
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Burnt Sienna Umber',
+    brand: 'Scale75',
+    hex: '#4C2A20',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 76,
+      g: 42,
+      b: 32
+    },
+    lab: {
+      l: 21.2,
+      a: 14.59,
+      b: 13.29
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Burnt Skin',
@@ -9221,7 +11004,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 30.77,
       a: 12.89,
       b: 24.1
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Burnt Umber',
+    brand: 'Scale75',
+    hex: '#51402C',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 81,
+      g: 64,
+      b: 44
+    },
+    lab: {
+      l: 28.38,
+      a: 4.23,
+      b: 15.02
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Cantabric Blue',
@@ -9238,7 +11044,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 28.42,
       a: -4.98,
       b: -22.23
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Caribbean Blue',
@@ -9255,7 +11064,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 69.73,
       a: -22.07,
       b: -3.53
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Caspian Blue',
@@ -9272,7 +11084,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 31.32,
       a: -10.44,
       b: -9.4
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Chink Orange',
+    brand: 'Scale75',
+    hex: '#B2621B',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 178,
+      g: 98,
+      b: 27
+    },
+    lab: {
+      l: 49.84,
+      a: 27.47,
+      b: 50.79
+    },
+    finish: 'matte',
+    transparency: 0.7,
+    matchable: true
   },
   {
     name: 'Citrine Alchemy',
@@ -9289,7 +11124,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 90.01,
       a: 0.6,
       b: 14.45
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'City Dust',
+    brand: 'Scale75',
+    hex: '#C6C1BD',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 198,
+      g: 193,
+      b: 189
+    },
+    lab: {
+      l: 78.36,
+      a: 1.03,
+      b: 2.63
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Cobalt Blue',
@@ -9306,7 +11164,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 37.93,
       a: -3.62,
       b: -34.57
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Cobalt Metal',
@@ -9323,7 +11184,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 64.71,
       a: -7.43,
       b: -13.71
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Cobalt Violet Grey',
@@ -9340,7 +11204,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 50.06,
       a: 3.51,
       b: -11.8
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Cokum Copper',
@@ -9357,7 +11224,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 51.25,
       a: 13.23,
       b: 49
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Coral Red',
@@ -9374,7 +11244,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 54.7,
       a: 70.1,
       b: 55.8
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Cork Brown',
+    brand: 'Scale75',
+    hex: '#9F8D78',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 159,
+      g: 141,
+      b: 120
+    },
+    lab: {
+      l: 59.69,
+      a: 3.31,
+      b: 13.68
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Corrupted Stamina',
@@ -9391,7 +11284,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 59.11,
       a: -36.87,
       b: 59.63
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Cremeweiss',
+    brand: 'Scale75',
+    hex: '#FCFCE0',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 252,
+      g: 252,
+      b: 224
+    },
+    lab: {
+      l: 98.31,
+      a: -4.65,
+      b: 13.43
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Crimsom',
@@ -9408,7 +11324,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 42.66,
       a: 60.95,
       b: 31.35
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Dark Brown Ochre',
@@ -9425,24 +11344,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 7.26,
       a: 6.42,
       b: -0.6
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Dark Kraken',
+    name: 'Dark Earth',
     brand: 'Scale75',
-    hex: '#194A5B',
+    hex: '#643722',
     type: 'Base',
-    family: 'Cyan',
+    family: 'Brown',
     rgb: {
-      r: 25,
-      g: 74,
-      b: 91
+      r: 100,
+      g: 55,
+      b: 34
     },
     lab: {
-      l: 29.05,
-      a: -10.19,
-      b: -14.83
-    }
+      l: 28.27,
+      a: 17.88,
+      b: 21.67
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Dark Mud',
@@ -9459,7 +11384,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 3.31,
       a: 12.3,
       b: 5.19
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Dark Prussian Blue',
@@ -9476,41 +11404,70 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 14.78,
       a: 3.67,
       b: -7.7
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Dark Rust',
+    brand: 'Scale75',
+    hex: '#6B3729',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 107,
+      g: 55,
+      b: 41
+    },
+    lab: {
+      l: 29.46,
+      a: 21.61,
+      b: 19.02
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Dark Sand',
+    brand: 'Scale75',
+    hex: '#D4BB92',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 212,
+      g: 187,
+      b: 146
+    },
+    lab: {
+      l: 77.05,
+      a: 2.85,
+      b: 24.07
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Dark Stains',
     brand: 'Scale75',
-    hex: '#000000',
+    hex: '#121212',
     type: 'Base',
     family: 'Black',
     rgb: {
-      r: 0,
-      g: 0,
-      b: 0
+      r: 18,
+      g: 18,
+      b: 18
     },
     lab: {
-      l: 0,
+      l: 5.46,
       a: 0,
       b: 0
-    }
-  },
-  {
-    name: 'Dark Ultramarine',
-    brand: 'Scale75',
-    hex: '#32297A',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 50,
-      g: 41,
-      b: 122
     },
-    lab: {
-      l: 22.54,
-      a: 28.65,
-      b: -44.95
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Dark Violet',
@@ -9527,7 +11484,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 17.81,
       a: 27.31,
       b: -13.2
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Dead Flesh',
@@ -9544,7 +11504,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 45.49,
       a: 9.33,
       b: 6.05
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Decay Black',
@@ -9561,7 +11524,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 10.27,
       a: 0,
       b: 0
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Decayed Metal',
@@ -9578,109 +11544,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 30.11,
       a: 11.46,
       b: 9.94
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Deep Blue',
+    name: 'Desert Yellow',
     brand: 'Scale75',
-    hex: '#383B4A',
+    hex: '#D9AF75',
     type: 'Base',
-    family: 'Blue',
+    family: 'Brown',
     rgb: {
-      r: 56,
-      g: 59,
-      b: 74
+      r: 217,
+      g: 175,
+      b: 117
     },
     lab: {
-      l: 25.15,
-      a: 2.59,
-      b: -9.58
-    }
-  },
-  {
-    name: 'Deep Ocean',
-    brand: 'Scale75',
-    hex: '#000B2B',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 0,
-      g: 11,
-      b: 43
+      l: 74,
+      a: 7.91,
+      b: 35.44
     },
-    lab: {
-      l: 3.74,
-      a: 6.65,
-      b: -21.54
-    }
-  },
-  {
-    name: 'Deep Red',
-    brand: 'Scale75',
-    hex: '#701B20',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 112,
-      g: 27,
-      b: 32
-    },
-    lab: {
-      l: 24.75,
-      a: 37.25,
-      b: 19.15
-    }
-  },
-  {
-    name: 'Demon Brown',
-    brand: 'Scale75',
-    hex: '#66271E',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 102,
-      g: 39,
-      b: 30
-    },
-    lab: {
-      l: 24.86,
-      a: 27.72,
-      b: 20.14
-    }
-  },
-  {
-    name: 'Despair Green',
-    brand: 'Scale75',
-    hex: '#17383D',
-    type: 'Air',
-    family: 'Cyan',
-    rgb: {
-      r: 23,
-      g: 56,
-      b: 61
-    },
-    lab: {
-      l: 21.38,
-      a: -10.3,
-      b: -6.79
-    }
-  },
-  {
-    name: 'Dragon Blood',
-    brand: 'Scale75',
-    hex: '#810622',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 129,
-      g: 6,
-      b: 34
-    },
-    lab: {
-      l: 26.49,
-      a: 48.15,
-      b: 20.79
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Drain Life',
@@ -9697,7 +11584,70 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 68.7,
       a: 26.13,
       b: 37.98
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Dubai Brown',
+    brand: 'Scale75',
+    hex: '#583D22',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 88,
+      g: 61,
+      b: 34
+    },
+    lab: {
+      l: 28.19,
+      a: 8.42,
+      b: 21.18
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Dunkelbraun Brown',
+    brand: 'Scale75',
+    hex: '#413028',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 65,
+      g: 48,
+      b: 40
+    },
+    lab: {
+      l: 21.55,
+      a: 6.39,
+      b: 8.11
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Dunkelgelb 44',
+    brand: 'Scale75',
+    hex: '#DED1B1',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 222,
+      g: 209,
+      b: 177
+    },
+    lab: {
+      l: 84.12,
+      a: -0.61,
+      b: 17.52
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Dunkelgelb Yellow',
@@ -9714,7 +11664,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 73.76,
       a: -4.23,
       b: 53.13
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Dunkelgrau Gray',
+    brand: 'Scale75',
+    hex: '#57585A',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 87,
+      g: 88,
+      b: 90
+    },
+    lab: {
+      l: 37.38,
+      a: 0.03,
+      b: -1.29
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Dust In Summertime',
@@ -9731,7 +11704,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 48.22,
       a: -6.75,
       b: 16.78
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Dwarven Gold',
@@ -9748,7 +11724,50 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 64.61,
       a: 20.16,
       b: 58.19
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Earth Green',
+    brand: 'Scale75',
+    hex: '#4A3C2F',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 74,
+      g: 60,
+      b: 47
+    },
+    lab: {
+      l: 26.43,
+      a: 3.88,
+      b: 10.34
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Eclipse Grey',
+    brand: 'Scale75',
+    hex: '#363636',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 54,
+      g: 54,
+      b: 54
+    },
+    lab: {
+      l: 22.62,
+      a: 0,
+      b: 0
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Eldandil Violet',
@@ -9765,41 +11784,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 13.1,
       a: 16.66,
       b: -18.79
-    }
-  },
-  {
-    name: 'Electric Blue',
-    brand: 'Scale75',
-    hex: '#021AFE',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 2,
-      g: 26,
-      b: 254
     },
-    lab: {
-      l: 33.78,
-      a: 74.01,
-      b: -104.81
-    }
-  },
-  {
-    name: 'Elixir Green',
-    brand: 'Scale75',
-    hex: '#005C4D',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 0,
-      g: 92,
-      b: 77
-    },
-    lab: {
-      l: 34.37,
-      a: -27.73,
-      b: 1.96
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Elven Gold',
@@ -9816,7 +11804,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 71.26,
       a: 1.31,
       b: 54.49
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Emerald Alchemy',
@@ -9833,24 +11824,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 62.84,
       a: -15.35,
       b: -0.27
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Emerald Green',
+    name: 'Endurance Brown',
     brand: 'Scale75',
-    hex: '#165341',
+    hex: '#773F1C',
     type: 'Base',
-    family: 'Cyan',
+    family: 'Brown',
     rgb: {
-      r: 22,
-      g: 83,
-      b: 65
+      r: 119,
+      g: 63,
+      b: 28
     },
     lab: {
-      l: 31.2,
-      a: -24.23,
-      b: 4.98
-    }
+      l: 33.05,
+      a: 21.38,
+      b: 31.35
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Estus Yellow',
@@ -9867,7 +11864,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 90.45,
       a: -6.4,
       b: 68.62
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Evil Root',
@@ -9884,24 +11884,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 64.92,
       a: 39.85,
       b: 47.28
-    }
-  },
-  {
-    name: 'Fairy Blood',
-    brand: 'Scale75',
-    hex: '#414874',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 65,
-      g: 72,
-      b: 116
     },
-    lab: {
-      l: 31.85,
-      a: 9.62,
-      b: -26.18
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Fall Green',
@@ -9918,58 +11904,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 81.23,
       a: -18.04,
       b: 53.78
-    }
-  },
-  {
-    name: 'Field Gray',
-    brand: 'Scale75',
-    hex: '#66736C',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 102,
-      g: 115,
-      b: 108
     },
-    lab: {
-      l: 47.2,
-      a: -6.36,
-      b: 2.22
-    }
-  },
-  {
-    name: 'Field Grey 1',
-    brand: 'Scale75',
-    hex: '#39553C',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 57,
-      g: 85,
-      b: 60
-    },
-    lab: {
-      l: 33.33,
-      a: -16.36,
-      b: 11.33
-    }
-  },
-  {
-    name: 'Field Grey 2',
-    brand: 'Scale75',
-    hex: '#3F4C45',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 63,
-      g: 76,
-      b: 69
-    },
-    lab: {
-      l: 31.01,
-      a: -6.82,
-      b: 2.43
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Flat Black',
@@ -9986,24 +11924,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 10.27,
       a: 0,
       b: 0
-    }
-  },
-  {
-    name: 'Flight Blue',
-    brand: 'Scale75',
-    hex: '#01688B',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 1,
-      g: 104,
-      b: 139
     },
-    lab: {
-      l: 40.85,
-      a: -12.01,
-      b: -26.36
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Frenzy Orange',
@@ -10020,7 +11944,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 58.23,
       a: 50.89,
       b: 67.28
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Fuchsia',
@@ -10037,7 +11964,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 41.18,
       a: 52.98,
       b: -5.04
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Fuel And Grease',
@@ -10054,7 +11984,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 92.97,
       a: 1.17,
       b: 0.96
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Full Healing',
@@ -10071,7 +12004,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 92.93,
       a: -14.27,
       b: 91.38
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Garnet Alchemy',
@@ -10088,7 +12024,50 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 37.24,
       a: 31.02,
       b: 7.41
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Gelbraun Brown',
+    brand: 'Scale75',
+    hex: '#D5AC74',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 213,
+      g: 172,
+      b: 116
+    },
+    lab: {
+      l: 72.84,
+      a: 7.79,
+      b: 34.4
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Gobi Brown',
+    brand: 'Scale75',
+    hex: '#6E5A3F',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 110,
+      g: 90,
+      b: 63
+    },
+    lab: {
+      l: 39.56,
+      a: 4.07,
+      b: 18.67
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Goblin Flesh',
@@ -10105,7 +12084,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 68.44,
       a: -40.76,
       b: 52.6
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Golden Flesh',
@@ -10122,7 +12104,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 72.83,
       a: 15.11,
       b: 38.33
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Golden Skin',
@@ -10139,24 +12124,50 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 82.76,
       a: 6.95,
       b: 26.9
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Graphene Gray',
+    name: 'Golem Grey',
     brand: 'Scale75',
-    hex: '#4A515B',
+    hex: '#2C3031',
     type: 'Base',
-    family: 'Blue',
+    family: 'Grey',
     rgb: {
-      r: 74,
-      g: 81,
-      b: 91
+      r: 44,
+      g: 48,
+      b: 49
     },
     lab: {
-      l: 34.18,
-      a: -0.38,
-      b: -6.78
-    }
+      l: 19.52,
+      a: -1.49,
+      b: -1.24
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Graphite',
+    brand: 'Scale75',
+    hex: '#8B8C87',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 139,
+      g: 140,
+      b: 135
+    },
+    lab: {
+      l: 58.03,
+      a: -1.34,
+      b: 2.54
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Grau',
@@ -10173,7 +12184,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 86.37,
       a: 3.82,
       b: 10.78
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Graugrun Gray',
@@ -10190,24 +12204,50 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 57.61,
       a: 0.81,
       b: 37.37
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Green Moss',
+    name: 'Grease',
     brand: 'Scale75',
-    hex: '#1C7C23',
+    hex: '#3E2D25',
     type: 'Base',
-    family: 'Green',
+    family: 'Brown',
     rgb: {
-      r: 28,
-      g: 124,
-      b: 35
+      r: 62,
+      g: 45,
+      b: 37
     },
     lab: {
-      l: 45.33,
-      a: -45.35,
-      b: 39.14
-    }
+      l: 20.18,
+      a: 6.48,
+      b: 8.21
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Green Grey',
+    brand: 'Scale75',
+    hex: '#2C3033',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 44,
+      g: 48,
+      b: 51
+    },
+    lab: {
+      l: 19.59,
+      a: -0.98,
+      b: -2.51
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Green Ochre',
@@ -10224,7 +12264,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 54.15,
       a: -3.18,
       b: 50.37
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Greenskin Flesh',
@@ -10241,41 +12284,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 40.6,
       a: -41.57,
       b: 25.22
-    }
-  },
-  {
-    name: 'Grey Spell',
-    brand: 'Scale75',
-    hex: '#808FB0',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 128,
-      g: 143,
-      b: 176
     },
-    lab: {
-      l: 59.31,
-      a: 2.26,
-      b: -19.07
-    }
-  },
-  {
-    name: 'Grizzly Brown',
-    brand: 'Scale75',
-    hex: '#50181B',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 80,
-      g: 24,
-      b: 27
-    },
-    lab: {
-      l: 17.64,
-      a: 26.47,
-      b: 12.22
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Harvester Flesh',
@@ -10292,7 +12304,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 71.62,
       a: 11.87,
       b: 17.09
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Hastur Purple',
@@ -10309,24 +12324,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 23.67,
       a: 46.18,
       b: 6.26
-    }
-  },
-  {
-    name: 'Health Red',
-    brand: 'Scale75',
-    hex: '#C31610',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 195,
-      g: 22,
-      b: 16
     },
-    lab: {
-      l: 41.56,
-      a: 62.98,
-      b: 49.82
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Heavy Metal',
@@ -10343,58 +12344,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 64.77,
       a: 0.42,
       b: -2.21
-    }
-  },
-  {
-    name: 'Hellbound Flesh',
-    brand: 'Scale75',
-    hex: '#9CB1AC',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 156,
-      g: 177,
-      b: 172
     },
-    lab: {
-      l: 70.52,
-      a: -8.24,
-      b: 0.1
-    }
-  },
-  {
-    name: 'Hiril Blue',
-    brand: 'Scale75',
-    hex: '#4AA9BF',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 74,
-      g: 169,
-      b: 191
-    },
-    lab: {
-      l: 64.64,
-      a: -21.29,
-      b: -19.64
-    }
-  },
-  {
-    name: 'Huldra Blue',
-    brand: 'Scale75',
-    hex: '#234256',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 35,
-      g: 66,
-      b: 86
-    },
-    lab: {
-      l: 26.52,
-      a: -4.84,
-      b: -15.47
-    }
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Human Flesh',
@@ -10411,41 +12364,50 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 73.72,
       a: 14.37,
       b: 16.88
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Indian Shadow',
+    name: 'Hykey Yellow',
     brand: 'Scale75',
-    hex: '#673D3F',
+    hex: '#EFD491',
     type: 'Base',
-    family: 'Red',
+    family: 'Brown',
     rgb: {
-      r: 103,
-      g: 61,
-      b: 63
+      r: 239,
+      g: 212,
+      b: 145
     },
     lab: {
-      l: 30.83,
-      a: 18.71,
-      b: 6.63
-    }
+      l: 85.75,
+      a: 0.25,
+      b: 36.59
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Inktense Green',
+    name: 'Inktense Chesnut',
     brand: 'Scale75',
-    hex: '#043E32',
+    hex: '#803C15',
     type: 'Base',
-    family: 'Cyan',
+    family: 'Orange',
     rgb: {
-      r: 4,
-      g: 62,
-      b: 50
+      r: 128,
+      g: 60,
+      b: 21
     },
     lab: {
-      l: 22.66,
-      a: -21,
-      b: 2.41
-    }
+      l: 33.72,
+      a: 26.75,
+      b: 36.05
+    },
+    finish: 'matte',
+    transparency: 0.7,
+    matchable: true
   },
   {
     name: 'Inktense Violet',
@@ -10462,7 +12424,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 21.05,
       a: 38.97,
       b: -40.21
-    }
+    },
+    finish: 'matte',
+    transparency: 0.7,
+    matchable: true
   },
   {
     name: 'Inktense Yellow',
@@ -10479,24 +12444,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 78,
       a: -0.93,
       b: 77.15
-    }
-  },
-  {
-    name: 'Innsmouth Blue',
-    brand: 'Scale75',
-    hex: '#00596B',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 0,
-      g: 89,
-      b: 107
     },
-    lab: {
-      l: 34.41,
-      a: -15.73,
-      b: -16.76
-    }
+    finish: 'matte',
+    transparency: 0.7,
+    matchable: true
   },
   {
     name: 'Intense Yellow',
@@ -10513,24 +12464,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 82.7,
       a: -1.36,
       b: 83.4
-    }
-  },
-  {
-    name: 'Irati Green',
-    brand: 'Scale75',
-    hex: '#008721',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 0,
-      g: 135,
-      b: 33
     },
-    lab: {
-      l: 48.81,
-      a: -51.96,
-      b: 43.45
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Iroko',
@@ -10547,41 +12484,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 61.35,
       a: 5.22,
       b: 39.69
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Jade Green',
+    name: 'Ishtar Pink',
     brand: 'Scale75',
-    hex: '#2FBEAF',
+    hex: '#FC9363',
     type: 'Base',
-    family: 'Cyan',
+    family: 'Orange',
     rgb: {
-      r: 47,
-      g: 190,
-      b: 175
+      r: 252,
+      g: 147,
+      b: 99
     },
     lab: {
-      l: 69.84,
-      a: -40.03,
-      b: -3.08
-    }
-  },
-  {
-    name: 'Jorildyn Turquoise',
-    brand: 'Scale75',
-    hex: '#067DA7',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 6,
-      g: 125,
-      b: 167
+      l: 71.19,
+      a: 35.28,
+      b: 42.18
     },
-    lab: {
-      l: 48.88,
-      a: -13.21,
-      b: -30.39
-    }
+    finish: 'matte',
+    transparency: 0.7,
+    matchable: true
   },
   {
     name: 'Kalahari Orange',
@@ -10598,7 +12524,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 45.32,
       a: 29.32,
       b: 29.15
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Kunzite Alchemy',
@@ -10615,7 +12544,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 70.14,
       a: 20.5,
       b: -8.32
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Lemon Yellow',
@@ -10632,58 +12564,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 90.38,
       a: -17.53,
       b: 70.81
-    }
-  },
-  {
-    name: 'Leviathan Blue',
-    brand: 'Scale75',
-    hex: '#005E70',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 0,
-      g: 94,
-      b: 112
     },
-    lab: {
-      l: 36.32,
-      a: -16.67,
-      b: -16.92
-    }
-  },
-  {
-    name: 'Life Red',
-    brand: 'Scale75',
-    hex: '#E63217',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 230,
-      g: 50,
-      b: 23
-    },
-    lab: {
-      l: 50.89,
-      a: 66.39,
-      b: 56.83
-    }
-  },
-  {
-    name: 'Light Moss Green',
-    brand: 'Scale75',
-    hex: '#61701B',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 97,
-      g: 112,
-      b: 27
-    },
-    lab: {
-      l: 44.53,
-      a: -17.83,
-      b: 42.62
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Light Rust',
@@ -10700,7 +12584,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 53.41,
       a: 31.12,
       b: 47.7
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Light Skin',
@@ -10717,7 +12604,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 77.56,
       a: 9.67,
       b: 26.04
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Lilith Yellow',
@@ -10734,24 +12624,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 92.3,
       a: -6.76,
       b: 52
-    }
-  },
-  {
-    name: 'Lime Green',
-    brand: 'Scale75',
-    hex: '#ACE44A',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 172,
-      g: 228,
-      b: 74
     },
-    lab: {
-      l: 84.36,
-      a: -40.02,
-      b: 66.29
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Magenta',
@@ -10768,24 +12644,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 44.12,
       a: 72.1,
       b: -16.18
-    }
-  },
-  {
-    name: 'Magic Blue',
-    brand: 'Scale75',
-    hex: '#147797',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 20,
-      g: 119,
-      b: 151
     },
-    lab: {
-      l: 46.41,
-      a: -14.96,
-      b: -24.84
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Marduk Yellow',
@@ -10802,7 +12664,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 93.01,
       a: -13.86,
       b: 91.48
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Mars Orange',
@@ -10819,75 +12684,70 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 50.5,
       a: 24.88,
       b: 41.49
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Mayhem Red',
+    name: 'Mid Ground / Earth',
     brand: 'Scale75',
-    hex: '#9F0D20',
+    hex: '#C8AD7E',
     type: 'Base',
-    family: 'Red',
+    family: 'Brown',
     rgb: {
-      r: 159,
-      g: 13,
-      b: 32
+      r: 200,
+      g: 173,
+      b: 126
     },
     lab: {
-      l: 33.49,
-      a: 55.1,
-      b: 31.77
-    }
+      l: 72.01,
+      a: 3.08,
+      b: 27.78
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Medium Wet',
+    name: 'Miskatonic Grey',
     brand: 'Scale75',
-    hex: '#FFFFFF',
+    hex: '#BBB7B4',
     type: 'Base',
-    family: 'White',
+    family: 'Grey',
     rgb: {
-      r: 255,
-      g: 255,
-      b: 255
+      r: 187,
+      g: 183,
+      b: 180
     },
     lab: {
-      l: 100,
-      a: 0,
-      b: 0
-    }
+      l: 74.65,
+      a: 0.86,
+      b: 2.02
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Merm Green',
+    name: 'Mojave White',
     brand: 'Scale75',
-    hex: '#455236',
+    hex: '#D2CEB5',
     type: 'Base',
-    family: 'Green',
+    family: 'Grey',
     rgb: {
-      r: 69,
-      g: 82,
-      b: 54
+      r: 210,
+      g: 206,
+      b: 181
     },
     lab: {
-      l: 33.06,
-      a: -10.88,
-      b: 14.8
-    }
-  },
-  {
-    name: 'Misfits Green',
-    brand: 'Scale75',
-    hex: '#004B31',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 0,
-      g: 75,
-      b: 49
+      l: 82.48,
+      a: -2.84,
+      b: 12.94
     },
-    lab: {
-      l: 27.45,
-      a: -28.03,
-      b: 9.79
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Moonray Flesh',
@@ -10904,7 +12764,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 86.85,
       a: 0.94,
       b: 29.85
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Moonstone Alchemy',
@@ -10921,24 +12784,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 64.24,
       a: 12.55,
       b: 16.5
-    }
+    },
+    finish: 'metallic',
+    transparency: 0.85,
+    matchable: true
   },
   {
-    name: 'Moss Green',
+    name: 'Nacar',
     brand: 'Scale75',
-    hex: '#43492F',
+    hex: '#9B9F90',
     type: 'Base',
-    family: 'Green',
+    family: 'Grey',
     rgb: {
-      r: 67,
-      g: 73,
-      b: 47
+      r: 155,
+      g: 159,
+      b: 144
     },
     lab: {
-      l: 29.82,
-      a: -7.57,
-      b: 14.79
-    }
+      l: 64.79,
+      a: -4.23,
+      b: 7.33
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Naples Yellow',
@@ -10955,7 +12824,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 72.58,
       a: 4.85,
       b: 69.69
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Necro Gold',
@@ -10972,24 +12844,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 33.34,
       a: -1.04,
       b: 18.53
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Neon Green',
+    name: 'Necro Grey',
     brand: 'Scale75',
-    hex: '#62F687',
+    hex: '#303038',
     type: 'Base',
-    family: 'Green',
+    family: 'Grey',
     rgb: {
-      r: 98,
-      g: 246,
-      b: 135
+      r: 48,
+      g: 48,
+      b: 56
     },
     lab: {
-      l: 87.12,
-      a: -62.56,
-      b: 41.78
-    }
+      l: 20.15,
+      a: 1.99,
+      b: -5.07
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Neon Orange',
@@ -11006,24 +12884,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 73.38,
       a: 27.69,
       b: 76.24
-    }
-  },
-  {
-    name: 'Neon Red',
-    brand: 'Scale75',
-    hex: '#EF321D',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 239,
-      g: 50,
-      b: 29
     },
-    lab: {
-      l: 52.65,
-      a: 69.06,
-      b: 56.53
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Neon Yellow',
@@ -11040,7 +12904,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 95.84,
       a: -25.83,
       b: 73.43
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Off White',
@@ -11057,7 +12924,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 84.88,
       a: -0.09,
       b: 14.37
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Ogre Brown',
@@ -11074,7 +12944,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 56.5,
       a: 21.62,
       b: 62.43
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Old Copper',
@@ -11091,7 +12964,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 46.27,
       a: 20.06,
       b: 20.69
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Olive Brown',
@@ -11108,7 +12984,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 28.89,
       a: -5.41,
       b: 12.28
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Olive Green',
@@ -11125,41 +13004,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 34.43,
       a: -1.87,
       b: 17.53
-    }
-  },
-  {
-    name: 'Olivegrun 44',
-    brand: 'Scale75',
-    hex: '#93A45D',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 147,
-      g: 164,
-      b: 93
     },
-    lab: {
-      l: 64.6,
-      a: -17.58,
-      b: 34.78
-    }
-  },
-  {
-    name: 'Olivegrun Green',
-    brand: 'Scale75',
-    hex: '#5A6432',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 90,
-      g: 100,
-      b: 50
-    },
-    lab: {
-      l: 40.44,
-      a: -12.47,
-      b: 26.92
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Orange',
@@ -11176,7 +13024,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 59.03,
       a: 46.67,
       b: 64.9
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Orange Leather',
@@ -11193,7 +13044,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 47.85,
       a: 20.44,
       b: 34.84
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Orange Neon',
@@ -11210,41 +13064,70 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 61.01,
       a: 53.76,
       b: 69.93
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Orcish Dermis',
+    name: 'Pale Dust',
     brand: 'Scale75',
-    hex: '#DB7D73',
+    hex: '#EAD1BB',
     type: 'Base',
-    family: 'Red',
+    family: 'Brown',
     rgb: {
-      r: 219,
-      g: 125,
-      b: 115
+      r: 234,
+      g: 209,
+      b: 187
     },
     lab: {
-      l: 62.48,
-      a: 35.3,
-      b: 21.42
-    }
+      l: 85.34,
+      a: 5.27,
+      b: 14.1
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Panzer Grey',
+    name: 'Pale Earth',
     brand: 'Scale75',
-    hex: '#30383B',
+    hex: '#5F4125',
     type: 'Base',
-    family: 'Cyan',
+    family: 'Brown',
     rgb: {
-      r: 48,
-      g: 56,
-      b: 59
+      r: 95,
+      g: 65,
+      b: 37
     },
     lab: {
-      l: 22.9,
-      a: -2.58,
-      b: -3.01
-    }
+      l: 30.27,
+      a: 9.57,
+      b: 22.12
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Pale Skin',
+    brand: 'Scale75',
+    hex: '#F1D9CF',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 241,
+      g: 217,
+      b: 207
+    },
+    lab: {
+      l: 88.37,
+      a: 6.67,
+      b: 7.94
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Panzer Yellow',
@@ -11261,24 +13144,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 80.2,
       a: -3.4,
       b: 31.48
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Pastel Blue',
+    name: 'Pastel Green',
     brand: 'Scale75',
-    hex: '#44646F',
+    hex: '#929D97',
     type: 'Base',
-    family: 'Cyan',
+    family: 'Grey',
     rgb: {
-      r: 68,
-      g: 100,
-      b: 111
+      r: 146,
+      g: 157,
+      b: 151
     },
     lab: {
-      l: 40.39,
-      a: -8.55,
-      b: -9.9
-    }
+      l: 63.72,
+      a: -5.11,
+      b: 1.78
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Pastel Pink',
@@ -11295,7 +13184,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 63.52,
       a: 45.3,
       b: -17.52
-    }
+    },
+    finish: 'matte',
+    transparency: 0.7,
+    matchable: true
   },
   {
     name: 'Pastel Violet',
@@ -11312,7 +13204,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 40.67,
       a: 36.21,
       b: -32.14
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Peanut Butter',
@@ -11329,7 +13224,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 58.3,
       a: 13.88,
       b: 63.53
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Pearl Grey',
+    brand: 'Scale75',
+    hex: '#867980',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 134,
+      g: 121,
+      b: 128
+    },
+    lab: {
+      l: 52.18,
+      a: 6.3,
+      b: -2
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Peridot Alchemy',
@@ -11346,7 +13264,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 57.86,
       a: -4.99,
       b: 10.85
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Permanent Orange',
@@ -11363,7 +13284,50 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 63.19,
       a: 52.87,
       b: 69.67
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Petroleum Gray',
+    brand: 'Scale75',
+    hex: '#554D4B',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 85,
+      g: 77,
+      b: 75
+    },
+    lab: {
+      l: 33.45,
+      a: 2.92,
+      b: 2.39
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Phoenix Egg',
+    brand: 'Scale75',
+    hex: '#E5D0A3',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 229,
+      g: 208,
+      b: 163
+    },
+    lab: {
+      l: 84.18,
+      a: 0.6,
+      b: 25.05
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Phoenix Feather',
@@ -11380,7 +13344,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 63.76,
       a: 22.33,
       b: 35.54
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Pink Flesh',
@@ -11397,7 +13364,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 66.55,
       a: 23.14,
       b: 12.23
-    }
+    },
+    finish: 'matte',
+    transparency: 0.7,
+    matchable: true
   },
   {
     name: 'Pistachio Green Ink',
@@ -11414,24 +13384,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 79.56,
       a: -24.45,
       b: 76.6
-    }
-  },
-  {
-    name: 'Primary Red',
-    brand: 'Scale75',
-    hex: '#D53036',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 213,
-      g: 48,
-      b: 54
     },
-    lab: {
-      l: 47.66,
-      a: 62.84,
-      b: 37.46
-    }
+    finish: 'matte',
+    transparency: 0.7,
+    matchable: true
   },
   {
     name: 'Primary Yellow',
@@ -11448,7 +13404,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 90.58,
       a: -15.34,
       b: 87.41
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Psychedelic Purple',
@@ -11465,7 +13424,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 50.24,
       a: 85.91,
       b: -77.67
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Pure Copper',
@@ -11482,24 +13444,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 57.9,
       a: 30.95,
       b: 36.82
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Purity White',
     brand: 'Scale75',
-    hex: '#FFFFFF',
+    hex: '#F4F4F2',
     type: 'Base',
     family: 'White',
     rgb: {
-      r: 255,
-      g: 255,
-      b: 255
+      r: 244,
+      g: 244,
+      b: 242
     },
     lab: {
-      l: 100,
-      a: 0,
-      b: 0
-    }
+      l: 96.14,
+      a: -0.35,
+      b: 0.96
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Purple',
@@ -11516,7 +13484,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 34.12,
       a: 50.44,
       b: -9.1
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Rage Brown',
+    brand: 'Scale75',
+    hex: '#7C2B16',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 124,
+      g: 43,
+      b: 22
+    },
+    lab: {
+      l: 29.59,
+      a: 34.06,
+      b: 31.31
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Ragweed Orange',
@@ -11533,58 +13524,70 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 58.18,
       a: 41.89,
       b: 55.93
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Red Ecstasy',
+    name: 'Rainy Gray',
     brand: 'Scale75',
-    hex: '#F81803',
+    hex: '#8B8683',
     type: 'Base',
-    family: 'Red',
+    family: 'Grey',
     rgb: {
-      r: 248,
-      g: 24,
-      b: 3
+      r: 139,
+      g: 134,
+      b: 131
     },
     lab: {
-      l: 52.53,
-      a: 76.33,
-      b: 65.3
-    }
+      l: 56.27,
+      a: 1.3,
+      b: 2.28
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Red Label',
+    name: 'Raw Sienna',
     brand: 'Scale75',
-    hex: '#DF0617',
+    hex: '#654226',
     type: 'Base',
-    family: 'Red',
+    family: 'Brown',
     rgb: {
-      r: 223,
-      g: 6,
-      b: 23
+      r: 101,
+      g: 66,
+      b: 38
     },
     lab: {
-      l: 46.82,
-      a: 72.1,
-      b: 53.33
-    }
+      l: 31.36,
+      a: 11.9,
+      b: 23.02
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Red Leather',
+    name: 'Raw Umber',
     brand: 'Scale75',
-    hex: '#5F3634',
+    hex: '#765F33',
     type: 'Base',
-    family: 'Red',
+    family: 'Brown',
     rgb: {
-      r: 95,
-      g: 54,
-      b: 52
+      r: 118,
+      g: 95,
+      b: 51
     },
     lab: {
-      l: 27.63,
-      a: 18.07,
-      b: 9.16
-    }
+      l: 41.65,
+      a: 3.46,
+      b: 28.45
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Resurrection Flesh',
@@ -11601,24 +13604,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 61.63,
       a: 13.5,
       b: 27.42
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Riff Green',
+    name: 'Rlyeh Grey',
     brand: 'Scale75',
-    hex: '#1A2D29',
+    hex: '#464B4E',
     type: 'Base',
-    family: 'Cyan',
+    family: 'Grey',
     rgb: {
-      r: 26,
-      g: 45,
-      b: 41
+      r: 70,
+      g: 75,
+      b: 78
     },
     lab: {
-      l: 16.78,
-      a: -8.9,
-      b: 0.13
-    }
+      l: 31.54,
+      a: -1.33,
+      b: -2.48
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Rotbraun 44',
@@ -11635,24 +13644,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 40.89,
       a: 23.11,
       b: 36.55
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Rotbraun Primer Red',
+    name: 'Rotbraun Red',
     brand: 'Scale75',
-    hex: '#925447',
+    hex: '#52341A',
     type: 'Base',
-    family: 'Flesh',
+    family: 'Brown',
     rgb: {
-      r: 146,
-      g: 84,
-      b: 71
+      r: 82,
+      g: 52,
+      b: 26
     },
     lab: {
-      l: 42.62,
-      a: 24.32,
-      b: 18.73
-    }
+      l: 24.72,
+      a: 10.51,
+      b: 21.69
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Rotten Pus',
@@ -11669,7 +13684,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 77.97,
       a: 14.41,
       b: 80.74
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Ruby Alchemy',
@@ -11686,7 +13704,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 60.81,
       a: 37.11,
       b: 7.53
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Russian Green',
@@ -11703,7 +13724,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 33.58,
       a: -2.42,
       b: 25.32
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Russian Light Green',
@@ -11720,7 +13744,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 35.16,
       a: 0.32,
       b: 37.69
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Russian Uniform',
@@ -11737,7 +13764,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 38.38,
       a: -0.08,
       b: 30.28
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Sahara Sand',
@@ -11754,24 +13784,70 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 84.19,
       a: -1.61,
       b: 55.71
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Sap Green',
+    name: 'Sahara Yellow',
     brand: 'Scale75',
-    hex: '#033417',
+    hex: '#AA852D',
     type: 'Base',
-    family: 'Green',
+    family: 'Orange',
     rgb: {
-      r: 3,
-      g: 52,
-      b: 23
+      r: 170,
+      g: 133,
+      b: 45
     },
     lab: {
-      l: 18.09,
-      a: -23.77,
-      b: 13.95
-    }
+      l: 57.57,
+      a: 5.11,
+      b: 50.46
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Sand Yellow',
+    brand: 'Scale75',
+    hex: '#EAC581',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 234,
+      g: 197,
+      b: 129
+    },
+    lab: {
+      l: 81.3,
+      a: 4.37,
+      b: 38.92
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Sandalwood',
+    brand: 'Scale75',
+    hex: '#B89086',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 184,
+      g: 144,
+      b: 134
+    },
+    lab: {
+      l: 63.23,
+      a: 13.59,
+      b: 11.09
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Savage Beige',
@@ -11788,7 +13864,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 86.65,
       a: -1.13,
       b: 44.85
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Shadow Black',
@@ -11805,7 +13884,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 11.45,
       a: -1.69,
       b: 1.73
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Sherwood Green',
@@ -11822,41 +13904,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 53.43,
       a: -14.22,
       b: 38.78
-    }
-  },
-  {
-    name: 'Sky Blue',
-    brand: 'Scale75',
-    hex: '#2496C8',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 36,
-      g: 150,
-      b: 200
     },
-    lab: {
-      l: 58.37,
-      a: -13.32,
-      b: -34.41
-    }
-  },
-  {
-    name: 'Slimer Green',
-    brand: 'Scale75',
-    hex: '#5A9032',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 90,
-      g: 144,
-      b: 50
-    },
-    lab: {
-      l: 54.4,
-      a: -34.65,
-      b: 43
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Smoke Gray',
@@ -11873,7 +13924,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 46.79,
       a: 10.57,
       b: 13.39
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Sol Yellow',
@@ -11890,7 +13944,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 82.14,
       a: -3.95,
       b: 82.92
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Spectral Wolf',
+    brand: 'Scale75',
+    hex: '#AB9FA1',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 171,
+      g: 159,
+      b: 161
+    },
+    lab: {
+      l: 66.54,
+      a: 4.72,
+      b: 0.53
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Speed Metal',
@@ -11907,7 +13984,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 84.97,
       a: 0.36,
       b: -0.99
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Speed Yellow',
@@ -11924,41 +14004,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 96.88,
       a: -21.08,
       b: 94.29
-    }
-  },
-  {
-    name: 'Spring Green',
-    brand: 'Scale75',
-    hex: '#5D9F35',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 93,
-      g: 159,
-      b: 53
     },
-    lab: {
-      l: 59.32,
-      a: -39.93,
-      b: 47.06
-    }
-  },
-  {
-    name: 'Ss Camo Dark Green',
-    brand: 'Scale75',
-    hex: '#2A331E',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 42,
-      g: 51,
-      b: 30
-    },
-    lab: {
-      l: 19.86,
-      a: -8.42,
-      b: 12.1
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'SS Camo Golden Brown',
@@ -11975,24 +14024,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 72.01,
       a: 20.24,
       b: 76.04
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Ss Camo Italian Green',
+    name: 'Ss Camo Highlights',
     brand: 'Scale75',
-    hex: '#3F5232',
-    type: 'Base',
-    family: 'Green',
+    hex: '#FAB861',
+    type: 'Layer',
+    family: 'Orange',
     rgb: {
-      r: 63,
-      g: 82,
-      b: 50
+      r: 250,
+      g: 184,
+      b: 97
     },
     lab: {
-      l: 32.53,
-      a: -14.12,
-      b: 16.45
-    }
+      l: 79.31,
+      a: 15.03,
+      b: 52.72
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Ss Camo Light Green',
@@ -12009,24 +14064,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 52.15,
       a: -13.11,
       b: 46.54
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Ss Camo Medium Green',
+    name: 'Ss Camo Ocher Brown',
     brand: 'Scale75',
-    hex: '#4D5025',
+    hex: '#CFAE5F',
     type: 'Base',
-    family: 'Yellow',
+    family: 'Orange',
     rgb: {
-      r: 77,
-      g: 80,
-      b: 37
+      r: 207,
+      g: 174,
+      b: 95
     },
     lab: {
-      l: 32.81,
-      a: -8.42,
-      b: 24.71
-    }
+      l: 72.47,
+      a: 2.3,
+      b: 44.58
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Ss Camo Top Shadows',
@@ -12043,7 +14104,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 21.35,
       a: -2.52,
       b: 7.62
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Sulfur Yellow',
@@ -12060,7 +14124,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 86.34,
       a: -1.34,
       b: 86.67
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Sunset Purple',
@@ -12077,7 +14144,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 27.27,
       a: 29.02,
       b: -12.47
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Surfer Orc Flesh',
@@ -12094,24 +14164,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 60.58,
       a: -42.35,
       b: 3.33
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Techno Green',
+    name: 'Tenere Yellow',
     brand: 'Scale75',
-    hex: '#44FA05',
+    hex: '#E5C76F',
     type: 'Base',
-    family: 'Green',
+    family: 'Orange',
     rgb: {
-      r: 68,
-      g: 250,
-      b: 5
+      r: 229,
+      g: 199,
+      b: 111
     },
     lab: {
-      l: 86.8,
-      a: -79.37,
-      b: 82.3
-    }
+      l: 81.1,
+      a: -0.36,
+      b: 47.57
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Thrash Metal',
@@ -12128,24 +14204,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 31.93,
       a: 3.49,
       b: 5.29
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Toad Green',
+    name: 'Tiamat Orange',
     brand: 'Scale75',
-    hex: '#475139',
+    hex: '#E97329',
     type: 'Base',
-    family: 'Green',
+    family: 'Orange',
     rgb: {
-      r: 71,
-      g: 81,
-      b: 57
+      r: 233,
+      g: 115,
+      b: 41
     },
     lab: {
-      l: 32.96,
-      a: -8.91,
-      b: 12.84
-    }
+      l: 61.44,
+      a: 41.34,
+      b: 58.58
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Tourmaline Alchemy',
@@ -12162,7 +14244,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 74.98,
       a: 24.73,
       b: 3.55
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Toxic Waste Green',
@@ -12179,58 +14264,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 81.85,
       a: -23.41,
       b: 70.75
-    }
-  },
-  {
-    name: 'Turquoise',
-    brand: 'Scale75',
-    hex: '#03435F',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 3,
-      g: 67,
-      b: 95
     },
-    lab: {
-      l: 26.33,
-      a: -6.97,
-      b: -21.68
-    }
-  },
-  {
-    name: 'Turquoise Blue',
-    brand: 'Scale75',
-    hex: '#15998E',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 21,
-      g: 153,
-      b: 142
-    },
-    lab: {
-      l: 56.97,
-      a: -35.15,
-      b: -3.63
-    }
-  },
-  {
-    name: 'Turquoise Ink',
-    brand: 'Scale75',
-    hex: '#204C50',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 32,
-      g: 76,
-      b: 80
-    },
-    lab: {
-      l: 29.55,
-      a: -13.76,
-      b: -6.98
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Undead Flesh',
@@ -12247,7 +14284,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 70.13,
       a: -13.58,
       b: 32.23
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Us Dark Brown',
@@ -12264,7 +14304,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 60.24,
       a: 10.22,
       b: 18.07
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Us Green',
@@ -12281,7 +14324,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 29.29,
       a: -3.41,
       b: 12.25
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Vanilla Yellow',
@@ -12298,7 +14344,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 81.17,
       a: -8.84,
       b: 50.75
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Victorian Brass',
@@ -12315,7 +14364,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 58.76,
       a: 11.78,
       b: 45.79
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Viking Gold',
@@ -12332,7 +14384,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 42.62,
       a: 16.34,
       b: 40.62
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Violet Blue',
@@ -12349,24 +14404,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 34.2,
       a: 20.51,
       b: -21.66
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'White',
     brand: 'Scale75',
-    hex: '#FFFFFF',
+    hex: '#F4F4F2',
     type: 'Base',
     family: 'White',
     rgb: {
-      r: 255,
-      g: 255,
-      b: 255
+      r: 244,
+      g: 244,
+      b: 242
     },
     lab: {
-      l: 100,
-      a: 0,
-      b: 0
-    }
+      l: 96.14,
+      a: -0.35,
+      b: 0.96
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'White Ink',
@@ -12383,7 +14444,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 97.23,
       a: 0,
       b: 0
-    }
+    },
+    finish: 'matte',
+    transparency: 0.7,
+    matchable: true
   },
   {
     name: 'White Metal',
@@ -12400,7 +14464,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 95.15,
       a: 0,
       b: 0
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'White Sands',
@@ -12417,7 +14484,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 90.56,
       a: 2.98,
       b: 15.83
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Wild Beast',
+    brand: 'Scale75',
+    hex: '#CA854E',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 202,
+      g: 133,
+      b: 78
+    },
+    lab: {
+      l: 61.55,
+      a: 21.07,
+      b: 40.07
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Yellow Code',
@@ -12434,7 +14524,30 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 83.96,
       a: 4.24,
       b: 84.51
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Yellow Ocre',
+    brand: 'Scale75',
+    hex: '#A0702E',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 160,
+      g: 112,
+      b: 46
+    },
+    lab: {
+      l: 50.99,
+      a: 12.49,
+      b: 42.91
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Zombie Skin',
@@ -12451,248 +14564,1413 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 67.38,
       a: -10.54,
       b: 32.33
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: 'Zucchini Green',
-    brand: 'Scale75',
-    hex: '#405B32',
+    name: 'Amaranth Red',
+    brand: 'Vallejo',
+    hex: '#CC4338',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 204,
+      g: 67,
+      b: 56
+    },
+    lab: {
+      l: 48.44,
+      a: 53.46,
+      b: 36.75
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Andrea Blue',
+    brand: 'Vallejo',
+    hex: '#008DC9',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 0,
+      g: 141,
+      b: 201
+    },
+    lab: {
+      l: 55.34,
+      a: -9.81,
+      b: -39.75
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Azure',
+    brand: 'Vallejo',
+    hex: '#717CAD',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 113,
+      g: 124,
+      b: 173
+    },
+    lab: {
+      l: 52.89,
+      a: 8,
+      b: -27.32
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Basalt Grey',
+    brand: 'Vallejo',
+    hex: '#576860',
     type: 'Base',
     family: 'Green',
     rgb: {
-      r: 64,
-      g: 91,
-      b: 50
-    },
-    lab: {
-      l: 35.6,
-      a: -18.67,
-      b: 20.45
-    }
-  },
-  {
-    name: '28.001',
-    brand: 'Vallejo',
-    hex: '#94854E',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 148,
-      g: 133,
-      b: 78
-    },
-    lab: {
-      l: 55.71,
-      a: -2.2,
-      b: 31.6
-    }
-  },
-  {
-    name: '28.002',
-    brand: 'Vallejo',
-    hex: '#4B4C50',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 75,
-      g: 76,
-      b: 80
-    },
-    lab: {
-      l: 32.36,
-      a: 0.49,
-      b: -2.51
-    }
-  },
-  {
-    name: '28.003',
-    brand: 'Vallejo',
-    hex: '#575546',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
       r: 87,
-      g: 85,
-      b: 70
+      g: 104,
+      b: 96
     },
     lab: {
-      l: 35.92,
-      a: -2.09,
-      b: 9.06
-    }
+      l: 42.42,
+      a: -8.19,
+      b: 2.36
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: '28.004',
+    name: 'Basic Skintone',
     brand: 'Vallejo',
-    hex: '#535554',
-    type: 'Base',
-    family: 'Grey',
+    hex: '#FBBC8C',
+    type: 'Shade',
+    family: 'Flesh',
     rgb: {
-      r: 83,
-      g: 85,
-      b: 84
+      r: 251,
+      g: 188,
+      b: 140
     },
     lab: {
-      l: 35.94,
-      a: -1.02,
-      b: 0.3
-    }
-  },
-  {
-    name: '28.005',
-    brand: 'Vallejo',
-    hex: '#635C4C',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 99,
-      g: 92,
-      b: 76
+      l: 80.95,
+      a: 16.93,
+      b: 33.1
     },
-    lab: {
-      l: 39.29,
-      a: -0.12,
-      b: 10.24
-    }
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
   },
   {
-    name: '28.006',
+    name: 'Beasty Brown',
     brand: 'Vallejo',
-    hex: '#62625A',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 98,
-      g: 98,
-      b: 90
-    },
-    lab: {
-      l: 41.33,
-      a: -1.61,
-      b: 4.55
-    }
-  },
-  {
-    name: '28.007',
-    brand: 'Vallejo',
-    hex: '#6B6452',
+    hex: '#55432D',
     type: 'Base',
     family: 'Brown',
     rgb: {
-      r: 107,
-      g: 100,
-      b: 82
+      r: 85,
+      g: 67,
+      b: 45
     },
     lab: {
-      l: 42.54,
-      a: -0.48,
-      b: 11.23
-    }
+      l: 29.75,
+      a: 4.36,
+      b: 16.28
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: '28.008',
+    name: 'Beige',
     brand: 'Vallejo',
-    hex: '#755D41',
+    hex: '#DBC58E',
     type: 'Base',
     family: 'Brown',
     rgb: {
-      r: 117,
-      g: 93,
-      b: 65
+      r: 219,
+      g: 197,
+      b: 142
     },
     lab: {
-      l: 41.2,
-      a: 5.68,
-      b: 19.78
-    }
+      l: 80.15,
+      a: -0.16,
+      b: 30.45
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: '28.009',
+    name: 'Beige Brown',
     brand: 'Vallejo',
-    hex: '#86785E',
+    hex: '#78584A',
     type: 'Base',
     family: 'Brown',
     rgb: {
-      r: 134,
-      g: 120,
-      b: 94
+      r: 120,
+      g: 88,
+      b: 74
     },
     lab: {
-      l: 51.05,
-      a: 1.12,
-      b: 16.27
-    }
+      l: 40.36,
+      a: 11.16,
+      b: 13.28
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: '28.010',
+    name: 'Beige Red',
     brand: 'Vallejo',
-    hex: '#FFFFFF',
+    hex: '#C79166',
     type: 'Base',
-    family: 'White',
+    family: 'Flesh',
     rgb: {
-      r: 255,
-      g: 255,
-      b: 255
+      r: 199,
+      g: 145,
+      b: 102
     },
     lab: {
-      l: 100,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: '28.011',
-    brand: 'Vallejo',
-    hex: '#E7E7E7',
-    type: 'Base',
-    family: 'White',
-    rgb: {
-      r: 231,
-      g: 231,
-      b: 231
+      l: 64.45,
+      a: 15.27,
+      b: 30.78
     },
-    lab: {
-      l: 91.64,
-      a: 0,
-      b: 0
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: '28.012',
+    name: 'Black',
     brand: 'Vallejo',
-    hex: '#000000',
+    hex: '#121212',
     type: 'Base',
     family: 'Black',
     rgb: {
-      r: 0,
-      g: 0,
-      b: 0
+      r: 18,
+      g: 18,
+      b: 18
     },
     lab: {
-      l: 0,
+      l: 5.46,
       a: 0,
       b: 0
-    }
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: '28.013',
+    name: 'Black Green',
     brand: 'Vallejo',
-    hex: '#D4BE99',
+    hex: '#19423E',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 25,
+      g: 66,
+      b: 62
+    },
+    lab: {
+      l: 25.11,
+      a: -15.43,
+      b: -1.9
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Black Grey',
+    brand: 'Vallejo',
+    hex: '#2D373A',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 45,
+      g: 55,
+      b: 58
+    },
+    lab: {
+      l: 22.29,
+      a: -3.38,
+      b: -3.27
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Black Red [Cadmium Brown]',
+    brand: 'Vallejo',
+    hex: '#5F2E39',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 95,
+      g: 46,
+      b: 57
+    },
+    lab: {
+      l: 25.81,
+      a: 23.57,
+      b: 3.27
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Bloody Red',
+    brand: 'Vallejo',
+    hex: '#BF282E',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 191,
+      g: 40,
+      b: 46
+    },
+    lab: {
+      l: 42.45,
+      a: 58.45,
+      b: 35.1
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Blue',
+    brand: 'Vallejo',
+    hex: '#043667',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 4,
+      g: 54,
+      b: 103
+    },
+    lab: {
+      l: 22.45,
+      a: 5.47,
+      b: -33.01
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Blue Green',
+    brand: 'Vallejo',
+    hex: '#1A9496',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 26,
+      g: 148,
+      b: 150
+    },
+    lab: {
+      l: 55.68,
+      a: -29.96,
+      b: -10.11
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Blue Grey Pale',
+    brand: 'Vallejo',
+    hex: '#9EA7A5',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 158,
+      g: 167,
+      b: 165
+    },
+    lab: {
+      l: 67.74,
+      a: -3.57,
+      b: -0.07
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Blue Violet',
+    brand: 'Vallejo',
+    hex: '#795C9A',
+    type: 'Base',
+    family: 'Purple',
+    rgb: {
+      r: 121,
+      g: 92,
+      b: 154
+    },
+    lab: {
+      l: 44.31,
+      a: 24.74,
+      b: -29.48
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Bone White',
+    brand: 'Vallejo',
+    hex: '#E8BE86',
+    type: 'Base',
+    family: 'Bone',
+    rgb: {
+      r: 232,
+      g: 190,
+      b: 134
+    },
+    lab: {
+      l: 79.45,
+      a: 7.75,
+      b: 33.91
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Bright Orange',
+    brand: 'Vallejo',
+    hex: '#F26833',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 242,
+      g: 104,
+      b: 51
+    },
+    lab: {
+      l: 60.8,
+      a: 50.31,
+      b: 54.2
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Bronce Green',
+    brand: 'Vallejo',
+    hex: '#2A534F',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 42,
+      g: 83,
+      b: 79
+    },
+    lab: {
+      l: 32.35,
+      a: -15.51,
+      b: -2.13
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Bronze Fleshtone',
+    brand: 'Vallejo',
+    hex: '#DB945C',
+    type: 'Shade',
+    family: 'Bronze',
+    rgb: {
+      r: 219,
+      g: 148,
+      b: 92
+    },
+    lab: {
+      l: 67.29,
+      a: 21.04,
+      b: 40.15
+    },
+    finish: 'metallic',
+    transparency: 0.85,
+    matchable: true
+  },
+  {
+    name: 'Brown Rose',
+    brand: 'Vallejo',
+    hex: '#CF8774',
+    type: 'Base',
+    family: 'Flesh',
+    rgb: {
+      r: 207,
+      g: 135,
+      b: 116
+    },
+    lab: {
+      l: 63.22,
+      a: 25.4,
+      b: 21.61
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Brown Sand',
+    brand: 'Vallejo',
+    hex: '#B08064',
+    type: 'Base',
+    family: 'Flesh',
+    rgb: {
+      r: 176,
+      g: 128,
+      b: 100
+    },
+    lab: {
+      l: 57.65,
+      a: 14.96,
+      b: 22.5
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Brown Violet',
+    brand: 'Vallejo',
+    hex: '#4E5D4D',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 78,
+      g: 93,
+      b: 77
+    },
+    lab: {
+      l: 37.81,
+      a: -9.28,
+      b: 7.29
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Buff',
+    brand: 'Vallejo',
+    hex: '#D2CA9F',
+    type: 'Base',
+    family: 'Yellow',
+    rgb: {
+      r: 210,
+      g: 202,
+      b: 159
+    },
+    lab: {
+      l: 80.99,
+      a: -4.04,
+      b: 22.52
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Burnt Cadmium Red',
+    brand: 'Vallejo',
+    hex: '#623535',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 98,
+      g: 53,
+      b: 53
+    },
+    lab: {
+      l: 27.85,
+      a: 20.12,
+      b: 8.87
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Burnt Umber',
+    brand: 'Vallejo',
+    hex: '#665148',
     type: 'Base',
     family: 'Brown',
     rgb: {
-      r: 212,
-      g: 190,
-      b: 153
+      r: 102,
+      g: 81,
+      b: 72
     },
     lab: {
-      l: 77.95,
-      a: 2.18,
-      b: 21.56
-    }
+      l: 36.32,
+      a: 7.25,
+      b: 8.61
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: '28.014',
+    name: 'Cadmium Skin',
+    brand: 'Vallejo',
+    hex: '#FAB78A',
+    type: 'Base',
+    family: 'Flesh',
+    rgb: {
+      r: 250,
+      g: 183,
+      b: 138
+    },
+    lab: {
+      l: 79.63,
+      a: 18.96,
+      b: 32.4
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Cam. Olive Green',
+    brand: 'Vallejo',
+    hex: '#3C5549',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 60,
+      g: 85,
+      b: 73
+    },
+    lab: {
+      l: 33.85,
+      a: -12.39,
+      b: 3.97
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Camoflage Green',
+    brand: 'Vallejo',
+    hex: '#71753A',
+    type: 'Base',
+    family: 'Yellow',
+    rgb: {
+      r: 113,
+      g: 117,
+      b: 58
+    },
+    lab: {
+      l: 47.67,
+      a: -10.81,
+      b: 31.78
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Carmine Red',
+    brand: 'Vallejo',
+    hex: '#B73035',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 183,
+      g: 48,
+      b: 53
+    },
+    lab: {
+      l: 41.91,
+      a: 53.76,
+      b: 29.93
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Cavalry Brown',
+    brand: 'Vallejo',
+    hex: '#853F3D',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 133,
+      g: 63,
+      b: 61
+    },
+    lab: {
+      l: 35.75,
+      a: 29.79,
+      b: 15.38
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Cayman Green',
+    brand: 'Vallejo',
+    hex: '#285648',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 40,
+      g: 86,
+      b: 72
+    },
+    lab: {
+      l: 33.08,
+      a: -19.67,
+      b: 3.34
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Charred Brown',
+    brand: 'Vallejo',
+    hex: '#39343B',
+    type: 'Base',
+    family: 'Purple',
+    rgb: {
+      r: 57,
+      g: 52,
+      b: 59
+    },
+    lab: {
+      l: 22.45,
+      a: 3.8,
+      b: -3.59
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Chocolate Brown',
+    brand: 'Vallejo',
+    hex: '#5F5047',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 95,
+      g: 80,
+      b: 71
+    },
+    lab: {
+      l: 35.25,
+      a: 4.64,
+      b: 7.62
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Clear Orange',
+    brand: 'Vallejo',
+    hex: '#F1552C',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 241,
+      g: 85,
+      b: 44
+    },
+    lab: {
+      l: 57.45,
+      a: 58.05,
+      b: 54.18
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Cold Grey',
+    brand: 'Vallejo',
+    hex: '#54646D',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 84,
+      g: 100,
+      b: 109
+    },
+    lab: {
+      l: 41.38,
+      a: -3.86,
+      b: -7.1
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Cork Brown',
+    brand: 'Vallejo',
+    hex: '#A57B63',
+    type: 'Base',
+    family: 'Flesh',
+    rgb: {
+      r: 165,
+      g: 123,
+      b: 99
+    },
+    lab: {
+      l: 55.14,
+      a: 13.08,
+      b: 19.49
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Dark Blue',
+    brand: 'Vallejo',
+    hex: '#2B265D',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 43,
+      g: 38,
+      b: 93
+    },
+    lab: {
+      l: 18.76,
+      a: 19.1,
+      b: -32.31
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Dark Blue Grey',
+    brand: 'Vallejo',
+    hex: '#4B5751',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 75,
+      g: 87,
+      b: 81
+    },
+    lab: {
+      l: 35.8,
+      a: -6.06,
+      b: 1.9
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Dark Flesh',
+    brand: 'Vallejo',
+    hex: '#D9A262',
+    type: 'Base',
+    family: 'Flesh',
+    rgb: {
+      r: 217,
+      g: 162,
+      b: 98
+    },
+    lab: {
+      l: 70.51,
+      a: 13.15,
+      b: 40.92
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Dark Fleshtone',
+    brand: 'Vallejo',
+    hex: '#4F2B26',
+    type: 'Shade',
+    family: 'Flesh',
+    rgb: {
+      r: 79,
+      g: 43,
+      b: 38
+    },
+    lab: {
+      l: 22.05,
+      a: 16.03,
+      b: 10.48
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
+  },
+  {
+    name: 'Dark Green',
+    brand: 'Vallejo',
+    hex: '#083C2A',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 8,
+      g: 60,
+      b: 42
+    },
+    lab: {
+      l: 21.76,
+      a: -21.73,
+      b: 6.48
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Dark Grey',
+    brand: 'Vallejo',
+    hex: '#233E3D',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 35,
+      g: 62,
+      b: 61
+    },
+    lab: {
+      l: 24.13,
+      a: -10.54,
+      b: -2.63
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Dark Prussian Blue',
+    brand: 'Vallejo',
+    hex: '#192C43',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 25,
+      g: 44,
+      b: 67
+    },
+    lab: {
+      l: 17.52,
+      a: 0.43,
+      b: -16.82
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Dark Red',
+    brand: 'Vallejo',
+    hex: '#A24A46',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 162,
+      g: 74,
+      b: 70
+    },
+    lab: {
+      l: 42.8,
+      a: 36.1,
+      b: 20
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Dark Sand',
+    brand: 'Vallejo',
+    hex: '#D6B779',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 214,
+      g: 183,
+      b: 121
+    },
+    lab: {
+      l: 75.79,
+      a: 2.85,
+      b: 35.6
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Dark Sea Blue',
+    brand: 'Vallejo',
+    hex: '#2A4048',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 42,
+      g: 64,
+      b: 72
+    },
+    lab: {
+      l: 25.64,
+      a: -6.2,
+      b: -7.61
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Dark Sea Green',
+    brand: 'Vallejo',
+    hex: '#2F4844',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 47,
+      g: 72,
+      b: 68
+    },
+    lab: {
+      l: 28.53,
+      a: -10.61,
+      b: -0.67
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Dark Sea Grey',
+    brand: 'Vallejo',
+    hex: '#787D7A',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 120,
+      g: 125,
+      b: 122
+    },
+    lab: {
+      l: 51.91,
+      a: -2.48,
+      b: 0.98
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Dark Yellow',
+    brand: 'Vallejo',
+    hex: '#9D9059',
+    type: 'Base',
+    family: 'Yellow',
+    rgb: {
+      r: 157,
+      g: 144,
+      b: 89
+    },
+    lab: {
+      l: 59.74,
+      a: -3.22,
+      b: 30.93
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Dead Flesh',
+    brand: 'Vallejo',
+    hex: '#BCB686',
+    type: 'Base',
+    family: 'Flesh',
+    rgb: {
+      r: 188,
+      g: 182,
+      b: 134
+    },
+    lab: {
+      l: 73.46,
+      a: -5.46,
+      b: 25.26
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Dead White',
+    brand: 'Vallejo',
+    hex: '#F4F4F2',
+    type: 'Base',
+    family: 'White',
+    rgb: {
+      r: 244,
+      g: 244,
+      b: 242
+    },
+    lab: {
+      l: 96.14,
+      a: -0.35,
+      b: 0.96
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Deck Tan',
+    brand: 'Vallejo',
+    hex: '#BEC5B3',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 190,
+      g: 197,
+      b: 179
+    },
+    lab: {
+      l: 78.54,
+      a: -5.66,
+      b: 8.2
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Deep Green',
+    brand: 'Vallejo',
+    hex: '#0A6B48',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 10,
+      g: 107,
+      b: 72
+    },
+    lab: {
+      l: 39.66,
+      a: -34.9,
+      b: 12.49
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Deep Sky Blue',
+    brand: 'Vallejo',
+    hex: '#00A6DA',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 0,
+      g: 166,
+      b: 218
+    },
+    lab: {
+      l: 63.62,
+      a: -17.41,
+      b: -36.3
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Deep Yellow',
+    brand: 'Vallejo',
+    hex: '#FFE30C',
+    type: 'Base',
+    family: 'Yellow',
+    rgb: {
+      r: 255,
+      g: 227,
+      b: 12
+    },
+    lab: {
+      l: 89.97,
+      a: -7.85,
+      b: 88.33
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Desert Yellow',
+    brand: 'Vallejo',
+    hex: '#8E7845',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 142,
+      g: 120,
+      b: 69
+    },
+    lab: {
+      l: 51.4,
+      a: 1.57,
+      b: 31.01
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Dwarf Skin',
+    brand: 'Vallejo',
+    hex: '#CC7C67',
+    type: 'Base',
+    family: 'Flesh',
+    rgb: {
+      r: 204,
+      g: 124,
+      b: 103
+    },
+    lab: {
+      l: 60.1,
+      a: 28.85,
+      b: 24.67
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Earth',
+    brand: 'Vallejo',
+    hex: '#6F563D',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 111,
+      g: 86,
+      b: 61
+    },
+    lab: {
+      l: 38.5,
+      a: 6.7,
+      b: 18.5
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Electric Blue',
+    brand: 'Vallejo',
+    hex: '#008CBF',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 0,
+      g: 140,
+      b: 191
+    },
+    lab: {
+      l: 54.57,
+      a: -12.97,
+      b: -35.29
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Elf Skintone',
+    brand: 'Vallejo',
+    hex: '#F8A070',
+    type: 'Shade',
+    family: 'Flesh',
+    rgb: {
+      r: 248,
+      g: 160,
+      b: 112
+    },
+    lab: {
+      l: 73.72,
+      a: 27.92,
+      b: 38.41
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
+  },
+  {
+    name: 'Elfic Flesh',
+    brand: 'Vallejo',
+    hex: '#CDC29C',
+    type: 'Base',
+    family: 'Flesh',
+    rgb: {
+      r: 205,
+      g: 194,
+      b: 156
+    },
+    lab: {
+      l: 78.44,
+      a: -2.19,
+      b: 20.55
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Emerald',
+    brand: 'Vallejo',
+    hex: '#00906A',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 0,
+      g: 144,
+      b: 106
+    },
+    lab: {
+      l: 52.93,
+      a: -42.36,
+      b: 11.11
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'English Uniform',
+    brand: 'Vallejo',
+    hex: '#715833',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 113,
+      g: 88,
+      b: 51
+    },
+    lab: {
+      l: 39.12,
+      a: 5.31,
+      b: 25.24
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Field Blue',
+    brand: 'Vallejo',
+    hex: '#436872',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 67,
+      g: 104,
+      b: 114
+    },
+    lab: {
+      l: 41.7,
+      a: -10.32,
+      b: -9.77
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Filthy Brown',
+    brand: 'Vallejo',
+    hex: '#F58D2B',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 245,
+      g: 141,
+      b: 43
+    },
+    lab: {
+      l: 68.49,
+      a: 32.94,
+      b: 64.66
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Flat Blue',
+    brand: 'Vallejo',
+    hex: '#336991',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 51,
+      g: 105,
+      b: 145
+    },
+    lab: {
+      l: 42.54,
+      a: -4.83,
+      b: -27.24
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Flat Brown',
+    brand: 'Vallejo',
+    hex: '#764841',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 118,
+      g: 72,
+      b: 65
+    },
+    lab: {
+      l: 35.73,
+      a: 18.78,
+      b: 12.47
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Flat Earth',
     brand: 'Vallejo',
     hex: '#87643C',
     type: 'Base',
@@ -12706,3900 +15984,490 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 45.07,
       a: 9.14,
       b: 28.02
-    }
-  },
-  {
-    name: '28.015',
-    brand: 'Vallejo',
-    hex: '#9D7D4A',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 157,
-      g: 125,
-      b: 74
     },
-    lab: {
-      l: 54.38,
-      a: 5.84,
-      b: 32.31
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: '28.016',
+    name: 'Flat Flesh',
     brand: 'Vallejo',
-    hex: '#AA3935',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 170,
-      g: 57,
-      b: 53
-    },
-    lab: {
-      l: 40.79,
-      a: 45.96,
-      b: 28.01
-    }
-  },
-  {
-    name: '28.017',
-    brand: 'Vallejo',
-    hex: '#4C5990',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 76,
-      g: 89,
-      b: 144
-    },
-    lab: {
-      l: 39.06,
-      a: 10.58,
-      b: -32
-    }
-  },
-  {
-    name: '28.018',
-    brand: 'Vallejo',
-    hex: '#F59C00',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 245,
-      g: 156,
-      b: 0
-    },
-    lab: {
-      l: 71.69,
-      a: 24.45,
-      b: 76.24
-    }
-  },
-  {
-    name: '28.019',
-    brand: 'Vallejo',
-    hex: '#785841',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 120,
-      g: 88,
-      b: 65
-    },
-    lab: {
-      l: 40.17,
-      a: 10.03,
-      b: 18.48
-    }
-  },
-  {
-    name: '28.020',
-    brand: 'Vallejo',
-    hex: '#B0C0D0',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 176,
-      g: 192,
-      b: 208
-    },
-    lab: {
-      l: 76.97,
-      a: -2.18,
-      b: -9.87
-    }
-  },
-  {
-    name: '28.021',
-    brand: 'Vallejo',
-    hex: '#A6AAB3',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 166,
-      g: 170,
-      b: 179
-    },
-    lab: {
-      l: 69.55,
-      a: 0.36,
-      b: -5.1
-    }
-  },
-  {
-    name: '28.022',
-    brand: 'Vallejo',
-    hex: '#B6A26F',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 182,
-      g: 162,
-      b: 111
-    },
-    lab: {
-      l: 67.23,
-      a: -0.08,
-      b: 29.21
-    }
-  },
-  {
-    name: '28.023',
-    brand: 'Vallejo',
-    hex: '#BF1B33',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 191,
-      g: 27,
-      b: 51
-    },
-    lab: {
-      l: 41.38,
-      a: 61.88,
-      b: 30.91
-    }
-  },
-  {
-    name: '28.024',
-    brand: 'Vallejo',
-    hex: '#ECBDA9',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 236,
-      g: 189,
-      b: 169
-    },
-    lab: {
-      l: 80.23,
-      a: 14.01,
-      b: 16.51
-    }
-  },
-  {
-    name: '28.025',
-    brand: 'Vallejo',
-    hex: '#7161A8',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 113,
-      g: 97,
-      b: 168
-    },
-    lab: {
-      l: 45.48,
-      a: 22.94,
-      b: -35.98
-    }
-  },
-  {
-    name: '28.026',
-    brand: 'Vallejo',
-    hex: '#3C463E',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 60,
-      g: 70,
-      b: 62
-    },
-    lab: {
-      l: 28.61,
-      a: -5.92,
-      b: 3.46
-    }
-  },
-  {
-    name: '28.027',
-    brand: 'Vallejo',
-    hex: '#6C7445',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 108,
-      g: 116,
-      b: 69
-    },
-    lab: {
-      l: 47.12,
-      a: -11.15,
-      b: 24.96
-    }
-  },
-  {
-    name: '28.028',
-    brand: 'Vallejo',
-    hex: '#4E7055',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 78,
-      g: 112,
-      b: 85
-    },
-    lab: {
-      l: 44.04,
-      a: -18.29,
-      b: 11.19
-    }
-  },
-  {
-    name: '28.029',
-    brand: 'Vallejo',
-    hex: '#783C3C',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 120,
-      g: 60,
-      b: 60
-    },
-    lab: {
-      l: 33.03,
-      a: 26.09,
-      b: 12
-    }
-  },
-  {
-    name: '28.030',
-    brand: 'Vallejo',
-    hex: '#126DB4',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 18,
-      g: 109,
-      b: 180
-    },
-    lab: {
-      l: 44.74,
-      a: 1.94,
-      b: -44.47
-    }
-  },
-  {
-    name: '28.031',
-    brand: 'Vallejo',
-    hex: '#65646A',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 101,
-      g: 100,
-      b: 106
-    },
-    lab: {
-      l: 42.64,
-      a: 1.66,
-      b: -3.24
-    }
-  },
-  {
-    name: '69.001',
-    brand: 'Vallejo',
-    hex: '#FFFFFF',
-    type: 'Base',
-    family: 'White',
-    rgb: {
-      r: 255,
-      g: 255,
-      b: 255
-    },
-    lab: {
-      l: 100,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: '69.002',
-    brand: 'Vallejo',
-    hex: '#F0EBE5',
-    type: 'Base',
-    family: 'White',
-    rgb: {
-      r: 240,
-      g: 235,
-      b: 229
-    },
-    lab: {
-      l: 93.28,
-      a: 0.64,
-      b: 3.5
-    }
-  },
-  {
-    name: '69.003',
-    brand: 'Vallejo',
-    hex: '#EBEBE3',
-    type: 'Base',
-    family: 'White',
-    rgb: {
-      r: 235,
-      g: 235,
-      b: 227
-    },
-    lab: {
-      l: 92.85,
-      a: -1.4,
-      b: 3.88
-    }
-  },
-  {
-    name: '69.004',
-    brand: 'Vallejo',
-    hex: '#E9A401',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 233,
-      g: 164,
-      b: 1
-    },
-    lab: {
-      l: 72.15,
-      a: 15.12,
-      b: 75.75
-    }
-  },
-  {
-    name: '69.005',
-    brand: 'Vallejo',
-    hex: '#F8D8C9',
-    type: 'Base',
-    family: 'White',
-    rgb: {
-      r: 248,
-      g: 216,
-      b: 201
-    },
-    lab: {
-      l: 88.58,
-      a: 8.79,
-      b: 11.48
-    }
-  },
-  {
-    name: '69.006',
-    brand: 'Vallejo',
-    hex: '#D08474',
+    hex: '#D8A977',
     type: 'Base',
     family: 'Flesh',
-    rgb: {
-      r: 208,
-      g: 132,
-      b: 116
-    },
-    lab: {
-      l: 62.66,
-      a: 27.42,
-      b: 20.86
-    }
-  },
-  {
-    name: '69.007',
-    brand: 'Vallejo',
-    hex: '#E9602C',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 233,
-      g: 96,
-      b: 44
-    },
-    lab: {
-      l: 57.92,
-      a: 50.52,
-      b: 54.13
-    }
-  },
-  {
-    name: '69.008',
-    brand: 'Vallejo',
-    hex: '#BC4040',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 188,
-      g: 64,
-      b: 64
-    },
-    lab: {
-      l: 45.26,
-      a: 49.75,
-      b: 27.64
-    }
-  },
-  {
-    name: '69.009',
-    brand: 'Vallejo',
-    hex: '#B33737',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 179,
-      g: 55,
-      b: 55
-    },
-    lab: {
-      l: 42.15,
-      a: 49.94,
-      b: 28.84
-    }
-  },
-  {
-    name: '69.010',
-    brand: 'Vallejo',
-    hex: '#C11126',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 193,
-      g: 17,
-      b: 38
-    },
-    lab: {
-      l: 41.03,
-      a: 63.7,
-      b: 38.32
-    }
-  },
-  {
-    name: '69.011',
-    brand: 'Vallejo',
-    hex: '#93262C',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 147,
-      g: 38,
-      b: 44
-    },
-    lab: {
-      l: 33.51,
-      a: 45.42,
-      b: 23.71
-    }
-  },
-  {
-    name: '69.012',
-    brand: 'Vallejo',
-    hex: '#AD8DBC',
-    type: 'Base',
-    family: 'Purple',
-    rgb: {
-      r: 173,
-      g: 141,
-      b: 188
-    },
-    lab: {
-      l: 62.98,
-      a: 20.77,
-      b: -19.93
-    }
-  },
-  {
-    name: '69.013',
-    brand: 'Vallejo',
-    hex: '#4D4D6F',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 77,
-      g: 77,
-      b: 111
-    },
-    lab: {
-      l: 34.05,
-      a: 8.58,
-      b: -19.54
-    }
-  },
-  {
-    name: '69.014',
-    brand: 'Vallejo',
-    hex: '#6D8589',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 109,
-      g: 133,
-      b: 137
-    },
-    lab: {
-      l: 53.85,
-      a: -7.65,
-      b: -5.01
-    }
-  },
-  {
-    name: '69.015',
-    brand: 'Vallejo',
-    hex: '#6A8795',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 106,
-      g: 135,
-      b: 149
-    },
-    lab: {
-      l: 54.62,
-      a: -6.84,
-      b: -10.84
-    }
-  },
-  {
-    name: '69.016',
-    brand: 'Vallejo',
-    hex: '#6B8DBB',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 107,
-      g: 141,
-      b: 187
-    },
-    lab: {
-      l: 57.81,
-      a: 0.3,
-      b: -27.74
-    }
-  },
-  {
-    name: '69.017',
-    brand: 'Vallejo',
-    hex: '#7ACAEB',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 122,
-      g: 202,
-      b: 235
-    },
-    lab: {
-      l: 77.5,
-      a: -15.84,
-      b: -23.92
-    }
-  },
-  {
-    name: '69.018',
-    brand: 'Vallejo',
-    hex: '#0C97C2',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 12,
-      g: 151,
-      b: 194
-    },
-    lab: {
-      l: 58.14,
-      a: -17.51,
-      b: -31.43
-    }
-  },
-  {
-    name: '69.019',
-    brand: 'Vallejo',
-    hex: '#44689C',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 68,
-      g: 104,
-      b: 156
-    },
-    lab: {
-      l: 43.55,
-      a: 3.12,
-      b: -32.15
-    }
-  },
-  {
-    name: '69.020',
-    brand: 'Vallejo',
-    hex: '#0370B1',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 3,
-      g: 112,
-      b: 177
-    },
-    lab: {
-      l: 45.33,
-      a: -1.79,
-      b: -41.8
-    }
-  },
-  {
-    name: '69.021',
-    brand: 'Vallejo',
-    hex: '#405B78',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 64,
-      g: 91,
-      b: 120
-    },
-    lab: {
-      l: 37.71,
-      a: -1.58,
-      b: -19.54
-    }
-  },
-  {
-    name: '69.022',
-    brand: 'Vallejo',
-    hex: '#41454E',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 65,
-      g: 69,
-      b: 78
-    },
-    lab: {
-      l: 29.24,
-      a: 0.54,
-      b: -5.95
-    }
-  },
-  {
-    name: '69.023',
-    brand: 'Vallejo',
-    hex: '#009B9F',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 0,
-      g: 155,
-      b: 159
-    },
-    lab: {
-      l: 57.98,
-      a: -31.89,
-      b: -11.82
-    }
-  },
-  {
-    name: '69.024',
-    brand: 'Vallejo',
-    hex: '#A1B1B1',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 161,
-      g: 177,
-      b: 177
-    },
-    lab: {
-      l: 71.01,
-      a: -5.54,
-      b: -1.9
-    }
-  },
-  {
-    name: '69.025',
-    brand: 'Vallejo',
-    hex: '#C6C9C0',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 198,
-      g: 201,
-      b: 192
-    },
-    lab: {
-      l: 80.51,
-      a: -2.66,
-      b: 4.13
-    }
-  },
-  {
-    name: '69.026',
-    brand: 'Vallejo',
-    hex: '#A4A792',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 164,
-      g: 167,
-      b: 146
-    },
-    lab: {
-      l: 67.73,
-      a: -4.87,
-      b: 10.51
-    }
-  },
-  {
-    name: '69.027',
-    brand: 'Vallejo',
-    hex: '#8A9F80',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 138,
-      g: 159,
-      b: 128
-    },
-    lab: {
-      l: 63.14,
-      a: -13.36,
-      b: 13.76
-    }
-  },
-  {
-    name: '69.028',
-    brand: 'Vallejo',
-    hex: '#5F6E45',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 95,
-      g: 110,
-      b: 69
-    },
-    lab: {
-      l: 44.25,
-      a: -13.35,
-      b: 21.05
-    }
-  },
-  {
-    name: '69.029',
-    brand: 'Vallejo',
-    hex: '#70793A',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 112,
-      g: 121,
-      b: 58
-    },
-    lab: {
-      l: 48.79,
-      a: -13.44,
-      b: 33.09
-    }
-  },
-  {
-    name: '69.030',
-    brand: 'Vallejo',
-    hex: '#525345',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 82,
-      g: 83,
-      b: 69
-    },
-    lab: {
-      l: 34.82,
-      a: -3.21,
-      b: 8.08
-    }
-  },
-  {
-    name: '69.031',
-    brand: 'Vallejo',
-    hex: '#BA9F72',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 186,
-      g: 159,
-      b: 114
-    },
-    lab: {
-      l: 66.86,
-      a: 3.54,
-      b: 27.18
-    }
-  },
-  {
-    name: '69.032',
-    brand: 'Vallejo',
-    hex: '#EAA432',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 234,
-      g: 164,
-      b: 50
-    },
-    lab: {
-      l: 72.41,
-      a: 16.49,
-      b: 65.17
-    }
-  },
-  {
-    name: '69.033',
-    brand: 'Vallejo',
-    hex: '#E4B86F',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 228,
-      g: 184,
-      b: 111
-    },
-    lab: {
-      l: 77.24,
-      a: 7.08,
-      b: 42.83
-    }
-  },
-  {
-    name: '69.034',
-    brand: 'Vallejo',
-    hex: '#7B674E',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 123,
-      g: 103,
-      b: 78
-    },
-    lab: {
-      l: 44.89,
-      a: 4.06,
-      b: 17.09
-    }
-  },
-  {
-    name: '69.035',
-    brand: 'Vallejo',
-    hex: '#484242',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 72,
-      g: 66,
-      b: 66
-    },
-    lab: {
-      l: 28.56,
-      a: 2.55,
-      b: 0.92
-    }
-  },
-  {
-    name: '69.036',
-    brand: 'Vallejo',
-    hex: '#969DA5',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 150,
-      g: 157,
-      b: 165
-    },
-    lab: {
-      l: 64.41,
-      a: -0.88,
-      b: -5.03
-    }
-  },
-  {
-    name: '69.037',
-    brand: 'Vallejo',
-    hex: '#8A97A0',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 138,
-      g: 151,
-      b: 160
-    },
-    lab: {
-      l: 61.72,
-      a: -2.73,
-      b: -6.3
-    }
-  },
-  {
-    name: '69.038',
-    brand: 'Vallejo',
-    hex: '#828385',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 130,
-      g: 131,
-      b: 133
-    },
-    lab: {
-      l: 54.73,
-      a: 0.03,
-      b: -1.21
-    }
-  },
-  {
-    name: '69.039',
-    brand: 'Vallejo',
-    hex: '#7A7B7D',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 122,
-      g: 123,
-      b: 125
-    },
-    lab: {
-      l: 51.59,
-      a: 0.03,
-      b: -1.22
-    }
-  },
-  {
-    name: '69.040',
-    brand: 'Vallejo',
-    hex: '#535762',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 83,
-      g: 87,
-      b: 98
-    },
-    lab: {
-      l: 37,
-      a: 0.96,
-      b: -6.88
-    }
-  },
-  {
-    name: '69.041',
-    brand: 'Vallejo',
-    hex: '#505251',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 80,
-      g: 82,
-      b: 81
-    },
-    lab: {
-      l: 34.67,
-      a: -1.02,
-      b: 0.3
-    }
-  },
-  {
-    name: '69.042',
-    brand: 'Vallejo',
-    hex: '#010101',
-    type: 'Base',
-    family: 'Black',
-    rgb: {
-      r: 1,
-      g: 1,
-      b: 1
-    },
-    lab: {
-      l: 0.27,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: '69.054',
-    brand: 'Vallejo',
-    hex: '#EFE641',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 239,
-      g: 230,
-      b: 65
-    },
-    lab: {
-      l: 89.55,
-      a: -14.76,
-      b: 76.17
-    }
-  },
-  {
-    name: '69.055',
-    brand: 'Vallejo',
-    hex: '#E86016',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 232,
-      g: 96,
-      b: 22
-    },
-    lab: {
-      l: 57.64,
-      a: 49.66,
-      b: 62.09
-    }
-  },
-  {
-    name: '69.056',
-    brand: 'Vallejo',
-    hex: '#E7418D',
-    type: 'Base',
-    family: 'Pink',
-    rgb: {
-      r: 231,
-      g: 65,
-      b: 141
-    },
-    lab: {
-      l: 54.76,
-      a: 68.62,
-      b: -4.4
-    }
-  },
-  {
-    name: '69.057',
-    brand: 'Vallejo',
-    hex: '#A8C958',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 168,
-      g: 201,
-      b: 88
-    },
-    lab: {
-      l: 76.56,
-      a: -28.06,
-      b: 51.91
-    }
-  },
-  {
-    name: '69.058',
-    brand: 'Vallejo',
-    hex: '#646760',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 100,
-      g: 103,
-      b: 96
-    },
-    lab: {
-      l: 43.14,
-      a: -2.6,
-      b: 3.54
-    }
-  },
-  {
-    name: '69.059',
-    brand: 'Vallejo',
-    hex: '#AC8424',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 172,
-      g: 132,
-      b: 36
-    },
-    lab: {
-      l: 57.47,
-      a: 6.18,
-      b: 53.99
-    }
-  },
-  {
-    name: '69.060',
-    brand: 'Vallejo',
-    hex: '#9C8448',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 156,
-      g: 132,
-      b: 72
-    },
-    lab: {
-      l: 56.13,
-      a: 1.28,
-      b: 35.49
-    }
-  },
-  {
-    name: '69.061',
-    brand: 'Vallejo',
-    hex: '#9A5B3A',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 154,
-      g: 91,
-      b: 58
-    },
-    lab: {
-      l: 45.16,
-      a: 22.6,
-      b: 29.8
-    }
-  },
-  {
-    name: '69.062',
-    brand: 'Vallejo',
-    hex: '#766B35',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 118,
-      g: 107,
-      b: 53
-    },
-    lab: {
-      l: 45.12,
-      a: -3.38,
-      b: 31.5
-    }
-  },
-  {
-    name: '69.063',
-    brand: 'Vallejo',
-    hex: '#898A82',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 137,
-      g: 138,
-      b: 130
-    },
-    lab: {
-      l: 57.18,
-      a: -1.91,
-      b: 4.15
-    }
-  },
-  {
-    name: '69.064',
-    brand: 'Vallejo',
-    hex: '#CDD6D3',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 205,
-      g: 214,
-      b: 211
-    },
-    lab: {
-      l: 84.88,
-      a: -3.6,
-      b: 0.42
-    }
-  },
-  {
-    name: '69.065',
-    brand: 'Vallejo',
-    hex: '#737476',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 115,
-      g: 116,
-      b: 118
-    },
-    lab: {
-      l: 48.81,
-      a: 0.03,
-      b: -1.23
-    }
-  },
-  {
-    name: '69.066',
-    brand: 'Vallejo',
-    hex: '#CB5970',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 203,
-      g: 89,
-      b: 112
-    },
-    lab: {
-      l: 52.97,
-      a: 47.38,
-      b: 9.66
-    }
-  },
-  {
-    name: '69.067',
-    brand: 'Vallejo',
-    hex: '#373C4F',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 55,
-      g: 60,
-      b: 79
-    },
-    lab: {
-      l: 25.59,
-      a: 2.98,
-      b: -12.21
-    }
-  },
-  {
-    name: '69.068',
-    brand: 'Vallejo',
-    hex: '#1B927F',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 27,
-      g: 146,
-      b: 127
-    },
-    lab: {
-      l: 54.37,
-      a: -35.77,
-      b: 1.16
-    }
-  },
-  {
-    name: '69.505',
-    brand: 'Vallejo',
-    hex: '#EB7919',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 235,
-      g: 121,
-      b: 25
-    },
-    lab: {
-      l: 62.85,
-      a: 38.75,
-      b: 65.26
-    }
-  },
-  {
-    name: '69.507',
-    brand: 'Vallejo',
-    hex: '#E05B10',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 224,
-      g: 91,
-      b: 16
-    },
-    lab: {
-      l: 55.45,
-      a: 48.95,
-      b: 61.6
-    }
-  },
-  {
-    name: '69.515',
-    brand: 'Vallejo',
-    hex: '#C9C9C7',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 201,
-      g: 201,
-      b: 199
-    },
-    lab: {
-      l: 80.91,
-      a: -0.36,
-      b: 1
-    }
-  },
-  {
-    name: '69.518',
-    brand: 'Vallejo',
-    hex: '#010101',
-    type: 'Base',
-    family: 'Black',
-    rgb: {
-      r: 1,
-      g: 1,
-      b: 1
-    },
-    lab: {
-      l: 0.27,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: '69.521',
-    brand: 'Vallejo',
-    hex: '#6E5C52',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 110,
-      g: 92,
-      b: 82
-    },
-    lab: {
-      l: 40.54,
-      a: 5.59,
-      b: 8.48
-    }
-  },
-  {
-    name: '69.522',
-    brand: 'Vallejo',
-    hex: '#D8BB81',
-    type: 'Base',
-    family: 'Brown',
     rgb: {
       r: 216,
-      g: 187,
-      b: 129
+      g: 169,
+      b: 119
     },
     lab: {
-      l: 77.12,
-      a: 2.4,
-      b: 33.19
-    }
-  },
-  {
-    name: '69.701',
-    brand: 'Vallejo',
-    hex: '#FFFFFF',
-    type: 'Base',
-    family: 'White',
-    rgb: {
-      r: 255,
-      g: 255,
-      b: 255
+      l: 72.43,
+      a: 10.92,
+      b: 32.36
     },
-    lab: {
-      l: 100,
-      a: 0,
-      b: 0
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: '69.702',
+    name: 'Flat Green',
     brand: 'Vallejo',
-    hex: '#FFFFFF',
-    type: 'Base',
-    family: 'White',
-    rgb: {
-      r: 255,
-      g: 255,
-      b: 255
-    },
-    lab: {
-      l: 100,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: '69.703',
-    brand: 'Vallejo',
-    hex: '#FFFFFF',
-    type: 'Base',
-    family: 'White',
-    rgb: {
-      r: 255,
-      g: 255,
-      b: 255
-    },
-    lab: {
-      l: 100,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: '69.813',
-    brand: 'Vallejo',
-    hex: '#73531A',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 115,
-      g: 83,
-      b: 26
-    },
-    lab: {
-      l: 37.67,
-      a: 7.41,
-      b: 36.9
-    }
-  },
-  {
-    name: '69.814',
-    brand: 'Vallejo',
-    hex: '#A06217',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 160,
-      g: 98,
-      b: 23
-    },
-    lab: {
-      l: 47.33,
-      a: 19.49,
-      b: 49.12
-    }
-  },
-  {
-    name: '69.817',
-    brand: 'Vallejo',
-    hex: '#141C1F',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 20,
-      g: 28,
-      b: 31
-    },
-    lab: {
-      l: 9.63,
-      a: -2.72,
-      b: -3.27
-    }
-  },
-  {
-    name: '69.818',
-    brand: 'Vallejo',
-    hex: '#5F351F',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 95,
-      g: 53,
-      b: 31
-    },
-    lab: {
-      l: 26.96,
-      a: 16.55,
-      b: 21.76
-    }
-  },
-  {
-    name: '69.821',
-    brand: 'Vallejo',
-    hex: '#69322B',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 105,
-      g: 50,
-      b: 43
-    },
-    lab: {
-      l: 28.01,
-      a: 23.85,
-      b: 15.81
-    }
-  },
-  {
-    name: '70.301',
-    brand: 'Vallejo',
-    hex: '#87431E',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 135,
-      g: 67,
-      b: 30
-    },
-    lab: {
-      l: 36.48,
-      a: 26.24,
-      b: 34.63
-    }
-  },
-  {
-    name: '70.302',
-    brand: 'Vallejo',
-    hex: '#4F4442',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 79,
-      g: 68,
-      b: 66
-    },
-    lab: {
-      l: 29.89,
-      a: 4.29,
-      b: 2.93
-    }
-  },
-  {
-    name: '70.303',
-    brand: 'Vallejo',
-    hex: '#BE8B5E',
-    type: 'Base',
-    family: 'Flesh',
-    rgb: {
-      r: 190,
-      g: 139,
-      b: 94
-    },
-    lab: {
-      l: 61.85,
-      a: 14.06,
-      b: 31.59
-    }
-  },
-  {
-    name: '70.304',
-    brand: 'Vallejo',
-    hex: '#5B5652',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 91,
-      g: 86,
-      b: 82
-    },
-    lab: {
-      l: 36.91,
-      a: 1.22,
-      b: 3.05
-    }
-  },
-  {
-    name: '70.305',
-    brand: 'Vallejo',
-    hex: '#838381',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 131,
-      g: 131,
-      b: 129
-    },
-    lab: {
-      l: 54.7,
-      a: -0.39,
-      b: 1.08
-    }
-  },
-  {
-    name: '70.306',
-    brand: 'Vallejo',
-    hex: '#505153',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 80,
-      g: 81,
-      b: 83
-    },
-    lab: {
-      l: 34.43,
-      a: 0.04,
-      b: -1.31
-    }
-  },
-  {
-    name: '70.307',
-    brand: 'Vallejo',
-    hex: '#503428',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 80,
-      g: 52,
-      b: 40
-    },
-    lab: {
-      l: 24.69,
-      a: 10.96,
-      b: 12.7
-    }
-  },
-  {
-    name: '70.308',
-    brand: 'Vallejo',
-    hex: '#3D5347',
+    hex: '#2A6531',
     type: 'Base',
     family: 'Green',
     rgb: {
-      r: 61,
-      g: 83,
-      b: 71
-    },
-    lab: {
-      l: 33.21,
-      a: -11.32,
-      b: 4.31
-    }
-  },
-  {
-    name: '70.309',
-    brand: 'Vallejo',
-    hex: '#3B4D5B',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 59,
-      g: 77,
-      b: 91
-    },
-    lab: {
-      l: 31.79,
-      a: -3.16,
-      b: -10.5
-    }
-  },
-  {
-    name: '70.310',
-    brand: 'Vallejo',
-    hex: '#AD9C70',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 173,
-      g: 156,
-      b: 112
-    },
-    lab: {
-      l: 64.83,
-      a: -0.39,
-      b: 25.35
-    }
-  },
-  {
-    name: '70.311',
-    brand: 'Vallejo',
-    hex: '#896545',
-    type: 'Base',
-    family: 'Flesh',
-    rgb: {
-      r: 137,
+      r: 42,
       g: 101,
-      b: 69
-    },
-    lab: {
-      l: 45.71,
-      a: 10.34,
-      b: 23.73
-    }
-  },
-  {
-    name: '70.312',
-    brand: 'Vallejo',
-    hex: '#665249',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 102,
-      g: 82,
-      b: 73
-    },
-    lab: {
-      l: 36.63,
-      a: 6.79,
-      b: 8.42
-    }
-  },
-  {
-    name: '70.313',
-    brand: 'Vallejo',
-    hex: '#E0E0D8',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 224,
-      g: 224,
-      b: 216
-    },
-    lab: {
-      l: 88.98,
-      a: -1.41,
-      b: 3.91
-    }
-  },
-  {
-    name: '70.314',
-    brand: 'Vallejo',
-    hex: '#6E6554',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 110,
-      g: 101,
-      b: 84
-    },
-    lab: {
-      l: 43.16,
-      a: 0.53,
-      b: 10.93
-    }
-  },
-  {
-    name: '70.315',
-    brand: 'Vallejo',
-    hex: '#ACA37A',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 172,
-      g: 163,
-      b: 122
-    },
-    lab: {
-      l: 66.8,
-      a: -3.29,
-      b: 22.53
-    }
-  },
-  {
-    name: '70.316',
-    brand: 'Vallejo',
-    hex: '#685F4E',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 104,
-      g: 95,
-      b: 78
-    },
-    lab: {
-      l: 40.7,
-      a: 0.56,
-      b: 11.05
-    }
-  },
-  {
-    name: '70.317',
-    brand: 'Vallejo',
-    hex: '#756D56',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 117,
-      g: 109,
-      b: 86
-    },
-    lab: {
-      l: 46.17,
-      a: -0.89,
-      b: 14.01
-    }
-  },
-  {
-    name: '70.318',
-    brand: 'Vallejo',
-    hex: '#79684E',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 121,
-      g: 104,
-      b: 78
-    },
-    lab: {
-      l: 44.96,
-      a: 2.6,
-      b: 17.16
-    }
-  },
-  {
-    name: '70.319',
-    brand: 'Vallejo',
-    hex: '#1D573E',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 29,
-      g: 87,
-      b: 62
-    },
-    lab: {
-      l: 32.76,
-      a: -25.54,
-      b: 9.08
-    }
-  },
-  {
-    name: '70.320',
-    brand: 'Vallejo',
-    hex: '#756D56',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 117,
-      g: 109,
-      b: 86
-    },
-    lab: {
-      l: 46.17,
-      a: -0.89,
-      b: 14.01
-    }
-  },
-  {
-    name: '70.321',
-    brand: 'Vallejo',
-    hex: '#EAC284',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 234,
-      g: 194,
-      b: 132
-    },
-    lab: {
-      l: 80.6,
-      a: 6.24,
-      b: 36.48
-    }
-  },
-  {
-    name: '70.322',
-    brand: 'Vallejo',
-    hex: '#A99A85',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 169,
-      g: 154,
-      b: 133
-    },
-    lab: {
-      l: 64.36,
-      a: 2.02,
-      b: 13.04
-    }
-  },
-  {
-    name: '70.323',
-    brand: 'Vallejo',
-    hex: '#A4B2A5',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 164,
-      g: 178,
-      b: 165
-    },
-    lab: {
-      l: 71.18,
-      a: -7.37,
-      b: 4.98
-    }
-  },
-  {
-    name: '70.324',
-    brand: 'Vallejo',
-    hex: '#897C73',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 137,
-      g: 124,
-      b: 115
-    },
-    lab: {
-      l: 52.92,
-      a: 3.37,
-      b: 6.72
-    }
-  },
-  {
-    name: '70.325',
-    brand: 'Vallejo',
-    hex: '#4C5D67',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 76,
-      g: 93,
-      b: 103
-    },
-    lab: {
-      l: 38.45,
-      a: -3.96,
-      b: -7.86
-    }
-  },
-  {
-    name: '70.326',
-    brand: 'Vallejo',
-    hex: '#6A624F',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 106,
-      g: 98,
-      b: 79
-    },
-    lab: {
-      l: 41.79,
-      a: -0.21,
-      b: 11.99
-    }
-  },
-  {
-    name: '70.327',
-    brand: 'Vallejo',
-    hex: '#4B461C',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 75,
-      g: 70,
-      b: 28
-    },
-    lab: {
-      l: 29.31,
-      a: -4.27,
-      b: 25.62
-    }
-  },
-  {
-    name: '70.328',
-    brand: 'Vallejo',
-    hex: '#5C5632',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 92,
-      g: 86,
-      b: 50
-    },
-    lab: {
-      l: 36.29,
-      a: -3.42,
-      b: 21.8
-    }
-  },
-  {
-    name: '70.329',
-    brand: 'Vallejo',
-    hex: '#9BABAA',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 155,
-      g: 171,
-      b: 170
-    },
-    lab: {
-      l: 68.75,
-      a: -5.77,
-      b: -1.39
-    }
-  },
-  {
-    name: '70.330',
-    brand: 'Vallejo',
-    hex: '#717538',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 113,
-      g: 117,
-      b: 56
-    },
-    lab: {
-      l: 47.65,
-      a: -11.01,
-      b: 32.8
-    }
-  },
-  {
-    name: '70.331',
-    brand: 'Vallejo',
-    hex: '#9EB193',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 158,
-      g: 177,
-      b: 147
-    },
-    lab: {
-      l: 70.05,
-      a: -12.22,
-      b: 13.17
-    }
-  },
-  {
-    name: '70.332',
-    brand: 'Vallejo',
-    hex: '#AAA391',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 170,
-      g: 163,
-      b: 145
-    },
-    lab: {
-      l: 67.12,
-      a: -0.61,
-      b: 10.26
-    }
-  },
-  {
-    name: '70.333',
-    brand: 'Vallejo',
-    hex: '#434949',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 67,
-      g: 73,
-      b: 73
-    },
-    lab: {
-      l: 30.49,
-      a: -2.44,
-      b: -0.84
-    }
-  },
-  {
-    name: '70.334',
-    brand: 'Vallejo',
-    hex: '#013E2C',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 1,
-      g: 62,
-      b: 44
-    },
-    lab: {
-      l: 22.42,
-      a: -23.34,
-      b: 6.05
-    }
-  },
-  {
-    name: '70.335',
-    brand: 'Vallejo',
-    hex: '#473C26',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 71,
-      g: 60,
-      b: 38
-    },
-    lab: {
-      l: 25.9,
-      a: 1.15,
-      b: 15.37
-    }
-  },
-  {
-    name: '70.336',
-    brand: 'Vallejo',
-    hex: '#6E705B',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 110,
-      g: 112,
-      b: 91
-    },
-    lab: {
-      l: 46.52,
-      a: -4.73,
-      b: 11.45
-    }
-  },
-  {
-    name: '70.337',
-    brand: 'Vallejo',
-    hex: '#3C2618',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 60,
-      g: 38,
-      b: 24
-    },
-    lab: {
-      l: 17.52,
-      a: 8.48,
-      b: 13.46
-    }
-  },
-  {
-    name: '70.338',
-    brand: 'Vallejo',
-    hex: '#5B7572',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 91,
-      g: 117,
-      b: 114
-    },
-    lab: {
-      l: 47.19,
-      a: -10.11,
-      b: -1.46
-    }
-  },
-  {
-    name: '70.339',
-    brand: 'Vallejo',
-    hex: '#94795E',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 148,
-      g: 121,
-      b: 94
-    },
-    lab: {
-      l: 52.71,
-      a: 6.46,
-      b: 18.76
-    }
-  },
-  {
-    name: '70.340',
-    brand: 'Vallejo',
-    hex: '#A99D75',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 169,
-      g: 157,
-      b: 117
-    },
-    lab: {
-      l: 64.83,
-      a: -1.92,
-      b: 22.56
-    }
-  },
-  {
-    name: '70.341',
-    brand: 'Vallejo',
-    hex: '#A4531E',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 164,
-      g: 83,
-      b: 30
-    },
-    lab: {
-      l: 44.48,
-      a: 29.79,
-      b: 43.99
-    }
-  },
-  {
-    name: '70.342',
-    brand: 'Vallejo',
-    hex: '#FCD2A8',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 252,
-      g: 210,
-      b: 168
-    },
-    lab: {
-      l: 86.81,
-      a: 8.95,
-      b: 26.35
-    }
-  },
-  {
-    name: '70.343',
-    brand: 'Vallejo',
-    hex: '#551305',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 85,
-      g: 19,
-      b: 5
-    },
-    lab: {
-      l: 17.5,
-      a: 29.62,
-      b: 24.49
-    }
-  },
-  {
-    name: '70.344',
-    brand: 'Vallejo',
-    hex: '#E0DFDB',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 224,
-      g: 223,
-      b: 219
-    },
-    lab: {
-      l: 88.8,
-      a: -0.37,
-      b: 2.07
-    }
-  },
-  {
-    name: '70.345',
-    brand: 'Vallejo',
-    hex: '#9D9E98',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 157,
-      g: 158,
-      b: 152
-    },
-    lab: {
-      l: 64.87,
-      a: -1.49,
-      b: 3
-    }
-  },
-  {
-    name: '70.346',
-    brand: 'Vallejo',
-    hex: '#01633C',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 1,
-      g: 99,
-      b: 60
-    },
-    lab: {
-      l: 36.47,
-      a: -35.28,
-      b: 15.3
-    }
-  },
-  {
-    name: '70.347',
-    brand: 'Vallejo',
-    hex: '#3C2B24',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 60,
-      g: 43,
-      b: 36
-    },
-    lab: {
-      l: 19.29,
-      a: 6.7,
-      b: 7.63
-    }
-  },
-  {
-    name: '70.348',
-    brand: 'Vallejo',
-    hex: '#4F684B',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 79,
-      g: 104,
-      b: 75
-    },
-    lab: {
-      l: 41.33,
-      a: -15.52,
-      b: 13.41
-    }
-  },
-  {
-    name: '70.600',
-    brand: 'Vallejo',
-    hex: '#FFFFFF',
-    type: 'Base',
-    family: 'White',
-    rgb: {
-      r: 255,
-      g: 255,
-      b: 255
-    },
-    lab: {
-      l: 100,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: '70.601',
-    brand: 'Vallejo',
-    hex: '#C0C0C2',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 192,
-      g: 192,
-      b: 194
-    },
-    lab: {
-      l: 77.76,
-      a: 0.37,
-      b: -1
-    }
-  },
-  {
-    name: '70.602',
-    brand: 'Vallejo',
-    hex: '#060606',
-    type: 'Base',
-    family: 'Black',
-    rgb: {
-      r: 6,
-      g: 6,
-      b: 6
-    },
-    lab: {
-      l: 1.65,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: '70.603',
-    brand: 'Vallejo',
-    hex: '#404042',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 64,
-      g: 64,
-      b: 66
-    },
-    lab: {
-      l: 27.16,
-      a: 0.45,
-      b: -1.22
-    }
-  },
-  {
-    name: '70.604',
-    brand: 'Vallejo',
-    hex: '#897461',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 137,
-      g: 116,
-      b: 97
-    },
-    lab: {
-      l: 50.3,
-      a: 5.12,
-      b: 13.55
-    }
-  },
-  {
-    name: '70.605',
-    brand: 'Vallejo',
-    hex: '#624341',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 98,
-      g: 67,
-      b: 65
-    },
-    lab: {
-      l: 31.79,
-      a: 13.11,
-      b: 6.59
-    }
-  },
-  {
-    name: '70.606',
-    brand: 'Vallejo',
-    hex: '#7C6448',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 124,
-      g: 100,
-      b: 72
-    },
-    lab: {
-      l: 44.04,
-      a: 5.5,
-      b: 19.52
-    }
-  },
-  {
-    name: '70.607',
-    brand: 'Vallejo',
-    hex: '#3C3E3D',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 60,
-      g: 62,
-      b: 61
-    },
-    lab: {
-      l: 25.99,
-      a: -1.07,
-      b: 0.32
-    }
-  },
-  {
-    name: '70.608',
-    brand: 'Vallejo',
-    hex: '#645D53',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 100,
-      g: 93,
-      b: 83
-    },
-    lab: {
-      l: 39.85,
-      a: 0.91,
-      b: 6.76
-    }
-  },
-  {
-    name: '70.609',
-    brand: 'Vallejo',
-    hex: '#4B4C44',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 75,
-      g: 76,
-      b: 68
-    },
-    lab: {
-      l: 31.99,
-      a: -2.09,
-      b: 4.62
-    }
-  },
-  {
-    name: '70.610',
-    brand: 'Vallejo',
-    hex: '#716859',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 113,
-      g: 104,
-      b: 89
-    },
-    lab: {
-      l: 44.42,
-      a: 0.84,
-      b: 9.74
-    }
-  },
-  {
-    name: '70.611',
-    brand: 'Vallejo',
-    hex: '#615837',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 97,
-      g: 88,
-      b: 55
-    },
-    lab: {
-      l: 37.48,
-      a: -1.68,
-      b: 20.46
-    }
-  },
-  {
-    name: '70.612',
-    brand: 'Vallejo',
-    hex: '#4A5545',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 74,
-      g: 85,
-      b: 69
-    },
-    lab: {
-      l: 34.77,
-      a: -7.79,
-      b: 7.91
-    }
-  },
-  {
-    name: '70.613',
-    brand: 'Vallejo',
-    hex: '#D1BE9E',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 209,
-      g: 190,
-      b: 158
-    },
-    lab: {
-      l: 77.79,
-      a: 1.72,
-      b: 18.63
-    }
-  },
-  {
-    name: '70.614',
-    brand: 'Vallejo',
-    hex: '#796E68',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 121,
-      g: 110,
-      b: 104
-    },
-    lab: {
-      l: 47.26,
-      a: 3.18,
-      b: 4.9
-    }
-  },
-  {
-    name: '70.615',
-    brand: 'Vallejo',
-    hex: '#92999F',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 146,
-      g: 153,
-      b: 159
-    },
-    lab: {
-      l: 62.84,
-      a: -1.29,
-      b: -4.01
-    }
-  },
-  {
-    name: '70.624',
-    brand: 'Vallejo',
-    hex: '#C3322D',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 195,
-      g: 50,
-      b: 45
-    },
-    lab: {
-      l: 44.34,
-      a: 56.47,
-      b: 37.95
-    }
-  },
-  {
-    name: '70.625',
-    brand: 'Vallejo',
-    hex: '#333657',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 51,
-      g: 54,
-      b: 87
-    },
-    lab: {
-      l: 23.77,
-      a: 8.16,
-      b: -20.32
-    }
-  },
-  {
-    name: '70.626',
-    brand: 'Vallejo',
-    hex: '#7C6052',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 124,
-      g: 96,
-      b: 82
-    },
-    lab: {
-      l: 43.15,
-      a: 9.2,
-      b: 12.35
-    }
-  },
-  {
-    name: '70.627',
-    brand: 'Vallejo',
-    hex: '#BAA789',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 186,
-      g: 167,
-      b: 137
-    },
-    lab: {
-      l: 69.39,
-      a: 2.17,
-      b: 18.06
-    }
-  },
-  {
-    name: '70.628',
-    brand: 'Vallejo',
-    hex: '#98999E',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 152,
-      g: 153,
-      b: 158
-    },
-    lab: {
-      l: 63.28,
-      a: 0.62,
-      b: -2.74
-    }
-  },
-  {
-    name: '70.630',
-    brand: 'Vallejo',
-    hex: '#74858C',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 116,
-      g: 133,
-      b: 140
-    },
-    lab: {
-      l: 54.43,
-      a: -4.59,
-      b: -5.84
-    }
-  },
-  {
-    name: '70.632',
-    brand: 'Vallejo',
-    hex: '#AC2C29',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 172,
-      g: 44,
-      b: 41
-    },
-    lab: {
-      l: 39.13,
-      a: 51.17,
-      b: 33.3
-    }
-  },
-  {
-    name: '70.640',
-    brand: 'Vallejo',
-    hex: '#FFFFFF',
-    type: 'Base',
-    family: 'White',
-    rgb: {
-      r: 255,
-      g: 255,
-      b: 255
-    },
-    lab: {
-      l: 100,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: '70.641',
-    brand: 'Vallejo',
-    hex: '#C5C6C8',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 197,
-      g: 198,
-      b: 200
-    },
-    lab: {
-      l: 79.86,
-      a: 0.03,
-      b: -1.12
-    }
-  },
-  {
-    name: '70.642',
-    brand: 'Vallejo',
-    hex: '#010101',
-    type: 'Base',
-    family: 'Black',
-    rgb: {
-      r: 1,
-      g: 1,
-      b: 1
-    },
-    lab: {
-      l: 0.27,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: '70.643',
-    brand: 'Vallejo',
-    hex: '#F4EFD2',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 244,
-      g: 239,
-      b: 210
-    },
-    lab: {
-      l: 94.15,
-      a: -3.08,
-      b: 14.64
-    }
-  },
-  {
-    name: '70.644',
-    brand: 'Vallejo',
-    hex: '#DAC495',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 218,
-      g: 196,
-      b: 149
-    },
-    lab: {
-      l: 79.93,
-      a: 0.83,
-      b: 26.47
-    }
-  },
-  {
-    name: '70.730',
-    brand: 'Vallejo',
-    hex: '#EFE641',
-    type: 'Base',
-    family: 'Yellow',
-    rgb: {
-      r: 239,
-      g: 230,
-      b: 65
-    },
-    lab: {
-      l: 89.55,
-      a: -14.76,
-      b: 76.17
-    }
-  },
-  {
-    name: '70.733',
-    brand: 'Vallejo',
-    hex: '#E86016',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 232,
-      g: 96,
-      b: 22
-    },
-    lab: {
-      l: 57.64,
-      a: 49.66,
-      b: 62.09
-    }
-  },
-  {
-    name: '70.735',
-    brand: 'Vallejo',
-    hex: '#E6418D',
-    type: 'Base',
-    family: 'Pink',
-    rgb: {
-      r: 230,
-      g: 65,
-      b: 141
-    },
-    lab: {
-      l: 54.59,
-      a: 68.35,
-      b: -4.68
-    }
-  },
-  {
-    name: '70.736',
-    brand: 'Vallejo',
-    hex: '#0370B1',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 3,
-      g: 112,
-      b: 177
-    },
-    lab: {
-      l: 45.33,
-      a: -1.79,
-      b: -41.8
-    }
-  },
-  {
-    name: '70.737',
-    brand: 'Vallejo',
-    hex: '#A8C958',
-    type: 'Base',
-    family: 'Green',
-    rgb: {
-      r: 168,
-      g: 201,
-      b: 88
-    },
-    lab: {
-      l: 76.56,
-      a: -28.06,
-      b: 51.91
-    }
-  },
-  {
-    name: '70.740',
-    brand: 'Vallejo',
-    hex: '#513E20',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 81,
-      g: 62,
-      b: 32
-    },
-    lab: {
-      l: 27.57,
-      a: 4.14,
-      b: 21.44
-    }
-  },
-  {
-    name: '70.741',
-    brand: 'Vallejo',
-    hex: '#313129',
-    type: 'Base',
-    family: 'Black',
-    rgb: {
-      r: 49,
-      g: 49,
-      b: 41
-    },
-    lab: {
-      l: 20.08,
-      a: -1.75,
-      b: 5.12
-    }
-  },
-  {
-    name: '70.745',
-    brand: 'Vallejo',
-    hex: '#805252',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 128,
-      g: 82,
-      b: 82
-    },
-    lab: {
-      l: 39.97,
-      a: 19.25,
-      b: 7.98
-    }
-  },
-  {
-    name: '70.746',
-    brand: 'Vallejo',
-    hex: '#603F36',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 96,
-      g: 63,
-      b: 54
-    },
-    lab: {
-      l: 30.18,
-      a: 13.18,
-      b: 11.38
-    }
-  },
-  {
-    name: '70.749',
-    brand: 'Vallejo',
-    hex: '#452733',
-    type: 'Base',
-    family: 'Pink',
-    rgb: {
-      r: 69,
-      g: 39,
-      b: 51
-    },
-    lab: {
-      l: 19.86,
-      a: 16.04,
-      b: -1.77
-    }
-  },
-  {
-    name: '70.750',
-    brand: 'Vallejo',
-    hex: '#A893BC',
-    type: 'Base',
-    family: 'Purple',
-    rgb: {
-      r: 168,
-      g: 147,
-      b: 188
-    },
-    lab: {
-      l: 64.02,
-      a: 15.71,
-      b: -18.39
-    }
-  },
-  {
-    name: '70.751',
-    brand: 'Vallejo',
-    hex: '#392A31',
-    type: 'Base',
-    family: 'Pink',
-    rgb: {
-      r: 57,
-      g: 42,
       b: 49
     },
     lab: {
-      l: 19,
-      a: 8.35,
-      b: -1.84
-    }
+      l: 37.88,
+      a: -31.37,
+      b: 23.67
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: '70.752',
+    name: 'Flat Red',
     brand: 'Vallejo',
-    hex: '#25212F',
+    hex: '#AA3037',
     type: 'Base',
-    family: 'Blue',
+    family: 'Red',
     rgb: {
-      r: 37,
-      g: 33,
-      b: 47
+      r: 170,
+      g: 48,
+      b: 55
     },
     lab: {
-      l: 13.75,
-      a: 5.54,
-      b: -8.57
-    }
+      l: 39.48,
+      a: 49.73,
+      b: 25.19
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: '70.754',
+    name: 'Flat Yellow',
     brand: 'Vallejo',
-    hex: '#25242A',
+    hex: '#FFCD25',
     type: 'Base',
-    family: 'Grey',
+    family: 'Yellow',
     rgb: {
-      r: 37,
-      g: 36,
-      b: 42
+      r: 255,
+      g: 205,
+      b: 37
     },
     lab: {
-      l: 14.53,
-      a: 1.99,
-      b: -3.81
-    }
+      l: 84.51,
+      a: 3.64,
+      b: 80.24
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: '70.756',
+    name: 'Fluo Green',
     brand: 'Vallejo',
-    hex: '#456341',
+    hex: '#9DCD64',
     type: 'Base',
     family: 'Green',
     rgb: {
-      r: 69,
-      g: 99,
-      b: 65
+      r: 157,
+      g: 205,
+      b: 100
     },
     lab: {
-      l: 38.85,
-      a: -18.48,
-      b: 15.9
-    }
+      l: 77.13,
+      a: -32.97,
+      b: 46.81
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: '70.759',
+    name: 'Fluo Yellow',
     brand: 'Vallejo',
-    hex: '#544A3E',
+    hex: '#EEEA50',
+    type: 'Base',
+    family: 'Yellow',
+    rgb: {
+      r: 238,
+      g: 234,
+      b: 80
+    },
+    lab: {
+      l: 90.6,
+      a: -16.42,
+      b: 71.87
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Foul Green',
+    brand: 'Vallejo',
+    hex: '#239378',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 35,
+      g: 147,
+      b: 120
+    },
+    lab: {
+      l: 54.64,
+      a: -37.21,
+      b: 5.58
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'French Mirage Blue',
+    brand: 'Vallejo',
+    hex: '#557880',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 85,
+      g: 120,
+      b: 128
+    },
+    lab: {
+      l: 48.16,
+      a: -10.27,
+      b: -8.36
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'German Cam. Beige WW2',
+    brand: 'Vallejo',
+    hex: '#9C8D70',
     type: 'Base',
     family: 'Brown',
     rgb: {
-      r: 84,
-      g: 74,
-      b: 62
+      r: 156,
+      g: 141,
+      b: 112
     },
     lab: {
-      l: 32.1,
-      a: 1.99,
-      b: 8.71
-    }
-  },
-  {
-    name: '70.760',
-    brand: 'Vallejo',
-    hex: '#7C745D',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 124,
-      g: 116,
-      b: 93
+      l: 59.24,
+      a: 0.93,
+      b: 17.54
     },
-    lab: {
-      l: 48.97,
-      a: -0.91,
-      b: 13.85
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: '70.762',
+    name: 'German Cam. Black Brown',
     brand: 'Vallejo',
-    hex: '#5B4923',
+    hex: '#5B3528',
     type: 'Base',
     family: 'Brown',
     rgb: {
       r: 91,
-      g: 73,
-      b: 35
+      g: 53,
+      b: 40
     },
     lab: {
-      l: 32.06,
-      a: 2.44,
-      b: 25.31
-    }
+      l: 26.52,
+      a: 15.5,
+      b: 15.4
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: '70.763',
+    name: 'German Cam. Bright Green',
     brand: 'Vallejo',
-    hex: '#4D3E1F',
+    hex: '#528944',
     type: 'Base',
-    family: 'Brown',
+    family: 'Green',
     rgb: {
-      r: 77,
-      g: 62,
-      b: 31
+      r: 82,
+      g: 137,
+      b: 68
     },
     lab: {
-      l: 27.08,
-      a: 2.04,
-      b: 21.33
-    }
-  },
-  {
-    name: '70.764',
-    brand: 'Vallejo',
-    hex: '#937626',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 147,
-      g: 118,
-      b: 38
+      l: 51.95,
+      a: -32.23,
+      b: 31.22
     },
-    lab: {
-      l: 51.04,
-      a: 2.69,
-      b: 46.1
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: '70.766',
+    name: 'German Cam. Dark Green',
     brand: 'Vallejo',
-    hex: '#E3D1C3',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 227,
-      g: 209,
-      b: 195
-    },
-    lab: {
-      l: 84.93,
-      a: 3.94,
-      b: 9.2
-    }
-  },
-  {
-    name: '70.767',
-    brand: 'Vallejo',
-    hex: '#AB8556',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 171,
-      g: 133,
-      b: 86
-    },
-    lab: {
-      l: 58.14,
-      a: 8.57,
-      b: 30.81
-    }
-  },
-  {
-    name: '70.768',
-    brand: 'Vallejo',
-    hex: '#76563D',
-    type: 'Base',
-    family: 'Brown',
-    rgb: {
-      r: 118,
-      g: 86,
-      b: 61
-    },
-    lab: {
-      l: 39.32,
-      a: 9.87,
-      b: 19.72
-    }
-  },
-  {
-    name: '70.769',
-    brand: 'Vallejo',
-    hex: '#9D714A',
-    type: 'Base',
-    family: 'Flesh',
-    rgb: {
-      r: 157,
-      g: 113,
-      b: 74
-    },
-    lab: {
-      l: 51.24,
-      a: 12.68,
-      b: 28.4
-    }
-  },
-  {
-    name: '70.770',
-    brand: 'Vallejo',
-    hex: '#8A633C',
-    type: 'Base',
-    family: 'Orange',
-    rgb: {
-      r: 138,
-      g: 99,
-      b: 60
-    },
-    lab: {
-      l: 45.16,
-      a: 11.08,
-      b: 28.2
-    }
-  },
-  {
-    name: '70.771',
-    brand: 'Vallejo',
-    hex: '#3B2625',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 59,
-      g: 38,
-      b: 37
-    },
-    lab: {
-      l: 17.69,
-      a: 9.77,
-      b: 4.68
-    }
-  },
-  {
-    name: '70.772',
-    brand: 'Vallejo',
-    hex: '#779D92',
+    hex: '#2F4845',
     type: 'Base',
     family: 'Cyan',
     rgb: {
-      r: 119,
-      g: 157,
-      b: 146
+      r: 47,
+      g: 72,
+      b: 69
     },
     lab: {
-      l: 61.75,
-      a: -15.4,
-      b: 1.51
-    }
+      l: 28.56,
+      a: -10.34,
+      b: -1.27
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: '70.773',
+    name: 'German Cam. Extra Dark Green',
     brand: 'Vallejo',
-    hex: '#5A5957',
+    hex: '#30504A',
     type: 'Base',
-    family: 'Grey',
+    family: 'Cyan',
     rgb: {
-      r: 90,
-      g: 89,
-      b: 87
+      r: 48,
+      g: 80,
+      b: 74
     },
     lab: {
-      l: 37.85,
-      a: -0.02,
-      b: 1.3
-    }
-  },
-  {
-    name: '70.774',
-    brand: 'Vallejo',
-    hex: '#7F6F6F',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 127,
-      g: 111,
-      b: 111
+      l: 31.49,
+      a: -13.38,
+      b: -0.19
     },
-    lab: {
-      l: 48.3,
-      a: 6.25,
-      b: 2.3
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: '70.790',
+    name: 'German Cam. Orange Ochre',
     brand: 'Vallejo',
-    hex: '#F5F6F8',
-    type: 'Base',
-    family: 'Silver',
-    rgb: {
-      r: 245,
-      g: 246,
-      b: 248
-    },
-    lab: {
-      l: 96.86,
-      a: 0.02,
-      b: -1.07
-    }
-  },
-  {
-    name: '70.791',
-    brand: 'Vallejo',
-    hex: '#EEE6E3',
-    type: 'Base',
-    family: 'Silver',
-    rgb: {
-      r: 238,
-      g: 230,
-      b: 227
-    },
-    lab: {
-      l: 91.83,
-      a: 2.18,
-      b: 2.42
-    }
-  },
-  {
-    name: '70.792',
-    brand: 'Vallejo',
-    hex: '#F2ECCA',
-    type: 'Base',
-    family: 'Silver',
-    rgb: {
-      r: 242,
-      g: 236,
-      b: 202
-    },
-    lab: {
-      l: 93.07,
-      a: -3.48,
-      b: 17.24
-    }
-  },
-  {
-    name: '70.793',
-    brand: 'Vallejo',
-    hex: '#E9DEC2',
-    type: 'Base',
-    family: 'Silver',
-    rgb: {
-      r: 233,
-      g: 222,
-      b: 194
-    },
-    lab: {
-      l: 88.67,
-      a: -0.78,
-      b: 15.09
-    }
-  },
-  {
-    name: '70.794',
-    brand: 'Vallejo',
-    hex: '#F3E2C8',
-    type: 'Base',
-    family: 'Silver',
-    rgb: {
-      r: 243,
-      g: 226,
-      b: 200
-    },
-    lab: {
-      l: 90.61,
-      a: 1.67,
-      b: 14.81
-    }
-  },
-  {
-    name: '70.795',
-    brand: 'Vallejo',
-    hex: '#E3D8C4',
-    type: 'Base',
-    family: 'Silver',
-    rgb: {
-      r: 227,
-      g: 216,
-      b: 196
-    },
-    lab: {
-      l: 86.72,
-      a: 0.46,
-      b: 11.21
-    }
-  },
-  {
-    name: '70.796',
-    brand: 'Vallejo',
-    hex: '#F6F6F6',
-    type: 'Base',
-    family: 'Silver',
-    rgb: {
-      r: 246,
-      g: 246,
-      b: 246
-    },
-    lab: {
-      l: 96.88,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: '70.797',
-    brand: 'Vallejo',
-    hex: '#E7CFC5',
-    type: 'Base',
-    family: 'Silver',
-    rgb: {
-      r: 231,
-      g: 207,
-      b: 197
-    },
-    lab: {
-      l: 84.82,
-      a: 6.74,
-      b: 8.01
-    }
-  },
-  {
-    name: '70.800',
-    brand: 'Vallejo',
-    hex: '#282834',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 40,
-      g: 40,
-      b: 52
-    },
-    lab: {
-      l: 16.59,
-      a: 3.19,
-      b: -7.76
-    }
-  },
-  {
-    name: '70.801',
-    brand: 'Vallejo',
-    hex: '#643B1D',
+    hex: '#9D7E55',
     type: 'Base',
     family: 'Brown',
     rgb: {
-      r: 100,
-      g: 59,
-      b: 29
+      r: 157,
+      g: 126,
+      b: 85
     },
     lab: {
-      l: 29.23,
-      a: 15.06,
-      b: 25.78
-    }
+      l: 54.81,
+      a: 6.39,
+      b: 26.81
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: '70.802',
+    name: 'German Cam. Pale Brown',
     brand: 'Vallejo',
-    hex: '#C02B49',
+    hex: '#82685E',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 130,
+      g: 104,
+      b: 94
+    },
+    lab: {
+      l: 46.25,
+      a: 8.76,
+      b: 9.56
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'German Field Grey WW2',
+    brand: 'Vallejo',
+    hex: '#595748',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 89,
+      g: 87,
+      b: 72
+    },
+    lab: {
+      l: 36.76,
+      a: -2.09,
+      b: 9.02
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'German Grey',
+    brand: 'Vallejo',
+    hex: '#192F30',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 25,
+      g: 47,
+      b: 48
+    },
+    lab: {
+      l: 17.7,
+      a: -8.38,
+      b: -3.39
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'German Orange',
+    brand: 'Vallejo',
+    hex: '#F05426',
     type: 'Base',
     family: 'Red',
     rgb: {
-      r: 192,
-      g: 43,
-      b: 73
+      r: 240,
+      g: 84,
+      b: 38
     },
     lab: {
-      l: 43.39,
-      a: 59.2,
-      b: 19.91
-    }
-  },
-  {
-    name: '70.803',
-    brand: 'Vallejo',
-    hex: '#9C6560',
-    type: 'Base',
-    family: 'Red',
-    rgb: {
-      r: 156,
-      g: 101,
-      b: 96
+      l: 57.09,
+      a: 57.97,
+      b: 56.44
     },
-    lab: {
-      l: 48.54,
-      a: 21.56,
-      b: 12.01
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: '70.804',
+    name: 'German Uniform',
     brand: 'Vallejo',
-    hex: '#B06E4B',
+    hex: '#286254',
     type: 'Base',
-    family: 'Flesh',
+    family: 'Cyan',
     rgb: {
-      r: 176,
-      g: 110,
-      b: 75
-    },
-    lab: {
-      l: 52.83,
-      a: 22.61,
-      b: 30.33
-    }
-  },
-  {
-    name: '70.805',
-    brand: 'Vallejo',
-    hex: '#BA6254',
-    type: 'Base',
-    family: 'Flesh',
-    rgb: {
-      r: 186,
+      r: 40,
       g: 98,
       b: 84
     },
     lab: {
-      l: 51.63,
-      a: 33.98,
-      b: 23.94
-    }
+      l: 37.53,
+      a: -22.73,
+      b: 2.29
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: '70.806',
+    name: 'German Yellow',
     brand: 'Vallejo',
-    hex: '#CEB65E',
+    hex: '#E8E589',
     type: 'Base',
     family: 'Yellow',
     rgb: {
-      r: 206,
-      g: 182,
-      b: 94
-    },
-    lab: {
-      l: 74.44,
-      a: -2.43,
-      b: 47.38
-    }
-  },
-  {
-    name: '70.807',
-    brand: 'Vallejo',
-    hex: '#3E3A53',
-    type: 'Base',
-    family: 'Blue',
-    rgb: {
-      r: 62,
-      g: 58,
-      b: 83
-    },
-    lab: {
-      l: 25.79,
-      a: 7.98,
-      b: -14.48
-    }
-  },
-  {
-    name: '70.808',
-    brand: 'Vallejo',
-    hex: '#007A89',
-    type: 'Base',
-    family: 'Cyan',
-    rgb: {
-      r: 0,
-      g: 122,
+      r: 232,
+      g: 229,
       b: 137
     },
     lab: {
-      l: 46.61,
-      a: -22.77,
-      b: -16.28
-    }
+      l: 89.39,
+      a: -11.94,
+      b: 45.14
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: '70.809',
+    name: 'Ghost Grey',
     brand: 'Vallejo',
-    hex: '#1A427D',
+    hex: '#A7C5DB',
     type: 'Base',
     family: 'Blue',
     rgb: {
-      r: 26,
-      g: 66,
-      b: 125
+      r: 167,
+      g: 197,
+      b: 219
     },
     lab: {
-      l: 28.37,
-      a: 8.66,
-      b: -37.49
-    }
+      l: 78.03,
+      a: -5.24,
+      b: -14.29
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: '77.657',
+    name: 'Glacier Blue',
     brand: 'Vallejo',
-    hex: '#FFFFFF',
+    hex: '#ACD0EE',
     type: 'Base',
-    family: 'Silver',
+    family: 'Blue',
     rgb: {
-      r: 255,
-      g: 255,
-      b: 255
+      r: 172,
+      g: 208,
+      b: 238
     },
     lab: {
-      l: 100,
+      l: 81.87,
+      a: -5.19,
+      b: -18.66
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Glossy Black',
+    brand: 'Vallejo',
+    hex: '#121212',
+    type: 'Base',
+    family: 'Black',
+    rgb: {
+      r: 18,
+      g: 18,
+      b: 18
+    },
+    lab: {
+      l: 5.46,
       a: 0,
       b: 0
-    }
+    },
+    finish: 'gloss',
+    transparency: 0,
+    matchable: true
   },
   {
-    name: '77.701',
+    name: 'Goblin Green',
     brand: 'Vallejo',
-    hex: '#AEAEAE',
+    hex: '#23743C',
     type: 'Base',
-    family: 'Silver',
+    family: 'Green',
     rgb: {
-      r: 174,
-      g: 174,
-      b: 174
+      r: 35,
+      g: 116,
+      b: 60
     },
     lab: {
-      l: 71.1,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: '77.702',
-    brand: 'Vallejo',
-    hex: '#A4A4A4',
-    type: 'Base',
-    family: 'Silver',
-    rgb: {
-      r: 164,
-      g: 164,
-      b: 164
+      l: 43.02,
+      a: -37.56,
+      b: 23.97
     },
-    lab: {
-      l: 67.37,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: '77.703',
-    brand: 'Vallejo',
-    hex: '#949496',
-    type: 'Base',
-    family: 'Silver',
-    rgb: {
-      r: 148,
-      g: 148,
-      b: 150
-    },
-    lab: {
-      l: 61.38,
-      a: 0.39,
-      b: -1.05
-    }
-  },
-  {
-    name: '77.704',
-    brand: 'Vallejo',
-    hex: '#A9A9A9',
-    type: 'Base',
-    family: 'Silver',
-    rgb: {
-      r: 169,
-      g: 169,
-      b: 169
-    },
-    lab: {
-      l: 69.24,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: '77.706',
-    brand: 'Vallejo',
-    hex: '#BAB9BE',
-    type: 'Base',
-    family: 'Silver',
-    rgb: {
-      r: 186,
-      g: 185,
-      b: 190
-    },
-    lab: {
-      l: 75.36,
-      a: 1.29,
-      b: -2.4
-    }
-  },
-  {
-    name: '77.707',
-    brand: 'Vallejo',
-    hex: '#AFAFAF',
-    type: 'Base',
-    family: 'Silver',
-    rgb: {
-      r: 175,
-      g: 175,
-      b: 175
-    },
-    lab: {
-      l: 71.47,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: '77.710',
-    brand: 'Vallejo',
-    hex: '#9C8F87',
-    type: 'Base',
-    family: 'Silver',
-    rgb: {
-      r: 156,
-      g: 143,
-      b: 135
-    },
-    lab: {
-      l: 60.3,
-      a: 3.42,
-      b: 6
-    }
-  },
-  {
-    name: '77.711',
-    brand: 'Vallejo',
-    hex: '#858585',
-    type: 'Base',
-    family: 'Silver',
-    rgb: {
-      r: 133,
-      g: 133,
-      b: 133
-    },
-    lab: {
-      l: 55.54,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: '77.712',
-    brand: 'Vallejo',
-    hex: '#757573',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 117,
-      g: 117,
-      b: 115
-    },
-    lab: {
-      l: 49.18,
-      a: -0.4,
-      b: 1.1
-    }
-  },
-  {
-    name: '77.713',
-    brand: 'Vallejo',
-    hex: '#797979',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 121,
-      g: 121,
-      b: 121
-    },
-    lab: {
-      l: 50.83,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: '77.716',
-    brand: 'Vallejo',
-    hex: '#C0C1C3',
-    type: 'Base',
-    family: 'Silver',
-    rgb: {
-      r: 192,
-      g: 193,
-      b: 195
-    },
-    lab: {
-      l: 78.04,
-      a: 0.03,
-      b: -1.12
-    }
-  },
-  {
-    name: '77.717',
-    brand: 'Vallejo',
-    hex: '#BBBBBB',
-    type: 'Base',
-    family: 'Silver',
-    rgb: {
-      r: 187,
-      g: 187,
-      b: 187
-    },
-    lab: {
-      l: 75.88,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: '77.720',
-    brand: 'Vallejo',
-    hex: '#737373',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 115,
-      g: 115,
-      b: 115
-    },
-    lab: {
-      l: 48.44,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: '77.721',
-    brand: 'Vallejo',
-    hex: '#7D7D7B',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 125,
-      g: 125,
-      b: 123
-    },
-    lab: {
-      l: 52.35,
-      a: -0.4,
-      b: 1.09
-    }
-  },
-  {
-    name: '77.723',
-    brand: 'Vallejo',
-    hex: '#7D7D7B',
-    type: 'Base',
-    family: 'Grey',
-    rgb: {
-      r: 125,
-      g: 125,
-      b: 123
-    },
-    lab: {
-      l: 52.35,
-      a: -0.4,
-      b: 1.09
-    }
-  },
-  {
-    name: '77.724',
-    brand: 'Vallejo',
-    hex: '#A0A0A0',
-    type: 'Base',
-    family: 'Silver',
-    rgb: {
-      r: 160,
-      g: 160,
-      b: 160
-    },
-    lab: {
-      l: 65.87,
-      a: 0,
-      b: 0
-    }
-  },
-  {
-    name: '77.725',
-    brand: 'Vallejo',
-    hex: '#AAA184',
-    type: 'Base',
-    family: 'Bronze',
-    rgb: {
-      r: 170,
-      g: 161,
-      b: 132
-    },
-    lab: {
-      l: 66.29,
-      a: -1.56,
-      b: 16.31
-    }
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Gold Brown',
@@ -16616,7 +16484,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 59.67,
       a: 12.15,
       b: 49.23
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Gold Yellow',
@@ -16633,7 +16504,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 77.99,
       a: 16.02,
       b: 77.8
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Golden Olive',
@@ -16650,7 +16524,10 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 56.95,
       a: -23.02,
       b: 42.19
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Golden Yellow',
@@ -16667,7 +16544,290 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 82.36,
       a: 6.3,
       b: 57.51
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Gory Red',
+    brand: 'Vallejo',
+    hex: '#810504',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 129,
+      g: 5,
+      b: 4
+    },
+    lab: {
+      l: 26.12,
+      a: 47.46,
+      b: 37.05
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Green Brown',
+    brand: 'Vallejo',
+    hex: '#8D7B55',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 141,
+      g: 123,
+      b: 85
+    },
+    lab: {
+      l: 52.38,
+      a: 1.19,
+      b: 23.34
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Green Grey',
+    brand: 'Vallejo',
+    hex: '#827E61',
+    type: 'Base',
+    family: 'Yellow',
+    rgb: {
+      r: 130,
+      g: 126,
+      b: 97
+    },
+    lab: {
+      l: 52.43,
+      a: -3.52,
+      b: 16.38
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Green Ochre',
+    brand: 'Vallejo',
+    hex: '#A98969',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 169,
+      g: 137,
+      b: 105
+    },
+    lab: {
+      l: 59.29,
+      a: 7.58,
+      b: 21.76
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Green Sky',
+    brand: 'Vallejo',
+    hex: '#59AD84',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 89,
+      g: 173,
+      b: 132
+    },
+    lab: {
+      l: 64.7,
+      a: -35.26,
+      b: 13.34
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Grey Blue',
+    brand: 'Vallejo',
+    hex: '#45708D',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 69,
+      g: 112,
+      b: 141
+    },
+    lab: {
+      l: 45.33,
+      a: -6.36,
+      b: -20.47
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Grey Green',
+    brand: 'Vallejo',
+    hex: '#565A60',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 86,
+      g: 90,
+      b: 96
+    },
+    lab: {
+      l: 38.08,
+      a: -0.23,
+      b: -3.99
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Grey Grey',
+    brand: 'Vallejo',
+    hex: '#AECBBB',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 174,
+      g: 203,
+      b: 187
+    },
+    lab: {
+      l: 79.21,
+      a: -12.84,
+      b: 4.72
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Gunship Green',
+    brand: 'Vallejo',
+    hex: '#3D685E',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 61,
+      g: 104,
+      b: 94
+    },
+    lab: {
+      l: 40.74,
+      a: -17.55,
+      b: 0.94
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Heavy Black Green',
+    brand: 'Vallejo',
+    hex: '#18433D',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 24,
+      g: 67,
+      b: 61
+    },
+    lab: {
+      l: 25.4,
+      a: -16.55,
+      b: -0.82
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Heavy Blue',
+    brand: 'Vallejo',
+    hex: '#29556D',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 41,
+      g: 85,
+      b: 109
+    },
+    lab: {
+      l: 34.13,
+      a: -7.28,
+      b: -18.35
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Heavy Blue Grey',
+    brand: 'Vallejo',
+    hex: '#9CA7A7',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 156,
+      g: 167,
+      b: 167
+    },
+    lab: {
+      l: 67.65,
+      a: -3.87,
+      b: -1.34
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Heavy Brown',
+    brand: 'Vallejo',
+    hex: '#705D41',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 112,
+      g: 93,
+      b: 65
+    },
+    lab: {
+      l: 40.66,
+      a: 3.42,
+      b: 18.97
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Heavy Charcoal',
+    brand: 'Vallejo',
+    hex: '#1C2E2E',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 28,
+      g: 46,
+      b: 46
+    },
+    lab: {
+      l: 17.45,
+      a: -7.33,
+      b: -2.36
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Heavy Gold Brown',
@@ -16684,7 +16844,1750 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 59.67,
       a: 12.15,
       b: 49.23
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Heavy Green',
+    brand: 'Vallejo',
+    hex: '#566840',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 86,
+      g: 104,
+      b: 64
+    },
+    lab: {
+      l: 41.61,
+      a: -14.55,
+      b: 20.36
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Heavy Grey',
+    brand: 'Vallejo',
+    hex: '#626D54',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 98,
+      g: 109,
+      b: 84
+    },
+    lab: {
+      l: 44.48,
+      a: -9.13,
+      b: 12.61
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Heavy Khaki',
+    brand: 'Vallejo',
+    hex: '#9D965D',
+    type: 'Base',
+    family: 'Yellow',
+    rgb: {
+      r: 157,
+      g: 150,
+      b: 93
+    },
+    lab: {
+      l: 61.46,
+      a: -6.05,
+      b: 30.97
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Heavy Ochre',
+    brand: 'Vallejo',
+    hex: '#A87536',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 168,
+      g: 117,
+      b: 54
+    },
+    lab: {
+      l: 53.29,
+      a: 13.7,
+      b: 41.78
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Heavy Orange',
+    brand: 'Vallejo',
+    hex: '#EE5527',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 238,
+      g: 85,
+      b: 39
+    },
+    lab: {
+      l: 56.91,
+      a: 56.91,
+      b: 55.72
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Heavy Red',
+    brand: 'Vallejo',
+    hex: '#943238',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 148,
+      g: 50,
+      b: 56
+    },
+    lab: {
+      l: 35.72,
+      a: 41.55,
+      b: 18.96
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Heavy Sienna',
+    brand: 'Vallejo',
+    hex: '#744642',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 116,
+      g: 70,
+      b: 66
+    },
+    lab: {
+      l: 34.98,
+      a: 19.23,
+      b: 10.76
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Heavy Skintone',
+    brand: 'Vallejo',
+    hex: '#AA7B62',
+    type: 'Shade',
+    family: 'Flesh',
+    rgb: {
+      r: 170,
+      g: 123,
+      b: 98
+    },
+    lab: {
+      l: 55.68,
+      a: 15.05,
+      b: 20.88
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
+  },
+  {
+    name: 'Heavy Violet',
+    brand: 'Vallejo',
+    hex: '#4C2E65',
+    type: 'Base',
+    family: 'Purple',
+    rgb: {
+      r: 76,
+      g: 46,
+      b: 101
+    },
+    lab: {
+      l: 25.05,
+      a: 25.49,
+      b: -27.29
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Heavy Warm Grey',
+    brand: 'Vallejo',
+    hex: '#939066',
+    type: 'Base',
+    family: 'Yellow',
+    rgb: {
+      r: 147,
+      g: 144,
+      b: 102
+    },
+    lab: {
+      l: 59.08,
+      a: -5.81,
+      b: 22.78
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Hexed Lichen',
+    brand: 'Vallejo',
+    hex: '#34274D',
+    type: 'Base',
+    family: 'Purple',
+    rgb: {
+      r: 52,
+      g: 39,
+      b: 77
+    },
+    lab: {
+      l: 18.87,
+      a: 15.73,
+      b: -21.35
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Hot Orange',
+    brand: 'Vallejo',
+    hex: '#E43027',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 228,
+      g: 48,
+      b: 39
+    },
+    lab: {
+      l: 50.41,
+      a: 66.69,
+      b: 49.25
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Hull Red',
+    brand: 'Vallejo',
+    hex: '#522724',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 82,
+      g: 39,
+      b: 36
+    },
+    lab: {
+      l: 21.48,
+      a: 19.66,
+      b: 11.14
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Ice Yellow',
+    brand: 'Vallejo',
+    hex: '#FEEF87',
+    type: 'Base',
+    family: 'Yellow',
+    rgb: {
+      r: 254,
+      g: 239,
+      b: 135
+    },
+    lab: {
+      l: 93.69,
+      a: -8.49,
+      b: 51.82
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Imperial Purple',
+    brand: 'Vallejo',
+    hex: '#211A4B',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 33,
+      g: 26,
+      b: 75
+    },
+    lab: {
+      l: 13.05,
+      a: 18.71,
+      b: -29.42
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Intermediate Blue',
+    brand: 'Vallejo',
+    hex: '#607A80',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 96,
+      g: 122,
+      b: 128
+    },
+    lab: {
+      l: 49.45,
+      a: -7.91,
+      b: -6.36
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Intermediate Green',
+    brand: 'Vallejo',
+    hex: '#49944F',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 73,
+      g: 148,
+      b: 79
+    },
+    lab: {
+      l: 55.24,
+      a: -38.37,
+      b: 29.42
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Iraqi Sand',
+    brand: 'Vallejo',
+    hex: '#B89972',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 184,
+      g: 153,
+      b: 114
+    },
+    lab: {
+      l: 65.11,
+      a: 6,
+      b: 24.82
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Ivory',
+    brand: 'Vallejo',
+    hex: '#EFF1D9',
+    type: 'Base',
+    family: 'White',
+    rgb: {
+      r: 239,
+      g: 241,
+      b: 217
+    },
+    lab: {
+      l: 94.43,
+      a: -4.74,
+      b: 11.37
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Jade Green',
+    brand: 'Vallejo',
+    hex: '#128379',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 18,
+      g: 131,
+      b: 121
+    },
+    lab: {
+      l: 49.18,
+      a: -31.41,
+      b: -2.97
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Japan Uniform WW2',
+    brand: 'Vallejo',
+    hex: '#998546',
+    type: 'Base',
+    family: 'Yellow',
+    rgb: {
+      r: 153,
+      g: 133,
+      b: 70
+    },
+    lab: {
+      l: 56.08,
+      a: -0.78,
+      b: 36.41
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Khaki',
+    brand: 'Vallejo',
+    hex: '#8C806D',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 140,
+      g: 128,
+      b: 109
+    },
+    lab: {
+      l: 54.15,
+      a: 1.3,
+      b: 11.98
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Khaki Grey',
+    brand: 'Vallejo',
+    hex: '#8B7F5D',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 139,
+      g: 127,
+      b: 93
+    },
+    lab: {
+      l: 53.45,
+      a: -0.9,
+      b: 20.18
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Leather Brown',
+    brand: 'Vallejo',
+    hex: '#7B5D2A',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 123,
+      g: 93,
+      b: 42
+    },
+    lab: {
+      l: 41.54,
+      a: 6.24,
+      b: 33.36
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Lemon Yellow',
+    brand: 'Vallejo',
+    hex: '#FEF10E',
+    type: 'Base',
+    family: 'Yellow',
+    rgb: {
+      r: 254,
+      g: 241,
+      b: 14
+    },
+    lab: {
+      l: 93.46,
+      a: -15.14,
+      b: 90.7
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Light Brown',
+    brand: 'Vallejo',
+    hex: '#BF764E',
+    type: 'Base',
+    family: 'Flesh',
+    rgb: {
+      r: 191,
+      g: 118,
+      b: 78
+    },
+    lab: {
+      l: 56.67,
+      a: 24.69,
+      b: 33.85
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Light Flesh',
+    brand: 'Vallejo',
+    hex: '#FEEDD0',
+    type: 'Base',
+    family: 'Flesh',
+    rgb: {
+      r: 254,
+      g: 237,
+      b: 208
+    },
+    lab: {
+      l: 94.4,
+      a: 1.19,
+      b: 16.13
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Light Green',
+    brand: 'Vallejo',
+    hex: '#00A850',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 0,
+      g: 168,
+      b: 80
+    },
+    lab: {
+      l: 60.41,
+      a: -56.49,
+      b: 35.09
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Light Green Blue',
+    brand: 'Vallejo',
+    hex: '#6D9A95',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 109,
+      g: 154,
+      b: 149
+    },
+    lab: {
+      l: 60.37,
+      a: -16.3,
+      b: -2.28
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Light Grey',
+    brand: 'Vallejo',
+    hex: '#949C9A',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 148,
+      g: 156,
+      b: 154
+    },
+    lab: {
+      l: 63.68,
+      a: -3.26,
+      b: 0.05
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Light Orange',
+    brand: 'Vallejo',
+    hex: '#F68627',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 246,
+      g: 134,
+      b: 39
+    },
+    lab: {
+      l: 67.12,
+      a: 36.82,
+      b: 64.94
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Light Sea Grey',
+    brand: 'Vallejo',
+    hex: '#97B4B5',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 151,
+      g: 180,
+      b: 181
+    },
+    lab: {
+      l: 71.25,
+      a: -9.63,
+      b: -3.81
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Light Turquoise',
+    brand: 'Vallejo',
+    hex: '#0094A5',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 0,
+      g: 148,
+      b: 165
+    },
+    lab: {
+      l: 55.98,
+      a: -26.48,
+      b: -18.28
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Light Yellow',
+    brand: 'Vallejo',
+    hex: '#F7EA62',
+    type: 'Base',
+    family: 'Yellow',
+    rgb: {
+      r: 247,
+      g: 234,
+      b: 98
+    },
+    lab: {
+      l: 91.46,
+      a: -11.69,
+      b: 65.8
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Lime Green',
+    brand: 'Vallejo',
+    hex: '#6FAE4E',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 111,
+      g: 174,
+      b: 78
+    },
+    lab: {
+      l: 65.12,
+      a: -37.79,
+      b: 42.42
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Livery Green',
+    brand: 'Vallejo',
+    hex: '#9ECE65',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 158,
+      g: 206,
+      b: 101
+    },
+    lab: {
+      l: 77.49,
+      a: -32.96,
+      b: 46.78
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'London Grey',
+    brand: 'Vallejo',
+    hex: '#4A555E',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 74,
+      g: 85,
+      b: 94
+    },
+    lab: {
+      l: 35.52,
+      a: -2.1,
+      b: -6.67
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Luftwaffe Cam. Green',
+    brand: 'Vallejo',
+    hex: '#596B3F',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 89,
+      g: 107,
+      b: 63
+    },
+    lab: {
+      l: 42.76,
+      a: -15.09,
+      b: 22.47
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Luftwaffe Uniform WW2',
+    brand: 'Vallejo',
+    hex: '#3D474F',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 61,
+      g: 71,
+      b: 79
+    },
+    lab: {
+      l: 29.57,
+      a: -2,
+      b: -6.13
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Magenta',
+    brand: 'Vallejo',
+    hex: '#A92A56',
+    type: 'Base',
+    family: 'Pink',
+    rgb: {
+      r: 169,
+      g: 42,
+      b: 86
+    },
+    lab: {
+      l: 39.18,
+      a: 53.84,
+      b: 5.25
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Magic Blue',
+    brand: 'Vallejo',
+    hex: '#024381',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 2,
+      g: 67,
+      b: 129
+    },
+    lab: {
+      l: 28.41,
+      a: 7.59,
+      b: -39.95
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Mahogany Brown',
+    brand: 'Vallejo',
+    hex: '#804B47',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 128,
+      g: 75,
+      b: 71
+    },
+    lab: {
+      l: 37.98,
+      a: 21.97,
+      b: 12.03
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Middlestone',
+    brand: 'Vallejo',
+    hex: '#9C9660',
+    type: 'Shade',
+    family: 'Yellow',
+    rgb: {
+      r: 156,
+      g: 150,
+      b: 96
+    },
+    lab: {
+      l: 61.42,
+      a: -6.12,
+      b: 29.29
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
+  },
+  {
+    name: 'Military Green',
+    brand: 'Vallejo',
+    hex: '#3E5848',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 62,
+      g: 88,
+      b: 72
+    },
+    lab: {
+      l: 34.95,
+      a: -13.61,
+      b: 6.17
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Moon Yellow',
+    brand: 'Vallejo',
+    hex: '#FFF103',
+    type: 'Base',
+    family: 'Yellow',
+    rgb: {
+      r: 255,
+      g: 241,
+      b: 3
+    },
+    lab: {
+      l: 93.53,
+      a: -14.81,
+      b: 91.63
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Mutation Green',
+    brand: 'Vallejo',
+    hex: '#296934',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 41,
+      g: 105,
+      b: 52
+    },
+    lab: {
+      l: 39.28,
+      a: -32.91,
+      b: 23.74
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Neutral Grey',
+    brand: 'Vallejo',
+    hex: '#64767A',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 100,
+      g: 118,
+      b: 122
+    },
+    lab: {
+      l: 48.35,
+      a: -5.7,
+      b: -4.42
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Night Blue',
+    brand: 'Vallejo',
+    hex: '#19183F',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 25,
+      g: 24,
+      b: 63
+    },
+    lab: {
+      l: 10.69,
+      a: 13.73,
+      b: -24.88
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Ochre Brown',
+    brand: 'Vallejo',
+    hex: '#A77237',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 167,
+      g: 114,
+      b: 55
+    },
+    lab: {
+      l: 52.43,
+      a: 15.01,
+      b: 40.29
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Offwhite',
+    brand: 'Vallejo',
+    hex: '#F5F4DA',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 245,
+      g: 244,
+      b: 218
+    },
+    lab: {
+      l: 95.65,
+      a: -4.01,
+      b: 12.66
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Old Rose',
+    brand: 'Vallejo',
+    hex: '#D47B7D',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 212,
+      g: 123,
+      b: 125
+    },
+    lab: {
+      l: 61.35,
+      a: 34.74,
+      b: 14.04
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Olive Green',
+    brand: 'Vallejo',
+    hex: '#6A8B3A',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 106,
+      g: 139,
+      b: 58
+    },
+    lab: {
+      l: 53.85,
+      a: -25.35,
+      b: 38.9
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Olive Grey',
+    brand: 'Vallejo',
+    hex: '#39584F',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 57,
+      g: 88,
+      b: 79
+    },
+    lab: {
+      l: 34.83,
+      a: -13.71,
+      b: 1.59
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Orange Brown',
+    brand: 'Vallejo',
+    hex: '#B86F44',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 184,
+      g: 111,
+      b: 68
+    },
+    lab: {
+      l: 54,
+      a: 24.88,
+      b: 35.85
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Orange Fire',
+    brand: 'Vallejo',
+    hex: '#F1652E',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 241,
+      g: 101,
+      b: 46
+    },
+    lab: {
+      l: 60.08,
+      a: 51.17,
+      b: 55.71
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Orange Red',
+    brand: 'Vallejo',
+    hex: '#E34C26',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 227,
+      g: 76,
+      b: 38
+    },
+    lab: {
+      l: 53.65,
+      a: 56.86,
+      b: 52.57
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Oxford Blue',
+    brand: 'Vallejo',
+    hex: '#3A465F',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 58,
+      g: 70,
+      b: 95
+    },
+    lab: {
+      l: 29.68,
+      a: 2.2,
+      b: -16.29
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Pale Blue',
+    brand: 'Vallejo',
+    hex: '#83B5B2',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 131,
+      g: 181,
+      b: 178
+    },
+    lab: {
+      l: 70.24,
+      a: -17.06,
+      b: -3.8
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Pale Flesh',
+    brand: 'Vallejo',
+    hex: '#F6BDB3',
+    type: 'Base',
+    family: 'Flesh',
+    rgb: {
+      r: 246,
+      g: 189,
+      b: 179
+    },
+    lab: {
+      l: 81.43,
+      a: 19.08,
+      b: 12.97
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Pale Grey Blue',
+    brand: 'Vallejo',
+    hex: '#BACDD0',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 186,
+      g: 205,
+      b: 208
+    },
+    lab: {
+      l: 81.1,
+      a: -5.8,
+      b: -3.68
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Pale Sand',
+    brand: 'Vallejo',
+    hex: '#D1C49C',
+    type: 'Base',
+    family: 'Yellow',
+    rgb: {
+      r: 209,
+      g: 196,
+      b: 156
+    },
+    lab: {
+      l: 79.29,
+      a: -1.71,
+      b: 21.77
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Pale Yellow',
+    brand: 'Vallejo',
+    hex: '#D5C179',
+    type: 'Base',
+    family: 'Yellow',
+    rgb: {
+      r: 213,
+      g: 193,
+      b: 121
+    },
+    lab: {
+      l: 78.27,
+      a: -2.8,
+      b: 38.75
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Parasite Brown',
+    brand: 'Vallejo',
+    hex: '#B1481F',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 177,
+      g: 72,
+      b: 31
+    },
+    lab: {
+      l: 44.35,
+      a: 40.68,
+      b: 44.16
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Park Green Flat',
+    brand: 'Vallejo',
+    hex: '#008C5D',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 0,
+      g: 140,
+      b: 93
+    },
+    lab: {
+      l: 51.32,
+      a: -43.93,
+      b: 16.27
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Pastel Blue',
+    brand: 'Vallejo',
+    hex: '#67859B',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 103,
+      g: 133,
+      b: 155
+    },
+    lab: {
+      l: 54.05,
+      a: -5.07,
+      b: -15.18
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Pastel Green',
+    brand: 'Vallejo',
+    hex: '#A4BB99',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 164,
+      g: 187,
+      b: 153
+    },
+    lab: {
+      l: 73.37,
+      a: -14.22,
+      b: 14.63
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Pink',
+    brand: 'Vallejo',
+    hex: '#D37497',
+    type: 'Base',
+    family: 'Pink',
+    rgb: {
+      r: 211,
+      g: 116,
+      b: 151
+    },
+    lab: {
+      l: 60.41,
+      a: 41.24,
+      b: -2.27
+    },
+    finish: 'matte',
+    transparency: 0.7,
+    matchable: true
+  },
+  {
+    name: 'Plague Brown',
+    brand: 'Vallejo',
+    hex: '#CC9B34',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 204,
+      g: 155,
+      b: 52
+    },
+    lab: {
+      l: 66.92,
+      a: 8.46,
+      b: 58.04
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Prussian Blue',
+    brand: 'Vallejo',
+    hex: '#2A546E',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 42,
+      g: 84,
+      b: 110
+    },
+    lab: {
+      l: 33.9,
+      a: -6.1,
+      b: -19.34
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Purple',
+    brand: 'Vallejo',
+    hex: '#834A6C',
+    type: 'Base',
+    family: 'Pink',
+    rgb: {
+      r: 131,
+      g: 74,
+      b: 108
+    },
+    lab: {
+      l: 39.25,
+      a: 29.1,
+      b: -9.18
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Red',
+    brand: 'Vallejo',
+    hex: '#91323A',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 145,
+      g: 50,
+      b: 58
+    },
+    lab: {
+      l: 35.22,
+      a: 40.64,
+      b: 16.94
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Red Leather',
+    brand: 'Vallejo',
+    hex: '#93453D',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 147,
+      g: 69,
+      b: 61
+    },
+    lab: {
+      l: 39.24,
+      a: 32.13,
+      b: 20.39
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Reflective Green',
+    brand: 'Vallejo',
+    hex: '#496244',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 73,
+      g: 98,
+      b: 68
+    },
+    lab: {
+      l: 38.84,
+      a: -15.84,
+      b: 14.14
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Rosy Flesh',
+    brand: 'Vallejo',
+    hex: '#F89E84',
+    type: 'Base',
+    family: 'Flesh',
+    rgb: {
+      r: 248,
+      g: 158,
+      b: 132
+    },
+    lab: {
+      l: 73.6,
+      a: 30.73,
+      b: 27.57
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Royal Blue',
+    brand: 'Vallejo',
+    hex: '#41558D',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 65,
+      g: 85,
+      b: 141
+    },
+    lab: {
+      l: 37.01,
+      a: 9.38,
+      b: -33.47
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Royal Purple',
+    brand: 'Vallejo',
+    hex: '#23264F',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 35,
+      g: 38,
+      b: 79
+    },
+    lab: {
+      l: 17.03,
+      a: 12.01,
+      b: -25.74
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Russian Uniform WW2',
+    brand: 'Vallejo',
+    hex: '#606D53',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 96,
+      g: 109,
+      b: 83
+    },
+    lab: {
+      l: 44.3,
+      a: -10.12,
+      b: 12.93
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Saddle Brown',
+    brand: 'Vallejo',
+    hex: '#89584F',
+    type: 'Base',
+    family: 'Flesh',
+    rgb: {
+      r: 137,
+      g: 88,
+      b: 79
+    },
+    lab: {
+      l: 42.56,
+      a: 19.11,
+      b: 13.59
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Salmon Rose',
+    brand: 'Vallejo',
+    hex: '#F89D87',
+    type: 'Base',
+    family: 'Pink',
+    rgb: {
+      r: 248,
+      g: 157,
+      b: 135
+    },
+    lab: {
+      l: 73.43,
+      a: 31.54,
+      b: 25.72
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Sand Yellow',
+    brand: 'Vallejo',
+    hex: '#D7BF75',
+    type: 'Base',
+    family: 'Yellow',
+    rgb: {
+      r: 215,
+      g: 191,
+      b: 117
+    },
+    lab: {
+      l: 77.87,
+      a: -1.35,
+      b: 40.32
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Scarlet',
+    brand: 'Vallejo',
+    hex: '#DA3630',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 218,
+      g: 54,
+      b: 48
+    },
+    lab: {
+      l: 49.21,
+      a: 62.26,
+      b: 42.75
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Scarlet \'Blood\' Red',
+    brand: 'Vallejo',
+    hex: '#B72A38',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 183,
+      g: 42,
+      b: 56
+    },
+    lab: {
+      l: 41.24,
+      a: 55.92,
+      b: 27.3
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Scarlet Red',
+    brand: 'Vallejo',
+    hex: '#741330',
+    type: 'Base',
+    family: 'Pink',
+    rgb: {
+      r: 116,
+      g: 19,
+      b: 48
+    },
+    lab: {
+      l: 24.93,
+      a: 42.42,
+      b: 8.7
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Scorpion Green',
+    brand: 'Vallejo',
+    hex: '#48B851',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 72,
+      g: 184,
+      b: 81
+    },
+    lab: {
+      l: 66.71,
+      a: -52.82,
+      b: 42.49
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Scrofulous Brown',
+    brand: 'Vallejo',
+    hex: '#D68030',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 214,
+      g: 128,
+      b: 48
+    },
+    lab: {
+      l: 61.61,
+      a: 27.18,
+      b: 54.93
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Scurvy Green',
+    brand: 'Vallejo',
+    hex: '#09474E',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 9,
+      g: 71,
+      b: 78
+    },
+    lab: {
+      l: 27.06,
+      a: -15.52,
+      b: -9.52
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Sick Green',
+    brand: 'Vallejo',
+    hex: '#096638',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 9,
+      g: 102,
+      b: 56
+    },
+    lab: {
+      l: 37.56,
+      a: -36.58,
+      b: 19.11
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   },
   {
     name: 'Silver Grey',
@@ -16701,7 +18604,110 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 88.05,
       a: -4.15,
       b: 4.08
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Sky Blue',
+    brand: 'Vallejo',
+    hex: '#86D6F7',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 134,
+      g: 214,
+      b: 247
+    },
+    lab: {
+      l: 81.77,
+      a: -16.02,
+      b: -23.79
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Sky Grey',
+    brand: 'Vallejo',
+    hex: '#B3B6B2',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 179,
+      g: 182,
+      b: 178
+    },
+    lab: {
+      l: 73.71,
+      a: -1.8,
+      b: 1.66
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Smokey Ink',
+    brand: 'Vallejo',
+    hex: '#2B2325',
+    type: 'Base',
+    family: 'Black',
+    rgb: {
+      r: 43,
+      g: 35,
+      b: 37
+    },
+    lab: {
+      l: 14.68,
+      a: 4.22,
+      b: 0.07
+    },
+    finish: 'matte',
+    transparency: 0.7,
+    matchable: true
+  },
+  {
+    name: 'Sombre Grey',
+    brand: 'Vallejo',
+    hex: '#4C5C7D',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 76,
+      g: 92,
+      b: 125
+    },
+    lab: {
+      l: 39.02,
+      a: 2.82,
+      b: -20.51
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Squid Pink',
+    brand: 'Vallejo',
+    hex: '#DA7FB5',
+    type: 'Base',
+    family: 'Pink',
+    rgb: {
+      r: 218,
+      g: 127,
+      b: 181
+    },
+    lab: {
+      l: 64.5,
+      a: 42.25,
+      b: -13.2
+    },
+    finish: 'matte',
+    transparency: 0.7,
+    matchable: true
   },
   {
     name: 'Steel Grey',
@@ -16718,7 +18724,570 @@ export const PAINT_DATABASE: PaintData[] = [
       l: 54.81,
       a: -7.13,
       b: -15.2
-    }
+    },
+    finish: 'metallic',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Stone Grey',
+    brand: 'Vallejo',
+    hex: '#959980',
+    type: 'Shade',
+    family: 'Grey',
+    rgb: {
+      r: 149,
+      g: 153,
+      b: 128
+    },
+    lab: {
+      l: 62.28,
+      a: -5.99,
+      b: 12.67
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
+  },
+  {
+    name: 'Stonewall Grey',
+    brand: 'Vallejo',
+    hex: '#828E95',
+    type: 'Shade',
+    family: 'Grey',
+    rgb: {
+      r: 130,
+      g: 142,
+      b: 149
+    },
+    lab: {
+      l: 58.28,
+      a: -2.84,
+      b: -5.19
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
+  },
+  {
+    name: 'Stormy Night',
+    brand: 'Vallejo',
+    hex: '#1F1A4F',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 31,
+      g: 26,
+      b: 79
+    },
+    lab: {
+      l: 13.2,
+      a: 19.72,
+      b: -31.94
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Sun Yellow',
+    brand: 'Vallejo',
+    hex: '#FFCF07',
+    type: 'Base',
+    family: 'Yellow',
+    rgb: {
+      r: 255,
+      g: 207,
+      b: 7
+    },
+    lab: {
+      l: 84.95,
+      a: 2.2,
+      b: 85.12
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Sunny Skintone',
+    brand: 'Vallejo',
+    hex: '#F4B171',
+    type: 'Shade',
+    family: 'Flesh',
+    rgb: {
+      r: 244,
+      g: 177,
+      b: 113
+    },
+    lab: {
+      l: 77.21,
+      a: 17.45,
+      b: 42.14
+    },
+    finish: 'matte',
+    transparency: 0.85,
+    matchable: true
+  },
+  {
+    name: 'Sunset Red',
+    brand: 'Vallejo',
+    hex: '#C22C5F',
+    type: 'Base',
+    family: 'Pink',
+    rgb: {
+      r: 194,
+      g: 44,
+      b: 95
+    },
+    lab: {
+      l: 44.38,
+      a: 61.04,
+      b: 7.63
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Tan',
+    brand: 'Vallejo',
+    hex: '#9F4746',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 159,
+      g: 71,
+      b: 70
+    },
+    lab: {
+      l: 41.72,
+      a: 36.5,
+      b: 18.49
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Tan Earth',
+    brand: 'Vallejo',
+    hex: '#9C7962',
+    type: 'Base',
+    family: 'Flesh',
+    rgb: {
+      r: 156,
+      g: 121,
+      b: 98
+    },
+    lab: {
+      l: 53.63,
+      a: 10.34,
+      b: 17.85
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Tan Yellow',
+    brand: 'Vallejo',
+    hex: '#B5915D',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 181,
+      g: 145,
+      b: 93
+    },
+    lab: {
+      l: 62.39,
+      a: 6.85,
+      b: 32.63
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Terracota',
+    brand: 'Vallejo',
+    hex: '#6B1306',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 107,
+      g: 19,
+      b: 6
+    },
+    lab: {
+      l: 22.32,
+      a: 37.49,
+      b: 30.84
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Turquoise',
+    brand: 'Vallejo',
+    hex: '#03676F',
+    type: 'Base',
+    family: 'Cyan',
+    rgb: {
+      r: 3,
+      g: 103,
+      b: 111
+    },
+    lab: {
+      l: 39.35,
+      a: -21.73,
+      b: -11.67
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Ultramarine',
+    brand: 'Vallejo',
+    hex: '#3B5DA7',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 59,
+      g: 93,
+      b: 167
+    },
+    lab: {
+      l: 40.49,
+      a: 12.07,
+      b: -43.56
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Ultramarine Blue',
+    brand: 'Vallejo',
+    hex: '#373592',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 55,
+      g: 53,
+      b: 146
+    },
+    lab: {
+      l: 27.93,
+      a: 30.07,
+      b: -51.15
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Uniform Green',
+    brand: 'Vallejo',
+    hex: '#577A38',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 87,
+      g: 122,
+      b: 56
+    },
+    lab: {
+      l: 47.28,
+      a: -24.7,
+      b: 31.9
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'US Dark Green',
+    brand: 'Vallejo',
+    hex: '#5B6955',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 91,
+      g: 105,
+      b: 85
+    },
+    lab: {
+      l: 42.74,
+      a: -9.48,
+      b: 9.5
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'US Field Drab',
+    brand: 'Vallejo',
+    hex: '#705D43',
+    type: 'Base',
+    family: 'Brown',
+    rgb: {
+      r: 112,
+      g: 93,
+      b: 67
+    },
+    lab: {
+      l: 40.7,
+      a: 3.68,
+      b: 17.83
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'USA Olive Drab',
+    brand: 'Vallejo',
+    hex: '#3B4947',
+    type: 'Base',
+    family: 'Black',
+    rgb: {
+      r: 59,
+      g: 73,
+      b: 71
+    },
+    lab: {
+      l: 29.79,
+      a: -6.06,
+      b: -0.66
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Verdigris',
+    brand: 'Vallejo',
+    hex: '#B3CECA',
+    type: 'Base',
+    family: 'Grey',
+    rgb: {
+      r: 179,
+      g: 206,
+      b: 202
+    },
+    lab: {
+      l: 80.73,
+      a: -9.8,
+      b: -1.06
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Vermillion',
+    brand: 'Vallejo',
+    hex: '#D22B2D',
+    type: 'Base',
+    family: 'Red',
+    rgb: {
+      r: 210,
+      g: 43,
+      b: 45
+    },
+    lab: {
+      l: 46.48,
+      a: 63.08,
+      b: 41.08
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Violet',
+    brand: 'Vallejo',
+    hex: '#4B2F65',
+    type: 'Base',
+    family: 'Purple',
+    rgb: {
+      r: 75,
+      g: 47,
+      b: 101
+    },
+    lab: {
+      l: 25.16,
+      a: 24.56,
+      b: -27.11
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Violet Red',
+    brand: 'Vallejo',
+    hex: '#6B2946',
+    type: 'Base',
+    family: 'Pink',
+    rgb: {
+      r: 107,
+      g: 41,
+      b: 70
+    },
+    lab: {
+      l: 27.17,
+      a: 32.7,
+      b: -3.2
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Warlord Purple',
+    brand: 'Vallejo',
+    hex: '#7D1A44',
+    type: 'Base',
+    family: 'Pink',
+    rgb: {
+      r: 125,
+      g: 26,
+      b: 68
+    },
+    lab: {
+      l: 28.16,
+      a: 44.68,
+      b: -0.02
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'White',
+    brand: 'Vallejo',
+    hex: '#F4F4F2',
+    type: 'Base',
+    family: 'White',
+    rgb: {
+      r: 244,
+      g: 244,
+      b: 242
+    },
+    lab: {
+      l: 96.14,
+      a: -0.35,
+      b: 0.96
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'White Grey',
+    brand: 'Vallejo',
+    hex: '#EEF1EC',
+    type: 'Base',
+    family: 'White',
+    rgb: {
+      r: 238,
+      g: 241,
+      b: 236
+    },
+    lab: {
+      l: 94.8,
+      a: -1.88,
+      b: 2.06
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Wolf Grey',
+    brand: 'Vallejo',
+    hex: '#90A2BC',
+    type: 'Base',
+    family: 'Blue',
+    rgb: {
+      r: 144,
+      g: 162,
+      b: 188
+    },
+    lab: {
+      l: 66.06,
+      a: -0.53,
+      b: -15.48
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Yellow Green',
+    brand: 'Vallejo',
+    hex: '#91864B',
+    type: 'Base',
+    family: 'Yellow',
+    rgb: {
+      r: 145,
+      g: 134,
+      b: 75
+    },
+    lab: {
+      l: 55.66,
+      a: -4.37,
+      b: 33.1
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Yellow Ochre',
+    brand: 'Vallejo',
+    hex: '#C19448',
+    type: 'Base',
+    family: 'Orange',
+    rgb: {
+      r: 193,
+      g: 148,
+      b: 72
+    },
+    lab: {
+      l: 64.15,
+      a: 8.6,
+      b: 45.84
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
+  },
+  {
+    name: 'Yellow Olive',
+    brand: 'Vallejo',
+    hex: '#26392E',
+    type: 'Base',
+    family: 'Green',
+    rgb: {
+      r: 38,
+      g: 57,
+      b: 46
+    },
+    lab: {
+      l: 22.07,
+      a: -10.51,
+      b: 4.43
+    },
+    finish: 'matte',
+    transparency: 0,
+    matchable: true
   }
 ];
 
@@ -16766,9 +19335,9 @@ export function getPaintsByFamily(family: string): PaintData[] {
  * Database statistics
  */
 export const PAINT_DATABASE_STATS = {
-  totalPaints: 982,
+  totalPaints: 963,
   brands: ["Army Painter","Citadel","Scale75","Vallejo"],
   types: ["Air","Base","Contrast","Layer","Metallic","Shade"],
   families: ["Black","Blue","Bone","Bronze","Brown","Copper","Cyan","Flesh","Gold","Green","Grey","Orange","Pink","Purple","Red","Silver","White","Yellow"],
-  generatedAt: '2026-05-15T13:17:50.506Z',
+  generatedAt: '2026-06-16T20:45:40.895Z',
 };
