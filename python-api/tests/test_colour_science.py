@@ -210,29 +210,29 @@ def paint_matcher_live():
 _MID_RED_RGB = np.array([154, 17, 21], dtype=np.uint8)
 _BRANDS = ["Citadel", "Vallejo", "Army Painter", "Scale75"]
 
-# Categories that should be returned by paint_type='paint'
-_PAINT_CATS = {"base", "layer", "air", "contrast", "technical"}
-# Categories that should be returned by paint_type='wash'
+# role='dominant' maps to base/layer/air/contrast (contrast is penalised but eligible).
+_DOMINANT_CATS = {"base", "layer", "air", "contrast"}
+# role='wash' (formerly paint_type='wash') maps to wash/shade/ink.
 _WASH_CATS = {"wash", "shade", "ink"}
 
 
 @pytest.mark.parametrize("brand", _BRANDS)
 def test_match_color_paint_returns_result(paint_matcher_live, brand):
-    """paint_type='paint' must return a non-None match for each brand."""
-    result = paint_matcher_live.match_color(_MID_RED_RGB, brand, paint_type="paint")
+    """role='dominant' (backward-compat paint_type='paint') must return a non-None match."""
+    result = paint_matcher_live.match_color(_MID_RED_RGB, brand, role="dominant")
     assert result is not None, (
-        f"match_color returned None for brand={brand!r}, paint_type='paint'. "
-        "Likely TYPE_CATEGORIES mapping is broken."
+        f"match_color returned None for brand={brand!r}, role='dominant'. "
+        "Likely ROLE_CATEGORIES mapping is broken."
     )
-    assert result.type.lower() in _PAINT_CATS, (
+    assert result.type.lower() in _DOMINANT_CATS, (
         f"Returned paint has unexpected type {result.type!r} for brand={brand!r}"
     )
 
 
 @pytest.mark.parametrize("brand", _BRANDS)
 def test_match_color_wash_returns_wash_category(paint_matcher_live, brand):
-    """paint_type='wash' must return a wash/shade/ink category paint."""
-    result = paint_matcher_live.match_color(_MID_RED_RGB, brand, paint_type="wash")
+    """role='wash' must return a wash/shade/ink category paint."""
+    result = paint_matcher_live.match_color(_MID_RED_RGB, brand, role="wash")
     if result is None:
         pytest.skip(f"No wash-category paints for brand={brand!r} — acceptable")
     assert result.type.lower() in _WASH_CATS, (

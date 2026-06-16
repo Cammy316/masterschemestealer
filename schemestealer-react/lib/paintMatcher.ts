@@ -95,8 +95,17 @@ const WASH_MAPPING: Record<string, Record<string, string>> = {
   },
 };
 
+// DB type strings that belong to each offline role
+const _DOMINANT_TYPES = new Set(['base', 'layer', 'air', 'contrast']);
+const _SHADE_TYPES = new Set(['shade', 'contrast']);
+const _WASH_TYPES = new Set(['shade', 'wash', 'ink']);
+
+// Matches the backend TRANSPARENCY_PENALTY constant
+const _TRANSPARENCY_PENALTY = 8.0;
+
 /**
- * Get top N paint matches for a color from each brand
+ * Get top N paint matches for a color from each brand.
+ * Uses dominant role: Base/Layer/Air only, with transparency penalty on contrast paints.
  */
 export function getMultiBrandMatches(
   colorLab: [number, number, number],
@@ -104,19 +113,25 @@ export function getMultiBrandMatches(
 ): MultiBrandMatches {
   const paintDatabase = getPaintDatabase();
 
-  // Group paints by brand
-  const citadelPaints = paintDatabase.filter((p) => p.brand.toLowerCase() === 'citadel');
-  const vallejoPaints = paintDatabase.filter((p) => p.brand.toLowerCase() === 'vallejo');
-  const armyPainterPaints = paintDatabase.filter(
-    (p) => p.brand.toLowerCase() === 'army painter'
+  // Group paints by brand, pre-filtered to dominant role types
+  const citadelPaints = paintDatabase.filter(
+    (p) => p.brand.toLowerCase() === 'citadel' && _DOMINANT_TYPES.has(p.type.toLowerCase())
   );
-  const scale75Paints = paintDatabase.filter((p) => p.brand.toLowerCase() === 'scale75');
+  const vallejoPaints = paintDatabase.filter(
+    (p) => p.brand.toLowerCase() === 'vallejo' && _DOMINANT_TYPES.has(p.type.toLowerCase())
+  );
+  const armyPainterPaints = paintDatabase.filter(
+    (p) => p.brand.toLowerCase() === 'army painter' && _DOMINANT_TYPES.has(p.type.toLowerCase())
+  );
+  const scale75Paints = paintDatabase.filter(
+    (p) => p.brand.toLowerCase() === 'scale75' && _DOMINANT_TYPES.has(p.type.toLowerCase())
+  );
 
-  // Find top matches for each brand
-  const citadelMatches = findTopMatches(colorLab, citadelPaints, matchesPerBrand);
-  const vallejoMatches = findTopMatches(colorLab, vallejoPaints, matchesPerBrand);
-  const armyPainterMatches = findTopMatches(colorLab, armyPainterPaints, matchesPerBrand);
-  const scale75Matches = findTopMatches(colorLab, scale75Paints, matchesPerBrand);
+  // Find top matches for each brand with transparency penalty
+  const citadelMatches = findTopMatches(colorLab, citadelPaints, matchesPerBrand, true);
+  const vallejoMatches = findTopMatches(colorLab, vallejoPaints, matchesPerBrand, true);
+  const armyPainterMatches = findTopMatches(colorLab, armyPainterPaints, matchesPerBrand, true);
+  const scale75Matches = findTopMatches(colorLab, scale75Paints, matchesPerBrand, true);
 
   return {
     citadel: citadelMatches,
@@ -127,19 +142,26 @@ export function getMultiBrandMatches(
 }
 
 /**
- * Find top N closest paint matches
+ * Find top N closest paint matches with optional transparency penalty.
+ * applyTransparencyPenalty adds transparency * PENALTY to deltaE before sorting,
+ * so highly transparent paints (contrast/inks) are deprioritised unless the colour
+ * advantage is large enough to overcome the penalty.
  */
 function findTopMatches(
   colorLab: [number, number, number],
   paints: PaintData[],
-  limit: number
+  limit: number,
+  applyTransparencyPenalty: boolean = false
 ): Paint[] {
-  // Calculate Delta-E for each paint
+  // Calculate Delta-E (+ optional transparency penalty) for each paint
   const matches = paints.map((paint) => {
-    const deltaE = deltaE2000(
+    const rawDeltaE = deltaE2000(
       { l: colorLab[0], a: colorLab[1], b: colorLab[2] },
       paint.lab
     );
+    const penalty = applyTransparencyPenalty
+      ? (paint.transparency ?? 0) * _TRANSPARENCY_PENALTY
+      : 0;
 
     return {
       name: paint.name,
@@ -148,13 +170,14 @@ function findTopMatches(
       type: paint.type,
       rgb: [paint.rgb.r, paint.rgb.g, paint.rgb.b] as [number, number, number],
       lab: [paint.lab.l, paint.lab.a, paint.lab.b] as [number, number, number],
-      deltaE: Math.round(deltaE * 10) / 10, // Round to 1 decimal
+      deltaE: Math.round(rawDeltaE * 10) / 10,  // true distance for display
+      _sortKey: rawDeltaE + penalty,             // penalised key for ranking only
     };
   });
 
-  // Sort by Delta-E and return top matches
-  matches.sort((a, b) => a.deltaE! - b.deltaE!);
-  return matches.slice(0, limit);
+  // Sort by penalised key, expose true deltaE
+  matches.sort((a, b) => a._sortKey - b._sortKey);
+  return matches.slice(0, limit).map(({ _sortKey: _k, ...m }) => m);
 }
 
 /**
@@ -235,12 +258,9 @@ export function getRecipeForColor(
     (p) => p.brand.toLowerCase() === brandName.toLowerCase()
   );
 
-  // Filter for base/layer paints (non-washes)
+  // Filter for dominant-role paints (base/layer/air — no washes or contrasts)
   const basePaints = brandPaints.filter(
-    (p) =>
-      !['wash', 'shade', 'ink'].includes(p.type.toLowerCase()) &&
-      !p.name.toLowerCase().includes('wash') &&
-      !p.name.toLowerCase().includes('shade')
+    (p) => _DOMINANT_TYPES.has(p.type.toLowerCase())
   );
 
   // Find best base match
