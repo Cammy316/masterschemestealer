@@ -1,0 +1,1906 @@
+[
+ {
+  "name": "Brigade Grey",
+  "hex": "#D8D8DA",
+  "aliases": [
+   "Spaceship Exterior"
+  ],
+  "citadel_equiv": "Corax White",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Matt White",
+  "hex": "#F4F4F2",
+  "aliases": [
+   "White Scar"
+  ],
+  "citadel_equiv": "White Scar",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Frost Blue",
+  "hex": "#A5C2DE",
+  "aliases": [
+   "Ice Storm"
+  ],
+  "citadel_equiv": "Ice Storm",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Augur Blue",
+  "hex": "#B6C3E3",
+  "aliases": [
+   "Gorgon Hide"
+  ],
+  "citadel_equiv": "Blue Horror",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Bright Sapphire",
+  "hex": "#94CFF0",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Aegis Aqua",
+  "hex": "#41AFD1",
+  "aliases": [
+   "Voidshield Blue"
+  ],
+  "citadel_equiv": "Voidshield Blue",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Marine Mist",
+  "hex": "#9ED5D3",
+  "aliases": [
+   "Toxic Mist"
+  ],
+  "citadel_equiv": "Toxic Mist",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Amulet Aqua",
+  "hex": "#6BC1AF",
+  "aliases": [
+   "Hazardous Smog"
+  ],
+  "citadel_equiv": "Hazardous Smog",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Ferocious Green",
+  "hex": "#75BC69",
+  "aliases": [
+   "Kraken Skin"
+  ],
+  "citadel_equiv": "Gauss Blaster Green",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Afterglow",
+  "hex": "#E7EA89",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Mossy Green",
+  "hex": "#B7DCBE",
+  "aliases": [
+   "Leviathan Light"
+  ],
+  "citadel_equiv": "Deepkin Flesh",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Grotesque Green",
+  "hex": "#B8C89F",
+  "aliases": [
+   "Zombie Flesh"
+  ],
+  "citadel_equiv": "Krieg Khaki",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Company Grey",
+  "hex": "#C5C6C9",
+  "aliases": [
+   "Grey Seer"
+  ],
+  "citadel_equiv": "Grey Seer",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Brainmatter Beige",
+  "hex": "#E4E2D8",
+  "aliases": [
+   "Pallid Wych Flesh"
+  ],
+  "citadel_equiv": "Pallid Wych Flesh",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Runic Cobalt",
+  "hex": "#7B97B3",
+  "aliases": [
+   "Fog Grey"
+  ],
+  "citadel_equiv": "Fenrisian Grey",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Baron Blue",
+  "hex": "#8497CA",
+  "aliases": [
+   "Consul Blue"
+  ],
+  "citadel_equiv": "Consul Blue",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Arctic Gem",
+  "hex": "#0190CE",
+  "aliases": [
+   "Electric Blue"
+  ],
+  "citadel_equiv": "Hoeth Blue",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Shieldwall Blue",
+  "hex": "#009FC7",
+  "aliases": [
+   "Lothern Blue"
+  ],
+  "citadel_equiv": "Lothern Blue",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Neptune Glow",
+  "hex": "#80CBD1",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Aqua Alchemy",
+  "hex": "#2EB39B",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Wild Green",
+  "hex": "#3BAB41",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Vivid Volt",
+  "hex": "#D2DB39",
+  "aliases": [
+   "Poisonous Cloud"
+  ],
+  "citadel_equiv": "Poisonous Cloud",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Forest Faun",
+  "hex": "#A7C9AB",
+  "aliases": [
+   "Scaly Hide"
+  ],
+  "citadel_equiv": "Scaly Hide",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Necrotic Flesh",
+  "hex": "#A1AC82",
+  "aliases": [
+   "Nurgling Green"
+  ],
+  "citadel_equiv": "Nurgling Green",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Ash Grey",
+  "hex": "#8F9294",
+  "aliases": [
+   "Administratum Grey"
+  ],
+  "citadel_equiv": "Administratum Grey",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Worn Stone",
+  "hex": "#CBC8B8",
+  "aliases": [
+   "Drake Tooth"
+  ],
+  "citadel_equiv": "Wraithbone",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Wolf Grey",
+  "hex": "#577CA4",
+  "aliases": [
+   "Russ Grey"
+  ],
+  "citadel_equiv": "Russ Grey",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Alpha Blue",
+  "hex": "#697BB9",
+  "aliases": [
+   "Calgar Blue"
+  ],
+  "citadel_equiv": "Calgar Blue",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Crystal Blue",
+  "hex": "#006CB4",
+  "aliases": [
+   "Teclis Blue"
+  ],
+  "citadel_equiv": "Teclis Blue",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Phalanx Blue",
+  "hex": "#0086AD",
+  "aliases": [
+   "Troglodyte Blue"
+  ],
+  "citadel_equiv": "Troglodyte Blue",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Aquamarine",
+  "hex": "#5CC1C7",
+  "aliases": [
+   "Phantasmal Blue"
+  ],
+  "citadel_equiv": "Baharroth Blue",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Talisman Teal",
+  "hex": "#00A485",
+  "aliases": [
+   "Elemental Bolt"
+  ],
+  "citadel_equiv": "Elemental Bolt",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Eternal Hunt",
+  "hex": "#179239",
+  "aliases": [
+   "Goblin Green"
+  ],
+  "citadel_equiv": "Sybarite Green",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Electric Lime",
+  "hex": "#BDD000",
+  "aliases": [
+   "Canopy Green"
+  ],
+  "citadel_equiv": "Canopy Green",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Autumn Sage",
+  "hex": "#78AC95",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Olive Drab",
+  "hex": "#728552",
+  "aliases": [
+   "Witch Brew"
+  ],
+  "citadel_equiv": "Straken Green",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Uniform Grey",
+  "hex": "#727880",
+  "aliases": [
+   "Dawnstone"
+  ],
+  "citadel_equiv": "Dawnstone",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Great Hall Grey",
+  "hex": "#C4BDAF",
+  "aliases": [
+   "Stone Golem"
+  ],
+  "citadel_equiv": "Stone Golem",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Stratos Blue",
+  "hex": "#32628E",
+  "aliases": [
+   "Griffon Blue"
+  ],
+  "citadel_equiv": "Griffon Blue",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Ultramarine Blue",
+  "hex": "#264587",
+  "aliases": [
+   "Altdorf Guard Blue"
+  ],
+  "citadel_equiv": "Altdorf Guard Blue",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Royal Blue",
+  "hex": "#0057A5",
+  "aliases": [
+   "Viking Blue"
+  ],
+  "citadel_equiv": "Sapphire Gem",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Tidal Blue",
+  "hex": "#006A93",
+  "aliases": [
+   "Ahriman Blue"
+  ],
+  "citadel_equiv": "Ahriman Blue",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Turquoise Siren",
+  "hex": "#28ADB4",
+  "aliases": [
+   "Royal Cloak"
+  ],
+  "citadel_equiv": "Royal Cloak",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Pharaoh Guard",
+  "hex": "#00765C",
+  "aliases": [
+   "Wizards Orb"
+  ],
+  "citadel_equiv": "Wizards Orb",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Greenskin",
+  "hex": "#066D2C",
+  "aliases": [
+   "Warpstone Glow"
+  ],
+  "citadel_equiv": "Warpstone Glow",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Rainforest",
+  "hex": "#8BBD0D",
+  "aliases": [
+   "Jungle Green"
+  ],
+  "citadel_equiv": "Jungle Green",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Patagon Pine",
+  "hex": "#64937D",
+  "aliases": [
+   "Skarsnik Green"
+  ],
+  "citadel_equiv": "Skarsnik Green",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Camouflage Green",
+  "hex": "#627247",
+  "aliases": [
+   "Commando Green"
+  ],
+  "citadel_equiv": "Death Guard Green",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Deep Grey",
+  "hex": "#535663",
+  "aliases": [
+   "Necromancer Cloak"
+  ],
+  "citadel_equiv": "Mechanicus Standard Grey",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Gargoyle Grey",
+  "hex": "#B1AC9C",
+  "aliases": [
+   "Ionrach Skin"
+  ],
+  "citadel_equiv": "Ionrach Skin",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Thunderous Blue",
+  "hex": "#355577",
+  "aliases": [
+   "The Fang"
+  ],
+  "citadel_equiv": "The Fang",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Gothic Blue",
+  "hex": "#2A3971",
+  "aliases": [
+   "Macragge Blue"
+  ],
+  "citadel_equiv": "Macragge Blue",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Regal Blue",
+  "hex": "#004A84",
+  "aliases": [
+   "Caledor Sky"
+  ],
+  "citadel_equiv": "Caledor Sky",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Abyssal Blue",
+  "hex": "#004F6B",
+  "aliases": [
+   "Twilight Sky"
+  ],
+  "citadel_equiv": "Thousand Sons Blue",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Hydra Turquoise",
+  "hex": "#008F94",
+  "aliases": [
+   "Temple Guard Blue"
+  ],
+  "citadel_equiv": "Temple Guard Blue",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Temple Gate Teal",
+  "hex": "#005E4F",
+  "aliases": [
+   "Ruinous Spell"
+  ],
+  "citadel_equiv": "Kabalite Green",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Guardian Green",
+  "hex": "#216143",
+  "aliases": [
+   "Savage Green"
+  ],
+  "citadel_equiv": "Savage Green",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Leafy Green",
+  "hex": "#72B61C",
+  "aliases": [
+   "Moot Green"
+  ],
+  "citadel_equiv": "Moot Green",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Medieval Forest",
+  "hex": "#447B6B",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Army Green",
+  "hex": "#4E6038",
+  "aliases": [
+   "Loren Forest"
+  ],
+  "citadel_equiv": "Loren Forest",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Matt Black",
+  "hex": "#000000",
+  "aliases": [
+   "Abaddon Black"
+  ],
+  "citadel_equiv": "Abaddon Black",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Grey Castle",
+  "hex": "#9B9A8F",
+  "aliases": [
+   "Combat Fatigues"
+  ],
+  "citadel_equiv": "Combat Fatigues",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Night Sky",
+  "hex": "#394858",
+  "aliases": [
+   "Dark Reaper"
+  ],
+  "citadel_equiv": "Dark Reaper",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Triumphant Navy",
+  "hex": "#1B2B52",
+  "aliases": [
+   "Dark Sky"
+  ],
+  "citadel_equiv": "Kantor Blue",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Imperial Navy",
+  "hex": "#003560",
+  "aliases": [
+   "Deep Blue"
+  ],
+  "citadel_equiv": "Nightlords Blue",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Deep Ocean Blue",
+  "hex": "#223242",
+  "aliases": [
+   "Thunder Storm"
+  ],
+  "citadel_equiv": "Stegadon Scale Green",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Deep Azure",
+  "hex": "#006A78",
+  "aliases": [
+   "Ocean Depths"
+  ],
+  "citadel_equiv": "Sotek Green",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Scarab Green",
+  "hex": "#1F3C42",
+  "aliases": [
+   "Obsidian Pigment Toner"
+  ],
+  "citadel_equiv": "Incubi Darkness",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Angel Green",
+  "hex": "#1F3E2B",
+  "aliases": [
+   "Caliban Green"
+  ],
+  "citadel_equiv": "Caliban Green",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Emerald Forest",
+  "hex": "#55AF30",
+  "aliases": [
+   "Snake Scales"
+  ],
+  "citadel_equiv": "Undergrowth Green",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Evergreen Fog",
+  "hex": "#3D665E",
+  "aliases": [
+   "Sons of Horus Green"
+  ],
+  "citadel_equiv": "Sons of Horus Green",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Woodland Camo",
+  "hex": "#3F4C34",
+  "aliases": [
+   "Elf Green"
+  ],
+  "citadel_equiv": "Waaagh! Flesh",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Urban Buff",
+  "hex": "#DEBCAB",
+  "aliases": [
+   "Kobold Skin"
+  ],
+  "citadel_equiv": "Kobold Skin",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Barren Dune",
+  "hex": "#DEBC6C",
+  "aliases": [
+   "Troll Claws"
+  ],
+  "citadel_equiv": "Ungor Flesh",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Pale Sand",
+  "hex": "#F2ECD7",
+  "aliases": [
+   "Hobgoblin Hue"
+  ],
+  "citadel_equiv": "Wraithbone",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Ice Yellow",
+  "hex": "#FFEFAE",
+  "aliases": [
+   "Arid Earth"
+  ],
+  "citadel_equiv": "Dorn Yellow",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Inner Light",
+  "hex": "#FDCA53",
+  "aliases": [
+   "Phoenix Flames"
+  ],
+  "citadel_equiv": "Phoenix Flames",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Raging Rouge",
+  "hex": "#F28E7F",
+  "aliases": [
+   "Ratskin Flesh"
+  ],
+  "citadel_equiv": "Ratskin Flesh",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Buffed Hide",
+  "hex": "#B77867",
+  "aliases": [
+   "Deathclaw Brown"
+  ],
+  "citadel_equiv": "Deathclaw Brown",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Raging Rose",
+  "hex": "#E55D5A",
+  "aliases": [
+   "Wyrmling Red"
+  ],
+  "citadel_equiv": "Wyrmling Red",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Doomfire Drab",
+  "hex": "#FBDCEA",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Kraken Lavender",
+  "hex": "#DCCFE6",
+  "aliases": [
+   "Orc Blood"
+  ],
+  "citadel_equiv": "Orc Blood",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Diviner Light",
+  "hex": "#D8A2C8",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Wilted Rose",
+  "hex": "#EEC8DA",
+  "aliases": [
+   "Mutant Hue"
+  ],
+  "citadel_equiv": "Mutant Hue",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Command Khaki",
+  "hex": "#B99889",
+  "aliases": [
+   "Gnome Cheecks"
+  ],
+  "citadel_equiv": "Knight-Questor Flesh",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Burnt Turf",
+  "hex": "#C19C50",
+  "aliases": [
+   "Hemp Rope"
+  ],
+  "citadel_equiv": "Zamesi Desert",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Bony Spikes",
+  "hex": "#E9D9C1",
+  "aliases": [
+   "Bleached Bone"
+  ],
+  "citadel_equiv": "Screaming Skull",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Space Dust",
+  "hex": "#FFE481",
+  "aliases": [
+   "Moon Dust"
+  ],
+  "citadel_equiv": "Flash Gitz Yellow",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Glowing Inferno",
+  "hex": "#F59829",
+  "aliases": [
+   "Incursion Orange"
+  ],
+  "citadel_equiv": "Yriel Yellow",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Violent Vermillion",
+  "hex": "#EF735A",
+  "aliases": [
+   "Nomad Flesh"
+  ],
+  "citadel_equiv": "Lugganath Orange",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Ruddy Umber",
+  "hex": "#9B5B4D",
+  "aliases": [
+   "Tanned Flesh"
+  ],
+  "citadel_equiv": "Bugman\u2019s Glow",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Blood Chalice",
+  "hex": "#D63E43",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Pink Potion",
+  "hex": "#F7BCD5",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Violet Coven",
+  "hex": "#B19CC8",
+  "aliases": [
+   "Oozing Purple"
+  ],
+  "citadel_equiv": "Dechala Lilac",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Enchanted Pink",
+  "hex": "#B867A4",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Figgy Pink",
+  "hex": "#E6B3C8",
+  "aliases": [
+   "Coven Purple"
+  ],
+  "citadel_equiv": "Fulgrim Pink",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Paratrooper Tan",
+  "hex": "#9E7B6C",
+  "aliases": [
+   "Monster Brown"
+  ],
+  "citadel_equiv": "Baneblade Brown",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Wasteland Clay",
+  "hex": "#A98C4E",
+  "aliases": [
+   "Basilisk Brown"
+  ],
+  "citadel_equiv": "Balor Brown",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Ancient Stone",
+  "hex": "#D4CAA9",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Warped Yellow",
+  "hex": "#FFD434",
+  "aliases": [
+   "Babe Blonde"
+  ],
+  "citadel_equiv": "Phalanx Yellow",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Flickering Flame",
+  "hex": "#F28629",
+  "aliases": [
+   "Orange Magma"
+  ],
+  "citadel_equiv": "Orange Magma",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Sacred Scarlet",
+  "hex": "#EC563E",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Fur Brown",
+  "hex": "#7D4742",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Pure Red",
+  "hex": "#B90119",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Weird Elixir",
+  "hex": "#E395BE",
+  "aliases": [
+   "Fey Pink"
+  ],
+  "citadel_equiv": "Fulgrim Pink",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Hexed Violet",
+  "hex": "#9482BA",
+  "aliases": [
+   "Daemonette Hide"
+  ],
+  "citadel_equiv": "Daemonette Hide",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Spellbound Fuchsia",
+  "hex": "#B04492",
+  "aliases": [
+   "Witchbane Plum"
+  ],
+  "citadel_equiv": "Kakophoni Purple",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Forbidden Fruit",
+  "hex": "#D18DA8",
+  "aliases": [
+   "Toxic Boils"
+  ],
+  "citadel_equiv": "Toxic Boils",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Leather Brown",
+  "hex": "#694433",
+  "aliases": [
+   "Mournfang Brown"
+  ],
+  "citadel_equiv": "Mournfang Brown",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Desert Yellow",
+  "hex": "#897440",
+  "aliases": [
+   "Hobgrot Hide"
+  ],
+  "citadel_equiv": "Hobgrot Hide",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Skeleton Bone",
+  "hex": "#C6BA98",
+  "aliases": [
+   "Ushabti Bone"
+  ],
+  "citadel_equiv": "Ushabti Bone",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Daemonic Yellow",
+  "hex": "#FECB00",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Lava Orange",
+  "hex": "#F07500",
+  "aliases": [
+   "Fire Dragon Bright"
+  ],
+  "citadel_equiv": "Fire Dragon Bright",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Legendary Red",
+  "hex": "#EA3A30",
+  "aliases": [
+   "Squig Orange"
+  ],
+  "citadel_equiv": "Squig Orange",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Dryad Brown",
+  "hex": "#643B2E",
+  "aliases": [
+   "Cypress Brown"
+  ],
+  "citadel_equiv": "Doombull Brown",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Dragon Red",
+  "hex": "#BE2131",
+  "aliases": [
+   "Mephiston Red"
+  ],
+  "citadel_equiv": "Mephiston Red",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Pixie Pink",
+  "hex": "#D96AA5",
+  "aliases": [
+   "Emperor\u2019s Children"
+  ],
+  "citadel_equiv": "Emperor\u2019s Children",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Cultist Purple",
+  "hex": "#6C5AA1",
+  "aliases": [
+   "Genestealer Purple"
+  ],
+  "citadel_equiv": "Genestealer Purple",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Warlock Magenta",
+  "hex": "#843F90",
+  "aliases": [
+   "Xereus Purple"
+  ],
+  "citadel_equiv": "Xereus Purple",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Elder Flower",
+  "hex": "#AB5578",
+  "aliases": [
+   "Fairy Pink"
+  ],
+  "citadel_equiv": "Fairy Pink",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Bootstrap Brown",
+  "hex": "#4C332C",
+  "aliases": [
+   "Werewolf Fur"
+  ],
+  "citadel_equiv": "Werewolf Fur",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Prairie Ochre",
+  "hex": "#6F683E",
+  "aliases": [
+   "Sulfide Ochre"
+  ],
+  "citadel_equiv": "Tallarn Sand",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Tomb King Tan",
+  "hex": "#AB9C7E",
+  "aliases": [
+   "Banshee Brown"
+  ],
+  "citadel_equiv": "Karak Stone",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Fiendish Yellow",
+  "hex": "#E49D0E",
+  "aliases": [
+   "Fire Lizard"
+  ],
+  "citadel_equiv": "Averland Sunset",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Burning Ore",
+  "hex": "#ED5717",
+  "aliases": [
+   "Mythical Orange"
+  ],
+  "citadel_equiv": "Troll Slayer Orange",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Angelic Red",
+  "hex": "#D2212C",
+  "aliases": [
+   "Mars Red"
+  ],
+  "citadel_equiv": "Wild Rider Red",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Tree Ancient",
+  "hex": "#513930",
+  "aliases": [
+   "Dirt Spatter"
+  ],
+  "citadel_equiv": "Catachan Flesh",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Wyvern Fury",
+  "hex": "#9C2E3D",
+  "aliases": [
+   "Vampire Red"
+  ],
+  "citadel_equiv": "Wazdakka Red",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Impish Rouge",
+  "hex": "#D94C95",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Alien Purple",
+  "hex": "#5F4796",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Magecast Magenta",
+  "hex": "#6F328A",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Moldy Wine",
+  "hex": "#81344E",
+  "aliases": [
+   "Wasteland Soil"
+  ],
+  "citadel_equiv": "Screamer Pink",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Brigandine Brown",
+  "hex": "#2C241F",
+  "aliases": [
+   "Hardened Carapace"
+  ],
+  "citadel_equiv": "Rhinox Hide",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Tundra Taupe",
+  "hex": "#52533B",
+  "aliases": [
+   "Venom Wyrm"
+  ],
+  "citadel_equiv": "Deathworld Forest",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Dusty Skull",
+  "hex": "#91856E",
+  "aliases": [
+   "Stormvermin Fur"
+  ],
+  "citadel_equiv": "Stormvermin Fur",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Demigod Flames",
+  "hex": "#D37933",
+  "aliases": [
+   "Tau Light Ochre"
+  ],
+  "citadel_equiv": "Tau Light Ochre",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Molten Lava",
+  "hex": "#EA4326",
+  "aliases": [
+   "Molten Orange"
+  ],
+  "citadel_equiv": "Molten Orange",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Resplendent Red",
+  "hex": "#992426",
+  "aliases": [
+   "Abomination Gore"
+  ],
+  "citadel_equiv": "Evil Sunz Scarlet",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Oak Brown",
+  "hex": "#3C2C29",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Basilisk Red",
+  "hex": "#712836",
+  "aliases": [
+   "Crusted Sore"
+  ],
+  "citadel_equiv": "Word Bearers Red",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Wicked Pink",
+  "hex": "#CD0079",
+  "aliases": [
+   "Warlock Purple"
+  ],
+  "citadel_equiv": "Pink Horor",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Terrestrial Titan",
+  "hex": "#363246",
+  "aliases": [
+   "Broodmother Purple"
+  ],
+  "citadel_equiv": "Naggaroth Night",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Diabolic Plum",
+  "hex": "#56286A",
+  "aliases": [
+   "Phoenician Purple"
+  ],
+  "citadel_equiv": "Phoenician Purple",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Mulled Berry",
+  "hex": "#663746",
+  "aliases": [
+   "Grimoire Purple"
+  ],
+  "citadel_equiv": "Gal Vorbak Red",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Pearl Skin",
+  "hex": "#FDE6DC",
+  "aliases": [
+   "Mummy Robes"
+  ],
+  "citadel_equiv": "Mummy Robes",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Leopard Stone Skin",
+  "hex": "#E9B9B3",
+  "aliases": [
+   "Centaur Skin"
+  ],
+  "citadel_equiv": "Centaur Skin",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Quartz Skin",
+  "hex": "#F1D4B5",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "True Brass",
+  "hex": "#736D5F",
+  "aliases": [
+   "Canoptek Alloy"
+  ],
+  "citadel_equiv": "Canoptek Alloy",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Gemstone Red",
+  "hex": "#72161A",
+  "aliases": [
+   "Gemstone"
+  ],
+  "citadel_equiv": "Gemstone",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Mithril",
+  "hex": "#8F908F",
+  "aliases": [
+   "Stormhost Silver"
+  ],
+  "citadel_equiv": "Stormhost Silver",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Light Tone",
+  "hex": "#AA6C00",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Magenta Tone",
+  "hex": "#94004F",
+  "aliases": [
+   "Carroburg Crimson"
+  ],
+  "citadel_equiv": "Carroburg Crimson",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Strong Skin Shade",
+  "hex": "#492C21",
+  "aliases": [
+   "Strong Skin Wash"
+  ],
+  "citadel_equiv": "Reikland Fleshshade",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Opal Skin",
+  "hex": "#FBD5C7",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Tourmaline Skin",
+  "hex": "#E39D8B",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Dorado Skin",
+  "hex": "#EECA9F",
+  "aliases": [
+   "Corpse Pale"
+  ],
+  "citadel_equiv": "Flayed One Flesh",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Weapon Bronze",
+  "hex": "#8D5100",
+  "aliases": [
+   "Brass Scorpion"
+  ],
+  "citadel_equiv": "Brass Scorpion",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Death Metal",
+  "hex": "#27241D",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Shining Silver",
+  "hex": "#7D7F7F",
+  "aliases": [
+   "Runefang Steel"
+  ],
+  "citadel_equiv": "Runefang Steel",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Sepia Tone",
+  "hex": "#9D5602",
+  "aliases": [
+   "Mid Brown"
+  ],
+  "citadel_equiv": "Seraphim Sepia",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Purple Tone",
+  "hex": "#4A3255",
+  "aliases": [
+   "Druchii Violet"
+  ],
+  "citadel_equiv": "Druchii Violet",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Dark Skin Shade",
+  "hex": "#4D3A37",
+  "aliases": [
+   "Dark Skin Wash"
+  ],
+  "citadel_equiv": "Targor Rageshade",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Ruby Skin",
+  "hex": "#F8BCA8",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Jasper Skin",
+  "hex": "#BE7772",
+  "aliases": [
+   "Dorado Skin"
+  ],
+  "citadel_equiv": "Dorado Skin",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Amber Skin",
+  "hex": "#C7A482",
+  "aliases": [
+   "Charred Bone"
+  ],
+  "citadel_equiv": "Kislev Flesh",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "True Copper",
+  "hex": "#774C30",
+  "aliases": [
+   "Balthasar Gold"
+  ],
+  "citadel_equiv": "Balthasar Gold",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Cobalt Metal",
+  "hex": "#2C3F3F",
+  "aliases": [
+   "Grey Knights Steel"
+  ],
+  "citadel_equiv": "Grey Knights Steel",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Plate Mail Metal",
+  "hex": "#606362",
+  "aliases": [
+   "Iron Hands Steel"
+  ],
+  "citadel_equiv": "Iron Hands Steel",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Soft Tone",
+  "hex": "#775633",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Blue Tone",
+  "hex": "#1F4268",
+  "aliases": [
+   "Tyran Blue"
+  ],
+  "citadel_equiv": "Tyran Blue",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Orange Tone",
+  "hex": "#974107",
+  "aliases": [
+   "Fuegan Orange"
+  ],
+  "citadel_equiv": "Fuegan Orange",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Barbarian Flesh",
+  "hex": "#F49A7D",
+  "aliases": [
+   "Bestigor Flesh"
+  ],
+  "citadel_equiv": "Bestigor Flesh",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Topaz Skin",
+  "hex": "#B5564D",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Mocca Skin",
+  "hex": "#896B5A",
+  "aliases": [
+   "Steel Legion Drab"
+  ],
+  "citadel_equiv": "Steel Legion Drab",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Evil Chrome",
+  "hex": "#6C4833",
+  "aliases": [
+   "Sycorax Bronze"
+  ],
+  "citadel_equiv": "Sycorax Bronze",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Bright Gold",
+  "hex": "#937702",
+  "aliases": [
+   "Auric Armour Gold"
+  ],
+  "citadel_equiv": "Auric Armour Gold",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Gun Metal",
+  "hex": "#4B4D4C",
+  "aliases": [
+   "Leadbelcher"
+  ],
+  "citadel_equiv": "Leadbelcher",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Rust Tone",
+  "hex": "#633C13",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Dark Blue Tone",
+  "hex": "#29323F",
+  "aliases": [
+   "Drakenhof Nightshade"
+  ],
+  "citadel_equiv": "Drakenhof Nightshade",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Red Tone",
+  "hex": "#74252C",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Agate Skin",
+  "hex": "#D88779",
+  "aliases": [
+   "Cadian Fleshtone"
+  ],
+  "citadel_equiv": "Cadian Fleshtone",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Tiger\u2019s Eye Skin",
+  "hex": "#944E4E",
+  "aliases": [
+   "Husk Brown"
+  ],
+  "citadel_equiv": "Tuskgor Fur",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Onyx Skin",
+  "hex": "#6C4F48",
+  "aliases": [
+   "Gorthor Brown"
+  ],
+  "citadel_equiv": "Gorthor Brown",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Red Copper",
+  "hex": "#5E3635",
+  "aliases": [
+   "Screaming Bell"
+  ],
+  "citadel_equiv": "Screaming Bell",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Greedy Gold",
+  "hex": "#90640D",
+  "aliases": [
+   "Retributor Armour"
+  ],
+  "citadel_equiv": "Retributor Armour",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Glittering Green",
+  "hex": "#216232",
+  "aliases": [
+   "Glitter Green"
+  ],
+  "citadel_equiv": "Glitter Green",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Strong Tone",
+  "hex": "#422E18",
+  "aliases": [
+   "Agrax Earthshade"
+  ],
+  "citadel_equiv": "Agrax Earthshade",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Military Shade",
+  "hex": "#444618",
+  "aliases": [
+   "Military Shader"
+  ],
+  "citadel_equiv": "Athonian Camoshade",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Dark Red Tone",
+  "hex": "#472221",
+  "aliases": [
+   "Berserker Bloodshade"
+  ],
+  "citadel_equiv": "Berserker Bloodshade",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Moonstone Skin",
+  "hex": "#C87B71",
+  "aliases": [
+   "Scar Tissue"
+  ],
+  "citadel_equiv": "Scar Tissue",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Carnelian Skin",
+  "hex": "#644245",
+  "aliases": [
+   "Chaotic Red"
+  ],
+  "citadel_equiv": "Bloodreaver Flesh",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Obsidian Skin",
+  "hex": "#4B4344",
+  "aliases": [
+   "Onyx Skin"
+  ],
+  "citadel_equiv": "Dryad Bark",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Rough Iron",
+  "hex": "#2B2318",
+  "aliases": [
+   "Warlock Bronze"
+  ],
+  "citadel_equiv": "Warlock Bronze",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Tainted Gold",
+  "hex": "#555133",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Dark Emerald",
+  "hex": "#35441B",
+  "aliases": [],
+  "citadel_equiv": null,
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Dark Tone",
+  "hex": "#2E2C28",
+  "aliases": [
+   "Nuln Oil"
+  ],
+  "citadel_equiv": "Nuln Oil",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ },
+ {
+  "name": "Green Tone",
+  "hex": "#2B492A",
+  "aliases": [
+   "Biel-Tan Green"
+  ],
+  "citadel_equiv": "Biel-Tan Green",
+  "hex_source": "aggregator",
+  "subrange": "standard"
+ }
+]

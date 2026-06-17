@@ -1,0 +1,122 @@
+[
+ {
+  "code": "77.121",
+  "name": "Sterling Silver",
+  "hex": "#CCD7D5",
+  "subrange": "metallic"
+ },
+ {
+  "code": "77.122",
+  "name": "Radiant Yellow",
+  "hex": "#F4DE70",
+  "subrange": "metallic"
+ },
+ {
+  "code": "77.123",
+  "name": "Imperial Gold",
+  "hex": "#DEAB6C",
+  "subrange": "metallic"
+ },
+ {
+  "code": "77.124",
+  "name": "Ancient Copper",
+  "hex": "#DE9F78",
+  "subrange": "metallic"
+ },
+ {
+  "code": "77.125",
+  "name": "Forged Red",
+  "hex": "#E28F73",
+  "subrange": "metallic"
+ },
+ {
+  "code": "77.126",
+  "name": "Ruby Red",
+  "hex": "#D17A6F",
+  "subrange": "metallic"
+ },
+ {
+  "code": "77.127",
+  "name": "Crimson Magenta",
+  "hex": "#E178B7",
+  "subrange": "metallic"
+ },
+ {
+  "code": "77.128",
+  "name": "Amethyst Purple",
+  "hex": "#AA76BD",
+  "subrange": "metallic"
+ },
+ {
+  "code": "77.129",
+  "name": "Celestial Violet",
+  "hex": "#9D8DCA",
+  "subrange": "metallic"
+ },
+ {
+  "code": "77.130",
+  "name": "Ultramarine Blue",
+  "hex": "#657EA0",
+  "subrange": "metallic"
+ },
+ {
+  "code": "77.131",
+  "name": "Sapphire Blue",
+  "hex": "#4E92C1",
+  "subrange": "metallic"
+ },
+ {
+  "code": "77.132",
+  "name": "Hydra Turquoise",
+  "hex": "#57A9C5",
+  "subrange": "metallic"
+ },
+ {
+  "code": "77.133",
+  "name": "Beetle Green",
+  "hex": "#87C3A5",
+  "subrange": "metallic"
+ },
+ {
+  "code": "77.134",
+  "name": "Dusken Green",
+  "hex": "#64957B",
+  "subrange": "metallic"
+ },
+ {
+  "code": "77.135",
+  "name": "Amber Green",
+  "hex": "#82A267",
+  "subrange": "metallic"
+ },
+ {
+  "code": "77.136",
+  "name": "Greenish Gold",
+  "hex": "#B0B464",
+  "subrange": "metallic"
+ },
+ {
+  "code": "77.137",
+  "name": "Arcane Gold",
+  "hex": "#BA8F6D",
+  "subrange": "metallic"
+ },
+ {
+  "code": "77.138",
+  "name": "Rusty Metal",
+  "hex": "#9B7E68",
+  "subrange": "metallic"
+ },
+ {
+  "code": "77.139",
+  "name": "Aged Metal",
+  "hex": "#736F4F",
+  "subrange": "metallic"
+ },
+ {
+  "code": "77.140",
+  "name": "Obsidian Black",
+  "hex": "#676465",
+  "subrange": "metallic"
+ }
+]

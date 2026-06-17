@@ -63,6 +63,7 @@ export interface Paint {
   brand: string;
   hex: string;
   type: string;
+  colorFamily?: string; // Canonical lowercase family from DB (matches backend color_family)
   rgb?: [number, number, number];
   lab?: [number, number, number];
   deltaE?: number; // Distance from detected color (when used as a match)

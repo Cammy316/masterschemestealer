@@ -168,6 +168,7 @@ function findTopMatches(
       brand: paint.brand,
       hex: paint.hex,
       type: paint.type,
+      colorFamily: paint.colorFamily,  // display family from DB (matches backend)
       rgb: [paint.rgb.r, paint.rgb.g, paint.rgb.b] as [number, number, number],
       lab: [paint.lab.l, paint.lab.a, paint.lab.b] as [number, number, number],
       deltaE: Math.round(rawDeltaE * 10) / 10,  // true distance for display
@@ -368,4 +369,27 @@ export function enhanceWithPaintRecipes(scanResult: ScanResult): ScanResult {
   });
 
   return { ...scanResult, detectedColors };
+}
+
+/**
+ * Search paints by display name OR alias (Prompt 2.6 — Task 6).
+ *
+ * Aliases carry old product names so customers with OLD pots can still find a
+ * paint: Army Painter's pre-Fanatic Warpaints names, and Citadel display names.
+ * The alias data lives on each `PaintData.aliases` (generated into
+ * paintDatabase.ts) and is also served verbatim by the backend `/api/paints`
+ * endpoint, which returns the full paints.json (every record includes
+ * `aliases`). The canonical `alias → paint_id` map is emitted alongside the DB
+ * build at `python-api/scripts/sources/name_aliases.json`.
+ *
+ * This is the single consumption point for client-side alias search; Prompt 6's
+ * "tap the correct paint" UI builds on it.
+ */
+export function findPaintsByNameOrAlias(query: string): PaintData[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+  return getPaintDatabase().filter((p) => {
+    if (p.name.toLowerCase().includes(q)) return true;
+    return (p.aliases || []).some((a) => a.toLowerCase().includes(q));
+  });
 }
