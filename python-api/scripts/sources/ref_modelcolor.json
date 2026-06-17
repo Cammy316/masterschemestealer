@@ -1,0 +1,650 @@
+[
+ {
+  "code": "70.740",
+  "name": "Cam. Middle BrownBurnt",
+  "hex": "#332D0D",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.741",
+  "name": "Cam. Black Green",
+  "hex": "#161F18",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.746",
+  "name": "Chestnut Brown Flat",
+  "hex": "#422B2F",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.747",
+  "name": "Faded Red Amaranth",
+  "hex": "#B24052",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.748",
+  "name": "Light Pink",
+  "hex": "#E673CC",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.749",
+  "name": "Dark Purple",
+  "hex": "#261233",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.750",
+  "name": "Light Violet",
+  "hex": "#998CE8",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.751",
+  "name": "Black Violet Azure",
+  "hex": "#1B162B",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.752",
+  "name": "Infantry Blue Sky",
+  "hex": "#0B0E27",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.753",
+  "name": "Light Blue Green Blue",
+  "hex": "#33CCA6",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.754",
+  "name": "Continental Blue Light",
+  "hex": "#0C1223",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.755",
+  "name": "Light Emerald Emerald",
+  "hex": "#1CA265",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.756",
+  "name": "Splinter Green Park",
+  "hex": "#2C6E21",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.758",
+  "name": "Bright Green Intermediate",
+  "hex": "#579629",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.759",
+  "name": "Tank Crew",
+  "hex": "#363D2E",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.760",
+  "name": "Light Mud",
+  "hex": "#617A4A",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.762",
+  "name": "Grey Brown Canvas",
+  "hex": "#3D3A08",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.763",
+  "name": "Canvas Cam.",
+  "hex": "#2E2E0B",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.802",
+  "name": "Sunset Red",
+  "hex": "#BD0D62",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.803",
+  "name": "Brown Rose",
+  "hex": "#885763",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.804",
+  "name": "Beige Red Cork",
+  "hex": "#A25F3E",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.805",
+  "name": "German Orange Old",
+  "hex": "#B34C58",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.806",
+  "name": "German Yellow Dark",
+  "hex": "#BFBF47",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.807",
+  "name": "Oxford Blue Violet",
+  "hex": "#182164",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.808",
+  "name": "Blue Green Light",
+  "hex": "#19998C",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.809",
+  "name": "Royal Blue",
+  "hex": "#0033BF",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.810",
+  "name": "Royal Purple",
+  "hex": "#280A4A",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.812",
+  "name": "Violet Red",
+  "hex": "#441D3F",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.815",
+  "name": "Basic Skin Tone Salmon",
+  "hex": "#EB9C8C",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.817",
+  "name": "Scarlet Dark",
+  "hex": "#C22224",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.820",
+  "name": "Off-White Ivory",
+  "hex": "#F2EDE6",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.821",
+  "name": "Germ. Beige WWII Khaki",
+  "hex": "#5D6641",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.823",
+  "name": "Luftwaffe Green Military",
+  "hex": "#1D330D",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.829",
+  "name": "Amaranth Red Scarlet",
+  "hex": "#D93326",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.830",
+  "name": "Ger. Fieldgrey WWIIGerman",
+  "hex": "#394724",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.833",
+  "name": "Fern Green Flat",
+  "hex": "#295511",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.835",
+  "name": "Salmon Rose German",
+  "hex": "#E67885",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.837",
+  "name": "Pale Sand Ice",
+  "hex": "#DEBF80",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.838",
+  "name": "Emerald Green",
+  "hex": "#007A2B",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.840",
+  "name": "Light Turquoise",
+  "hex": "#00868F",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.841",
+  "name": "Andrea Blue Medium",
+  "hex": "#0A8FCC",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.843",
+  "name": "Cork Brown Brown",
+  "hex": "#8C6640",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.844",
+  "name": "Deep Sky Blue Andrea",
+  "hex": "#4DB2E6",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.845",
+  "name": "Sunny Skin Tone Beige",
+  "hex": "#F28538",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.850",
+  "name": "Medium Olive Luftwaffe",
+  "hex": "#244712",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.851",
+  "name": "Bright Orange",
+  "hex": "#EB400F",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.858",
+  "name": "Ice Yellow Light",
+  "hex": "#E6D459",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.860",
+  "name": "Med. Flesh Tone Light",
+  "hex": "#A16F2A",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.876",
+  "name": "Brown Sand Chestnut",
+  "hex": "#7A5234",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.885",
+  "name": "Pastel Green Green",
+  "hex": "#7EA15C",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.886",
+  "name": "Green Grey Ger.",
+  "hex": "#49613D",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.888",
+  "name": "Olive Grey",
+  "hex": "#263319",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.890",
+  "name": "Refractive Green",
+  "hex": "#293D1F",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.891",
+  "name": "Intermediate Green Fern",
+  "hex": "#366C25",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.893",
+  "name": "US Dark Green",
+  "hex": "#2E3D25",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.894",
+  "name": "Cam. Olive Green",
+  "hex": "#212D1D",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.895",
+  "name": "Gunship Green German",
+  "hex": "#32532B",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.896",
+  "name": "Extra Dark Green",
+  "hex": "#14190A",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.897",
+  "name": "Bronze Green Bright",
+  "hex": "#1B2D16",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.898",
+  "name": "Dark Sea Blue Continental",
+  "hex": "#0D1C33",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.899",
+  "name": "Dark Prussian Blue Pastel",
+  "hex": "#130847",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.901",
+  "name": "Pastel Blue Flat",
+  "hex": "#4D85A6",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.902",
+  "name": "Azure Prussian",
+  "hex": "#456BD4",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.908",
+  "name": "Carmine Red Red",
+  "hex": "#870000",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.909",
+  "name": "Vermilion Carmine",
+  "hex": "#C80C1B",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.911",
+  "name": "Light Orange Bright",
+  "hex": "#FF5919",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.915",
+  "name": "Deep Yellow Flat",
+  "hex": "#EBCC0D",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.918",
+  "name": "Ivory Light",
+  "hex": "#E6E6CC",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.919",
+  "name": "Cold White Off-White",
+  "hex": "#F5F5FC",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.920",
+  "name": "German Uniform Bronze",
+  "hex": "#264730",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.922",
+  "name": "Uniform Green Medium",
+  "hex": "#2D500E",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.924",
+  "name": "Russian Unif. WWII",
+  "hex": "#37491C",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.925",
+  "name": "Blue Infantry",
+  "hex": "#0E0A5C",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.926",
+  "name": "Red Faded",
+  "hex": "#620B19",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.927",
+  "name": "Dark Flesh Med.",
+  "hex": "#CC8A26",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.928",
+  "name": "Light Flesh Basic",
+  "hex": "#F2CCB2",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.929",
+  "name": "Light Brown",
+  "hex": "#8F4918",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.941",
+  "name": "Umber German",
+  "hex": "#332724",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.944",
+  "name": "Old Rose Brown",
+  "hex": "#B25980",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.945",
+  "name": "Magenta",
+  "hex": "#790F74",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.946",
+  "name": "Dark Red",
+  "hex": "#4C1718",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.947",
+  "name": "Dark Vermilion Flat",
+  "hex": "#B20C18",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.948",
+  "name": "Golden Yellow Light",
+  "hex": "#FF9926",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.949",
+  "name": "Light Yellow Lemon",
+  "hex": "#F2D933",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.952",
+  "name": "Lemon Yellow Deep",
+  "hex": "#D9E60D",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.953",
+  "name": "Flat Yellow Golden",
+  "hex": "#F7B226",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.954",
+  "name": "Yellow Green",
+  "hex": "#CCFF19",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.955",
+  "name": "Flat Flesh Dark",
+  "hex": "#DE8C4D",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.957",
+  "name": "Flat Red Dark",
+  "hex": "#950B17",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.958",
+  "name": "Pink",
+  "hex": "#A633B8",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.959",
+  "name": "Purple",
+  "hex": "#2E116A",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.960",
+  "name": "Violet Black",
+  "hex": "#150D5E",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.961",
+  "name": "Sky Blue Deep",
+  "hex": "#6DDCD5",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.962",
+  "name": "Flat Blue Royal",
+  "hex": "#1C38A1",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.963",
+  "name": "Medium Blue Light",
+  "hex": "#003295",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.965",
+  "name": "Prussian Blue Dark",
+  "hex": "#152E70",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.967",
+  "name": "Olive Green Uniform",
+  "hex": "#356614",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.968",
+  "name": "Flat Green Cam.",
+  "hex": "#1B4609",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.969",
+  "name": "Park Green Flat Deep",
+  "hex": "#15732E",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.970",
+  "name": "Deep Green Black",
+  "hex": "#0F4C0F",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.974",
+  "name": "Green Sky Splinter",
+  "hex": "#62A34C",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.975",
+  "name": "Military Green Pastel",
+  "hex": "#283422",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.978",
+  "name": "Dark Yellow",
+  "hex": "#799118",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.979",
+  "name": "Cam. Dark Green Yellow",
+  "hex": "#122412",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.980",
+  "name": "Black Green",
+  "hex": "#0E2615",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.986",
+  "name": "Deck Tan",
+  "hex": "#99AB8C",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.987",
+  "name": "Medium Grey Germ.",
+  "hex": "#6C6C4C",
+  "subrange": "standard"
+ },
+ {
+  "code": "70.988",
+  "name": "Khaki Grey",
+  "hex": "#525721",
+  "subrange": "standard"
+ }
+]

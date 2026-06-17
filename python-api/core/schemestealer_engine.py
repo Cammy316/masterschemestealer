@@ -7,6 +7,8 @@ import cv2
 import numpy as np
 import colorsys
 import json
+import re
+import unicodedata
 from PIL import Image
 from typing import List, Dict, Tuple
 from skimage import color as sk_color
@@ -15,12 +17,21 @@ from config import ColorDetection, Affiliate
 from core.photo_processor import PhotoProcessor
 from core.base_detector import BaseDetector
 from core.color_engine import (
-    Paint, ShadeTypeAnalyser, 
+    Paint, ShadeTypeAnalyser,
     PaintMatcher, VisualizationEngine
 )
-from core.smart_color_system import SmartColorExtractor 
+from core.smart_color_system import SmartColorExtractor
 from utils.helpers import apply_white_balance, increase_saturation
 from utils.logging_config import logger
+
+
+def _slugify(*parts) -> str:
+    """ASCII lowercase hyphenated slug — mirrors scripts/build_paints_db.py
+    so a paint_id derived at load time matches the builder's output."""
+    raw = '-'.join(str(p) for p in parts if p)
+    raw = unicodedata.normalize('NFKD', raw).encode('ascii', 'ignore').decode('ascii')
+    raw = re.sub(r'[^A-Za-z0-9]+', '-', raw).strip('-').lower()
+    return raw or 'paint'
 
 class SchemeStealerEngine:
     def __init__(self, paint_db_path: str = 'paints.json'):
@@ -31,6 +42,9 @@ class SchemeStealerEngine:
         
         self.paint_db = []
         for p in paint_data:
+            # paint_id derived from name when absent so the OLD paints.json
+            # (no paint_id) and the rebuilt file both load cleanly.
+            paint_id = p.get('paint_id') or _slugify(p.get('brand', ''), p.get('name', ''))
             paint = Paint(
                 name=p['name'],
                 brand=p['brand'],
@@ -42,9 +56,18 @@ class SchemeStealerEngine:
                 transparency=float(p.get('transparency', 0.0)),
                 matchable=bool(p.get('matchable', True)),
                 discontinued=bool(p.get('discontinued', False)),
+                paint_id=paint_id,
+                range=p.get('range', ''),
+                aliases=list(p.get('aliases', []) or []),
+                citadel_equiv=p.get('citadel_equiv'),
+                hex_source=p.get('hex_source', 'unknown'),
             )
             paint.compute_properties()
             self.paint_db.append(paint)
+
+        matchable_count = sum(1 for p in self.paint_db if p.matchable)
+        logger.info(f"Loaded {len(self.paint_db)} paints from {paint_db_path} "
+                    f"({matchable_count} matchable)")
         
         self.photo_processor = PhotoProcessor()
         self.base_detector = BaseDetector()

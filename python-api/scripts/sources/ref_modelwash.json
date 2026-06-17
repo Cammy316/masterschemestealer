@@ -1,0 +1,110 @@
+[
+ {
+  "code": "76.501",
+  "name": "White",
+  "hex": "#FFFFFF",
+  "subrange": "wash"
+ },
+ {
+  "code": "76.503",
+  "name": "Dark Yellow",
+  "hex": "#DAAC06",
+  "subrange": "wash"
+ },
+ {
+  "code": "76.505",
+  "name": "Light Rust",
+  "hex": "#F06B1E",
+  "subrange": "wash"
+ },
+ {
+  "code": "76.506",
+  "name": "Rust",
+  "hex": "#CB3F17",
+  "subrange": "wash"
+ },
+ {
+  "code": "76.507",
+  "name": "Dark Rust",
+  "hex": "#E74E1A",
+  "subrange": "wash"
+ },
+ {
+  "code": "76.512",
+  "name": "Dark Green",
+  "hex": "#787218",
+  "subrange": "wash"
+ },
+ {
+  "code": "76.513",
+  "name": "Brown",
+  "hex": "#8A3D1D",
+  "subrange": "wash"
+ },
+ {
+  "code": "76.514",
+  "name": "Dark Brown",
+  "hex": "#A57962",
+  "subrange": "wash"
+ },
+ {
+  "code": "76.515",
+  "name": "Light Grey",
+  "hex": "#BFBEBB",
+  "subrange": "wash"
+ },
+ {
+  "code": "76.516",
+  "name": "Off-Grey",
+  "hex": "#5E5B5C",
+  "subrange": "wash"
+ },
+ {
+  "code": "76.517",
+  "name": "Dark Grey",
+  "hex": "#312D25",
+  "subrange": "wash"
+ },
+ {
+  "code": "76.518",
+  "name": "Black",
+  "hex": "#231F20",
+  "subrange": "wash"
+ },
+ {
+  "code": "76.519",
+  "name": "Olive Green",
+  "hex": "#13281B",
+  "subrange": "wash"
+ },
+ {
+  "code": "76.520",
+  "name": "Dark Khaki Green",
+  "hex": "#77532B",
+  "subrange": "wash"
+ },
+ {
+  "code": "76.521",
+  "name": "Oiled Earth",
+  "hex": "#63493C",
+  "subrange": "wash"
+ },
+ {
+  "code": "76.522",
+  "name": "Desert Dust",
+  "hex": "#D2C392",
+  "subrange": "wash"
+ },
+ {
+  "code": "76.523",
+  "name": "European Dust",
+  "hex": "#744827",
+  "subrange": "wash"
+ },
+ {
+  "code": "76.524",
+  "name": "Blue Grey",
+  "hex": "#4A6886",
+  "subrange": "wash"
+ }
+]

@@ -221,16 +221,20 @@ function generateTypeScript(paints) {
     const lab = rgbToLab(rgb);
 
     return {
+      paint_id: paint.paint_id || '',
       name: paint.name,
       brand: paint.brand,
       hex: paint.hex.toUpperCase(),
-      type: mapCategory(paint),
-      family: mapFamily(paint),
+      type: mapCategory(paint),               // back-compat capitalised role
+      category: (paint.category || paint.type || 'base').toLowerCase(),
+      family: mapFamily(paint),               // back-compat capitalised family
+      colorFamily: (paint.color_family || 'unknown').toLowerCase(),
       rgb: rgb,  // { r, g, b } object
       lab: lab,  // { l, a, b } object
       finish: (paint.finish || '').toLowerCase(),
       transparency: typeof paint.transparency === 'number' ? paint.transparency : 0,
       matchable: paint.matchable !== false,  // default true
+      aliases: Array.isArray(paint.aliases) ? paint.aliases : [],
     };
   });
 
@@ -254,25 +258,27 @@ function generateTypeScript(paints) {
 import type { RGB, LAB } from './colorConversion';
 
 export interface PaintData {
+  paint_id: string;
   name: string;
   brand: string;
   hex: string;
   rgb: RGB;
   lab: LAB;
-  type: string;
-  family: string;
+  type: string;          // capitalised role (Base/Layer/Shade…) — back-compat
+  category: string;      // raw lowercase DB category
+  family: string;        // capitalised family — back-compat
+  colorFamily: string;   // lowercase canonical family (matches backend color_family)
   finish: string;
   transparency: number;
   matchable: boolean;
+  aliases: string[];     // alt names (old Warpaints names, GW names) for search
 }
 
 /**
  * Pre-computed paint database with LAB values
  * Optimized subset of ~${processedPaints.length} paints for fast offline matching
  */
-export const PAINT_DATABASE: PaintData[] = ${JSON.stringify(processedPaints, null, 2)
-  .replace(/"(\w+)":/g, '$1:')
-  .replace(/"/g, "'")};
+export const PAINT_DATABASE: PaintData[] = ${JSON.stringify(processedPaints, null, 2)};
 
 // Cached reference
 let _paintDatabase: PaintData[] | null = null;
@@ -334,14 +340,19 @@ export const PAINT_DATABASE_STATS = {
 // ============================================================================
 
 async function main() {
-  const cleanedPath = path.join(__dirname, '../../python-api/paints_cleaned.json');
+  // Prefer the rebuilt database (Prompt 2.6); after Cam swaps it into place
+  // this falls through to paints.json automatically.
+  const rebuiltPath = path.join(__dirname, '../../python-api/paints_rebuilt.json');
   const fallbackPath = path.join(__dirname, '../../python-api/paints.json');
   const outputPath = path.join(__dirname, '../lib/paintDatabase.ts');
 
-  const paintsJsonPath = fs.existsSync(cleanedPath) ? cleanedPath : fallbackPath;
+  const paintsJsonPath = fs.existsSync(rebuiltPath) ? rebuiltPath : fallbackPath;
   console.log(`Reading paints database from: ${path.basename(paintsJsonPath)}`);
   const rawData = fs.readFileSync(paintsJsonPath, 'utf-8');
   const allPaints = JSON.parse(rawData);
+
+  // Before/after bundle accounting
+  const beforeBytes = fs.existsSync(outputPath) ? fs.statSync(outputPath).size : 0;
 
   // Exclude paints explicitly marked non-matchable
   const matchablePaints = allPaints.filter(p => p.matchable !== false);
@@ -356,8 +367,14 @@ async function main() {
   console.log(`Writing to ${outputPath}...`);
   fs.writeFileSync(outputPath, tsContent, 'utf-8');
 
+  const afterBytes = fs.statSync(outputPath).size;
+  const delta = afterBytes - beforeBytes;
+  const kb = (n) => `${(n / 1024).toFixed(1)} KB`;
+
   console.log('\n✅ Done! Paint database generated successfully.');
-  console.log(`   ${selectedPaints.length} paints with pre-computed LAB values`);
+  console.log(`   Paints: ${selectedPaints.length} (with pre-computed LAB values)`);
+  console.log(`   paintDatabase.ts: ${kb(beforeBytes)} → ${kb(afterBytes)} ` +
+    `(${delta >= 0 ? '+' : ''}${kb(delta)})`);
 }
 
 main().catch(console.error);

@@ -45,6 +45,14 @@ class Paint:
     matchable: bool = True
     discontinued: bool = False
 
+    # Provenance / identity metadata (Prompt 2.6 rebuilt schema).
+    # Defaults keep the OLD paints.json loadable without these keys.
+    paint_id: str = ''
+    range: str = ''
+    aliases: List[str] = field(default_factory=list)
+    citadel_equiv: Optional[str] = None
+    hex_source: str = 'unknown'
+
     # Computed colour-space properties (populated by compute_properties)
     rgb: np.ndarray = None
     lab: np.ndarray = None
@@ -141,10 +149,12 @@ class ColorAnalyzer:
             dist = min(abs(h_deg), abs(360 - h_deg), abs(h_deg - 360))
             conf = max(0, 1.0 - dist / 25)
             
-            # Pink detection - RELAXED (FIX #7)
-            if s > 0.35 and v > 0.55:
-                families.append(('Pink', conf))
-            elif v > 0.65 and s > 0.4:
+            # Pink detection — pink is a LIGHT, comparatively desaturated
+            # tint of red. Deep/bright saturated reds (Mephiston Red #9A1115:
+            # s≈0.89; Evil Sunz #C21E10: s≈0.92) must stay Red even when their
+            # value is moderate-to-high. Only treat as pink when saturation is
+            # genuinely below the pure-red range.
+            if v > 0.6 and s < 0.65:
                 families.append(('Pink', conf))
             else:
                 # Red vs Brown - USE CHROMA (FIX #8)
@@ -329,6 +339,90 @@ class ColorAnalyzer:
             return 'smooth'
         else:
             return 'textured'
+
+
+# ============================================================================
+# CANONICAL COLOUR FAMILY — shared between the engine and the DB builder
+# ============================================================================
+#
+# classify_color_family() returns composite display strings ("Gold/Brass",
+# "Off-White/Bone", "Pink/Purple"). The DB and scan-time code agree on a flat
+# lowercase vocabulary. compute_color_family() is the SINGLE code path that both
+# the engine and scripts/build_paints_db.py use, so DB families and detection
+# families are produced by identical logic (the root-cause fix for the
+# "grey that is actually pink" bug).
+
+# Flat lowercase families the DB and engine recognise.
+RECOGNISED_FAMILIES = {
+    'red', 'orange', 'yellow', 'green', 'cyan', 'blue', 'purple', 'pink',
+    'magenta', 'brown', 'flesh', 'bone', 'white', 'grey', 'black',
+    'gold', 'silver', 'bronze', 'copper',
+}
+
+# classify_color_family() composite output -> canonical flat family.
+_FAMILY_NORMALISE = {
+    'gold/brass': 'gold', 'gold/yellow': 'gold', 'gold': 'gold',
+    'bronze/gold': 'bronze', 'bronze/copper': 'bronze',
+    'silver/steel': 'silver', 'gunmetal/iron': 'silver',
+    'gunmetal/grey': 'grey', 'gunmetal/rust': 'brown',
+    'pure white': 'white', 'off-white/bone': 'bone', 'bone/beige': 'bone',
+    'grey': 'grey', 'light grey': 'grey', 'dark grey': 'grey',
+    'grey/blue': 'blue', 'black': 'black', 'deep shadow': 'black',
+    'near black': 'black', 'blue': 'blue', 'green': 'green',
+    'purple': 'purple', 'pink': 'pink', 'pink/purple': 'pink',
+    'pink/magenta': 'pink', 'magenta': 'magenta', 'brown': 'brown',
+    'brown/tan': 'brown', 'red': 'red', 'cyan/turquoise': 'cyan',
+    'yellow': 'yellow', 'unknown': 'grey',
+}
+
+# When a NON-metallic paint lands on a metallic-ish family via the hue zones
+# (e.g. a dark warm brown returning "Bronze/Copper"), remap to the nearest
+# non-metallic family so matte paints never carry a metal family.
+_NON_METALLIC_REMAP = {
+    'gold': 'yellow', 'bronze': 'brown', 'copper': 'brown', 'silver': 'grey',
+}
+
+
+def _metallic_type_from_hsv(h_deg: float, s: float, v: float) -> str:
+    """Single-colour metallic typing — mirrors ColorAnalyzer.detect_metallic."""
+    if 30 < h_deg < 60 and s > 0.25:
+        return 'GOLD'
+    if (5 < h_deg < 30 or h_deg > 340) and s > 0.25:
+        return 'COPPER'
+    if s < 0.20 and v > 0.45:
+        return 'SILVER'
+    if s < 0.20 and v < 0.45:
+        return 'GUNMETAL'
+    return 'UNKNOWN'
+
+
+def compute_color_family(hex_str: str, finish: str = 'matte') -> str:
+    """Compute a paint's canonical flat colour family from its hex.
+
+    Uses ColorAnalyzer.classify_color_family (the same classifier the engine
+    runs at scan time) and normalises the composite output to RECOGNISED_FAMILIES.
+    finish='metallic' enables metallic typing so gold/silver/bronze are preserved.
+    """
+    h = hex_str.lstrip('#')
+    rgb = np.array([int(h[i:i + 2], 16) for i in (0, 2, 4)]) / 255.0
+    lab = color.rgb2lab(np.array([[rgb]]))[0][0]
+    hsv = colorsys.rgb_to_hsv(*rgb)
+    h_deg, s, v = hsv[0] * 360, hsv[1], hsv[2]
+    chroma = float(np.sqrt(lab[1] ** 2 + lab[2] ** 2))
+
+    is_metallic = (finish or '').lower() == 'metallic'
+    metallic_type = _metallic_type_from_hsv(h_deg, s, v) if is_metallic else None
+
+    display, _conf = ColorAnalyzer.classify_color_family(
+        hsv[0], s, v, chroma,
+        is_metallic=is_metallic, metallic_type=metallic_type,
+    )
+    canonical = _FAMILY_NORMALISE.get(display.lower(), 'grey')
+
+    if not is_metallic and canonical in _NON_METALLIC_REMAP:
+        canonical = _NON_METALLIC_REMAP[canonical]
+
+    return canonical if canonical in RECOGNISED_FAMILIES else 'grey'
 
 
 # ============================================================================
