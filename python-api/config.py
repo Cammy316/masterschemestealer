@@ -38,25 +38,32 @@ class ColorDetection:
 
 class ColorRanges:
     """
-    HSV hue ranges for color families (in degrees, 0-360)
-    Used for classification - helps avoid overlaps
+    HSV hue ranges for colour families (in degrees, 0-360).
+
+    REFERENCE/DEBUG ONLY. The single source of truth for classification is
+    color_engine.hue_family(); these constants document the hue zones it uses so
+    they must stay in sync with it. BROWN/BONE/PINK/GOLD are not pure hue bands —
+    they are saturation/value sub-splits inside the zones below.
     """
-    RED = (330, 20)          # Wraps around 0
-    ORANGE = (10, 35)
-    BROWN = (15, 50)         # Overlaps with orange (low saturation distinguishes)
-    YELLOW = (40, 75)
-    GOLD = (40, 70)          # Same as yellow but high chroma
-    GREEN = (55, 90)
-    CYAN = (160, 195)        # Tightened to not catch blues
-    BLUE = (180, 250)        # Broad range for various blues
-    PURPLE = (250, 290)      # Distinct from pink
-    MAGENTA = (280, 340)     # Red-violet range
-    PINK = (330, 20)         # Similar to red but high value/saturation
-    
-    # Special cases
-    WHITE = "v > 0.90, s < 0.12"
-    GREY = "0.40 < v < 0.90, s < 0.12"
-    BLACK = "v < 0.15"
+    RED = (336, 16)          # Wraps around 0 (336-360 and 0-16)
+    ORANGE = (16, 40)        # Orange/Brown zone (low sat/value => brown)
+    YELLOW = (40, 74)        # Yellow/Bone zone (pale desaturated => bone)
+    GREEN = (74, 158)
+    CYAN = (158, 195)        # Owns this band; no high-chroma gate
+    BLUE = (195, 256)
+    PURPLE = (256, 292)
+    MAGENTA = (292, 336)     # Magenta/Pink zone (light tint => pink)
+
+    # Sub-splits (NOT pure hue bands — sat/value/chroma decide):
+    GOLD = (40, 74)          # metallic-only; matte gold-hue stays yellow
+    BROWN = "RED/ORANGE/YELLOW zones when dull (low chroma) or dark (low value)"
+    BONE = "YELLOW zone when pale (s < 0.30, v > 0.55)"
+    PINK = "RED & MAGENTA zones when light tint (v > 0.72, s < 0.55)"
+
+    # Achromatic / special cases (value + chroma gated, see hue_family):
+    WHITE = "s < 0.10 or chroma < 12, v > 0.85"
+    GREY = "s < 0.10 or chroma < 12, 0.18 < v <= 0.85"
+    BLACK = "v < 0.10, or achromatic with v <= 0.18"
     SILVER = "metallic + high value"
     GUNMETAL = "metallic + low value"
 
