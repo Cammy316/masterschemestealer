@@ -285,13 +285,14 @@ class ColorAnalyzer:
         
         # DETERMINE METALLIC TYPE by hue and saturation
         
-        # Gold: Yellow-orange (30-60°) with saturation
-        if 30 < median_hue < 60 and median_sat > 0.25:
+        # Gold: Yellow-orange (25-60°) with saturation (floor 25° mirrors
+        # _metallic_type_from_hsv so warm golds like Retributor read GOLD).
+        if 25 < median_hue < 60 and median_sat > 0.25:
             logger.info("Metallic type: GOLD")
             return True, 'GOLD'
-        
-        # Copper/Bronze: Orange-red (5-30° or 340-360°)
-        elif (5 < median_hue < 30 or median_hue > 340) and median_sat > 0.25:
+
+        # Copper/Bronze: Orange-red (5-25° or 340-360°)
+        elif (5 < median_hue <= 25 or median_hue > 340) and median_sat > 0.25:
             logger.info("Metallic type: COPPER")
             return True, 'COPPER'
         
@@ -384,10 +385,15 @@ _NON_METALLIC_REMAP = {
 
 
 def _metallic_type_from_hsv(h_deg: float, s: float, v: float) -> str:
-    """Single-colour metallic typing — mirrors ColorAnalyzer.detect_metallic."""
-    if 30 < h_deg < 60 and s > 0.25:
+    """Single-colour metallic typing — mirrors ColorAnalyzer.detect_metallic.
+
+    Gold floor is 25° (not 30°) so bright warm metallics such as Retributor
+    Armour (#C39E81, h≈26°) type as GOLD rather than COPPER; copper/bronze stay
+    in the redder 5–25° band. Only affects metallic-finish paints.
+    """
+    if 25 < h_deg < 60 and s > 0.25:
         return 'GOLD'
-    if (5 < h_deg < 30 or h_deg > 340) and s > 0.25:
+    if (5 < h_deg <= 25 or h_deg > 340) and s > 0.25:
         return 'COPPER'
     if s < 0.20 and v > 0.45:
         return 'SILVER'
@@ -396,12 +402,97 @@ def _metallic_type_from_hsv(h_deg: float, s: float, v: float) -> str:
     return 'UNKNOWN'
 
 
+# Metallic typing → canonical flat metal family (used only when finish=metallic).
+_METALLIC_TYPE_TO_FAMILY = {
+    'GOLD': 'gold', 'COPPER': 'bronze', 'SILVER': 'silver', 'GUNMETAL': 'silver',
+}
+
+
+def hue_family(h_deg: float, s: float, v: float, chroma: float,
+               lab=None, finish: str = 'matte') -> str:
+    """Canonical colour-family classifier — the ONLY hue/family decision logic
+    in the codebase.
+
+    Both compute_color_family() and the ensemble's hue vote call this, so the DB
+    family and the scan family can never disagree by construction. Output is a
+    flat lowercase family from RECOGNISED_FAMILIES, and it NEVER returns a metal
+    family — matte paints must never carry one. Metallic typing is handled
+    separately (see _metallic_type_from_hsv / ColorAnalyzer.detect_metallic).
+
+    lab (L, a, b) is optional but enables the pale-pink rescue and the
+    desaturated-colour exceptions; pass it whenever available (the DB path
+    computes it from the hex; the ensemble cluster already carries median_lab).
+    """
+    h = float(h_deg) % 360.0
+    if lab is not None:
+        L, a, b = float(lab[0]), float(lab[1]), float(lab[2])
+    else:
+        # Fall back to a neutral LAB lean so the pale-tint rescues simply
+        # don't fire when no LAB is supplied.
+        L, a, b = v * 100.0, 0.0, 0.0
+
+    # 1. ACHROMATIC / PALE-TINT GATE (value + chroma based)
+    if v < 0.10:
+        return 'black'
+    if s < 0.10 or chroma < 12:
+        # Pale tints still carry a family — rescue by hue/LAB lean before neutral.
+        if (h < 24 or h >= 300) and L > 60 and a > 6 and v > 0.7:
+            return 'pink'                       # pale pink lives at BOTH hue ends
+        if 195 <= h < 256 and s > 0.05 and chroma > 3:
+            return 'blue'                       # desaturated blue (Ultramarine/Space Wolf)
+        if 74 <= h < 158 and s > 0.06 and chroma > 4:
+            return 'green'                      # desaturated green (Dark Angels/Death Guard)
+        if 158 <= h < 195 and s > 0.06 and chroma > 3:
+            return 'cyan'                       # desaturated cyan/turquoise
+        if 256 <= h < 300 and s > 0.05 and chroma > 3:
+            return 'purple'                     # desaturated purple
+        if v > 0.85:
+            return 'white'
+        if v > 0.18:
+            return 'grey'
+        return 'black'
+
+    # 2. CHROMATIC — strictly hue-zoned; sub-splits live INSIDE each zone only.
+    if h < 16 or h >= 336:                       # RED zone (pink ok; magenta does not belong)
+        if v > 0.72 and s < 0.55:
+            return 'pink'                        # light desaturated tint of red
+        if chroma < 16 and v < 0.55:
+            return 'brown'                       # dull + dark = brown (leather)
+        if s < 0.45 and v < 0.4:
+            return 'brown'
+        return 'red'
+    if 16 <= h < 40:                             # ORANGE / BROWN zone (pink NOT reachable here)
+        if s < 0.45 or v < 0.45:
+            return 'brown'                       # desaturated/dark warm = brown
+        return 'orange'
+    if 40 <= h < 74:                             # YELLOW / BONE zone
+        if s < 0.30 and v > 0.55:
+            return 'bone'                        # pale desaturated = bone/beige
+        if v < 0.30:
+            return 'brown'                       # ONLY very dark => brown; dark yellows STAY yellow
+        return 'yellow'
+    if 74 <= h < 158:
+        return 'green'
+    if 158 <= h < 195:                           # cyan owns this band with NO high-chroma gate
+        return 'cyan'
+    if 195 <= h < 256:
+        return 'blue'
+    if 256 <= h < 292:
+        return 'purple'
+    if 292 <= h < 336:                           # MAGENTA / PINK zone
+        if v > 0.72 and s < 0.55:
+            return 'pink'                        # light tint => pink
+        return 'magenta'                         # deep => magenta
+    return 'grey'                                 # unreachable fallback
+
+
 def compute_color_family(hex_str: str, finish: str = 'matte') -> str:
     """Compute a paint's canonical flat colour family from its hex.
 
-    Uses ColorAnalyzer.classify_color_family (the same classifier the engine
-    runs at scan time) and normalises the composite output to RECOGNISED_FAMILIES.
-    finish='metallic' enables metallic typing so gold/silver/bronze are preserved.
+    Non-metallic paints route through hue_family() — the single source of truth
+    also used by the scan-time ensemble's hue vote, so DB and scan families agree
+    by construction. finish='metallic' returns the metallic typing (gold/silver/
+    bronze) instead; UNKNOWN metallic falls back to the hue family.
     """
     h = hex_str.lstrip('#')
     rgb = np.array([int(h[i:i + 2], 16) for i in (0, 2, 4)]) / 255.0
@@ -410,18 +501,17 @@ def compute_color_family(hex_str: str, finish: str = 'matte') -> str:
     h_deg, s, v = hsv[0] * 360, hsv[1], hsv[2]
     chroma = float(np.sqrt(lab[1] ** 2 + lab[2] ** 2))
 
-    is_metallic = (finish or '').lower() == 'metallic'
-    metallic_type = _metallic_type_from_hsv(h_deg, s, v) if is_metallic else None
+    if (finish or '').lower() == 'metallic':
+        metal = _METALLIC_TYPE_TO_FAMILY.get(_metallic_type_from_hsv(h_deg, s, v))
+        if metal:
+            return metal
+        # UNKNOWN metallic → fall through to the hue family below.
 
-    display, _conf = ColorAnalyzer.classify_color_family(
-        hsv[0], s, v, chroma,
-        is_metallic=is_metallic, metallic_type=metallic_type,
-    )
-    canonical = _FAMILY_NORMALISE.get(display.lower(), 'grey')
-
-    if not is_metallic and canonical in _NON_METALLIC_REMAP:
+    canonical = hue_family(h_deg, s, v, chroma, lab=lab, finish=finish)
+    # Safety net: hue_family never emits a metal family, but guard anyway so a
+    # matte paint can never carry one.
+    if canonical in _NON_METALLIC_REMAP:
         canonical = _NON_METALLIC_REMAP[canonical]
-
     return canonical if canonical in RECOGNISED_FAMILIES else 'grey'
 
 

@@ -220,6 +220,27 @@ class SmartColorExtractor:
         final_clusters.sort(key=lambda x: x['coverage'], reverse=True)
         return final_clusters
 
+    # Small high-chroma trim protection thresholds (Prompt 1.3, Module 3).
+    _TRIM_SMALL_COVERAGE = 8.0    # percent — "small" region
+    _TRIM_HIGH_CHROMA = 30.0      # trim must be genuinely saturated to be protected
+    _TRIM_LOW_CHROMA = 20.0       # neighbour must be dull to be the blend culprit
+
+    def _would_blend_small_trim(self, c1: Dict, c2: Dict) -> bool:
+        """True if merging c1 and c2 would absorb a small, high-chroma trim region
+        (gold edge, gem, lens) into a large, low-chroma neighbour. Such pairings
+        are kept separate even when their ΔE is under the merge threshold — this
+        targets the bronze-nose class of bug without raising the global cluster
+        count. Returns False for ordinary similar-colour merges."""
+        def small_hi(c):
+            return (c.get('coverage', 100.0) <= self._TRIM_SMALL_COVERAGE
+                    and c.get('chroma', 0.0) > self._TRIM_HIGH_CHROMA)
+
+        def large_lo(c):
+            return (c.get('coverage', 0.0) > self._TRIM_SMALL_COVERAGE
+                    and c.get('chroma', 999.0) < self._TRIM_LOW_CHROMA)
+
+        return (small_hi(c1) and large_lo(c2)) or (small_hi(c2) and large_lo(c1))
+
     def _merge_perceptually_similar(self, clusters: List[Dict], pixels_lab: np.ndarray) -> List[Dict]:
         """Merge perceptually similar clusters using deltaE"""
         if len(clusters) <= 1: return clusters
@@ -240,13 +261,17 @@ class SmartColorExtractor:
         
         merged = []
         used = set()
-        
+
         for i in range(n):
             if i in used: continue
-            
+
             similar = [i]
             for j in range(i+1, n):
                 if j not in used and dist_matrix[i, j] < merge_threshold:
+                    # Protect small high-chroma trim (gold/gem) from being blended
+                    # into a large low-chroma body — the bronze-nose failure class.
+                    if self._would_blend_small_trim(clusters[i], clusters[j]):
+                        continue
                     similar.append(j)
                     used.add(j)
             
@@ -341,156 +366,76 @@ class SmartColorExtractor:
         return False
     
     def _classify_family_ensemble_weighted(self, cluster: Dict, all_clusters: List[Dict] = None) -> Tuple[str, float]:
-        """Weighted ensemble voting - LAB is most reliable"""
+        """Weighted ensemble voting around the canonical hue family.
+
+        The hue vote is color_engine.hue_family() — the SAME single source of
+        truth compute_color_family() uses — so the DB family and the scan family
+        agree by construction. The LAB and named-colour votes are corroboration /
+        tie-breakers only; they no longer define hue boundaries. The LAB vote
+        defers to the hue family for chromatic colours and asserts itself only as
+        a gold (metallic) overlay, which scan-time metallic detection relies on.
+        """
+        from collections import Counter
+        from core.color_engine import hue_family
+
         hsv = cluster['median_hsv']
         chroma = cluster['chroma']
         lab = cluster['median_lab']
         h_deg = hsv[0] * 360
         s, v = hsv[1], hsv[2]
-        
-        votes = []
-        
-        # Vote 1: HSV-based (weighted by saturation)
-        hue_vote = self._classify_by_hue(h_deg, s, v, chroma)
-        hue_weight = int((s * 20) if s > 0.2 else 5)
-        votes.extend([hue_vote] * hue_weight)
-        
-        # Vote 2: LAB-based (always highly weighted)
-        lab_vote = self._classify_by_lab_quadrant(lab, v)
-        lab_weight = 30
-        votes.extend([lab_vote] * lab_weight)
-        
-        # Vote 3: Named color (moderate weight)
+
+        # Vote 1: canonical hue family (flat lowercase → capitalised for voting).
+        hue_vote = hue_family(h_deg, s, v, chroma, lab=lab).capitalize()
+
+        # Vote 2: LAB defers to the hue family — it corroborates the hue boundary
+        # rather than defining its own (this is what kills the cyan-as-green class
+        # of disagreement). Its only assertion is the gold metallic overlay,
+        # applied after the vote.
+        lab_vote = hue_vote
+
+        # Vote 3: nearest named colour (corroboration only).
         named_vote = self._classify_by_nearest_named_color(cluster['median_rgb'])
-        named_weight = 10
-        votes.extend([named_vote] * named_weight)
-        
-        from collections import Counter
+
+        # Confidence/agreement-based weights — the corrected hue vote is no longer
+        # drowned by a single LAB vote (old lab_weight=30 fixed vs hue=s*20).
+        hue_weight = int(np.clip(s * 25, 10, 25))
+        lab_weight = 18
+        named_weight = 8
+
+        votes = ([hue_vote] * hue_weight
+                 + [lab_vote] * lab_weight
+                 + [named_vote] * named_weight)
+
         vote_counts = Counter(votes)
         winner, count = vote_counts.most_common(1)[0]
         confidence = count / len(votes)
-        
-        # Special case: Blue detection
-        if "Blue" in votes and winner == "Grey" and s > 0.05:
-            return "Blue", 0.70
-        
+
+        # If hue and named agree, that family wins — unless LAB strongly indicates
+        # a (very neutral) achromatic colour. Stops a lone mis-quadranted LAB vote
+        # from overriding two agreeing chromatic voters (the cyan-as-green case).
+        L, a, b = lab
+        lab_strongly_achromatic = abs(a) < 3 and abs(b) < 3
+        if hue_vote == named_vote and not lab_strongly_achromatic:
+            winner = hue_vote
+            confidence = max(confidence, (hue_weight + named_weight) / len(votes))
+
+        # Gold metallic overlay: a YELLOW carrying a strong gold LAB signature is
+        # reported as "Gold" so scan-time metallic detection (which scans the
+        # family string for "Gold") still fires. Gold is metallic-yellow, so it
+        # normalises straight back to yellow for matte DB comparison — it never
+        # creates a hue disagreement. Restricted to yellow so tans/ochres/bone
+        # are not swept into gold.
+        if hue_vote == "Yellow" and self._is_gold_in_lab(lab):
+            return "Gold", confidence
+
         logger.debug(f"Ensemble: {winner} (conf={confidence:.2f})")
-        
+
         return winner, confidence
     
-    def _classify_by_hue(self, h_deg: float, s: float, v: float, chroma: float) -> str:
-        """
-        HSV-based classification with COMPLETE FIX SUITE
-        ALL 7 COLOR FAMILY EXCEPTIONS APPLIED
-        """
-        # Define all special hue ranges
-        is_blue_range = 180 < h_deg < 260
-        is_green_range = 70 < h_deg < 170
-        is_purple_range = 270 < h_deg < 320
-        
-        # Adjust minimum saturation for families that desaturate easily
-        if is_blue_range or is_green_range or is_purple_range:
-            min_sat = 0.05
-        else:
-            min_sat = 0.10
-        
-        # ===== ACHROMATIC CHECK WITH ALL EXCEPTIONS =====
-        if s < min_sat or chroma < 5:
-            # EXCEPTION 1: Desaturated blues (Ultramarines, Space Wolves)
-            if is_blue_range and s > 0.05 and chroma > 3:
-                return "Blue"
-            
-            # EXCEPTION 2: Desaturated greens (Dark Angels, Salamanders, Death Guard, Orks)
-            if is_green_range and s > 0.06 and chroma > 4:
-                return "Green"
-            
-            # EXCEPTION 3: Desaturated purples (Emperor's Children, Drukhari)
-            if is_purple_range and s > 0.05 and chroma > 3:
-                return "Purple"
-            
-            # Standard achromatic
-            if v > 0.90: return "White"
-            elif v < self.SHADOW_V_THRESHOLD: return "Black"
-            elif v < 0.20 and chroma < 3: return "Shadow"
-            else: return "Grey"
-        
-        # ===== CHROMATIC CLASSIFICATION =====
-        
-        # RED ZONE (0-30° and 330-360°)
-        if h_deg < 30 or h_deg > 330:
-            # Warm gold detection (20-30°)
-            if 20 < h_deg < 30 and v > 0.50 and chroma > 25 and s > 0.40:
-                return "Gold"
-            
-            # Red vs Brown - USE CHROMA (FIX #8)
-            if h_deg < 20:
-                if chroma < 15:
-                    return "Brown"  # Low chroma = brown (leather)
-                elif s < 0.6 and v < 0.4:
-                    return "Brown"  # Dark desaturated = brown
-                else:
-                    return "Red"  # High chroma = dark red (Blood Angels)
-            
-            # Pink detection - RELAXED (FIX #7)
-            if s > 0.35 and v > 0.55:
-                return "Pink"
-            elif s < 0.5 and v > 0.8:
-                return "Pink"
-            
-            # Magenta
-            if h_deg > 300:
-                return "Magenta"
-            
-            return "Red"
-        
-        # GOLD/BRONZE/BROWN ZONE (30-70°)
-        elif h_deg < 70:
-            # Improved gold detection
-            if chroma > self.GOLD_CHROMA_THRESHOLD and v > 0.45 and s > 0.35:
-                if v > 0.70 and s > 0.60:
-                    return "Gold"
-                elif v > 0.50:
-                    return "Gold"
-                else:
-                    return "Bronze"
-            else:
-                return "Brown"
-        
-        # YELLOW ZONE (70-95°) - EXPANDED (FIX #9)
-        elif h_deg < 95:
-            if s > 0.50 and v > 0.65:
-                return "Yellow"
-            elif s > 0.30 and v > 0.75:
-                return "Yellow"  # Pale yellow
-            else:
-                return "Bone"
-        
-        # GREEN ZONE (95-170°)
-        elif h_deg < 170:
-            # Cyan disambiguation (FIX #6)
-            if 165 < h_deg < 180 and chroma > 25:
-                return "Cyan"  # High chroma cyan
-            else:
-                return "Green"
-        
-        # CYAN ZONE (170-190°) - STRICT RANGE
-        elif h_deg < 190:
-            return "Cyan"
-        
-        # BLUE ZONE (190-260°) - Starts later to avoid cyan
-        elif h_deg < 260:
-            return "Blue"
-        
-        # PURPLE ZONE (260-320°)
-        elif h_deg < 320:
-            return "Purple" if v < 0.6 else "Pink"
-        
-        # MAGENTA ZONE (320-330°)
-        elif h_deg < 330:
-            return "Magenta"
-        
-        return "Unknown"
-    
+    # _classify_by_hue() removed (Prompt 1.3): hue→family classification is now
+    # the single canonical color_engine.hue_family(), called by the ensemble
+    # above and by compute_color_family(), so the two can never disagree.
+
     def _classify_by_lab_quadrant(self, lab: np.ndarray, v: float) -> str:
             L, a, b = lab
             
