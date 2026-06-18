@@ -1,21 +1,25 @@
 /**
- * API client for SchemeStealer backend
+ * API surface for the SchemeStealer backend.
+ *
+ * Thin wrappers over the single shared `apiClient` (which owns timeouts,
+ * AbortController, and the one ApiError class). ApiError and API_BASE_URL are
+ * defined once in apiClient and re-exported here so existing imports keep working
+ * and `instanceof ApiError` holds across module boundaries.
  */
 
 import type { ScanResult, Color, Paint } from './types';
 import { generateScanId } from './utils';
+import { apiClient } from './apiClient';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+export { ApiError, API_BASE_URL } from './apiClient';
 
-export class ApiError extends Error {
-  constructor(
-    message: string,
-    public status?: number,
-    public details?: any
-  ) {
-    super(message);
-    this.name = 'ApiError';
-  }
+// Scan requests must cover a Render cold start (30–60s) plus rembg processing.
+const SCAN_TIMEOUT_MS = 120_000;
+const PAINTS_TIMEOUT_MS = 30_000;
+
+interface ScanResponse {
+  colors?: Color[];
+  paints?: Paint[];
 }
 
 /**
@@ -49,168 +53,77 @@ async function compressImage(file: File, maxDimension = 1024, quality = 0.85): P
 }
 
 /**
- * Scan a miniature image (with background removal)
+ * Scan a miniature image (with background removal).
  */
 export async function scanMiniature(imageFile: File): Promise<ScanResult> {
-  try {
-    // Skip JPEG compression for PNG files — bg-removed images are PNG with alpha channel
-    // that must not be re-encoded to JPEG (which strips alpha)
-    const compressed = imageFile.type === 'image/png' ? imageFile : await compressImage(imageFile);
-    const formData = new FormData();
-    formData.append('file', compressed);
+  // Skip JPEG compression for PNG files — bg-removed images are PNG with an
+  // alpha channel that must not be re-encoded to JPEG (which strips alpha).
+  const compressed = imageFile.type === 'image/png' ? imageFile : await compressImage(imageFile);
+  const formData = new FormData();
+  formData.append('file', compressed);
 
-    const response = await fetch(`${API_BASE_URL}/api/scan/miniature`, {
-      method: 'POST',
-      body: formData,
-    });
+  const data = await apiClient.postForm<ScanResponse>('/api/scan/miniature', formData, {
+    timeout: SCAN_TIMEOUT_MS,
+  });
 
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({}));
-      throw new ApiError(
-        error.detail || 'Failed to scan miniature',
-        response.status,
-        error
-      );
-    }
-
-    const data = await response.json();
-
-    // Convert API response to ScanResult format
-    const scanResult: ScanResult = {
-      id: generateScanId(),
-      mode: 'miniature',
-      imageUrl: URL.createObjectURL(imageFile),
-      imageData: await fileToBase64(imageFile),
-      detectedColors: data.colors || [],
-      recommendedPaints: data.paints || [],
-      timestamp: new Date(),
-    };
-
-    return scanResult;
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw new ApiError('Network error: Failed to connect to backend');
-  }
+  return {
+    id: generateScanId(),
+    mode: 'miniature',
+    // Object URL for in-session display; its lifecycle is owned by the store
+    // (revoked when replaced or cleared) and the useScan hook (on failure).
+    imageUrl: URL.createObjectURL(imageFile),
+    detectedColors: data.colors || [],
+    recommendedPaints: data.paints || [],
+    timestamp: new Date().toISOString(),
+  };
 }
 
 /**
- * Scan an inspiration image (without background removal)
+ * Scan an inspiration image (without background removal).
  */
 export async function scanInspiration(imageFile: File): Promise<ScanResult> {
-  try {
-    const compressed = await compressImage(imageFile);
-    const formData = new FormData();
-    formData.append('file', compressed);
+  const compressed = await compressImage(imageFile);
+  const formData = new FormData();
+  formData.append('file', compressed);
 
-    const response = await fetch(`${API_BASE_URL}/api/scan/inspiration`, {
-      method: 'POST',
-      body: formData,
-    });
+  const data = await apiClient.postForm<ScanResponse>('/api/scan/inspiration', formData, {
+    timeout: SCAN_TIMEOUT_MS,
+  });
 
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({}));
-      throw new ApiError(
-        error.detail || 'Failed to scan inspiration image',
-        response.status,
-        error
-      );
-    }
-
-    const data = await response.json();
-
-    // Convert API response to ScanResult format
-    const scanResult: ScanResult = {
-      id: generateScanId(),
-      mode: 'inspiration',
-      imageUrl: URL.createObjectURL(imageFile),
-      imageData: await fileToBase64(imageFile),
-      detectedColors: data.colors || [],
-      recommendedPaints: data.paints || [],
-      timestamp: new Date(),
-    };
-
-    return scanResult;
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw new ApiError('Network error: Failed to connect to backend');
-  }
+  return {
+    id: generateScanId(),
+    mode: 'inspiration',
+    imageUrl: URL.createObjectURL(imageFile),
+    detectedColors: data.colors || [],
+    recommendedPaints: data.paints || [],
+    timestamp: new Date().toISOString(),
+  };
 }
 
 /**
- * Get all paints from the database
+ * Get all paints from the database.
  */
 export async function getPaints(): Promise<Paint[]> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/paints`);
-
-    if (!response.ok) {
-      throw new ApiError('Failed to fetch paints', response.status);
-    }
-
-    const data = await response.json();
-    return data.paints || [];
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw new ApiError('Network error: Failed to connect to backend');
-  }
+  const data = await apiClient.get<{ paints?: Paint[] }>('/api/paints', {
+    timeout: PAINTS_TIMEOUT_MS,
+  });
+  return data?.paints || [];
 }
 
 /**
- * Submit user feedback
+ * Submit user feedback.
  */
 export async function submitFeedback(feedback: {
   scanId: string;
   rating?: number;
   comment?: string;
 }): Promise<void> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/feedback`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(feedback),
-    });
-
-    if (!response.ok) {
-      throw new ApiError('Failed to submit feedback', response.status);
-    }
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw new ApiError('Network error: Failed to connect to backend');
-  }
+  await apiClient.post<void>('/api/feedback', feedback);
 }
 
 /**
- * Check if backend is available
+ * Check if the backend is available.
  */
 export async function healthCheck(): Promise<boolean> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/`, {
-      method: 'GET',
-    });
-    return response.ok;
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Helper: Convert File to base64 string
- */
-function fileToBase64(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = reject;
-  });
+  return apiClient.healthCheck();
 }

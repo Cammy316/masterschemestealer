@@ -7,6 +7,28 @@ import { persist } from 'zustand/middleware';
 import type { AppStore, ScanMode, ScanResult, Paint, CartItem } from './types';
 import { mlLogger } from './mlDataLogger';
 
+/** Revoke a blob: object URL safely (no-op on the server or for non-blob URLs). */
+function revokeBlobUrl(url?: string): void {
+  if (url && typeof window !== 'undefined' && url.startsWith('blob:')) {
+    URL.revokeObjectURL(url);
+  }
+}
+
+/**
+ * Strip a scan to a slim, persistable shape: drop the in-memory object URL, the
+ * legacy base64 image, and the per-colour reticle JPEGs (the heavy payload) so
+ * localStorage never overflows. Colours and paint recipes are retained, so a
+ * refresh restores the results; the image/reticle panels degrade gracefully.
+ */
+function toPersistableScan(result: ScanResult): ScanResult {
+  return {
+    ...result,
+    imageUrl: undefined,
+    imageData: undefined,
+    detectedColors: result.detectedColors.map((c) => ({ ...c, reticle: undefined })),
+  };
+}
+
 export const useAppStore = create<AppStore>()(
   persist(
     (set, get) => ({
@@ -25,17 +47,15 @@ export const useAppStore = create<AppStore>()(
       setMode: (mode: ScanMode) => set({ currentMode: mode, error: null }),
 
       setScanResult: (result: ScanResult) => {
+        // Revoke the previous scan's object URL before it is replaced so blob
+        // URLs from earlier scans don't leak for the lifetime of the tab.
+        revokeBlobUrl(get().currentScan?.imageUrl ?? undefined);
         try {
-          // Create a persistable version without large base64 images
-          const persistableResult = {
-            ...result,
-            imageUrl: undefined,
-            imageData: undefined,
-          };
+          const persistableResult = toPersistableScan(result);
 
           set((state) => ({
-            currentScan: result, // Keep full result in memory
-            scanHistory: [persistableResult, ...state.scanHistory.slice(0, 9)], // Keep last 10 scans without images
+            currentScan: result, // Keep full result (image + reticles) in memory
+            scanHistory: [persistableResult, ...state.scanHistory.slice(0, 9)], // Last 10, slim
             isScanning: false,
             isLoading: false,
             error: null,
@@ -44,25 +64,28 @@ export const useAppStore = create<AppStore>()(
           // If still quota exceeded, clear history and try again
           if (error instanceof Error && error.name === 'QuotaExceededError') {
             if (process.env.NODE_ENV === 'development') console.warn('LocalStorage quota exceeded, clearing scan history');
-            set((state) => ({
+            set({
               currentScan: result,
               scanHistory: [], // Clear history to free space
               isScanning: false,
               isLoading: false,
               error: null,
-            }));
+            });
           } else {
             throw error;
           }
         }
       },
 
-      clearCurrentScan: () =>
+      clearCurrentScan: () => {
+        // Release the current scan's blob URL before discarding it.
+        revokeBlobUrl(get().currentScan?.imageUrl ?? undefined);
         set({
           currentScan: null,
           currentMode: null,
           error: null,
-        }),
+        });
+      },
 
       // Cart actions
       addToCart: (paint: Paint, mode?: ScanMode, scanId?: string) =>
@@ -144,9 +167,12 @@ export const useAppStore = create<AppStore>()(
     {
       name: 'schemestealer-storage', // LocalStorage key
       partialize: (state) => ({
-        // Only persist cart, scan history (without images), offline mode, and brand preferences
+        // Persist cart, scan history, a slim current scan (so results pages
+        // survive a refresh), offline mode, and brand preferences. The current
+        // scan is stripped of its image + reticles so it stays small.
         cart: state.cart,
         scanHistory: state.scanHistory,
+        currentScan: state.currentScan ? toPersistableScan(state.currentScan) : null,
         offlineMode: state.offlineMode,
         preferredBrands: state.preferredBrands,
       }),

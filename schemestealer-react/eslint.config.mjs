@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Node CommonJS tooling scripts — not part of the app/TS build, so the
+    // browser/TypeScript ruleset (e.g. no-require-imports) doesn't apply.
+    "scripts/**",
   ]),
 ]);
 

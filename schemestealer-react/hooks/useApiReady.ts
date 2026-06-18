@@ -3,19 +3,41 @@
 import { useState, useEffect, useRef } from 'react';
 import { API_BASE_URL } from '@/lib/apiClient';
 
+// Poll fast at first (this also usefully warms the Render instance), then back
+// off to a courteous cadence so we don't drain battery/data on mobile if the
+// backend stays down for a long time.
+const FAST_INTERVAL_MS = 5000;
+const SLOW_INTERVAL_MS = 30000;
+const BACKOFF_AFTER_MS = 5 * 60 * 1000; // 5 minutes
+
 /**
  * Polls /api/ready until the backend scanners have finished initialising.
  * Pass skip=true (e.g. when offline mode is on) to skip polling and return ready immediately.
  */
 export function useApiReady(skip = false): boolean {
-  const [ready, setReady] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [polledReady, setPolledReady] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    if (skip) {
-      setReady(true);
-      return;
-    }
+    // When skipping (offline mode) we report ready via the return value below —
+    // no synchronous setState in the effect body.
+    if (skip) return;
+
+    let cancelled = false;
+    const startedAt = Date.now();
+
+    const clearTimer = () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+
+    const scheduleNext = () => {
+      if (cancelled) return;
+      const interval = Date.now() - startedAt >= BACKOFF_AFTER_MS ? SLOW_INTERVAL_MS : FAST_INTERVAL_MS;
+      timerRef.current = setTimeout(check, interval);
+    };
 
     const check = async () => {
       try {
@@ -25,21 +47,23 @@ export function useApiReady(skip = false): boolean {
         if (res.ok) {
           const data = await res.json();
           if (data.ready) {
-            setReady(true);
-            if (timerRef.current) clearInterval(timerRef.current);
+            if (!cancelled) setPolledReady(true);
+            clearTimer();
+            return;
           }
         }
       } catch {
         // server not ready yet — keep polling
       }
+      scheduleNext();
     };
 
     check();
-    timerRef.current = setInterval(check, 5000);
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
+      cancelled = true;
+      clearTimer();
     };
   }, [skip]);
 
-  return ready;
+  return skip || polledReady;
 }

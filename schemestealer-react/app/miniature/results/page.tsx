@@ -24,7 +24,15 @@ import { mlLogger } from '@/lib/mlDataLogger';
 
 export default function MiniscanResultsPage() {
   const router = useRouter();
-  const { currentScan, clearCurrentScan } = useAppStore();
+  const rawCurrentScan = useAppStore((s) => s.currentScan);
+  const scanHistory = useAppStore((s) => s.scanHistory);
+  const clearCurrentScan = useAppStore((s) => s.clearCurrentScan);
+  // Refresh-safe: if the in-memory current scan is gone (hard refresh / deep
+  // link), fall back to the most recent miniature scan in persisted history.
+  const currentScan =
+    rawCurrentScan && rawCurrentScan.mode === 'miniature'
+      ? rawCurrentScan
+      : scanHistory.find((s) => s.mode === 'miniature') ?? null;
   const [showShareModal, setShowShareModal] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [showKoFiPrompt, setShowKoFiPrompt] = useState(false);
@@ -63,18 +71,15 @@ export default function MiniscanResultsPage() {
   };
 
   React.useEffect(() => {
-    // Redirect if no scan result
-    if (!currentScan || currentScan.mode !== 'miniature') {
-      router.push('/miniature');
-    }
-
-    // Track time on results page for ML
+    // No redirect — we render a themed empty state below when there is genuinely
+    // no scan, so a hard refresh or deep link shows data (or a graceful empty
+    // state) instead of bouncing the user away.
     return () => {
       if (currentScan) {
         mlLogger.logResultsPageExit(currentScan.id);
       }
     };
-  }, [currentScan, router]);
+  }, [currentScan]);
 
   // Show Ko-fi prompt with 20% chance after scan (delayed)
   React.useEffect(() => {
@@ -91,7 +96,27 @@ export default function MiniscanResultsPage() {
   }, [currentScan, showKoFiPrompt]);
 
   if (!currentScan) {
-    return null;
+    return (
+      <div
+        className="min-h-screen flex items-center justify-center px-6"
+        style={{ background: 'var(--void-black)' }}
+      >
+        <div className="text-center max-w-sm">
+          <h1 className="text-2xl font-bold gothic-text auspex-text mb-3">
+            ◆ ARCHIVE EMPTY ◆
+          </h1>
+          <p className="text-cogitator-green-dim tech-text text-sm mb-6">
+            No scan data found in the archives. Initiate a new scan to continue.
+          </p>
+          <button
+            onClick={() => router.push('/miniature')}
+            className="w-full py-4 px-6 rounded-lg border-2 border-cogitator-green bg-dark-gothic touch-target auspex-text font-bold cyber-text"
+          >
+            INITIATE NEW SCAN
+          </button>
+        </div>
+      </div>
+    );
   }
 
   const handleScanAnother = () => {
@@ -164,7 +189,7 @@ export default function MiniscanResultsPage() {
                     reticleImage={
                       color.reticle ? `data:image/jpeg;base64,${color.reticle}` : undefined
                     }
-                    originalImage={currentScan.imageData}
+                    originalImage={currentScan.imageUrl}
                   />
 
                   {/* Paint Recipe Card - NEW: Per-color brand selection */}
@@ -409,7 +434,7 @@ export default function MiniscanResultsPage() {
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-void-black/60 flex-shrink-0">►</span>
-                <span>Tap "REVEAL LOCATION" to view colour placement on miniature</span>
+                <span>Tap &quot;REVEAL LOCATION&quot; to view colour placement on miniature</span>
               </li>
             </ul>
           </div>
@@ -425,7 +450,7 @@ export default function MiniscanResultsPage() {
               name: color.family || 'Unknown',
               percentage: color.percentage || 0,
             })),
-            imageUrl: currentScan.imageData,
+            imageUrl: currentScan.imageUrl,
           }}
           onClose={() => setShowShareModal(false)}
         />

@@ -216,7 +216,7 @@ export async function detectColorsOffline(
       imageUrl: typeof imageSource === 'string' ? imageSource : URL.createObjectURL(imageSource),
       detectedColors,
       recommendedPaints: limitedPaints,
-      timestamp: new Date(),
+      timestamp: new Date().toISOString(),
     };
 
     return result;

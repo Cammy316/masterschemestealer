@@ -24,7 +24,15 @@ import { mlLogger } from '@/lib/mlDataLogger';
 
 export default function InspirationResultsPage() {
   const router = useRouter();
-  const { currentScan, clearCurrentScan } = useAppStore();
+  const rawCurrentScan = useAppStore((s) => s.currentScan);
+  const scanHistory = useAppStore((s) => s.scanHistory);
+  const clearCurrentScan = useAppStore((s) => s.clearCurrentScan);
+  // Refresh-safe: fall back to the latest inspiration scan in persisted history
+  // if the in-memory current scan is gone (hard refresh / deep link).
+  const currentScan =
+    rawCurrentScan && rawCurrentScan.mode === 'inspiration'
+      ? rawCurrentScan
+      : scanHistory.find((s) => s.mode === 'inspiration') ?? null;
   const [showShareModal, setShowShareModal] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [showKoFiPrompt, setShowKoFiPrompt] = useState(false);
@@ -63,18 +71,14 @@ export default function InspirationResultsPage() {
   };
 
   React.useEffect(() => {
-    // Redirect if no scan result
-    if (!currentScan || currentScan.mode !== 'inspiration') {
-      router.push('/inspiration');
-    }
-
-    // Track time on results page for ML
+    // No redirect — a themed empty state is rendered below when there is no
+    // scan, so refresh / deep links resolve gracefully.
     return () => {
       if (currentScan) {
         mlLogger.logResultsPageExit(currentScan.id);
       }
     };
-  }, [currentScan, router]);
+  }, [currentScan]);
 
   // Show Ko-fi prompt with 20% chance after scan (delayed)
   React.useEffect(() => {
@@ -90,7 +94,25 @@ export default function InspirationResultsPage() {
   }, [currentScan, showKoFiPrompt]);
 
   if (!currentScan) {
-    return null;
+    return (
+      <div className="min-h-screen flex items-center justify-center px-6 void-bg">
+        <div className="starfield-bg fixed inset-0 -z-10" />
+        <div className="text-center max-w-sm">
+          <h1 className="text-2xl font-bold gothic-text warp-text mb-3">
+            ◆ THE VEIL IS EMPTY ◆
+          </h1>
+          <p className="text-warp-purple-light text-sm mb-6 font-medium">
+            No scan data found in the archives. Channel a new image to continue.
+          </p>
+          <button
+            onClick={() => router.push('/inspiration')}
+            className="w-full py-4 px-6 rounded-lg border-2 border-purple-500 bg-void-blue touch-target warp-text font-bold"
+          >
+            CHANNEL NEW IMAGE
+          </button>
+        </div>
+      </div>
+    );
   }
 
   const handleScanAnother = () => {
@@ -127,8 +149,8 @@ export default function InspirationResultsPage() {
           </motion.div>
         </motion.div>
 
-        {/* Source image with ethereal frame */}
-        {currentScan.imageData && (
+        {/* Source image with ethereal frame (absent after a hard refresh) */}
+        {currentScan.imageUrl && (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -136,7 +158,7 @@ export default function InspirationResultsPage() {
           >
             <div className="warp-border rounded-2xl overflow-hidden p-1">
               <div className="bg-dark-gothic rounded-xl overflow-hidden">
-                <img src={currentScan.imageData} alt="Inspiration source" className="w-full h-auto" />
+                <img src={currentScan.imageUrl} alt="Inspiration source" className="w-full h-auto" />
               </div>
             </div>
             <motion.p
@@ -483,7 +505,7 @@ export default function InspirationResultsPage() {
               name: color.family || 'Unknown',
               percentage: color.percentage || 0,
             })),
-            imageUrl: currentScan.imageData,
+            imageUrl: currentScan.imageUrl,
           }}
           onClose={() => setShowShareModal(false)}
         />

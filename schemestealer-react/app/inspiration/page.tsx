@@ -8,70 +8,44 @@
 import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
-import { scanInspiration, ApiError } from '@/lib/api';
-import { detectColorsOffline } from '@/lib/offlineColorDetection';
-import { enhanceWithMultiBrandMatches } from '@/lib/paintMatcher';
 import { WarpPortal } from '@/components/inspiration/WarpPortal';
 import { LoadingAnimation } from '@/components/shared/LoadingAnimations';
 import { motion } from 'framer-motion';
-import { mlLogger } from '@/lib/mlDataLogger';
 import { useApiReady } from '@/hooks/useApiReady';
+import { useScan } from '@/hooks/useScan';
 
 export default function InspirationPage() {
   const router = useRouter();
-  const { setMode, setScanResult, offlineMode } = useAppStore();
+  const setMode = useAppStore((s) => s.setMode);
+  const setScanResult = useAppStore((s) => s.setScanResult);
+  const offlineMode = useAppStore((s) => s.offlineMode);
   const apiReady = useApiReady(offlineMode);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [hasUploaded, setHasUploaded] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { isProcessing, error, result, scan, retry, markCommitted } = useScan('inspiration');
 
   React.useEffect(() => {
     setMode('inspiration');
   }, [setMode]);
 
-  const handleFileSelect = async (file: File) => {
-    setHasUploaded(true);
-    setIsProcessing(true);
-    setError(null);
-
-    // Start ML logging for this scan
-    await mlLogger.startScan('inspiration', file);
-
-    try {
-      let result;
-
-      if (offlineMode) {
-        // Use offline colour detection and fill in multi-brand matches locally.
-        result = await detectColorsOffline(file, 'inspiration', {
-          numColors: 5,
-          numPaintMatches: 5,
-        });
-        result = enhanceWithMultiBrandMatches(result, 3);
-      } else {
-        // Backend results are used as-is — no client-side paint-DB override.
-        result = await scanInspiration(file);
-      }
-
-      // Log completed scan for ML training
-      mlLogger.logScanComplete(result);
-
+  // Commit and navigate once a scan completes.
+  React.useEffect(() => {
+    if (result) {
       setScanResult(result);
+      markCommitted();
       router.push('/inspiration/results');
-    } catch (err) {
-      console.error('Scan error:', err);
-
-      let errorMessage = 'THE VEIL REJECTS YOUR OFFERING';
-      if (err instanceof ApiError) {
-        errorMessage = `WARP DISTURBANCE: ${err.message}`;
-      } else if (err instanceof Error && err.message.includes('Network')) {
-        errorMessage = 'IMMATERIUM BREACH: Cannot establish connection to the Warp (localhost:8000)';
-      }
-
-      setError(errorMessage);
-      setIsProcessing(false);
-      setHasUploaded(false);
     }
+  }, [result, setScanResult, markCommitted, router]);
+
+  // Reset the portal's uploaded state when an error surfaces so it can retry.
+  React.useEffect(() => {
+    if (error) setHasUploaded(false);
+  }, [error]);
+
+  const handleFileSelect = (file: File) => {
+    setHasUploaded(true);
+    scan(file);
   };
 
   const handlePortalActivate = () => {
@@ -205,9 +179,23 @@ export default function InspirationPage() {
                   <div className="text-warp-pink font-bold gothic-text text-sm mb-1 text-shadow-sm">
                     ◆ WARP ANOMALY ◆
                   </div>
-                  <p className="text-warp-purple-light/80 text-xs font-medium leading-relaxed">{error}</p>
+                  <p className="text-warp-purple-light/80 text-xs font-medium leading-relaxed">
+                    {error.flavour}
+                  </p>
+                  <p className="text-warp-purple-light/60 text-xs font-medium leading-relaxed mt-1">
+                    {error.plain}
+                  </p>
                 </div>
               </div>
+              {error.retryable && (
+                <button
+                  onClick={retry}
+                  className="mt-4 w-full py-3 px-6 rounded-lg border-2 border-purple-500 bg-void-blue touch-target text-sm font-bold warp-text"
+                >
+                  ◆ RE-ESTABLISH VOX LINK ◆
+                </button>
+              )}
+              {/* Prompt 4 extension point: offline-fallback button goes here. */}
             </div>
           </div>
         </motion.div>

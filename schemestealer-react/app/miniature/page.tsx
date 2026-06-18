@@ -5,105 +5,65 @@
 
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
-import { scanMiniature, ApiError } from '@/lib/api';
 import { removeBackground } from '@imgly/background-removal';
-import { detectColorsOffline } from '@/lib/offlineColorDetection';
-import { enhanceWithMultiBrandMatches } from '@/lib/paintMatcher';
 import { CogitatorUpload } from '@/components/miniscan/CogitatorUpload';
 import { LoadingAnimation } from '@/components/shared/LoadingAnimations';
 import { ScanReveal } from '@/components/miniscan/ScanReveal';
 import { motion } from 'framer-motion';
-import { mlLogger } from '@/lib/mlDataLogger';
 import { useApiReady } from '@/hooks/useApiReady';
-import type { ScanResult } from '@/lib/types';
+import { useScan } from '@/hooks/useScan';
 
 export default function MiniscanPage() {
   const router = useRouter();
-  const { setMode, setScanResult, offlineMode } = useAppStore();
+  const setMode = useAppStore((s) => s.setMode);
+  const setScanResult = useAppStore((s) => s.setScanResult);
+  const offlineMode = useAppStore((s) => s.offlineMode);
   const apiReady = useApiReady(offlineMode);
-  const [isProcessing, setIsProcessing] = useState(false);
   const [showReveal, setShowReveal] = useState(false);
-  const [scanResult, setScanResultLocal] = useState<ScanResult | null>(null);
-  const [uploadedImageUrl, setUploadedImageUrl] = useState<string>('');
-  const [error, setError] = useState<string | null>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
+
+  // Miniature mode removes the background in the browser, then sends the RGBA
+  // PNG to the backend. Prompt 4 modifies this preprocess; the hook is untouched.
+  const preprocess = useCallback(async (file: File): Promise<File> => {
+    try {
+      const bgRemovedBlob = await removeBackground(file);
+      return new File([bgRemovedBlob], file.name.replace(/\.[^.]+$/, '.png'), {
+        type: 'image/png',
+      });
+    } catch {
+      // Browser bg removal failed — the server will handle it.
+      return file;
+    }
+  }, []);
+
+  const { isProcessing, error, result, scan, retry, markCommitted } = useScan('miniature', {
+    preprocess,
+  });
 
   React.useEffect(() => {
     setMode('miniature');
   }, [setMode]);
 
-  const handleFileSelect = async (file: File) => {
-    setIsProcessing(true);
-    setError(null);
+  // When a scan completes, show the reveal animation (commit happens after it).
+  React.useEffect(() => {
+    if (result) setShowReveal(true);
+  }, [result]);
 
-    // Start ML logging for this scan
-    await mlLogger.startScan('miniature', file);
-
-    // Create object URL for image display
-    const imageUrl = URL.createObjectURL(file);
-    setUploadedImageUrl(imageUrl);
-
-    try {
-      let result;
-
-      if (offlineMode) {
-        // Use offline colour detection and fill in multi-brand matches locally.
-        result = await detectColorsOffline(file, 'miniature', {
-          numColors: 6,
-          numPaintMatches: 5,
-        });
-        result = enhanceWithMultiBrandMatches(result, 3);
-      } else {
-        // Remove background in the browser, then send RGBA PNG to backend.
-        // Backend results are used as-is — no client-side paint-DB override.
-        let fileToScan = file;
-        try {
-          const bgRemovedBlob = await removeBackground(file);
-          fileToScan = new File(
-            [bgRemovedBlob],
-            file.name.replace(/\.[^.]+$/, '.png'),
-            { type: 'image/png' }
-          );
-        } catch {
-          // Browser bg removal failed — server will handle it
-        }
-        result = await scanMiniature(fileToScan);
-      }
-
-      // Log completed scan for ML training
-      mlLogger.logScanComplete(result);
-
-      // Store result locally and show reveal animation
-      setScanResultLocal(result);
-      setIsProcessing(false);
-      setShowReveal(true);
-    } catch (err) {
-      console.error('Scan error:', err);
-
-      let errorMessage = 'COGITATOR ERROR: Failed to process scan data';
-      if (err instanceof ApiError) {
-        errorMessage = `AUSPEX FAILURE: ${err.message}`;
-      } else if (err instanceof Error && err.message.includes('Network')) {
-        errorMessage = 'VOX CONNECTION LOST: Cannot reach cogitator mainframe (localhost:8000)';
-      }
-
-      setError(errorMessage);
-      setIsProcessing(false);
-      // Clean up object URL on error
-      URL.revokeObjectURL(imageUrl);
-    }
+  const handleFileSelect = (file: File) => {
+    setShowReveal(false);
+    scan(file);
   };
 
   const handleRevealComplete = () => {
-    // Animation complete - save to store and navigate
-    if (scanResult) {
-      setScanResult(scanResult);
+    // Animation complete — commit to store and navigate. The store now owns the
+    // object URL lifecycle, so release it from the hook.
+    if (result) {
+      setScanResult(result);
+      markCommitted();
       router.push('/miniature/results');
-      // Clean up object URL
-      URL.revokeObjectURL(uploadedImageUrl);
     }
   };
 
@@ -157,16 +117,16 @@ export default function MiniscanPage() {
   }
 
   // Show reveal animation after scan complete
-  if (showReveal && scanResult && uploadedImageUrl) {
+  if (showReveal && result && result.imageUrl) {
     // Prepare reticle data for bloom animation
     // Use a reference frame of 1000x1000 and distribute colors evenly
     const centerX = 500;
     const centerY = 500;
     const radius = 200; // pixels from center
 
-    const reticleData = scanResult.detectedColors.map((color, index) => {
+    const reticleData = result.detectedColors.map((color, index) => {
       // Distribute colors evenly in a circle
-      const angle = (index * (Math.PI * 2)) / scanResult.detectedColors.length;
+      const angle = (index * (Math.PI * 2)) / result.detectedColors.length;
       const x = centerX + Math.cos(angle) * radius;
       const y = centerY + Math.sin(angle) * radius;
 
@@ -182,7 +142,7 @@ export default function MiniscanPage() {
       <div className="min-h-screen pb-24 pt-8 px-4 cogitator-screen" style={{ background: 'var(--void-black)' }}>
         <div className="max-w-2xl mx-auto">
           <ScanReveal
-            imageUrl={uploadedImageUrl}
+            imageUrl={result.imageUrl}
             reticleData={reticleData}
             onComplete={handleRevealComplete}
           />
@@ -277,9 +237,21 @@ export default function MiniscanPage() {
                   <div className="text-error font-bold cyber-text text-sm mb-1 text-shadow-sm">
                     ◆ SYSTEM ALERT ◆
                   </div>
-                  <p className="text-error/90 text-xs tech-text leading-relaxed">{error}</p>
+                  <p className="text-error/90 text-xs tech-text leading-relaxed">{error.flavour}</p>
+                  <p className="text-cogitator-green-dim/90 text-xs tech-text leading-relaxed mt-1">
+                    {error.plain}
+                  </p>
                 </div>
               </div>
+              {error.retryable && (
+                <button
+                  onClick={retry}
+                  className="mt-4 w-full py-3 px-6 rounded-lg border-2 border-cogitator-green bg-dark-gothic touch-target tech-text text-sm font-bold auspex-text"
+                >
+                  ◆ RE-ESTABLISH VOX LINK ◆
+                </button>
+              )}
+              {/* Prompt 4 extension point: offline-fallback button goes here. */}
             </div>
           </div>
         </motion.div>
