@@ -153,9 +153,10 @@ export function generateScanId(): string {
 }
 
 /**
- * Format timestamp for display
+ * Format timestamp for display. Accepts an ISO 8601 string (how scans are
+ * stored and persisted) or a Date, and parses internally.
  */
-export function formatTimestamp(date: Date): string {
+export function formatTimestamp(date: string | Date): string {
   const now = new Date();
   const diffMs = now.getTime() - new Date(date).getTime();
   const diffMins = Math.floor(diffMs / 60000);

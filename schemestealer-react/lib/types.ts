@@ -76,7 +76,7 @@ export interface ScanResult {
   imageData?: string; // Base64 encoded image
   detectedColors: Color[];
   recommendedPaints: Paint[];
-  timestamp: Date;
+  timestamp: string; // ISO 8601 — survives JSON.stringify in persist without type drift
   feedback?: {
     rating?: number;
     comment?: string;

@@ -26,10 +26,16 @@ const PATCHED  = 'let c=u?$.default.dirname($.default.resolve(u)):r';
 
 if (content.includes(PATCHED)) {
   console.log('patch-tailwind-postcss: already applied, skipping');
+  process.exit(0);
 } else if (content.includes(ORIGINAL)) {
   content = content.replace(ORIGINAL, PATCHED);
   fs.writeFileSync(file, content);
   console.log('patch-tailwind-postcss: applied successfully');
+  process.exit(0);
 } else {
-  console.warn('patch-tailwind-postcss: target string not found — @tailwindcss/postcss may have been updated. Check if the patch is still needed.');
+  // Upstream changed the target string. Don't fail the build — the patch may no
+  // longer be necessary (or needs revisiting), but a postinstall non-zero exit
+  // would break every Vercel build. Log and exit 0.
+  console.warn('patch-tailwind-postcss: target string not found — @tailwindcss/postcss may have been updated. Skipping (no-op). Check if the patch is still needed.');
+  process.exit(0);
 }
