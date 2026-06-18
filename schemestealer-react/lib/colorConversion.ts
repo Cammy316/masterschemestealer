@@ -78,8 +78,6 @@ export function labToRgb(lab: LAB): RGB {
 
   const delta = 6 / 29;
   const deltaSquared = delta * delta;
-  const deltaCubed = delta * delta * delta;
-
   const xr = fx > delta ? Math.pow(fx, 3) : 3 * deltaSquared * (fx - 4 / 29);
   const yr = fy > delta ? Math.pow(fy, 3) : 3 * deltaSquared * (fy - 4 / 29);
   const zr = fz > delta ? Math.pow(fz, 3) : 3 * deltaSquared * (fz - 4 / 29);

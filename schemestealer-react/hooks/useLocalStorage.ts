@@ -7,19 +7,19 @@ import { useState, useEffect, useCallback } from 'react';
 export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((prev: T) => T)) => void] {
   // Initialize with initialValue for SSR, then sync with localStorage on mount
   const [storedValue, setStoredValue] = useState<T>(initialValue);
-  const [isHydrated, setIsHydrated] = useState(false);
 
-  // Hydrate from localStorage on mount
+  // Hydrate from localStorage on mount. Deferring to an effect (rather than a
+  // lazy initialiser) keeps SSR and the first client render in agreement.
   useEffect(() => {
     try {
       const item = window.localStorage.getItem(key);
       if (item) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setStoredValue(JSON.parse(item));
       }
     } catch (error) {
       console.warn(`Error reading localStorage key "${key}":`, error);
     }
-    setIsHydrated(true);
   }, [key]);
 
   // Update localStorage when value changes

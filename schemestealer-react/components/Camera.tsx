@@ -102,6 +102,8 @@ export function Camera({ onImageCapture, mode, isProcessing = false }: CameraPro
       {/* Preview or Camera button */}
       {preview ? (
         <Card variant="elevated" padding="none" className="overflow-hidden">
+          {/* Local capture preview (object/data URL) — next/image not applicable. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={preview}
             alt="Preview"

@@ -2,7 +2,7 @@
  * Utility functions for SchemeSteal app
  */
 
-import type { Paint, Color } from './types';
+import type { Paint } from './types';
 
 /**
  * Convert hex color to RGB

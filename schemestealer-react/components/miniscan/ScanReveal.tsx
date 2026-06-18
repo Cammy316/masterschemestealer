@@ -94,6 +94,9 @@ export function ScanReveal({ imageUrl, reticleData, onComplete }: ScanRevealProp
 
       requestAnimationFrame(frame);
     };
+    // One-shot reveal animation keyed off imageUrl; reticleData is read at start
+    // and intentionally not a trigger (re-running would restart the animation).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageUrl, onComplete]);
 
   // Draw canvas
@@ -170,7 +173,9 @@ export function ScanReveal({ imageUrl, reticleData, onComplete }: ScanRevealProp
     }
   }, [bloomProgress, phase]);
 
-  const drawAuspexGrid = (ctx: CanvasRenderingContext2D, width: number, height: number) => {
+  // Function declaration (hoisted) so the draw effect above can call it without
+  // a "used before declaration" violation; it closes over nothing in scope.
+  function drawAuspexGrid(ctx: CanvasRenderingContext2D, width: number, height: number) {
     ctx.strokeStyle = 'rgba(0, 255, 100, 0.4)';
     ctx.lineWidth = 1;
 
@@ -230,7 +235,7 @@ export function ScanReveal({ imageUrl, reticleData, onComplete }: ScanRevealProp
       }
       ctx.stroke();
     });
-  };
+  }
 
   return (
     <div ref={containerRef} className="relative w-full max-w-2xl mx-auto">

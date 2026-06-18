@@ -265,8 +265,6 @@ function SkullRating({
   onChange: (v: number) => void;
   mode: ScanMode;
 }) {
-  const theme = useThemeColors(mode);
-
   return (
     <div className="flex justify-center gap-2">
       {[1, 2, 3, 4, 5].map((rating) => (
@@ -301,7 +299,7 @@ interface ColourCorrectionRowProps {
   mode: ScanMode;
 }
 
-function ColourCorrectionRow({ colour, index, correction, onChange, mode }: ColourCorrectionRowProps) {
+function ColourCorrectionRow({ colour, correction, onChange, mode }: ColourCorrectionRowProps) {
   const theme = useThemeColors(mode);
 
   const handleCorrectToggle = (isCorrect: boolean) => {

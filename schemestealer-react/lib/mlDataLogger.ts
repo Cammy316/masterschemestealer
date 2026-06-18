@@ -4,8 +4,8 @@
  * Captures 35+ features per scan for future ML model training
  */
 
-import { apiClient, API_BASE_URL } from './apiClient';
-import type { ScanMode, ScanResult, Color, Paint } from './types';
+import { apiClient } from './apiClient';
+import type { ScanMode, ScanResult, Color } from './types';
 
 // ============================================================================
 // Types for ML Data Collection
@@ -216,7 +216,7 @@ function detectColourHarmony(colours: Color[]): string {
   return 'mixed';
 }
 
-function isMetallicColour(family: string | undefined, hex: string): boolean {
+function isMetallicColour(family: string | undefined, _hex: string): boolean {
   const metallicFamilies = ['gold', 'silver', 'bronze', 'copper', 'brass', 'metallic'];
   if (family && metallicFamilies.some(m => family.toLowerCase().includes(m))) {
     return true;

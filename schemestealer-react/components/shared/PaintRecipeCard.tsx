@@ -20,7 +20,7 @@ import type { PaintRecipe, BrandRecipe, PaintMatch } from '@/lib/types';
 import { useAppStore } from '@/lib/store';
 import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
 import { useOwnedPaints } from '@/hooks/useLocalStorage';
-import { Tooltip, InfoTooltip } from '@/components/ui/Tooltip';
+import { Tooltip } from '@/components/ui/Tooltip';
 
 interface PaintRecipeCardProps {
   colorFamily: string;
@@ -448,7 +448,6 @@ function RecipeStepRow({
   onAddToCart,
   isOwned = false,
   onToggleOwned,
-  detectedColor
 }: RecipeStepRowProps) {
   if (!paint) {
     return (

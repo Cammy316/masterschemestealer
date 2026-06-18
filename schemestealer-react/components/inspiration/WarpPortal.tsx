@@ -92,11 +92,8 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
 
     // Animation loop
     let animationId: number;
-    let frame = 0;
 
     const animate = () => {
-      frame++;
-
       // Fade trail effect instead of clearing
       ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
       ctx.fillRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
@@ -205,7 +202,9 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
   }, []);
 
   // Bright parallax stars
-  const starLayers = React.useMemo(() => {
+  // Generated once via a useState lazy initialiser (not useMemo) so the impure
+  // Math.random() calls stay out of the render body, satisfying react-hooks/purity.
+  const [starLayers] = React.useState(() => {
     return [
       // Near layer - large, bright, fast parallax
       {
@@ -215,6 +214,7 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
           size: 2 + Math.random() * 2,
           brightness: 0.8 + Math.random() * 0.2,
           speed: 2 + Math.random() * 2,
+          delay: Math.random() * 2,
         })),
         parallax: 1.5,
       },
@@ -226,6 +226,7 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
           size: 1.5 + Math.random() * 1,
           brightness: 0.6 + Math.random() * 0.3,
           speed: 3 + Math.random() * 2,
+          delay: Math.random() * 2,
         })),
         parallax: 1,
       },
@@ -237,11 +238,12 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
           size: 1,
           brightness: 0.4 + Math.random() * 0.3,
           speed: 4 + Math.random() * 3,
+          delay: Math.random() * 2,
         })),
         parallax: 0.5,
       },
     ];
-  }, []);
+  });
 
   return (
     <div className="relative flex items-center justify-center min-h-[400px] py-8 overflow-hidden">
@@ -281,7 +283,7 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
                 transition={{
                   duration: star.speed,
                   repeat: Infinity,
-                  delay: Math.random() * 2,
+                  delay: star.delay,
                   ease: 'easeInOut',
                 }}
               />

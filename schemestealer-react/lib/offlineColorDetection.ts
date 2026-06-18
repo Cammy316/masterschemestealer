@@ -7,7 +7,7 @@
 import type { ScanResult, Color, Paint, ScanMode } from './types';
 import { extractDominantColors } from './colorClustering';
 import { rgbToHex, rgbToHsv } from './colorConversion';
-import { findNClosestColors, deltaE2000 } from './deltaE';
+import { findNClosestColors } from './deltaE';
 import { getPaintDatabase } from './paintDatabase';
 
 /**
@@ -38,33 +38,6 @@ function determineColorFamily(rgb: [number, number, number]): string {
   if (h >= 330) return 'Red';
 
   return 'Unknown';
-}
-
-/**
- * Generate a descriptive color name
- */
-function generateColorName(rgb: [number, number, number], family: string): string {
-  const hsv = rgbToHsv({ r: rgb[0], g: rgb[1], b: rgb[2] });
-  const { s, v } = hsv;
-
-  // Grayscale
-  if (s < 10) {
-    if (v < 20) return 'Black';
-    if (v > 90) return 'White';
-    if (v < 40) return 'Dark Grey';
-    if (v < 70) return 'Grey';
-    return 'Light Grey';
-  }
-
-  // Add descriptors based on saturation and value
-  let prefix = '';
-  if (v < 30) prefix = 'Very Dark ';
-  else if (v < 50) prefix = 'Dark ';
-  else if (v > 85 && s > 70) prefix = 'Bright ';
-  else if (v > 75 && s < 40) prefix = 'Light ';
-  else if (s < 25) prefix = 'Pale ';
-
-  return prefix + family;
 }
 
 /**

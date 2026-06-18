@@ -227,28 +227,38 @@ function CogwheelLoader({ phrase }: { phrase: string }) {
 /**
  * Warp Portal loader for Inspiration theme
  */
+// Decorative starfield particle positions (percent-based) + timings.
+function makeStarfield(count = 20) {
+  return Array.from({ length: count }, () => ({
+    left: Math.random() * 100,
+    top: Math.random() * 100,
+    duration: 2 + Math.random() * 2,
+    delay: Math.random() * 2,
+  }));
+}
+
 function WarpPortalLoader({ phrase }: { phrase: string }) {
+  // Generate particle positions once (keeps them stable and keeps the impure
+  // Math.random() calls out of the render body).
+  const [particles] = useState(() => makeStarfield());
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center void-bg">
       <div className="relative w-full max-w-md px-4">
         {/* Starfield particles */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {[...Array(20)].map((_, i) => (
+          {particles.map((p, i) => (
             <motion.div
               key={i}
               className="absolute w-1 h-1 rounded-full bg-white"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-              }}
+              style={{ left: `${p.left}%`, top: `${p.top}%` }}
               animate={{
                 opacity: [0, 1, 0],
                 scale: [0, 1.5, 0],
               }}
               transition={{
-                duration: 2 + Math.random() * 2,
+                duration: p.duration,
                 repeat: Infinity,
-                delay: Math.random() * 2,
+                delay: p.delay,
               }}
             />
           ))}

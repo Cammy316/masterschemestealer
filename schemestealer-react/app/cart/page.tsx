@@ -40,11 +40,9 @@ export default function CartPage() {
   const cart = useAppStore((state) => state.cart);
   const [selectedBrand, setSelectedBrand] = useState<PaintBrand>('all');
   const [selectedRegion, setSelectedRegion] = useState<Region>('global');
-
-  // Filter paints by selected brand
-  const filteredCart = selectedBrand === 'all'
-    ? cart
-    : cart.filter(item => item.paint.brand.toLowerCase().includes(selectedBrand.replace('_', ' ')));
+  // Decorative manifest number — generated once on mount (kept out of render so
+  // it doesn't change every render; the span suppresses hydration diffing).
+  const [manifestId] = useState(() => Date.now().toString().slice(-6));
 
   const merchants = AFFILIATE_MERCHANTS[selectedRegion] || AFFILIATE_MERCHANTS.global;
 
@@ -97,7 +95,7 @@ export default function CartPage() {
             transition={{ delay: 0.2 }}
           >
             <div className="flex justify-between text-amber-500/80 text-sm font-mono">
-              <span>MANIFEST #{Date.now().toString().slice(-6)}</span>
+              <span suppressHydrationWarning>MANIFEST #{manifestId}</span>
               <span>ITEMS: {cart.length}</span>
             </div>
             <div className="text-amber-500/50 text-xs mt-1">

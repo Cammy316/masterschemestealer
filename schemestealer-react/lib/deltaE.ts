@@ -140,11 +140,11 @@ export function deltaE2000(lab1: LAB, lab2: LAB): number {
  * Find closest color from a palette
  * Returns the closest color and its delta-E distance
  */
-export function findClosestColor(
+export function findClosestColor<T extends { lab: LAB }>(
   targetLab: LAB,
-  palette: Array<{ lab: LAB; [key: string]: any }>,
+  palette: T[],
   useCIE2000: boolean = true
-): { color: any; deltaE: number } | null {
+): { color: T; deltaE: number } | null {
   if (palette.length === 0) return null;
 
   let closestColor = palette[0];
@@ -169,12 +169,12 @@ export function findClosestColor(
 /**
  * Find N closest colors from a palette
  */
-export function findNClosestColors(
+export function findNClosestColors<T extends { lab: LAB }>(
   targetLab: LAB,
-  palette: Array<{ lab: LAB; [key: string]: any }>,
+  palette: T[],
   n: number,
   useCIE2000: boolean = true
-): Array<{ color: any; deltaE: number }> {
+): Array<{ color: T; deltaE: number }> {
   if (palette.length === 0 || n <= 0) return [];
 
   // Calculate delta-E for all colors
@@ -198,13 +198,13 @@ export function areSimilar(lab1: LAB, lab2: LAB, threshold: number = 2.0): boole
  * Group colors by similarity
  * Returns clusters of similar colors
  */
-export function groupBySimilarity(
-  colors: Array<{ lab: LAB; [key: string]: any }>,
+export function groupBySimilarity<T extends { lab: LAB }>(
+  colors: T[],
   threshold: number = 5.0
-): Array<Array<any>> {
+): T[][] {
   if (colors.length === 0) return [];
 
-  const clusters: Array<Array<any>> = [];
+  const clusters: T[][] = [];
   const used = new Set<number>();
 
   for (let i = 0; i < colors.length; i++) {

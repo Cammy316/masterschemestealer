@@ -35,6 +35,9 @@ export function RegionSelector({ value: controlledValue, onChange, compact = fal
     if (controlledValue === undefined) {
       const stored = localStorage.getItem(STORAGE_KEY) as Region | null;
       if (stored && REGIONS.some(r => r.value === stored)) {
+        // Deferred localStorage hydration: reading in a lazy initialiser would
+        // cause an SSR/client hydration mismatch, so we sync after mount.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setSelectedRegion(stored);
       }
     }

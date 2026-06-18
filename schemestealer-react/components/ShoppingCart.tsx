@@ -6,9 +6,7 @@
 
 import React from 'react';
 import { useAppStore } from '@/lib/store';
-import { Card, CardHeader, CardTitle, CardContent } from './ui/Card';
-import { Button } from './ui/Button';
-import { getPaintId, getTotalCartItems, calculatePaintCost, formatCurrency, PAINT_PRICES } from '@/lib/utils';
+import { getPaintId, getTotalCartItems, formatCurrency, PAINT_PRICES } from '@/lib/utils';
 
 export function ShoppingCart() {
   const { cart, removeFromCart, updateQuantity, clearCart } = useAppStore();
@@ -190,7 +188,7 @@ interface CostSummaryProps {
   totalItems: number;
 }
 
-function CostSummary({ cart, totalItems }: CostSummaryProps) {
+function CostSummary({ cart }: CostSummaryProps) {
   // Group by brand and calculate costs
   const brandTotals = cart.reduce((acc, item) => {
     const brand = item.paint.brand;

@@ -250,7 +250,8 @@ export function ReticleReveal({
                     {/* Main image with reveal animation */}
                     {reticlePositions && originalImage ? (
                       <>
-                        {/* Hidden image for canvas drawing */}
+                        {/* Hidden image for canvas drawing (object URL) — next/image not applicable. */}
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           ref={imageRef}
                           src={originalImage}
