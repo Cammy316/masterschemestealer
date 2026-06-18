@@ -160,6 +160,8 @@ export function ShareModal({ mode, data, onClose }: ShareModalProps) {
             </button>
           ) : (
             <div className="space-y-3">
+              {/* Generated canvas data URL preview — next/image not applicable. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={shareImageUrl} alt="Share preview" className="w-full rounded border-2 border-gray-700" />
               <div className="flex gap-2">
                 <button

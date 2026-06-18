@@ -37,6 +37,9 @@ export function BrandSelector({ value: controlledValue, onChange, compact = fals
     if (controlledValue === undefined) {
       const stored = localStorage.getItem(STORAGE_KEY) as PaintBrand | null;
       if (stored && BRANDS.some(b => b.value === stored)) {
+        // Deferred localStorage hydration: reading in a lazy initialiser would
+        // cause an SSR/client hydration mismatch, so we sync after mount.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setSelectedBrand(stored);
       }
     }

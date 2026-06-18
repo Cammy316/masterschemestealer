@@ -154,7 +154,7 @@ export function PaintResults({
       {brandData.length === 0 && (
         <div className="text-center py-8 text-gray-500">
           <p>No paints found for selected brands.</p>
-          <p className="text-sm mt-2">Try selecting "All Brands" above.</p>
+          <p className="text-sm mt-2">Try selecting &quot;All Brands&quot; above.</p>
         </div>
       )}
     </motion.div>

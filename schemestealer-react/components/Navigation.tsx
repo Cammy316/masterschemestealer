@@ -36,7 +36,7 @@ export function Navigation() {
 
   // Handle tap anywhere on screen to reveal nav
   React.useEffect(() => {
-    const handleTap = (e: TouchEvent | MouseEvent) => {
+    const handleTap = (_e: TouchEvent | MouseEvent) => {
       // Only trigger if nav is currently hidden
       if (!isVisible && !isAtTop && !isNearBottom) {
         setRevealedByTap(true);

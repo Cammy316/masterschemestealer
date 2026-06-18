@@ -158,6 +158,8 @@ export default function InspirationResultsPage() {
           >
             <div className="warp-border rounded-2xl overflow-hidden p-1">
               <div className="bg-dark-gothic rounded-xl overflow-hidden">
+                {/* User's source image (object URL) — next/image not applicable. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={currentScan.imageUrl} alt="Inspiration source" className="w-full h-auto" />
               </div>
             </div>
