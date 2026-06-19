@@ -26,6 +26,9 @@ export interface ScanLevelFeatures {
   colour_harmony_type: string;
   overall_brightness: number;
   overall_contrast: number;
+  // Which engine produced the result ('backend' | 'local'). Lets local-fallback
+  // results be excluded from training data later.
+  analysis_source: string;
 }
 
 export interface ColourFeatures {
@@ -452,6 +455,7 @@ class MLDataLogger {
       colour_harmony_type: detectColourHarmony(colours),
       overall_brightness: calculateBrightness(colours),
       overall_contrast: calculateContrast(colours),
+      analysis_source: scanResult.analysisSource || 'backend',
     };
 
     // Build per-colour features

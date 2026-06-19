@@ -6,38 +6,121 @@
 
 import type { ScanResult, Color, Paint, ScanMode } from './types';
 import { extractDominantColors } from './colorClustering';
-import { rgbToHex, rgbToHsv } from './colorConversion';
+import { rgbToHex, rgbToHsv, rgbToLab, hexToRgb, type LAB } from './colorConversion';
 import { findNClosestColors } from './deltaE';
-import { getPaintDatabase } from './paintDatabase';
 
 /**
- * Determine color family based on HSV values
+ * Canonical hue → family classifier — a faithful port of the backend
+ * `core/color_engine.py::hue_family` (Prompt 1.3), so the offline fallback and
+ * the backend can never disagree on a colour's family.
+ *
+ * Returns the SAME flat lowercase vocabulary the backend uses
+ * (red, orange, yellow, green, cyan, blue, purple, pink, magenta, brown, bone,
+ * white, grey, black). Metals are not produced here.
+ *
+ * @param hDeg  hue in degrees (0–360)
+ * @param s     saturation 0–1   (note: rgbToHsv returns 0–100 — convert first)
+ * @param v     value 0–1
+ * @param chroma  sqrt(a*² + b*²) from LAB
+ * @param lab   LAB (for the pale-pink rescue + desaturated exceptions)
  */
-function determineColorFamily(rgb: [number, number, number]): string {
-  const hsv = rgbToHsv({ r: rgb[0], g: rgb[1], b: rgb[2] });
-  const { h, s, v } = hsv;
+export function hueFamily(
+  hDeg: number,
+  s: number,
+  v: number,
+  chroma: number,
+  lab?: LAB
+): string {
+  const h = ((hDeg % 360) + 360) % 360;
+  const L = lab ? lab.l : v * 100;
+  const a = lab ? lab.a : 0;
 
-  // Check for grayscale first
-  if (s < 10) {
-    if (v < 20) return 'Black';
-    if (v > 90) return 'White';
-    if (v < 40) return 'Dark Grey';
-    if (v < 70) return 'Grey';
-    return 'Light Grey';
+  // 1. ACHROMATIC / PALE-TINT GATE (value + chroma based)
+  if (v < 0.1) return 'black';
+  if (s < 0.1 || chroma < 12) {
+    if ((h < 24 || h >= 300) && L > 60 && a > 6 && v > 0.7) return 'pink'; // pale pink, both hue ends
+    if (h >= 195 && h < 256 && s > 0.05 && chroma > 3) return 'blue'; // desaturated blue
+    if (h >= 74 && h < 158 && s > 0.06 && chroma > 4) return 'green'; // desaturated green
+    if (h >= 158 && h < 195 && s > 0.06 && chroma > 3) return 'cyan'; // desaturated cyan
+    if (h >= 256 && h < 300 && s > 0.05 && chroma > 3) return 'purple'; // desaturated purple
+    if (v > 0.85) return 'white';
+    if (v > 0.18) return 'grey';
+    return 'black';
   }
 
-  // Determine hue-based family
-  if (h >= 0 && h < 15) return 'Red';
-  if (h >= 15 && h < 35) return 'Orange';
-  if (h >= 35 && h < 70) return 'Yellow';
-  if (h >= 70 && h < 150) return 'Green';
-  if (h >= 150 && h < 200) return 'Cyan';
-  if (h >= 200 && h < 260) return 'Blue';
-  if (h >= 260 && h < 300) return 'Purple';
-  if (h >= 300 && h < 330) return 'Magenta';
-  if (h >= 330) return 'Red';
+  // 2. CHROMATIC — strictly hue-zoned; sub-splits live inside each zone only.
+  if (h < 16 || h >= 336) {
+    if (v > 0.72 && s < 0.55) return 'pink';
+    if (chroma < 16 && v < 0.55) return 'brown';
+    if (s < 0.45 && v < 0.4) return 'brown';
+    return 'red';
+  }
+  if (h >= 16 && h < 40) {
+    if (s < 0.45 || v < 0.45) return 'brown';
+    return 'orange';
+  }
+  if (h >= 40 && h < 74) {
+    if (s < 0.3 && v > 0.55) return 'bone';
+    if (v < 0.3) return 'brown';
+    return 'yellow';
+  }
+  if (h >= 74 && h < 158) return 'green';
+  if (h >= 158 && h < 195) return 'cyan';
+  if (h >= 195 && h < 256) return 'blue';
+  if (h >= 256 && h < 292) return 'purple';
+  if (h >= 292 && h < 336) {
+    if (v > 0.72 && s < 0.55) return 'pink';
+    return 'magenta';
+  }
+  return 'grey';
+}
 
-  return 'Unknown';
+/**
+ * Display colour family for a detected colour. Thin wrapper over hueFamily():
+ * converts HSV scale, derives chroma from LAB, and Capitalises the canonical
+ * family for display (matching the backend's Capitalised display families).
+ */
+function determineColorFamily(rgb: [number, number, number], lab?: [number, number, number]): string {
+  const hsv = rgbToHsv({ r: rgb[0], g: rgb[1], b: rgb[2] });
+  const labObj: LAB = lab
+    ? { l: lab[0], a: lab[1], b: lab[2] }
+    : rgbToLab({ r: rgb[0], g: rgb[1], b: rgb[2] });
+  const chroma = Math.sqrt(labObj.a * labObj.a + labObj.b * labObj.b);
+  const family = hueFamily(hsv.h, hsv.s / 100, hsv.v / 100, chroma, labObj);
+  return family.charAt(0).toUpperCase() + family.slice(1);
+}
+
+/**
+ * Dev-only parity check: the ported hueFamily MUST agree with the backend
+ * hue_family on these fixtures (the baby-blue-shows-green class of mismatch).
+ * Logs an error in development if any drift creeps in; no-op in production.
+ */
+const HUE_FAMILY_PARITY_FIXTURES: ReadonlyArray<readonly [string, string]> = [
+  ['#b2dfd1', 'cyan'],
+  ['#b6ce61', 'yellow'],
+  ['#EF6E2E', 'orange'],
+  ['#DECBDA', 'pink'],
+  ['#9A1115', 'red'],
+];
+
+export function runHueFamilyParityCheck(): { hex: string; expected: string; got: string }[] {
+  const failures: { hex: string; expected: string; got: string }[] = [];
+  for (const [hex, expected] of HUE_FAMILY_PARITY_FIXTURES) {
+    const rgb = hexToRgb(hex);
+    const hsv = rgbToHsv(rgb);
+    const lab = rgbToLab(rgb);
+    const chroma = Math.sqrt(lab.a * lab.a + lab.b * lab.b);
+    const got = hueFamily(hsv.h, hsv.s / 100, hsv.v / 100, chroma, lab);
+    if (got !== expected) failures.push({ hex, expected, got });
+  }
+  return failures;
+}
+
+if (process.env.NODE_ENV !== 'production') {
+  const failures = runHueFamilyParityCheck();
+  if (failures.length > 0) {
+    console.error('[hueFamily] parity check FAILED — offline classifier diverged from backend:', failures);
+  }
 }
 
 /**
@@ -129,7 +212,7 @@ export async function detectColorsOffline(
         cluster.lab.b,
       ];
       const hex = rgbToHex(cluster.rgb);
-      const family = determineColorFamily(rgb);
+      const family = determineColorFamily(rgb, lab);
 
       return {
         rgb,
@@ -141,7 +224,10 @@ export async function detectColorsOffline(
       };
     });
 
-    // Match each color to paints
+    // Match each color to paints. The paint DB (~several hundred KB) is loaded
+    // dynamically so it stays out of the main bundle — this fallback path is the
+    // only consumer.
+    const { getPaintDatabase } = await import('./paintDatabase');
     const paintDatabase = getPaintDatabase();
     const recommendedPaints: Paint[] = [];
     const usedPaints = new Set<string>();
@@ -182,7 +268,7 @@ export async function detectColorsOffline(
     // Limit to requested number of paints
     const limitedPaints = recommendedPaints.slice(0, numPaintMatches * detectedColors.length);
 
-    // Create result
+    // Create result — tagged 'local' so the UI badges it and ML excludes it.
     const result: ScanResult = {
       id: `offline-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       mode,
@@ -190,6 +276,7 @@ export async function detectColorsOffline(
       detectedColors,
       recommendedPaints: limitedPaints,
       timestamp: new Date().toISOString(),
+      analysisSource: 'local',
     };
 
     return result;
@@ -197,46 +284,4 @@ export async function detectColorsOffline(
     console.error('Offline color detection failed:', error);
     throw error;
   }
-}
-
-/**
- * Check if offline mode is feasible
- * (Browser supports required APIs)
- */
-export function isOfflineModeSupported(): boolean {
-  try {
-    // Check for required APIs
-    const hasCanvas = typeof HTMLCanvasElement !== 'undefined';
-    const hasImageData = typeof ImageData !== 'undefined';
-    const hasFileReader = typeof FileReader !== 'undefined';
-
-    return hasCanvas && hasImageData && hasFileReader;
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Get offline mode info
- */
-export function getOfflineModeInfo() {
-  const db = getPaintDatabase();
-
-  return {
-    supported: isOfflineModeSupported(),
-    paintCount: db.length,
-    brands: [...new Set(db.map((p) => p.brand))],
-    accuracy: '85-90% compared to backend',
-    limitations: [
-      'No reticle generation (location markers)',
-      'Slightly less accurate than backend AI',
-      'Limited paint database (can be expanded)',
-    ],
-    advantages: [
-      'Works completely offline',
-      'Instant results (no network delay)',
-      'Privacy - images never leave your device',
-      'No API rate limits',
-    ],
-  };
 }

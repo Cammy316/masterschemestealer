@@ -10,6 +10,7 @@
 import type { ScanResult, Color, Paint } from './types';
 import { generateScanId } from './utils';
 import { apiClient } from './apiClient';
+import { compressImage } from './imageUtils';
 
 export { ApiError, API_BASE_URL } from './apiClient';
 
@@ -20,36 +21,6 @@ const PAINTS_TIMEOUT_MS = 30_000;
 interface ScanResponse {
   colors?: Color[];
   paints?: Paint[];
-}
-
-/**
- * Compress an image to JPEG, capped at maxDimension px on the longest side.
- * Keeps original if it's already small enough to avoid unnecessary re-encoding.
- */
-async function compressImage(file: File, maxDimension = 1024, quality = 0.85): Promise<File> {
-  return new Promise((resolve) => {
-    const img = new window.Image();
-    const url = URL.createObjectURL(file);
-    img.onload = () => {
-      URL.revokeObjectURL(url);
-      const { naturalWidth: w, naturalHeight: h } = img;
-      if (w <= maxDimension && h <= maxDimension) {
-        resolve(file);
-        return;
-      }
-      const scale = maxDimension / Math.max(w, h);
-      const canvas = document.createElement('canvas');
-      canvas.width = Math.round(w * scale);
-      canvas.height = Math.round(h * scale);
-      canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
-      canvas.toBlob(
-        (blob) => resolve(new File([blob!], file.name, { type: 'image/jpeg' })),
-        'image/jpeg',
-        quality
-      );
-    };
-    img.src = url;
-  });
 }
 
 /**
@@ -75,6 +46,7 @@ export async function scanMiniature(imageFile: File): Promise<ScanResult> {
     detectedColors: data.colors || [],
     recommendedPaints: data.paints || [],
     timestamp: new Date().toISOString(),
+    analysisSource: 'backend',
   };
 }
 
@@ -97,6 +69,7 @@ export async function scanInspiration(imageFile: File): Promise<ScanResult> {
     detectedColors: data.colors || [],
     recommendedPaints: data.paints || [],
     timestamp: new Date().toISOString(),
+    analysisSource: 'backend',
   };
 }
 
