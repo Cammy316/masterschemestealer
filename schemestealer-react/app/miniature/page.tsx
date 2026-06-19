@@ -15,12 +15,7 @@ import { ScanReveal } from '@/components/miniscan/ScanReveal';
 import { motion } from 'framer-motion';
 import { useApiReady } from '@/hooks/useApiReady';
 import { useScan } from '@/hooks/useScan';
-import {
-  prepareMiniatureImage,
-  prefersServerBackgroundRemoval,
-  setPreferServerBackgroundRemoval,
-  backgroundModelDownloaded,
-} from '@/lib/backgroundRemoval';
+import { prepareMiniatureImage } from '@/lib/backgroundRemoval';
 
 export default function MiniscanPage() {
   const router = useRouter();
@@ -29,11 +24,11 @@ export default function MiniscanPage() {
   const apiReady = useApiReady();
   const [showReveal, setShowReveal] = useState(false);
   const [modelProgress, setModelProgress] = useState<number | null>(null);
-  const [showModelNote, setShowModelNote] = useState(false);
   const cameraInputRef = useRef<HTMLInputElement>(null);
 
-  // Resize then remove the background in the browser (lazy model load with
-  // progress); the helper falls back to server-side removal where appropriate.
+  // Resize then remove the background in the browser (with model-download
+  // progress). The backend requires a client-side RGBA PNG, so on failure this
+  // throws and the scan surfaces an error (with the local-auspex fallback).
   const preprocess = useCallback(
     (file: File): Promise<File> => prepareMiniatureImage(file, { onProgress: setModelProgress }),
     []
@@ -47,17 +42,6 @@ export default function MiniscanPage() {
   React.useEffect(() => {
     setMode('miniature');
   }, [setMode]);
-
-  // Show the one-time model note only when browser removal will actually run and
-  // download (not server-preferred, not already cached). Client-only read.
-  React.useEffect(() => {
-    setShowModelNote(!prefersServerBackgroundRemoval() && !backgroundModelDownloaded());
-  }, []);
-
-  const handleUseServerInstead = () => {
-    setPreferServerBackgroundRemoval(true);
-    setShowModelNote(false);
-  };
 
   // When a scan completes, show the reveal animation (commit happens after it).
   React.useEffect(() => {
@@ -233,21 +217,6 @@ export default function MiniscanPage() {
         onChange={handleCameraChange}
         className="hidden"
       />
-
-      {/* First-time model download note */}
-      {showModelNote && (
-        <div className="max-w-2xl mx-auto mt-4">
-          <div className="rounded-lg border border-brass/30 bg-brass/5 p-3 text-xs tech-text text-cogitator-green-dim leading-relaxed">
-            First scan downloads a one-time processing model (~30–80MB). On mobile data?{' '}
-            <button
-              onClick={handleUseServerInstead}
-              className="underline text-brass font-bold touch-target"
-            >
-              The server can do this step instead.
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Error message */}
       {error && (
