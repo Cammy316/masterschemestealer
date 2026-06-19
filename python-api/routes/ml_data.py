@@ -42,6 +42,10 @@ class ScanLevelFeatures(BaseModel):
     colour_harmony_type: str
     overall_brightness: float
     overall_contrast: float
+    # Which engine produced the scan: 'backend' (default) or 'local' (in-browser
+    # fallback). Optional so older payloads without it still validate. Requires a
+    # matching `analysis_source` column on the Supabase `ml_scans` table.
+    analysis_source: Optional[str] = "backend"
 
 
 class ColourFeatures(BaseModel):

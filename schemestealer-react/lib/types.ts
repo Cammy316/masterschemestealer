@@ -77,6 +77,9 @@ export interface ScanResult {
   detectedColors: Color[];
   recommendedPaints: Paint[];
   timestamp: string; // ISO 8601 — survives JSON.stringify in persist without type drift
+  // Which engine produced this result. 'local' = in-browser fallback (reduced
+  // accuracy); defaults to 'backend'. Used for the results badge and ML logging.
+  analysisSource?: 'backend' | 'local';
   feedback?: {
     rating?: number;
     comment?: string;

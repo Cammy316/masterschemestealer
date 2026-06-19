@@ -15,6 +15,7 @@ import { PaintRecipeCard } from '@/components/shared/PaintRecipeCard';
 import { PaintResults } from '@/components/shared/PaintResults';
 import { ShareButton } from '@/components/ShareButton';
 import { ShareModal } from '@/components/ShareModal';
+import { LocalAuspexBadge } from '@/components/shared/LocalAuspexBadge';
 import { FeedbackModal, type FeedbackSubmission } from '@/components/FeedbackModal';
 import { KoFiPrompt, KoFiBanner } from '@/components/KoFiPrompt';
 import { useFeedbackPrompt } from '@/hooks/useFeedbackPrompt';
@@ -130,6 +131,7 @@ export default function MiniscanResultsPage() {
       <div className="scanline" />
 
       <div className="max-w-2xl mx-auto space-y-6">
+        {currentScan.analysisSource === 'local' && <LocalAuspexBadge />}
         {/* Header */}
         <motion.div
           className="text-center"

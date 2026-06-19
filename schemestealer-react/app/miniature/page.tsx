@@ -8,44 +8,56 @@
 import React, { useCallback, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
-import { removeBackground } from '@imgly/background-removal';
 import { CogitatorUpload } from '@/components/miniscan/CogitatorUpload';
 import { LoadingAnimation } from '@/components/shared/LoadingAnimations';
+import { ModelDownloadProgress } from '@/components/shared/ModelDownloadProgress';
 import { ScanReveal } from '@/components/miniscan/ScanReveal';
 import { motion } from 'framer-motion';
 import { useApiReady } from '@/hooks/useApiReady';
 import { useScan } from '@/hooks/useScan';
+import {
+  prepareMiniatureImage,
+  prefersServerBackgroundRemoval,
+  setPreferServerBackgroundRemoval,
+  backgroundModelDownloaded,
+} from '@/lib/backgroundRemoval';
 
 export default function MiniscanPage() {
   const router = useRouter();
   const setMode = useAppStore((s) => s.setMode);
   const setScanResult = useAppStore((s) => s.setScanResult);
-  const offlineMode = useAppStore((s) => s.offlineMode);
-  const apiReady = useApiReady(offlineMode);
+  const apiReady = useApiReady();
   const [showReveal, setShowReveal] = useState(false);
+  const [modelProgress, setModelProgress] = useState<number | null>(null);
+  const [showModelNote, setShowModelNote] = useState(false);
   const cameraInputRef = useRef<HTMLInputElement>(null);
 
-  // Miniature mode removes the background in the browser, then sends the RGBA
-  // PNG to the backend. Prompt 4 modifies this preprocess; the hook is untouched.
-  const preprocess = useCallback(async (file: File): Promise<File> => {
-    try {
-      const bgRemovedBlob = await removeBackground(file);
-      return new File([bgRemovedBlob], file.name.replace(/\.[^.]+$/, '.png'), {
-        type: 'image/png',
-      });
-    } catch {
-      // Browser bg removal failed — the server will handle it.
-      return file;
-    }
-  }, []);
+  // Resize then remove the background in the browser (lazy model load with
+  // progress); the helper falls back to server-side removal where appropriate.
+  const preprocess = useCallback(
+    (file: File): Promise<File> => prepareMiniatureImage(file, { onProgress: setModelProgress }),
+    []
+  );
 
-  const { isProcessing, error, result, scan, retry, markCommitted } = useScan('miniature', {
-    preprocess,
-  });
+  const { isProcessing, error, result, scan, retry, fallbackToOffline, markCommitted } = useScan(
+    'miniature',
+    { preprocess }
+  );
 
   React.useEffect(() => {
     setMode('miniature');
   }, [setMode]);
+
+  // Show the one-time model note only when browser removal will actually run and
+  // download (not server-preferred, not already cached). Client-only read.
+  React.useEffect(() => {
+    setShowModelNote(!prefersServerBackgroundRemoval() && !backgroundModelDownloaded());
+  }, []);
+
+  const handleUseServerInstead = () => {
+    setPreferServerBackgroundRemoval(true);
+    setShowModelNote(false);
+  };
 
   // When a scan completes, show the reveal animation (commit happens after it).
   React.useEffect(() => {
@@ -111,9 +123,14 @@ export default function MiniscanPage() {
     );
   }
 
-  // Show loading animation while processing
+  // Show loading animation while processing; swap to the model-download progress
+  // screen when the one-time model is downloading.
   if (isProcessing) {
-    return <LoadingAnimation mode="miniature" />;
+    return modelProgress !== null ? (
+      <ModelDownloadProgress percent={modelProgress} />
+    ) : (
+      <LoadingAnimation mode="miniature" />
+    );
   }
 
   // Show reveal animation after scan complete
@@ -217,6 +234,21 @@ export default function MiniscanPage() {
         className="hidden"
       />
 
+      {/* First-time model download note */}
+      {showModelNote && (
+        <div className="max-w-2xl mx-auto mt-4">
+          <div className="rounded-lg border border-brass/30 bg-brass/5 p-3 text-xs tech-text text-cogitator-green-dim leading-relaxed">
+            First scan downloads a one-time processing model (~30–80MB). On mobile data?{' '}
+            <button
+              onClick={handleUseServerInstead}
+              className="underline text-brass font-bold touch-target"
+            >
+              The server can do this step instead.
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Error message */}
       {error && (
         <motion.div
@@ -251,7 +283,17 @@ export default function MiniscanPage() {
                   ◆ RE-ESTABLISH VOX LINK ◆
                 </button>
               )}
-              {/* Prompt 4 extension point: offline-fallback button goes here. */}
+              {error.retryable && (
+                <button
+                  onClick={fallbackToOffline}
+                  className="mt-2 w-full py-3 px-6 rounded-lg border border-brass/50 bg-brass/10 touch-target text-brass"
+                >
+                  <span className="block text-sm font-bold cyber-text">◆ USE LOCAL AUSPEX ◆</span>
+                  <span className="block text-xs tech-text text-brass/70 mt-0.5">
+                    Faster, but less precise — runs on this device
+                  </span>
+                </button>
+              )}
             </div>
           </div>
         </motion.div>

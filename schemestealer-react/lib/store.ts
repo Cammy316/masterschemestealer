@@ -173,7 +173,6 @@ export const useAppStore = create<AppStore>()(
         cart: state.cart,
         scanHistory: state.scanHistory,
         currentScan: state.currentScan ? toPersistableScan(state.currentScan) : null,
-        offlineMode: state.offlineMode,
         preferredBrands: state.preferredBrands,
       }),
     }

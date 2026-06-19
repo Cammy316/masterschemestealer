@@ -18,12 +18,12 @@ export default function InspirationPage() {
   const router = useRouter();
   const setMode = useAppStore((s) => s.setMode);
   const setScanResult = useAppStore((s) => s.setScanResult);
-  const offlineMode = useAppStore((s) => s.offlineMode);
-  const apiReady = useApiReady(offlineMode);
+  const apiReady = useApiReady();
   const [hasUploaded, setHasUploaded] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { isProcessing, error, result, scan, retry, markCommitted } = useScan('inspiration');
+  const { isProcessing, error, result, scan, retry, fallbackToOffline, markCommitted } =
+    useScan('inspiration');
 
   React.useEffect(() => {
     setMode('inspiration');
@@ -195,7 +195,17 @@ export default function InspirationPage() {
                   ◆ RE-ESTABLISH VOX LINK ◆
                 </button>
               )}
-              {/* Prompt 4 extension point: offline-fallback button goes here. */}
+              {error.retryable && (
+                <button
+                  onClick={fallbackToOffline}
+                  className="mt-2 w-full py-3 px-6 rounded-lg border border-warp-teal/50 bg-warp-teal/10 touch-target text-warp-teal"
+                >
+                  <span className="block text-sm font-bold">◆ USE LOCAL AUSPEX ◆</span>
+                  <span className="block text-xs text-warp-teal/70 mt-0.5">
+                    Faster, but less precise — runs on this device
+                  </span>
+                </button>
+              )}
             </div>
           </div>
         </motion.div>

@@ -1,10 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useAppStore } from '@/lib/store';
 import { scanMiniature, scanInspiration } from '@/lib/api';
-import { detectColorsOffline } from '@/lib/offlineColorDetection';
-import { enhanceWithMultiBrandMatches } from '@/lib/paintMatcher';
 import { mlLogger } from '@/lib/mlDataLogger';
 import { mapScanError, type ScanError } from '@/lib/errorMessages';
 import type { ScanMode, ScanResult } from '@/lib/types';
@@ -12,8 +9,8 @@ import type { ScanMode, ScanResult } from '@/lib/types';
 interface UseScanOptions {
   /**
    * Optional per-mode preprocessing applied to the file before the ONLINE scan
-   * call (e.g. miniature browser background removal). Not used in offline mode.
-   * Prompt 4 modifies the preprocess function itself, not this hook.
+   * call (e.g. miniature browser background removal). Not used by the offline
+   * fallback. The closure may report its own progress via page state.
    */
   preprocess?: (file: File) => Promise<File>;
 }
@@ -23,8 +20,10 @@ interface UseScanReturn {
   error: ScanError | null;
   result: ScanResult | null;
   scan: (file: File) => Promise<void>;
-  /** Re-run the last attempted scan without re-selecting the file. */
+  /** Re-run the last attempted scan against the backend (no re-selection). */
   retry: () => Promise<void>;
+  /** Run the in-browser fallback engine on the last attempted file. */
+  fallbackToOffline: () => Promise<void>;
   reset: () => void;
   /** Page calls this after committing the result to the store, so the hook hands
    * over object-URL ownership and won't revoke it on unmount. */
@@ -32,16 +31,13 @@ interface UseScanReturn {
 }
 
 /**
- * Owns the entire scan flow for a mode so the pages don't duplicate it:
- * ML logging start/complete, the offline branch, the API call (with optional
- * preprocess), structured error mapping, and object-URL hygiene for failed
- * scans. The committed scan's object URL is owned by the store (revoked when
- * replaced or cleared); the hook only revokes transient/failed-scan URLs within
- * its own mount, so navigating to the results page never breaks the image.
+ * Owns the scan flow for a mode: ML logging, the backend call (with optional
+ * preprocess), structured error mapping, object-URL hygiene, and a hidden
+ * in-browser fallback. The offline engine (and its paint DB) are dynamically
+ * imported so they stay out of the main bundle — they load only if the backend
+ * is unreachable and the user chooses the local fallback.
  */
 export function useScan(mode: ScanMode, options: UseScanOptions = {}): UseScanReturn {
-  const offlineMode = useAppStore((s) => s.offlineMode);
-
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<ScanError | null>(null);
   const [result, setResult] = useState<ScanResult | null>(null);
@@ -65,6 +61,16 @@ export function useScan(mode: ScanMode, options: UseScanOptions = {}): UseScanRe
     pendingUrlRef.current = null;
   }, []);
 
+  // Record a produced result: track its object URL, ML-log it, surface it.
+  const completeWith = useCallback((scanResult: ScanResult) => {
+    if (scanResult.imageUrl?.startsWith('blob:')) {
+      pendingUrlRef.current = scanResult.imageUrl;
+    }
+    mlLogger.logScanComplete(scanResult);
+    setResult(scanResult);
+    setIsProcessing(false);
+  }, []);
+
   const runScan = useCallback(
     async (file: File) => {
       lastFileRef.current = file;
@@ -75,27 +81,10 @@ export function useScan(mode: ScanMode, options: UseScanOptions = {}): UseScanRe
       await mlLogger.startScan(mode, file);
 
       try {
-        let scanResult: ScanResult;
-
-        if (offlineMode) {
-          scanResult = await detectColorsOffline(file, mode, {
-            numColors: mode === 'miniature' ? 6 : 5,
-            numPaintMatches: 5,
-          });
-          scanResult = enhanceWithMultiBrandMatches(scanResult, 3);
-        } else {
-          const fileToScan = preprocessRef.current ? await preprocessRef.current(file) : file;
-          scanResult =
-            mode === 'miniature' ? await scanMiniature(fileToScan) : await scanInspiration(fileToScan);
-        }
-
-        if (scanResult.imageUrl?.startsWith('blob:')) {
-          pendingUrlRef.current = scanResult.imageUrl;
-        }
-
-        mlLogger.logScanComplete(scanResult);
-        setResult(scanResult);
-        setIsProcessing(false);
+        const fileToScan = preprocessRef.current ? await preprocessRef.current(file) : file;
+        const scanResult =
+          mode === 'miniature' ? await scanMiniature(fileToScan) : await scanInspiration(fileToScan);
+        completeWith(scanResult);
       } catch (err) {
         if (process.env.NODE_ENV === 'development') console.error('Scan error:', err);
         revokePending(); // failed scan's object URL never reaches the store
@@ -103,7 +92,7 @@ export function useScan(mode: ScanMode, options: UseScanOptions = {}): UseScanRe
         setIsProcessing(false);
       }
     },
-    [mode, offlineMode, revokePending]
+    [mode, revokePending, completeWith]
   );
 
   const scan = useCallback((file: File) => runScan(file), [runScan]);
@@ -111,6 +100,35 @@ export function useScan(mode: ScanMode, options: UseScanOptions = {}): UseScanRe
   const retry = useCallback(async () => {
     if (lastFileRef.current) await runScan(lastFileRef.current);
   }, [runScan]);
+
+  const fallbackToOffline = useCallback(async () => {
+    const file = lastFileRef.current;
+    if (!file) return;
+    revokePending();
+    setIsProcessing(true);
+    setError(null);
+
+    try {
+      await mlLogger.startScan(mode, file);
+      // Dynamically import the offline engine + matcher (keeps them, and the
+      // paint DB, out of the main bundle).
+      const [{ detectColorsOffline }, { enhanceWithMultiBrandMatches }] = await Promise.all([
+        import('@/lib/offlineColorDetection'),
+        import('@/lib/paintMatcher'),
+      ]);
+      let scanResult = await detectColorsOffline(file, mode, {
+        numColors: mode === 'miniature' ? 6 : 5,
+        numPaintMatches: 5,
+      });
+      scanResult = enhanceWithMultiBrandMatches(scanResult, 3); // analysisSource stays 'local'
+      completeWith(scanResult);
+    } catch (err) {
+      if (process.env.NODE_ENV === 'development') console.error('Local fallback error:', err);
+      revokePending();
+      setError(mapScanError(err, mode));
+      setIsProcessing(false);
+    }
+  }, [mode, revokePending, completeWith]);
 
   const reset = useCallback(() => {
     revokePending();
@@ -130,5 +148,5 @@ export function useScan(mode: ScanMode, options: UseScanOptions = {}): UseScanRe
   // already been released via markCommitted, so this is a no-op for it.
   useEffect(() => () => revokePending(), [revokePending]);
 
-  return { isProcessing, error, result, scan, retry, reset, markCommitted };
+  return { isProcessing, error, result, scan, retry, fallbackToOffline, reset, markCommitted };
 }
