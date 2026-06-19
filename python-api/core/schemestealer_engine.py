@@ -5,7 +5,6 @@ Extracts comprehensive features for machine learning training
 
 import cv2
 import numpy as np
-import colorsys
 import json
 import re
 import unicodedata
@@ -21,6 +20,8 @@ from core.color_engine import (
     PaintMatcher, VisualizationEngine
 )
 from core.smart_color_system import SmartColorExtractor
+from core.recipe_graph import RecipeGraph
+from core.recipe_geometry import PaintNode, best_geometric_edges, CANDIDATE_CATEGORIES
 from utils.helpers import apply_white_balance, increase_saturation
 from utils.logging_config import logger
 
@@ -74,7 +75,28 @@ class SchemeStealerEngine:
         self.smart_extractor = SmartColorExtractor()
         self.matcher = PaintMatcher(self.paint_db)
         self.viz_engine = VisualizationEngine()
-        logger.info("Engine initialization complete - ML features enabled")
+
+        # Recipe relationship graph (curated + algorithmic edges) keyed on paint_id,
+        # plus per-brand PaintNode pools for the live LAB-geometry fallback.
+        self._paints_by_id = {p.paint_id: p for p in self.paint_db if p.paint_id}
+        self.recipe_graph = RecipeGraph(self._paints_by_id)
+        self._recipe_nodes = {}
+        self._recipe_pools = {}
+        for p in self.paint_db:
+            if p.lab is None or not p.paint_id:
+                continue
+            node = PaintNode(
+                paint_id=p.paint_id, name=p.name, brand=p.brand,
+                category=(p.type or '').lower(), color_family=(p.color_family or '').lower(),
+                lab=(float(p.lab[0]), float(p.lab[1]), float(p.lab[2])),
+                matchable=p.matchable, discontinued=p.discontinued,
+            )
+            self._recipe_nodes[p.paint_id] = node
+            if node.matchable and not node.discontinued and node.category in CANDIDATE_CATEGORIES:
+                self._recipe_pools.setdefault(p.brand, []).append(node)
+
+        logger.info("Engine initialization complete - ML features enabled "
+                    f"({self.recipe_graph.edge_count()} recipe edges)")
 
     def analyze_miniature(self, img_np: np.ndarray, mode: str = "mini",
                          remove_base: bool = True, use_awb: bool = True,
@@ -177,8 +199,6 @@ class SchemeStealerEngine:
             else:
                 chroma = color_data.get('chroma', 0)
             
-            # Extract layers for paint matching
-            layers = self._extract_layers(color_data)
             shade_type = ShadeTypeAnalyser.determine_shade_type(
                 color_data, color_data.get('brightness_std', 30), family
             )
@@ -201,15 +221,22 @@ class SchemeStealerEngine:
                 'high_chroma': chroma > 30
             }
 
-            # Map ShadeTypeAnalyser output to engine role names.
-            # 'wash' → 'wash' (dedicated wash/shade/ink products)
-            # 'paint' → 'shade' (shade + contrast paints acceptable)
-            shade_role = shade_type if shade_type == 'wash' else 'shade'
-
-            # Match paints
-            base_matches = {b: self._match_and_format(layers['base'], b, 'dominant', context) for b in brands}
-            highlight_matches = {b: self._match_and_format(layers['highlight'], b, 'highlight', context) for b in brands}
-            shade_matches = {b: self._match_and_format(layers['shade'], b, shade_role, context) for b in brands}
+            # Recipe assembly: base = the dominant-role colour match; highlight,
+            # shade and wash come from the recipe graph (curated edges first, then
+            # a live LAB-geometry fallback) — no synthetic-colour maths.
+            base_matches, highlight_matches, shade_matches, wash_matches = {}, {}, {}, {}
+            for b in brands:
+                base_paint = self.matcher.match_color(median_rgb, b, role='dominant', context=context)
+                base_matches[b] = self._format_paint(base_paint)
+                if base_paint is not None:
+                    hp, hs = self._recipe_partner(base_paint, 'highlight', b)
+                    sp, ss = self._recipe_partner(base_paint, 'shade', b)
+                    wp, ws = self._recipe_wash(base_paint)
+                    highlight_matches[b] = self._format_paint(hp, hs)
+                    shade_matches[b] = self._format_paint(sp, ss)
+                    wash_matches[b] = self._format_paint(wp, ws, is_wash=True)
+                else:
+                    highlight_matches[b] = shade_matches[b] = wash_matches[b] = None
 
             # Derive the displayed colour family from the best base match's
             # curated color_family field — more reliable than the heuristic
@@ -257,6 +284,7 @@ class SchemeStealerEngine:
                 'base': base_matches,
                 'highlight': highlight_matches,
                 'shade': shade_matches,
+                'wash': wash_matches,          # graph-driven wash (None -> scanner fallback)
                 'shade_type': shade_type,
                 'reticle': reticle_img,
                 'rgb_preview': median_rgb.astype(int),
@@ -285,39 +313,43 @@ class SchemeStealerEngine:
         
         return recipes
 
-    def _extract_layers(self, cluster: Dict) -> Dict:
-        """Extract base, highlight, and shade colors"""
-        rgb, hsv = cluster['median_rgb'], cluster['median_hsv']
-        h, s, v = hsv[0], hsv[1], hsv[2]
-        
-        # Generate highlight (lighter, less saturated)
-        highlight_rgb = np.array(colorsys.hsv_to_rgb(
-            h, 
-            max(0.3, s * 0.9),  # Slightly desaturate
-            min(1.0, v * 1.4)    # Brighten
-        )) * 255
-        
-        # Generate shade (darker, more saturated)
-        shade_rgb = np.array(colorsys.hsv_to_rgb(
-            h,
-            min(1.0, s * 1.1),   # Slightly saturate
-            max(0.0, v * 0.6)    # Darken
-        )) * 255
-        
-        return {
-            'base': rgb,
-            'highlight': np.clip(highlight_rgb, 0, 255),
-            'shade': np.clip(shade_rgb, 0, 255)
-        }
-
-    def _match_and_format(self, rgb, brand, role, context):
-        """Match colour to paint and format for UI, including color_family."""
-        match = self.matcher.match_color(rgb, brand, role=role, context=context)
-        if not match:
+    def _format_paint(self, paint, source: str = None, is_wash: bool = False):
+        """Format a Paint for the recipe dict (incl. optional relationship source)."""
+        if paint is None:
             return None
-        return {
-            'name': match.name,
-            'hex': match.hex,
-            'type': match.type,
-            'color_family': match.color_family,
+        out = {
+            'name': paint.name,
+            'hex': paint.hex,
+            'type': 'wash' if is_wash else paint.type,
+            'color_family': paint.color_family,
         }
+        if source:
+            out['source'] = source   # 'official' | 'computed'
+        return out
+
+    def _recipe_partner(self, base_paint, rel: str, brand: str):
+        """Resolve a highlight/shade partner for base_paint: curated graph edge
+        first, then a live LAB-geometry fallback using the shared scorer. Returns
+        (Paint|None, source_kind|None)."""
+        edge = self.recipe_graph.get_edge(base_paint, rel)
+        if edge is not None:
+            target = self._paints_by_id.get(edge.to_id)
+            if target is not None:
+                return target, edge.kind  # 'official' or 'computed'
+
+        from_node = self._recipe_nodes.get(getattr(base_paint, 'paint_id', None))
+        if from_node is None:
+            return None, None
+        best = best_geometric_edges(from_node, self._recipe_pools.get(brand, []), rel, top_n=1)
+        if best:
+            return self._paints_by_id.get(best[0][0].paint_id), 'computed'
+        return None, None
+
+    def _recipe_wash(self, base_paint):
+        """Wash partner from the graph (None -> the scanner's WashMapping fallback)."""
+        edge = self.recipe_graph.get_edge(base_paint, 'wash')
+        if edge is not None:
+            target = self._paints_by_id.get(edge.to_id)
+            if target is not None:
+                return target, edge.kind
+        return None, None

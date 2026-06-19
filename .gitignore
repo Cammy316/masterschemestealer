@@ -38,3 +38,6 @@ node_modules/
 # Misc
 *.pem
 api.log
+
+# Scraper cache (regenerated on demand)
+.scrape_cache/

@@ -13,7 +13,7 @@ import cv2
 
 from core.schemestealer_engine import SchemeStealerEngine
 from core.colour_maths import ciede2000_single
-from config import WashMapping
+from services.recipe_builder import build_paint_recipe
 
 logger = logging.getLogger(__name__)
 
@@ -197,128 +197,9 @@ class MiniatureScannerService:
         }
 
     def _build_paint_recipe(self, recipe: Dict, family: str, color_lab: List[float]) -> Dict:
-        """
-        Build structured paint recipe with base, shade, highlight, wash for each brand
-
-        Args:
-            recipe: Recipe dictionary from engine
-            family: Color family name
-            color_lab: LAB values of the detected color
-
-        Returns:
-            Dictionary with citadel, vallejo, army_painter keys
-        """
-        brand_mapping = {
-            'Citadel': 'citadel',
-            'Vallejo': 'vallejo',
-            'Army Painter': 'army_painter',
-            'Scale75': 'scale75',
-        }
-
-        paint_recipe = {}
-
-        for brand, brand_key in brand_mapping.items():
-            base_match = recipe.get('base', {}).get(brand)
-            highlight_match = recipe.get('highlight', {}).get(brand)
-            shade_match = recipe.get('shade', {}).get(brand)
-
-            # Get appropriate wash for this color family
-            wash_match = self._get_wash_for_family(family, brand, color_lab)
-
-            paint_recipe[brand_key] = {
-                'base': self._format_paint_match(base_match, color_lab) if base_match else None,
-                'shade': self._format_paint_match(shade_match, color_lab) if shade_match else None,
-                'highlight': self._format_paint_match(highlight_match, color_lab) if highlight_match else None,
-                'wash': wash_match
-            }
-
-        return paint_recipe
-
-    def _format_paint_match(self, match: Dict, color_lab: List[float] = None) -> Optional[Dict]:
-        """Format a single paint match"""
-        if not match:
-            return None
-
-        result = {
-            'name': match.get('name'),
-            'hex': match.get('hex'),
-            'type': match.get('type', 'paint'),
-        }
-
-        # Calculate deltaE if we have the color LAB
-        if color_lab and match.get('hex'):
-            try:
-                paint_rgb = self._hex_to_rgb(match['hex'])
-                paint_lab = self._rgb_to_lab(paint_rgb)
-                delta_e = ciede2000_single(paint_lab, color_lab)
-                result['deltaE'] = round(float(delta_e), 1)
-            except Exception:
-                result['deltaE'] = 0
-
-        return result
-
-    def _get_wash_for_family(self, family: str, brand: str, color_lab: List[float] = None) -> Optional[Dict]:
-        """
-        Get recommended wash for color family and brand
-
-        Args:
-            family: Color family name (e.g., "Blue", "Gold/Brass")
-            brand: Brand name (e.g., "Citadel", "Vallejo", "Army Painter")
-            color_lab: LAB values for delta-E calculation
-
-        Returns:
-            Formatted wash dictionary or None
-        """
-        # Get recommended wash name from WashMapping
-        wash_name = WashMapping.get_recommended_wash(family, brand)
-
-        # Find matching wash in database
-        matching_wash = None
-        for wash in self.wash_db:
-            if (wash.get('brand', '').lower() == brand.lower() and
-                wash_name.lower() in wash.get('name', '').lower()):
-                matching_wash = wash
-                break
-
-        if not matching_wash:
-            # Try partial match
-            for wash in self.wash_db:
-                if wash.get('brand', '').lower() == brand.lower():
-                    # Check if any part of the wash name matches
-                    wash_name_parts = wash_name.lower().split()
-                    db_name_lower = wash.get('name', '').lower()
-                    if any(part in db_name_lower for part in wash_name_parts):
-                        matching_wash = wash
-                        break
-
-        if not matching_wash:
-            # Return basic info without hex
-            return {
-                'name': wash_name,
-                'hex': '#000000',  # Placeholder
-                'type': 'wash',
-                'deltaE': 0
-            }
-
-        # Format the wash match
-        result = {
-            'name': matching_wash.get('name', wash_name),
-            'hex': matching_wash.get('hex', '#000000'),
-            'type': 'wash',
-        }
-
-        # Calculate deltaE if we have color LAB
-        if color_lab and matching_wash.get('hex'):
-            try:
-                wash_rgb = self._hex_to_rgb(matching_wash['hex'])
-                wash_lab = self._rgb_to_lab(wash_rgb)
-                # Washes don't need precise color matching, so deltaE is informational
-                delta_e = ciede2000_single(wash_lab, color_lab)
-                result['deltaE'] = round(float(delta_e), 1)
-            except Exception:
-                result['deltaE'] = 0
-
-        return result
+        """Build the structured per-brand recipe via the shared builder (graph-driven
+        base/shade/highlight + graph-or-WashMapping wash)."""
+        return build_paint_recipe(recipe, family, color_lab, self.wash_db)
 
     def _encode_reticle(self, reticle_img, hex_color: str) -> Optional[str]:
         """Encode reticle image as base64 JPEG"""
