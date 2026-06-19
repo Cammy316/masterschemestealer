@@ -41,6 +41,9 @@ export interface PaintMatch {
   deltaE?: number;
   discontinued?: boolean; // Whether this paint is no longer available
   alternativeName?: string; // For renamed paints
+  // Relationship provenance for highlight/shade/wash slots from the backend
+  // recipe graph: 'official' (curated chain) or 'computed' (algorithmic).
+  source?: 'official' | 'computed';
 }
 
 export interface BrandRecipe {

@@ -267,12 +267,14 @@ export function getRecipeForColor(
   // Find best base match
   const baseMatch = findClosestPaint(colorLab, basePaints);
 
-  // Generate highlight (lighter version)
-  const highlightLab = adjustLightness(colorLab, 15);
+  // NOTE: the backend recipe graph (curated official chains + LAB-geometry
+  // fallback) is authoritative for recipes. This client-side generator is a
+  // simple lightness-shift fallback only and is not on a primary path. Deltas
+  // are aligned to the backend's ideal dL* (±12) so the two don't diverge.
+  const highlightLab = adjustLightness(colorLab, 12);
   const highlightMatch = findClosestPaint(highlightLab, basePaints);
 
-  // Generate shade (darker version)
-  const shadeLab = adjustLightness(colorLab, -20);
+  const shadeLab = adjustLightness(colorLab, -12);
   const shadeMatch = findClosestPaint(shadeLab, basePaints);
 
   // Get wash based on color family
