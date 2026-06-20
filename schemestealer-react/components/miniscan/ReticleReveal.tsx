@@ -12,9 +12,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 interface ReticleRevealProps {
   colorName: string;
   colorHex: string;
-  reticleImage?: string; // Base64 or URL from backend
-  originalImage?: string;
-  reticlePositions?: Array<{ x: number; y: number }>; // Positions to draw client-side reticles
+  reticleImage?: string; // Base64 or URL from backend (fallback)
+  originalImage?: string; // Full-colour source image (object URL)
+  // Normalised (0-1) reticle positions to draw over the full-colour image. The
+  // active one (this card's colour) is emphasised; the rest are dimmed.
+  reticlePositions?: Array<{ x: number; y: number; color?: string; active?: boolean }>;
 }
 
 export function ReticleReveal({
@@ -50,50 +52,50 @@ export function ReticleReveal({
     canvas.width = img.naturalWidth;
     canvas.height = img.naturalHeight;
 
-    // Draw the original image
+    // Draw the original full-colour image, then reticles over it.
     ctx.drawImage(img, 0, 0);
 
-    // Draw 20px reticles at each position
+    // Reticle size scales with the image so it's visible on a downscaled render.
+    const base = Math.max(18, Math.round(img.naturalWidth * 0.03));
+
     reticlePositions.forEach(pos => {
       const x = pos.x * img.naturalWidth;
       const y = pos.y * img.naturalHeight;
-      const size = 20;
-      const halfSize = size / 2;
+      const active = pos.active === true || (pos.active === undefined && reticlePositions.length === 1);
+      const ringColor = active ? (pos.color || colorHex) : '#cfd8dc';
+      const size = active ? Math.round(base * 1.6) : base;
+      const half = size / 2;
 
       ctx.save();
       ctx.translate(x, y);
+      ctx.globalAlpha = active ? 1 : 0.35;
+      if (active) {
+        ctx.shadowColor = ringColor;
+        ctx.shadowBlur = 16;
+      }
 
-      // Outer pulsing ring (we'll use CSS animation for pulse)
-      ctx.strokeStyle = colorHex;
-      ctx.lineWidth = 2;
-      ctx.globalAlpha = 0.8;
+      // Outer ring
+      ctx.strokeStyle = ringColor;
+      ctx.lineWidth = active ? 3 : 2;
       ctx.beginPath();
-      ctx.arc(0, 0, halfSize, 0, Math.PI * 2);
+      ctx.arc(0, 0, half, 0, Math.PI * 2);
       ctx.stroke();
 
-      // Center dot
-      ctx.fillStyle = colorHex;
-      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0;
+
+      // Centre dot
+      ctx.fillStyle = ringColor;
       ctx.beginPath();
-      ctx.arc(0, 0, 3, 0, Math.PI * 2);
+      ctx.arc(0, 0, active ? 4 : 2, 0, Math.PI * 2);
       ctx.fill();
 
       // Crosshair lines
-      ctx.strokeStyle = colorHex;
-      ctx.lineWidth = 2;
+      ctx.lineWidth = active ? 3 : 2;
       ctx.beginPath();
-      // Top
-      ctx.moveTo(0, -halfSize);
-      ctx.lineTo(0, -halfSize + 6);
-      // Bottom
-      ctx.moveTo(0, halfSize);
-      ctx.lineTo(0, halfSize - 6);
-      // Left
-      ctx.moveTo(-halfSize, 0);
-      ctx.lineTo(-halfSize + 6, 0);
-      // Right
-      ctx.moveTo(halfSize, 0);
-      ctx.lineTo(halfSize - 6, 0);
+      ctx.moveTo(0, -half); ctx.lineTo(0, -half + 6);
+      ctx.moveTo(0, half); ctx.lineTo(0, half - 6);
+      ctx.moveTo(-half, 0); ctx.lineTo(-half + 6, 0);
+      ctx.moveTo(half, 0); ctx.lineTo(half - 6, 0);
       ctx.stroke();
 
       ctx.restore();

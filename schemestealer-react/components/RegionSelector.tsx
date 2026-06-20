@@ -5,8 +5,9 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
+import { DropdownMenu } from '@/components/ui/DropdownMenu';
 
 export type Region = 'uk' | 'us' | 'eu' | 'au' | 'global';
 
@@ -29,6 +30,7 @@ interface RegionSelectorProps {
 export function RegionSelector({ value: controlledValue, onChange, compact = false }: RegionSelectorProps) {
   const [selectedRegion, setSelectedRegion] = useState<Region>('global');
   const [isOpen, setIsOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -64,7 +66,8 @@ export function RegionSelector({ value: controlledValue, onChange, compact = fal
     return (
       <div className="relative inline-block">
         <motion.button
-          onClick={() => setIsOpen(!isOpen)}
+          ref={triggerRef}
+          onClick={() => setIsOpen((v) => !v)}
           className="flex items-center gap-2 px-3 py-2 rounded-lg border-2 border-brass bg-dark-gothic touch-target"
           whileHover={{
             boxShadow: '0 0 15px var(--brass)',
@@ -85,65 +88,32 @@ export function RegionSelector({ value: controlledValue, onChange, compact = fal
           </motion.span>
         </motion.button>
 
-        <AnimatePresence>
-          {isOpen && (
-            <>
-              {/* Backdrop */}
-              <div
-                className="fixed inset-0 z-40"
-                onClick={() => setIsOpen(false)}
-              />
-
-              {/* Dropdown */}
-              <motion.div
-                className="absolute top-full mt-2 right-0 w-56 bg-dark-gothic border-2 border-brass rounded-lg shadow-xl z-50 overflow-hidden"
-                initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                transition={{ duration: 0.2 }}
-              >
-                {REGIONS.map((region) => (
-                  <motion.button
-                    key={region.value}
-                    onClick={() => handleSelect(region.value)}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-left touch-target"
-                    style={{
-                      backgroundColor: region.value === currentRegion ? 'var(--brass-dark)' : 'transparent',
-                      borderBottom: '1px solid var(--charcoal)',
-                    }}
-                    whileHover={{
-                      backgroundColor: 'var(--brass-dark)',
-                      x: 4,
-                    }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <span className="text-2xl">{region.icon}</span>
-                    <div className="flex-1">
-                      <div
-                        className="text-sm font-medium cyber-text"
-                        style={{
-                          color: region.value === currentRegion ? 'var(--imperial-gold)' : 'var(--brass)',
-                        }}
-                      >
-                        {region.label}
-                      </div>
-                    </div>
-                    {region.value === currentRegion && (
-                      <motion.span
-                        className="text-imperial-gold"
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ type: 'spring', stiffness: 500, damping: 25 }}
-                      >
-                        ✓
-                      </motion.span>
-                    )}
-                  </motion.button>
-                ))}
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
+        <DropdownMenu anchorRef={triggerRef} open={isOpen} onClose={() => setIsOpen(false)} align="right" width={224}>
+          {REGIONS.map((region) => (
+            <button
+              key={region.value}
+              onClick={() => handleSelect(region.value)}
+              className="w-full flex items-center gap-3 px-4 py-3 text-left touch-target"
+              style={{
+                backgroundColor: region.value === currentRegion ? 'var(--brass-dark)' : 'transparent',
+                borderBottom: '1px solid var(--charcoal)',
+              }}
+            >
+              <span className="text-2xl">{region.icon}</span>
+              <div className="flex-1">
+                <div
+                  className="text-sm font-medium cyber-text"
+                  style={{
+                    color: region.value === currentRegion ? 'var(--imperial-gold)' : 'var(--brass)',
+                  }}
+                >
+                  {region.label}
+                </div>
+              </div>
+              {region.value === currentRegion && <span className="text-imperial-gold">✓</span>}
+            </button>
+          ))}
+        </DropdownMenu>
       </div>
     );
   }

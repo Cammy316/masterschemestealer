@@ -134,6 +134,10 @@ class InspirationScannerService:
                 'hex': hex_color,
                 'percentage': float(recipe.get('dominance', 0)),
                 'family': family,
+                'position': {
+                    'x': float(recipe.get('position_x', 0.5)),
+                    'y': float(recipe.get('position_y', 0.5)),
+                },
                 'paintRecipe': paint_recipe,  # NEW: Structured recipe per brand
             })
 

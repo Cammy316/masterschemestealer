@@ -5,8 +5,9 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
+import { DropdownMenu } from '@/components/ui/DropdownMenu';
 
 export type PaintBrand = 'all' | 'citadel' | 'vallejo' | 'army_painter' | 'reaper' | 'scale75' | 'pro_acryl';
 
@@ -31,6 +32,7 @@ interface BrandSelectorProps {
 export function BrandSelector({ value: controlledValue, onChange, compact = false }: BrandSelectorProps) {
   const [selectedBrand, setSelectedBrand] = useState<PaintBrand>('all');
   const [isOpen, setIsOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -66,7 +68,8 @@ export function BrandSelector({ value: controlledValue, onChange, compact = fals
     return (
       <div className="relative inline-block">
         <motion.button
-          onClick={() => setIsOpen(!isOpen)}
+          ref={triggerRef}
+          onClick={() => setIsOpen((v) => !v)}
           className="flex items-center gap-2 px-3 py-2 rounded-lg border-2 border-brass bg-dark-gothic touch-target"
           whileHover={{
             boxShadow: '0 0 15px var(--brass)',
@@ -87,63 +90,30 @@ export function BrandSelector({ value: controlledValue, onChange, compact = fals
           </motion.span>
         </motion.button>
 
-        <AnimatePresence>
-          {isOpen && (
-            <>
-              {/* Backdrop */}
-              <div
-                className="fixed inset-0 z-40"
-                onClick={() => setIsOpen(false)}
-              />
-
-              {/* Dropdown */}
-              <motion.div
-                className="absolute top-full mt-2 left-0 w-48 bg-dark-gothic border-2 border-brass rounded-lg shadow-xl z-50 overflow-hidden"
-                initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                transition={{ duration: 0.2 }}
+        <DropdownMenu anchorRef={triggerRef} open={isOpen} onClose={() => setIsOpen(false)} align="left" width={192}>
+          {BRANDS.map((brand) => (
+            <button
+              key={brand.value}
+              onClick={() => handleSelect(brand.value)}
+              className="w-full flex items-center gap-3 px-4 py-3 text-left touch-target"
+              style={{
+                backgroundColor: brand.value === currentBrand ? 'var(--brass-dark)' : 'transparent',
+                borderBottom: '1px solid var(--charcoal)',
+              }}
+            >
+              <span className="text-xl">{brand.icon}</span>
+              <span
+                className="text-sm font-medium cyber-text"
+                style={{
+                  color: brand.value === currentBrand ? 'var(--imperial-gold)' : 'var(--brass)',
+                }}
               >
-                {BRANDS.map((brand) => (
-                  <motion.button
-                    key={brand.value}
-                    onClick={() => handleSelect(brand.value)}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-left touch-target"
-                    style={{
-                      backgroundColor: brand.value === currentBrand ? 'var(--brass-dark)' : 'transparent',
-                      borderBottom: '1px solid var(--charcoal)',
-                    }}
-                    whileHover={{
-                      backgroundColor: 'var(--brass-dark)',
-                      x: 4,
-                    }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <span className="text-xl">{brand.icon}</span>
-                    <span
-                      className="text-sm font-medium cyber-text"
-                      style={{
-                        color: brand.value === currentBrand ? 'var(--imperial-gold)' : 'var(--brass)',
-                      }}
-                    >
-                      {brand.label}
-                    </span>
-                    {brand.value === currentBrand && (
-                      <motion.span
-                        className="ml-auto text-imperial-gold"
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ type: 'spring', stiffness: 500, damping: 25 }}
-                      >
-                        ✓
-                      </motion.span>
-                    )}
-                  </motion.button>
-                ))}
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
+                {brand.label}
+              </span>
+              {brand.value === currentBrand && <span className="ml-auto text-imperial-gold">✓</span>}
+            </button>
+          ))}
+        </DropdownMenu>
       </div>
     );
   }

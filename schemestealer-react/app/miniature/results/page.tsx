@@ -192,6 +192,15 @@ export default function MiniscanResultsPage() {
                       color.reticle ? `data:image/jpeg;base64,${color.reticle}` : undefined
                     }
                     originalImage={currentScan.imageUrl}
+                    reticlePositions={
+                      currentScan.imageUrl && currentScan.detectedColors.some((c) => c.position)
+                        ? currentScan.detectedColors.flatMap((c, i) =>
+                            c.position
+                              ? [{ x: c.position.x, y: c.position.y, color: c.hex, active: i === index }]
+                              : []
+                          )
+                        : undefined
+                    }
                   />
 
                   {/* Paint Recipe Card - NEW: Per-color brand selection */}

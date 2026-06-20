@@ -69,7 +69,7 @@
   --z-modal: 1000;
   --z-nav: 100;
   --z-overlay: 50;
-  --z-dropdown: 10;
+  --z-dropdown: 200; /* above page content + nav (100), below modals (1000) */
 }
 
 @theme inline {
@@ -390,6 +390,41 @@ h1, h2, h3, h4, h5, h6 {
     var(--parchment-dark)
   );
   color: var(--void-black);
+}
+
+/* ========================================
+   OPAQUE SURFACE CLASSES
+   These bg-* names are used throughout as solid surfaces but are NOT generated
+   by Tailwind v4 (the theme colours live as :root vars, not --color-* tokens),
+   so without these definitions the elements render transparent — which let the
+   gothic-frame gradient bleed through result cards and made dropdowns see-through.
+   Defining them here gives those surfaces their intended opaque background.
+   ======================================== */
+.bg-dark-gothic { background-color: var(--dark-gothic); }
+.bg-void-black { background-color: var(--void-black); }
+.bg-void-blue { background-color: var(--void-blue); }
+.bg-charcoal { background-color: var(--charcoal); }
+.bg-cosmic-purple { background-color: var(--cosmic-purple); }
+.bg-warp-purple-dark { background-color: var(--warp-purple-dark); }
+
+/* ========================================
+   LAYOUT UTILITIES
+   ======================================== */
+
+/* Reserve space for the fixed bottom nav: real nav height + safe-area inset +
+   breathing room, so the last interactive element never sits under the nav. */
+.pb-nav-safe {
+  padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px) + 1.5rem);
+}
+
+/* Shared paint-name rule (recipe rows on both modes): wrap to a second line
+   instead of truncating, fluid sizing, and never shrink the adjacent buttons. */
+.paint-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: normal;
+  word-break: break-word;
+  font-size: clamp(0.8rem, 2.5vw, 1.1rem);
 }
 
 /* ========================================

@@ -23,6 +23,7 @@ export interface Color {
   percentage?: number; // % of image this color represents
   family?: string; // Color family (e.g., "Blue", "Gold", "Red")
   reticle?: string | null; // Base64 encoded JPEG showing color location on miniature
+  position?: { x: number; y: number }; // Normalised (0-1) centre of this colour's region
   paintRecipe?: PaintRecipe; // NEW: Structured recipe per brand
   // Legacy support for old paint matches format (offline mode only)
   paintMatches?: {

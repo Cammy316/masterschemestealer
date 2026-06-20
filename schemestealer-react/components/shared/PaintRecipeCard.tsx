@@ -538,7 +538,7 @@ function RecipeStepRow({
             </Tooltip>
           )}
         </div>
-        <p className="text-sm font-semibold text-white truncate mt-0.5">{paint.name}</p>
+        <p className="paint-name font-semibold text-white mt-0.5">{paint.name}</p>
       </div>
 
       {/* Action Buttons */}

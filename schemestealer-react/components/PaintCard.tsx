@@ -32,7 +32,7 @@ export function PaintCard({ paint, mode, onAddToCart }: PaintCardProps) {
           style={{ backgroundColor: paint.hex }}
         />
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-white truncate text-sm">{paint.name}</p>
+          <p className="paint-name font-semibold text-white">{paint.name}</p>
           <p className="text-xs text-gray-400">{paint.brand}</p>
         </div>
         {onAddToCart && (
