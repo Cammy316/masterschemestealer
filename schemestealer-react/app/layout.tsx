@@ -21,7 +21,7 @@ export default function RootLayout({
       <body className="antialiased bg-gray-50 font-sans">
         <ClientProvider>
           <Navigation />
-          <main className="min-h-screen pb-20">
+          <main className="min-h-screen pb-nav-safe">
             {children}
           </main>
         </ClientProvider>

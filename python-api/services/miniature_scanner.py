@@ -152,6 +152,12 @@ class MiniatureScannerService:
                 'percentage': float(recipe.get('dominance', 0)),
                 'family': family,
                 'reticle': reticle_base64,
+                # Normalised (0-1) centre of this colour's region, so the frontend
+                # can draw a reticle at the real location on the full-colour image.
+                'position': {
+                    'x': float(recipe.get('position_x', 0.5)),
+                    'y': float(recipe.get('position_y', 0.5)),
+                },
                 'paintRecipe': paint_recipe,  # NEW: Structured recipe per brand
             })
 
