@@ -21,6 +21,9 @@ import { useAppStore } from '@/lib/store';
 import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
 import { useOwnedPaints } from '@/hooks/useLocalStorage';
 import { Tooltip } from '@/components/ui/Tooltip';
+import { GhostButton } from '@/components/shared/GhostButton';
+import { RoleTag } from '@/components/shared/RoleTag';
+import { themeForMode, type UITheme } from '@/components/shared/theme';
 
 interface PaintRecipeCardProps {
   colorFamily: string;
@@ -368,6 +371,7 @@ export function PaintRecipeCard({
                   step={step}
                   paint={paint}
                   themeColors={themeColors}
+                  theme={themeForMode(mode)}
                   onAddToCart={paint ? () => handleAddToCart(paint) : undefined}
                   isOwned={paint ? isOwned(paintId) : false}
                   onToggleOwned={paint ? () => toggleOwnedPaint(paintId) : undefined}
@@ -435,6 +439,7 @@ interface RecipeStepRowProps {
     textDim: string;
     hover: string;
   };
+  theme: UITheme;
   onAddToCart?: () => void;
   isOwned?: boolean;
   onToggleOwned?: () => void;
@@ -445,6 +450,7 @@ function RecipeStepRow({
   step,
   paint,
   themeColors,
+  theme,
   onAddToCart,
   isOwned = false,
   onToggleOwned,
@@ -491,11 +497,7 @@ function RecipeStepRow({
       {/* Paint Info */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <span
-            className={`text-xs font-bold ${themeColors.text} px-2 py-0.5 rounded ${themeColors.bgDim}`}
-          >
-            {step.label}
-          </span>
+          <RoleTag theme={theme}>{step.label}</RoleTag>
 
           {/* Perfect Match Badge */}
           {isPerfectMatch && (
@@ -543,39 +545,34 @@ function RecipeStepRow({
 
       {/* Action Buttons */}
       <div className="flex items-center gap-1 flex-shrink-0">
-        {/* Owned Toggle */}
+        {/* Owned Toggle — ghost, fills when owned */}
         {onToggleOwned && (
           <Tooltip content={isOwned ? 'Mark as not owned' : 'I own this paint'}>
-            <motion.button
+            <GhostButton
+              theme={theme}
+              active={isOwned}
               onClick={onToggleOwned}
-              className={`p-2 rounded text-xs transition-colors ${
-                isOwned
-                  ? 'bg-green-600/20 text-green-400 hover:bg-green-600/30'
-                  : 'bg-gray-700 text-gray-400 hover:text-white hover:bg-gray-600'
-              }`}
-              whileTap={{ scale: 0.95 }}
+              className="p-2 min-h-[36px]"
               aria-label={isOwned ? 'Mark as not owned' : 'Mark as owned'}
               aria-pressed={isOwned}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill={isOwned ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-            </motion.button>
+            </GhostButton>
           </Tooltip>
         )}
 
-        {/* Add to Cart Button */}
+        {/* Add to Cart — ghost button */}
         {onAddToCart && (
-          <motion.button
+          <GhostButton
+            theme={theme}
             onClick={onAddToCart}
-            className={`${themeColors.bg} ${themeColors.hover} text-white px-3 py-2 rounded text-xs font-semibold min-h-[36px] transition-all ${
-              isOwned ? 'opacity-60' : ''
-            }`}
-            whileTap={{ scale: 0.95 }}
+            className={`px-3 py-2 min-h-[36px] ${isOwned ? 'opacity-70' : ''}`}
             aria-label={`Add ${paint.name} to cart`}
           >
             {isOwned ? 'Own' : 'Add'}
-          </motion.button>
+          </GhostButton>
         )}
       </div>
     </div>

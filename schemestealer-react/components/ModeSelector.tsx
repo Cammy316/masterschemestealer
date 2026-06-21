@@ -52,7 +52,8 @@ export function ModeSelector() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.6 }}
         >
-          <div className="inline-block px-3 py-1 border border-green-500/30 rounded-full bg-black/50">
+          <div className="inline-flex items-center gap-2 px-3 py-1 border border-green-500/30 rounded-full bg-black/50">
+            <span className="pulse-glow text-green-400 w-1.5 h-1.5 rounded-full bg-green-400" aria-hidden />
             <span className="text-green-500 text-xs font-mono tracking-wider">
               {'>'} MACHINE SPIRIT STATUS: <span className="text-green-400">ACTIVE</span>
             </span>

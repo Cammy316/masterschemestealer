@@ -120,7 +120,7 @@ export function BrandSelector({ value: controlledValue, onChange, compact = fals
 
   // Full card version
   return (
-    <div className="warp-border rounded-lg p-1">
+    <div className="border border-brass bg-dark-gothic rounded-lg p-1">
       <div className="bg-dark-gothic rounded-lg p-4">
         <h3 className="text-lg font-bold mb-4 text-brass gothic-text text-center">
           ⚙ PREFERRED PAINT FORGE ⚙

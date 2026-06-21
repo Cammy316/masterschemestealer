@@ -4,6 +4,8 @@ import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
 import { useAppStore } from '@/lib/store';
 import type { Paint } from '@/lib/types';
 import { getPaintId } from '@/lib/utils';
+import { GhostButton } from '@/components/shared/GhostButton';
+import { themeForMode } from '@/components/shared/theme';
 
 interface PaintCardProps {
   paint: {
@@ -36,12 +38,14 @@ export function PaintCard({ paint, mode, onAddToCart }: PaintCardProps) {
           <p className="text-xs text-gray-400">{paint.brand}</p>
         </div>
         {onAddToCart && (
-          <button
+          <GhostButton
+            theme={themeForMode(mode)}
             onClick={onAddToCart}
-            className={`${themeColors.primary} text-white px-4 py-2 rounded font-semibold text-sm min-h-[44px] flex-shrink-0`}
+            className="px-4 py-2 min-h-[44px] flex-shrink-0"
+            aria-label={`Add ${paint.name} to cart`}
           >
             Add
-          </button>
+          </GhostButton>
         )}
       </div>
 
