@@ -72,7 +72,8 @@ function useThemeColors(mode: ScanMode) {
     ? {
         // Cogitator / Imperial theme
         frameBorder: 'border-brass',
-        frameGradient: 'linear-gradient(135deg, var(--brass-dark) 0%, var(--bronze) 50%, var(--brass-dark) 100%)',
+        frameSurface: 'var(--dark-gothic)',
+        frameGlow: 'rgba(0, 0, 0, 0.5)',
         headerBg: 'bg-amber-950/30',
         headerBorder: 'border-amber-900/30',
         headerText: 'text-amber-500',
@@ -110,7 +111,8 @@ function useThemeColors(mode: ScanMode) {
     : {
         // Warp / Chaos theme
         frameBorder: 'border-warp-purple',
-        frameGradient: 'linear-gradient(135deg, var(--warp-purple-dark) 0%, var(--warp-pink) 50%, var(--warp-purple-dark) 100%)',
+        frameSurface: 'var(--void-blue)',
+        frameGlow: 'var(--ethereal-glow)',
         headerBg: 'bg-purple-950/30',
         headerBorder: 'border-warp-purple/30',
         headerText: 'text-warp-purple-light',
@@ -311,7 +313,7 @@ function ColourCorrectionRow({ colour, correction, onChange, mode }: ColourCorre
   };
 
   return (
-    <div className={`rounded-lg p-1 border ${theme.modalBorder}`} style={{ background: theme.frameGradient }}>
+    <div className={`rounded-lg p-1 border ${theme.modalBorder}`} style={{ background: theme.frameSurface }}>
       <div className={`${theme.modalBg} rounded-lg p-3`}>
         <div className="flex items-center gap-3 mb-2">
           {/* Colour swatch */}
@@ -510,7 +512,7 @@ export function FeedbackModal({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
           className={`rounded-lg p-1 w-full max-w-lg max-h-[90vh] overflow-hidden border-2 ${theme.frameBorder}`}
-          style={{ background: theme.frameGradient }}
+          style={{ background: theme.frameSurface, boxShadow: `0 0 24px ${theme.frameGlow}` }}
           onClick={(e) => e.stopPropagation()}
         >
           <div className={`${theme.modalBg} rounded-lg overflow-hidden textured`}>
@@ -548,7 +550,7 @@ export function FeedbackModal({
                   </p>
 
                   {/* Ko-fi Prompt */}
-                  <div className={`mt-6 rounded-lg p-1 inline-block border ${theme.frameBorder}`} style={{ background: theme.frameGradient }}>
+                  <div className={`mt-6 rounded-lg p-1 inline-block border ${theme.frameBorder}`} style={{ background: theme.frameSurface }}>
                     <a
                       href="https://ko-fi.com/schemestealer"
                       target="_blank"

@@ -14,6 +14,7 @@ import { ColorPalette } from '@/components/inspiration/ColorPalette';
 import { PaintList } from '@/components/PaintCard';
 import { PaintRecipeCard } from '@/components/shared/PaintRecipeCard';
 import { PaintResults } from '@/components/shared/PaintResults';
+import { SlabButton } from '@/components/shared/SlabButton';
 import { ShareButton } from '@/components/ShareButton';
 import { ShareModal } from '@/components/ShareModal';
 import { LocalAuspexBadge } from '@/components/shared/LocalAuspexBadge';
@@ -285,37 +286,8 @@ export default function InspirationResultsPage() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.5 }}
         >
-          <motion.button
-            onClick={handleScanAnother}
-            className="w-full py-4 px-6 rounded-lg relative overflow-hidden touch-target warp-border textured"
-            style={{
-              background: 'linear-gradient(135deg, var(--warp-purple-dark), var(--warp-pink))',
-            }}
-            whileHover={{
-              scale: 1.02,
-              boxShadow: '0 0 30px var(--ethereal-glow)',
-            }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-          >
-            {/* Shimmer effect */}
-            <motion.div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                background:
-                  'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
-              }}
-              animate={{
-                x: ['-200%', '200%'],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                repeatDelay: 1,
-              }}
-            />
-
-            <div className="flex items-center justify-center gap-3 relative z-10">
+          <SlabButton theme="warp" onClick={handleScanAnother}>
+            <span className="flex items-center justify-center gap-3">
               <svg
                 width="24"
                 height="24"
@@ -330,11 +302,9 @@ export default function InspirationResultsPage() {
                   strokeLinejoin="round"
                 />
               </svg>
-              <span className="warp-text font-bold cyber-text text-base">
-                CHANNEL THE WARP AGAIN
-              </span>
-            </div>
-          </motion.button>
+              <span className="cyber-text text-base">CHANNEL THE WARP AGAIN</span>
+            </span>
+          </SlabButton>
 
           <motion.button
             onClick={() => router.push('/cart')}

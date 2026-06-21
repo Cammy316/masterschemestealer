@@ -53,7 +53,7 @@ function useThemeColors(mode: ScanMode = 'miniature') {
     ? {
         // Cogitator / Imperial theme
         frameBorder: 'border-brass',
-        frameGradient: 'linear-gradient(135deg, var(--brass-dark) 0%, var(--bronze) 50%, var(--brass-dark) 100%)',
+        frameSurface: 'var(--dark-gothic)',
         modalBg: 'bg-dark-gothic',
         buttonBg: 'bg-brass',
         buttonHover: 'hover:bg-amber-600',
@@ -139,7 +139,7 @@ function useThemeColors(mode: ScanMode = 'miniature') {
     : {
         // Warp / Chaos theme
         frameBorder: 'border-warp-purple',
-        frameGradient: 'linear-gradient(135deg, var(--warp-purple-dark) 0%, var(--warp-pink) 50%, var(--warp-purple-dark) 100%)',
+        frameSurface: 'var(--void-blue)',
         modalBg: 'bg-void-blue',
         buttonBg: 'bg-warp-purple',
         buttonHover: 'hover:bg-warp-purple-dark',
@@ -277,8 +277,8 @@ export function KoFiPrompt({ trigger, forceShow = false, onDismiss, mode = 'mini
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className={`rounded-lg p-1 max-w-sm w-full border-2 ${theme.frameBorder}`}
-            style={{ background: theme.frameGradient }}
+            className={`rounded-lg p-1 max-w-sm w-full border ${theme.frameBorder}`}
+            style={{ background: theme.frameSurface }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className={`${theme.modalBg} rounded-lg p-6 textured text-center`}>
@@ -359,7 +359,7 @@ export function KoFiBanner({ compact = false, source = 'banner', mode = 'miniatu
     <motion.button
       onClick={handleClick}
       className={`rounded-lg p-1 w-full border ${theme.frameBorder}`}
-      style={{ background: theme.frameGradient }}
+      style={{ background: theme.frameSurface }}
       whileHover={{ scale: 1.01 }}
       whileTap={{ scale: 0.99 }}
     >

@@ -11,6 +11,8 @@ import { motion } from 'framer-motion';
 import { ShoppingCart } from '@/components/ShoppingCart';
 import { BrandSelector, type PaintBrand } from '@/components/BrandSelector';
 import { RegionSelector, type Region } from '@/components/RegionSelector';
+import { SlabButton } from '@/components/shared/SlabButton';
+import { SurfaceCard } from '@/components/shared/SurfaceCard';
 import { useAppStore } from '@/lib/store';
 
 // Affiliate link generators (placeholder URLs)
@@ -116,8 +118,7 @@ export default function CartPage() {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             {/* Preferences Section */}
-            <div className="warp-border rounded-lg p-1">
-              <div className="bg-dark-gothic rounded-lg p-4">
+            <SurfaceCard theme="cogitator" className="p-4">
                 <h3 className="text-lg font-bold mb-4 text-brass gothic-text text-center">
                   ◆ ACQUISITION PREFERENCES ◆
                 </h3>
@@ -143,12 +144,10 @@ export default function CartPage() {
                 >
                   Filter paints by forge • Select supply realm for merchants
                 </motion.p>
-              </div>
-            </div>
+            </SurfaceCard>
 
             {/* Affiliate Links Section */}
-            <div className="warp-border rounded-lg p-1">
-              <div className="bg-dark-gothic rounded-lg p-4">
+            <SurfaceCard theme="cogitator" className="p-4">
                 <h3 className="text-lg font-bold mb-4 text-brass gothic-text text-center">
                   🛒 APPROVED MERCHANTS 🛒
                 </h3>
@@ -211,8 +210,7 @@ export default function CartPage() {
                     Affiliate links coming in future updates.
                   </p>
                 </motion.div>
-              </div>
-            </div>
+            </SurfaceCard>
           </motion.div>
         )}
 
@@ -224,43 +222,24 @@ export default function CartPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
+            {/* TODO(asset): empty-cart illustration + Chromus mascot belong above these
+                actions once the art exists. Blocked on art — no raster assets in public/. */}
             <Link href="/miniature">
-              <motion.button
-                className="w-full py-4 px-6 rounded-lg border-2 border-cogitator-green bg-dark-gothic touch-target"
-                whileHover={{
-                  boxShadow: '0 0 20px var(--cogitator-green-glow)',
-                  scale: 1.02,
-                }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <div className="flex items-center justify-center gap-3">
+              <SlabButton theme="cogitator">
+                <span className="flex items-center justify-center gap-3">
                   <span className="text-2xl">💀</span>
-                  <span className="auspex-text font-bold cyber-text">
-                    INITIATE MINISCAN
-                  </span>
-                </div>
-              </motion.button>
+                  <span className="cyber-text">INITIATE MINISCAN</span>
+                </span>
+              </SlabButton>
             </Link>
 
             <Link href="/inspiration">
-              <motion.button
-                className="w-full py-4 px-6 rounded-lg relative overflow-hidden touch-target warp-border"
-                style={{
-                  background: 'linear-gradient(135deg, var(--warp-purple-dark), var(--warp-pink))',
-                }}
-                whileHover={{
-                  scale: 1.02,
-                  boxShadow: '0 0 30px var(--ethereal-glow)',
-                }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <div className="flex items-center justify-center gap-3">
+              <SlabButton theme="warp">
+                <span className="flex items-center justify-center gap-3">
                   <span className="text-2xl">✧</span>
-                  <span className="warp-text font-bold cyber-text text-base">
-                    CHANNEL THE WARP
-                  </span>
-                </div>
-              </motion.button>
+                  <span className="cyber-text text-base">CHANNEL THE WARP</span>
+                </span>
+              </SlabButton>
             </Link>
           </motion.div>
         )}

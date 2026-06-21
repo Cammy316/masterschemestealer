@@ -247,6 +247,9 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
 
   return (
     <div className="relative flex items-center justify-center min-h-[400px] py-8 overflow-hidden">
+      {/* TODO(asset): warp-vortex.png hero art + the eye/skull decorative array would
+          layer in here once the art exists. Blocked on art — the CSS/SVG vortex and
+          parallax starfield below are the intentional fallback. */}
       {/* Enhanced parallax starfield background */}
       <div className="absolute inset-0 rounded-2xl overflow-hidden bg-void-black">
         {starLayers.map((layer, layerIndex) => (

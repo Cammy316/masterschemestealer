@@ -83,24 +83,18 @@ export function ColorPalette({ colors, title = '◆ EXTRACTED ESSENCE ◆' }: Co
                 />
               </div>
 
-              {/* Percentage badge */}
+              {/* Percentage badge — iron disc (void-black + thin warp edge) */}
               {color.percentage !== undefined && (
-                <motion.div
-                  className="absolute -top-2 -right-2 w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold warp-gradient"
+                <div
+                  className="absolute -top-2 -right-2 w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold"
                   style={{
-                    boxShadow: '0 0 15px var(--ethereal-glow)',
+                    background: 'var(--void-black)',
+                    border: '1px solid var(--warp-purple)',
+                    color: 'var(--warp-purple-light)',
                   }}
-                  animate={{
-                    boxShadow: [
-                      '0 0 10px var(--ethereal-glow)',
-                      '0 0 20px var(--ethereal-glow)',
-                      '0 0 10px var(--ethereal-glow)',
-                    ],
-                  }}
-                  transition={{ duration: 2, repeat: Infinity }}
                 >
                   {color.percentage.toFixed(0)}%
-                </motion.div>
+                </div>
               )}
             </motion.div>
 
