@@ -762,40 +762,61 @@ class VisualizationEngine:
     
     @staticmethod
     def create_color_overlay(img: np.ndarray, color_mask: np.ndarray,
-                            color_rgb: np.ndarray, reticle_pos: Tuple[int, int]) -> np.ndarray:
-        """Create tactical HUD overlay"""
+                            color_rgb: np.ndarray, reticle_pos: Tuple[int, int],
+                            rim_rgb: Tuple[int, int, int] = (0, 255, 100)) -> np.ndarray:
+        """Single-colour highlight composite.
+
+        Dims + desaturates the WHOLE image except this colour's mask, where the
+        ORIGINAL full-colour pixels are revealed — so you can see exactly *where*
+        the colour appears on the mini. A themed rim traces the mask edges and a
+        single light reticle marks the densest region. `rim_rgb` is the per-mode
+        accent (green Imperial by default; pass purple for Warp).
+        """
         gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
         gray_rgb = cv2.cvtColor(gray, cv2.COLOR_GRAY2RGB)
-        
-        base = (gray_rgb * 0.3).astype(np.uint8)
-        overlay = base.copy().astype(float)
-        
+
+        # Dim, desaturated backdrop for everything outside the mask.
+        overlay = gray_rgb.astype(float) * 0.32
+
         if np.any(color_mask):
             mask_float = color_mask.astype(float)
-            
-            blur_size = 3
-            soft_mask = cv2.GaussianBlur(
-                mask_float, 
-                (blur_size, blur_size),
-                1
-            )
-            
-            for c in range(3):
-                overlay[:, :, c] += (color_rgb[c] * soft_mask * 0.7 * 255)
-            
+
+            # Feather the mask so the reveal blends rather than aliases.
+            soft = np.clip(cv2.GaussianBlur(mask_float, (9, 9), 0), 0.0, 1.0)
+            soft3 = soft[:, :, None]
+
+            # Reveal the original full-colour pixels inside the mask.
+            img_f = img.astype(float)
+            overlay = overlay * (1.0 - soft3) + img_f * soft3
+
+            # Themed rim (slightly dilated) on the mask edges.
             mask_uint8 = (mask_float * 255).astype(np.uint8)
             edges = cv2.Canny(mask_uint8, 100, 200)
-            edge_mask = edges > 0
-            overlay[edge_mask] = color_rgb * 255 
-            
+            edges = cv2.dilate(edges, np.ones((2, 2), np.uint8), iterations=1)
+            overlay[edges > 0] = np.array(rim_rgb, dtype=float)
+
         overlay = np.clip(overlay, 0, 255).astype(np.uint8)
-        
-        overlay = VisualizationEngine.draw_enhanced_reticle(
-            overlay, reticle_pos[0], reticle_pos[1], color_rgb
+
+        # Single, light centre reticle (no heavy HUD text/brackets).
+        return VisualizationEngine._draw_minimal_reticle(
+            overlay, reticle_pos[0], reticle_pos[1], rim_rgb
         )
-        
-        return overlay
-    
+
+    @staticmethod
+    def _draw_minimal_reticle(img: np.ndarray, x: int, y: int,
+                              color: Tuple[int, int, int]) -> np.ndarray:
+        """A restrained reticle: a thin ring, four outward ticks, a white pip."""
+        result = img.copy()
+        c = (int(color[0]), int(color[1]), int(color[2]))
+        r = 22
+        cv2.circle(result, (x, y), r, c, 2, lineType=cv2.LINE_AA)
+        for ex, ey in ((0, -1), (0, 1), (-1, 0), (1, 0)):
+            p1 = (x + ex * (r + 3), y + ey * (r + 3))
+            p2 = (x + ex * (r + 10), y + ey * (r + 10))
+            cv2.line(result, p1, p2, c, 1, lineType=cv2.LINE_AA)
+        cv2.circle(result, (x, y), 2, (255, 255, 255), -1, lineType=cv2.LINE_AA)
+        return result
+
     @staticmethod
     def draw_enhanced_reticle(img: np.ndarray, x: int, y: int,
                              target_color_rgb: np.ndarray = None) -> np.ndarray:
