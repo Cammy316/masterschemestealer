@@ -307,8 +307,16 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
           filter: isActive ? 'brightness(1.5)' : 'brightness(1)',
         }}
       >
-        {/* Layer 1: Outer glow */}
-        <div className="absolute inset-0 rounded-full bg-purple-600/20 blur-3xl animate-pulse" />
+        {/* TODO(asset): drop warp-vortex.png in here as the rotating vortex
+            texture once it exists (behind the CSS rings below, which then become
+            the rim/overlay). Blocked on art — no raster assets in public/. */}
+
+        {/* Layer 1: Outer glow — slow "breathing" so the portal feels alive */}
+        <motion.div
+          className="absolute inset-0 rounded-full bg-purple-600/20 blur-3xl"
+          animate={{ scale: [1, 1.04, 1], opacity: [0.6, 0.9, 0.6] }}
+          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        />
 
         {/* Layer 2: Outer swirl ring - conic gradient */}
         <motion.div
@@ -367,20 +375,23 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
           transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
         />
 
-        {/* Layer 5: Event Horizon - Dark center void */}
+        {/* Layer 5: Event Horizon — dark receding void with a bright rim where
+            the light bends around the core */}
         <div
           className="absolute inset-24 rounded-full"
           style={{
             background: `radial-gradient(
               circle,
               #000000 0%,
-              #0a0010 30%,
-              #1a0030 60%,
-              rgba(139, 92, 246, 0.4) 100%
+              #05000a 32%,
+              #1a0030 62%,
+              rgba(167, 139, 250, 0.75) 90%,
+              rgba(236, 72, 153, 0.55) 100%
             )`,
             boxShadow: `
-              inset 0 0 30px 10px rgba(0, 0, 0, 0.8),
-              inset 0 0 60px 20px rgba(0, 0, 0, 0.6)
+              inset 0 0 34px 12px rgba(0, 0, 0, 0.85),
+              inset 0 0 64px 22px rgba(0, 0, 0, 0.6),
+              0 0 22px 2px rgba(167, 139, 250, 0.5)
             `,
           }}
         />
