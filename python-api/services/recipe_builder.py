@@ -24,6 +24,9 @@ BRAND_KEYS = {
     'Vallejo': 'vallejo',
     'Army Painter': 'army_painter',
     'Scale75': 'scale75',
+    'AK': 'ak',
+    'Pro Acryl': 'pro_acryl',
+    'Two Thin Coats': 'two_thin_coats',
 }
 WASH_CATEGORIES = ('wash', 'shade', 'ink')
 

@@ -31,13 +31,16 @@ interface PaintRecipeCardProps {
   coverage?: number;
 }
 
-type BrandKey = 'citadel' | 'vallejo' | 'army_painter' | 'scale75';
+type BrandKey = 'citadel' | 'vallejo' | 'army_painter' | 'scale75' | 'ak' | 'pro_acryl' | 'two_thin_coats';
 
 const BRANDS: { key: BrandKey; name: string; short: string }[] = [
   { key: 'citadel', name: 'Citadel', short: 'Citadel' },
   { key: 'vallejo', name: 'Vallejo', short: 'Vallejo' },
   { key: 'army_painter', name: 'Army Painter', short: 'Army P.' },
   { key: 'scale75', name: 'Scale75', short: 'Scale75' },
+  { key: 'ak', name: 'AK', short: 'AK' },
+  { key: 'pro_acryl', name: 'Pro Acryl', short: 'Pro Acryl' },
+  { key: 'two_thin_coats', name: 'Two Thin Coats', short: 'TTC' },
 ];
 
 // Brand icon component - custom SVG icons for each brand
@@ -71,6 +74,25 @@ function BrandIcon({ brand, isActive, mode }: { brand: BrandKey; isActive: boole
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
         <rect x="2" y="8" width="20" height="8" rx="1" strokeLinecap="round" strokeLinejoin="round" fill={isActive ? color : 'none'} fillOpacity={isActive ? 0.2 : 0} />
         <path d="M6 8V6M10 8V5M14 8V6M18 8V5" strokeLinecap="round" />
+      </svg>
+    ),
+    // New measured-swatch brands — generic paint-pot glyph.
+    ak: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
+        <path d="M5 8h14v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z" strokeLinecap="round" strokeLinejoin="round" fill={isActive ? color : 'none'} fillOpacity={isActive ? 0.2 : 0} />
+        <path d="M8 8V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v3" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    pro_acryl: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
+        <path d="M5 8h14v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z" strokeLinecap="round" strokeLinejoin="round" fill={isActive ? color : 'none'} fillOpacity={isActive ? 0.2 : 0} />
+        <path d="M8 8V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v3M9 13h6" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    two_thin_coats: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
+        <path d="M5 8h14v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z" strokeLinecap="round" strokeLinejoin="round" fill={isActive ? color : 'none'} fillOpacity={isActive ? 0.2 : 0} />
+        <path d="M8 8V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v3M9 12h6M9 16h6" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
   };
@@ -154,8 +176,8 @@ export function PaintRecipeCard({
   const primaryVar = mode === 'miniature' ? 'var(--cogitator-green)' : 'var(--warp-purple)';
   const onPrimary = mode === 'miniature' ? 'var(--void-black)' : '#ffffff';
 
-  const currentRecipe: BrandRecipe = useMemo(() =>
-    paintRecipe[selectedBrand],
+  const currentRecipe: BrandRecipe = useMemo(
+    () => paintRecipe[selectedBrand] ?? { base: null, shade: null, highlight: null, wash: null },
     [paintRecipe, selectedBrand]
   );
 
@@ -307,15 +329,16 @@ export function PaintRecipeCard({
         )}
       </AnimatePresence>
 
-      {/* Brand Selector Tabs — always-visible labels (no hidden swipe hint) */}
-      <div className="flex gap-1 p-1 bg-gray-900/80">
+      {/* Brand Selector Tabs — always-visible labels (no hidden swipe hint).
+          Wraps to a second row on narrow screens now that there are 7 brands. */}
+      <div className="flex flex-wrap gap-1 p-1 bg-gray-900/80">
         {BRANDS.map((brand) => {
           const active = selectedBrand === brand.key;
           return (
             <button
               key={brand.key}
               onClick={() => handleBrandChange(brand.key)}
-              className="flex-1 min-h-[44px] rounded px-1 text-xs font-semibold transition-all flex items-center justify-center gap-1.5"
+              className="flex-1 min-w-[72px] min-h-[44px] rounded px-1 text-xs font-semibold transition-all flex items-center justify-center gap-1.5"
               style={active
                 ? { background: primaryVar, color: onPrimary }
                 : { background: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--text-tertiary)' }}
