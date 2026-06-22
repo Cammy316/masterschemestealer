@@ -15,6 +15,7 @@ import { PaintList } from '@/components/PaintCard';
 import { PaintRecipeCard } from '@/components/shared/PaintRecipeCard';
 import { PaintResults } from '@/components/shared/PaintResults';
 import { SlabButton } from '@/components/shared/SlabButton';
+import { HexChip } from '@/components/shared/HexChip';
 import { ShareButton } from '@/components/ShareButton';
 import { ShareModal } from '@/components/ShareModal';
 import { LocalAuspexBadge } from '@/components/shared/LocalAuspexBadge';
@@ -219,11 +220,11 @@ export default function InspirationResultsPage() {
                       <h3 className="text-lg font-bold warp-text gothic-text truncate">
                         {color.family || `Colour ${index + 1}`}
                       </h3>
-                      <div className="flex flex-wrap gap-2 mt-1">
-                        <span className="text-sm text-warp-purple-light/70 tech-text">
-                          {color.percentage?.toFixed(1)}%
+                      <div className="flex flex-wrap items-center gap-2 mt-1">
+                        <HexChip hex={color.hex} theme="warp" />
+                        <span className="text-xs text-warp-purple-light/70 tech-text">
+                          {color.percentage?.toFixed(1)}% coverage
                         </span>
-                        <span className="text-sm text-warp-teal/70 tech-text">{color.hex}</span>
                       </div>
                     </div>
                   </div>
@@ -235,6 +236,7 @@ export default function InspirationResultsPage() {
                       colorHex={color.hex}
                       paintRecipe={color.paintRecipe}
                       mode="inspiration"
+                      coverage={color.percentage}
                     />
                   ) : color.paintMatches ? (
                     // Legacy fallback: old paintMatches format

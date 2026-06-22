@@ -75,7 +75,7 @@ export default function MiniscanPage() {
   // Show warm-up screen while backend scanner is initialising
   if (!apiReady) {
     return (
-      <div className="min-h-screen flex items-center justify-center cogitator-screen" style={{ background: 'var(--void-black)' }}>
+      <div className="min-h-dvh flex items-center justify-center cogitator-screen" style={{ background: 'var(--void-black)' }}>
         <div className="text-center px-8">
           <motion.div
             className="text-5xl mb-6"
@@ -140,7 +140,7 @@ export default function MiniscanPage() {
     });
 
     return (
-      <div className="min-h-screen pb-24 pt-8 px-4 cogitator-screen" style={{ background: 'var(--void-black)' }}>
+      <div className="min-h-dvh pb-24 pt-[clamp(0.75rem,3vh,2rem)] px-4 cogitator-screen" style={{ background: 'var(--void-black)' }}>
         <div className="max-w-2xl mx-auto">
           <ScanReveal
             imageUrl={result.imageUrl}
@@ -153,7 +153,7 @@ export default function MiniscanPage() {
   }
 
   return (
-    <div className="min-h-screen pb-24 pt-8 px-4 cogitator-screen" style={{ background: 'var(--void-black)' }}>
+    <div className="min-h-dvh pb-24 pt-[clamp(0.75rem,3vh,2rem)] px-4 cogitator-screen" style={{ background: 'var(--void-black)' }}>
       {/* Targeting brackets - corner overlays */}
       <div className="fixed inset-4 pointer-events-none z-20">
         {/* Top Left */}
@@ -174,7 +174,7 @@ export default function MiniscanPage() {
 
       {/* Header */}
       <motion.div
-        className="max-w-2xl mx-auto mb-8 text-center"
+        className="max-w-2xl mx-auto mb-[clamp(1rem,3vh,2rem)] text-center"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}

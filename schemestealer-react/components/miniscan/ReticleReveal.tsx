@@ -33,15 +33,25 @@ export function ReticleReveal({
   const imageRef = React.useRef<HTMLImageElement>(null);
 
   const handleReveal = () => {
-    setIsRevealed(!isRevealed);
-    if (!isRevealed) {
-      setScanComplete(false); // Reset scan when revealing
-    }
+    setIsRevealed((prev) => {
+      const next = !prev;
+      if (next) {
+        // Opening: reset so the scan animation AND the canvas redraw run fresh
+        // every time. Without resetting imageLoaded the draw effect never re-ran
+        // on a second open (deps unchanged) → blank square. See the effects below.
+        setScanComplete(false);
+        setImageLoaded(false);
+      }
+      return next;
+    });
   };
 
-  // Draw reticles on canvas when using client-side rendering
+  // Draw reticles on canvas when using client-side rendering.
+  // TODO(5b): replace these reticle rings with a mask-based single-colour
+  // highlight (rest of the mini desaturated/dimmed) once the backend emits the
+  // per-colour highlight composite — see PROMPT_C Task 5b (backend, deferred).
   React.useEffect(() => {
-    if (!imageLoaded || !reticlePositions || !canvasRef.current || !imageRef.current) return;
+    if (!isRevealed || !imageLoaded || !reticlePositions || !canvasRef.current || !imageRef.current) return;
 
     const canvas = canvasRef.current;
     const img = imageRef.current;
@@ -100,7 +110,22 @@ export function ReticleReveal({
 
       ctx.restore();
     });
-  }, [imageLoaded, reticlePositions, colorHex]);
+  }, [isRevealed, imageLoaded, reticlePositions, colorHex]);
+
+  // Cached images may not re-fire onLoad after the panel re-mounts on re-open,
+  // so detect readiness directly to guarantee the canvas repaints every time.
+  React.useEffect(() => {
+    if (isRevealed && imageRef.current?.complete && imageRef.current.naturalWidth > 0) {
+      setImageLoaded(true);
+    }
+  }, [isRevealed]);
+
+  // No location data (e.g. a refreshed/persisted scan with heavy fields stripped):
+  // hide the control entirely rather than render a broken/blank panel.
+  const hasLocationData = Boolean(
+    reticleImage || (originalImage && reticlePositions && reticlePositions.length > 0)
+  );
+  if (!hasLocationData) return null;
 
   return (
     <div className="space-y-3">
