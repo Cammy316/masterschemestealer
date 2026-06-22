@@ -60,7 +60,7 @@ export default function InspirationPage() {
   // Show warm-up screen while backend scanner is initialising
   if (!apiReady) {
     return (
-      <div className="min-h-screen flex items-center justify-center void-bg">
+      <div className="min-h-dvh flex items-center justify-center void-bg">
         <div className="starfield-bg fixed inset-0 pointer-events-none overflow-hidden" />
         <div className="text-center px-8 relative z-10">
           <motion.div
@@ -98,8 +98,8 @@ export default function InspirationPage() {
   }
 
   return (
-    <div className="min-h-screen pb-24 void-bg overflow-x-hidden">
-      {/* Starfield background */}
+    <div className="min-h-dvh pb-24 void-bg overflow-x-hidden">
+      {/* Full-page fixed starfield (sits behind all content, not just the hero) */}
       <div className="starfield-bg fixed inset-0 pointer-events-none overflow-hidden" />
 
       {/* Header */}
