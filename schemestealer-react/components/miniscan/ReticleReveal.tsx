@@ -46,10 +46,9 @@ export function ReticleReveal({
     });
   };
 
-  // Draw reticles on canvas when using client-side rendering.
-  // TODO(5b): replace these reticle rings with a mask-based single-colour
-  // highlight (rest of the mini desaturated/dimmed) once the backend emits the
-  // per-colour highlight composite — see PROMPT_C Task 5b (backend, deferred).
+  // Client-side reticle fallback: only used when the backend did NOT return a
+  // highlight composite (the preferred path is the backend single-colour
+  // highlight — rest of the mini dimmed — see create_color_overlay).
   React.useEffect(() => {
     if (!isRevealed || !imageLoaded || !reticlePositions || !canvasRef.current || !imageRef.current) return;
 
@@ -274,8 +273,11 @@ export function ReticleReveal({
                       <div className="absolute inset-0 bg-charcoal animate-pulse rounded" />
                     )}
 
-                    {/* Main image with reveal animation */}
-                    {reticlePositions && originalImage ? (
+                    {/* Main image with reveal animation. Prefer the backend
+                        single-colour highlight composite (rest of the mini
+                        dimmed); fall back to client-side reticles only when no
+                        highlight image was returned. */}
+                    {!reticleImage && reticlePositions && originalImage ? (
                       <>
                         {/* Hidden image for canvas drawing (object URL) — next/image not applicable. */}
                         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -452,7 +454,7 @@ export function ReticleReveal({
                     </span>
                   </div>
                   <span className="text-cogitator-green-dim text-xs cyber-text">
-                    ◆ HIGHLIGHTED ◆
+                    Showing where it appears
                   </span>
                 </motion.div>
               )}
