@@ -26,6 +26,8 @@ class InspirationScannerService:
     def __init__(self, paint_db_path: str = 'paints.json'):
         """Initialize the scanner with paint database"""
         logger.info("Initializing Inspiration Scanner Service")
+        from core.schemestealer_engine import resolve_paint_db_path
+        paint_db_path = resolve_paint_db_path(paint_db_path)
         self.engine = SchemeStealerEngine(paint_db_path=paint_db_path)
         self._load_wash_database(paint_db_path)
         logger.info("Inspiration Scanner Service ready")

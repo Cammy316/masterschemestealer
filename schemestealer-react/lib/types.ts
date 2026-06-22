@@ -59,6 +59,11 @@ export interface PaintRecipe {
   vallejo: BrandRecipe;
   army_painter: BrandRecipe;
   scale75: BrandRecipe;
+  // New measured-swatch brands (Prompt 6). Optional so scans that pre-date
+  // these brands still satisfy the type.
+  ak?: BrandRecipe;
+  pro_acryl?: BrandRecipe;
+  two_thin_coats?: BrandRecipe;
 }
 
 export interface Paint {

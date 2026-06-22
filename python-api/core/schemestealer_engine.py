@@ -34,10 +34,21 @@ def _slugify(*parts) -> str:
     raw = re.sub(r'[^A-Za-z0-9]+', '-', raw).strip('-').lower()
     return raw or 'paint'
 
+def resolve_paint_db_path(path: str = 'paints.json') -> str:
+    """Prefer the measured-swatch DB (Prompt 6) when it exists; otherwise fall
+    back to the given chart DB. The previous file is kept as a safety net."""
+    import os
+    if path == 'paints.json' and os.path.exists('paints_measured.json'):
+        logger.info("Measured paint DB found — loading paints_measured.json")
+        return 'paints_measured.json'
+    return path
+
+
 class SchemeStealerEngine:
     def __init__(self, paint_db_path: str = 'paints.json'):
         logger.info(f"Initializing SchemeStealer Engine v2.6 (ML-Enhanced)")
-        
+        paint_db_path = resolve_paint_db_path(paint_db_path)
+
         with open(paint_db_path, 'r') as f:
             paint_data = json.load(f)
         
@@ -62,6 +73,10 @@ class SchemeStealerEngine:
                 aliases=list(p.get('aliases', []) or []),
                 citadel_equiv=p.get('citadel_equiv'),
                 hex_source=p.get('hex_source', 'unknown'),
+                measured_lab=p.get('measured_lab'),
+                measured_hex=p.get('measured_hex', ''),
+                color_source=p.get('color_source', 'chart'),
+                opacity=p.get('opacity'),
             )
             paint.compute_properties()
             self.paint_db.append(paint)

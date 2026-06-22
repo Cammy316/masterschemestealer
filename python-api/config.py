@@ -174,7 +174,8 @@ class Affiliate:
         "🇦🇺 AU": {"domain": "amazon.com.au", "tag": "schemestealer-22"}
     }
     
-    SUPPORTED_BRANDS = ["Citadel", "Vallejo", "Army Painter", "Scale75"]
+    SUPPORTED_BRANDS = ["Citadel", "Vallejo", "Army Painter", "Scale75",
+                        "AK", "Pro Acryl", "Two Thin Coats"]
 
 
 # ============================================================================

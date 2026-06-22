@@ -53,6 +53,14 @@ class Paint:
     citadel_equiv: Optional[str] = None
     hex_source: str = 'unknown'
 
+    # Measured-swatch integration (Prompt 6). When color_source == 'measured',
+    # measured_lab is the applied-colour LAB and becomes the primary CIEDE2000
+    # target; the chart hex is still used for the display swatch.
+    measured_lab: Optional[list] = None
+    measured_hex: str = ''
+    color_source: str = 'chart'
+    opacity: Optional[float] = None
+
     # Computed colour-space properties (populated by compute_properties)
     rgb: np.ndarray = None
     lab: np.ndarray = None
@@ -62,13 +70,18 @@ class Paint:
     brightness: float = None
 
     def compute_properties(self):
-        """Compute colour properties from hex."""
+        """Compute colour properties. The CIEDE2000 matching target is the
+        measured applied-colour LAB when available, else the chart hex's LAB.
+        rgb/hsv stay derived from the (display) hex."""
         h = self.hex.lstrip('#')
         self.rgb = np.array([int(h[i:i+2], 16) for i in (0, 2, 4)]) / 255.0
-        self.lab = color.rgb2lab(np.array([[self.rgb]]))[0][0]
         self.hsv = np.array(colorsys.rgb_to_hsv(*self.rgb))
         self.saturation = self.hsv[1]
         self.brightness = self.hsv[2]
+        if self.measured_lab is not None:
+            self.lab = np.asarray(self.measured_lab, dtype=float)
+        else:
+            self.lab = color.rgb2lab(np.array([[self.rgb]]))[0][0]
         self.chroma = np.sqrt(self.lab[1]**2 + self.lab[2]**2)
 
 
