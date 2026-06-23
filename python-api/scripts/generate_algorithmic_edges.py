@@ -31,7 +31,19 @@ from config import WashMapping  # noqa: E402
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 logger = logging.getLogger("generate_algorithmic_edges")
 
-PAINTS_PATH = os.path.join(_ROOT, "paints.json")
+def _resolve_paints_path():
+    """Use the same live DB the engine matches against (newest first), so edges
+    are generated for the ACTUAL matchable pool — incl. the measured-swatch
+    colours and the new brands (AK / Pro Acryl / Two Thin Coats). Generating
+    against the old chart paints.json was why the new brands had no recipe edges."""
+    for name in ("paints_groundtruth.json", "paints_measured.json", "paints.json"):
+        p = os.path.join(_ROOT, name)
+        if os.path.exists(p):
+            return p
+    return os.path.join(_ROOT, "paints.json")
+
+
+PAINTS_PATH = _resolve_paints_path()
 RECIPES_PATH = os.path.join(_ROOT, "recipes.json")
 
 # Sources this script owns and regenerates; everything else is curated and kept.
@@ -47,11 +59,16 @@ def _lab_from_hex(hex_str):
 
 
 def _node(p):
+    # Prefer the measured applied-colour LAB (the engine's CIEDE2000 target) so
+    # edge geometry is scored against the same colours the live matcher uses.
+    measured = p.get("measured_lab")
+    lab = (tuple(float(x) for x in measured) if measured
+           else _lab_from_hex(p["hex"]))
     return PaintNode(
         paint_id=p["paint_id"], name=p["name"], brand=p["brand"],
         category=(p.get("category") or "").lower(),
         color_family=(p.get("color_family") or "").lower(),
-        lab=_lab_from_hex(p["hex"]),
+        lab=lab,
         matchable=bool(p.get("matchable", True)),
         discontinued=bool(p.get("discontinued", False)),
     )

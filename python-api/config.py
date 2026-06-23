@@ -174,7 +174,12 @@ class Affiliate:
         "🇦🇺 AU": {"domain": "amazon.com.au", "tag": "schemestealer-22"}
     }
     
-    SUPPORTED_BRANDS = ["Citadel", "Vallejo", "Army Painter", "Scale75",
+    # The single source of truth for which brands the app supports: the six with
+    # measured-swatch ground truth. Scale75 is dropped (no measured data) until
+    # measured swatches exist for it. Scanners pass this list to the engine, and
+    # recipe_builder.BRAND_KEYS mirrors it, so a brand is never offered without a
+    # matchable, measured base.
+    SUPPORTED_BRANDS = ["Citadel", "Vallejo", "Army Painter",
                         "AK", "Pro Acryl", "Two Thin Coats"]
 
 

@@ -66,6 +66,20 @@ FAMILY_ADJACENCY = {
 }
 
 
+def allowed_families(family: str):
+    """The detected family plus its adjacent families (canonical lowercase set).
+
+    The SINGLE definition of colour-family adjacency, shared by the recipe graph
+    (is_eligible) and the PaintMatcher's base/highlight family gate, so a paint is
+    only ever offered for a colour it's actually near in hue.
+
+    Returns None when `family` isn't in the adjacency map — the caller should then
+    NOT gate (an unknown/edge family must not silently empty the candidate pool).
+    """
+    f = (family or "").lower()
+    return FAMILY_ADJACENCY.get(f)
+
+
 @dataclass
 class PaintNode:
     """Minimal paint view the geometry needs — built from a Paint or a DB dict."""
@@ -144,9 +158,9 @@ def is_eligible(from_node: PaintNode, to_node: PaintNode, rel: str) -> bool:
         return False
     if (to_node.category or "").lower() not in CANDIDATE_CATEGORIES:
         return False
-    allowed = FAMILY_ADJACENCY.get(
-        (from_node.color_family or "").lower(), {(from_node.color_family or "").lower()}
-    )
+    allowed = allowed_families(from_node.color_family)
+    if allowed is None:  # unknown family — fall back to same-family only
+        allowed = {(from_node.color_family or "").lower()}
     return (to_node.color_family or "").lower() in allowed
 
 

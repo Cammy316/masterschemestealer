@@ -248,8 +248,14 @@ class SchemeStealerEngine:
             # shade and wash come from the recipe graph (curated edges first, then
             # a live LAB-geometry fallback) — no synthetic-colour maths.
             base_matches, highlight_matches, shade_matches, wash_matches = {}, {}, {}, {}
+            # Gate base matches to the detected colour's canonical family (+ adjacent
+            # families) so a brand with no in-family measured paint returns an honest
+            # "No match found" rather than a far-off cross-family paint (Prompt 8).
+            target_family = (family or '').lower()
             for b in brands:
-                base_paint = self.matcher.match_color(median_rgb, b, role='dominant', context=context)
+                base_paint = self.matcher.match_color(median_rgb, b, role='dominant',
+                                                      context=context,
+                                                      target_family=target_family)
                 base_matches[b] = self._format_paint(base_paint)
                 if base_paint is not None:
                     hp, hs = self._recipe_partner(base_paint, 'highlight', b)

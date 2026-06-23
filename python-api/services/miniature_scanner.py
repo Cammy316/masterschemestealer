@@ -14,6 +14,7 @@ import cv2
 from core.schemestealer_engine import SchemeStealerEngine
 from core.colour_maths import ciede2000_single
 from services.recipe_builder import build_paint_recipe
+from config import Affiliate
 
 logger = logging.getLogger(__name__)
 
@@ -81,7 +82,7 @@ class MiniatureScannerService:
                     use_awb=True,
                     sat_boost=1.3,
                     detect_details=True,
-                    brands=['Citadel', 'Vallejo', 'Army Painter', 'Scale75'],
+                    brands=Affiliate.SUPPORTED_BRANDS,
                     precomputed_rgba=img_rgba_np,
                 )
             else:
@@ -94,7 +95,7 @@ class MiniatureScannerService:
                     use_awb=True,
                     sat_boost=1.3,
                     detect_details=True,
-                    brands=['Citadel', 'Vallejo', 'Army Painter', 'Scale75'],
+                    brands=Affiliate.SUPPORTED_BRANDS,
                 )
 
             logger.info(f"Detected {len(recipes)} color regions")

@@ -70,6 +70,8 @@ def build_report() -> dict:
 
     total = 0
     agree = 0
+    derived = 0
+    integrity_fail = 0
     unknown_ref = set()
     per_ref = defaultdict(lambda: [0, 0])  # ref_family -> [agree, total]
     disagreements: list[tuple] = []
@@ -79,6 +81,15 @@ def build_report() -> dict:
         if not refs:
             continue
         canonical = compute_color_family(rec["measured_hex"], "matte")
+
+        # Prompt 8, Issue 3: the original extraction labels were corrupted and
+        # re-derived per-paint. Derived rows are NOT independent ground truth — we
+        # only assert the field is self-consistent (== the paint's own family).
+        if rec.get("reference_families_source") == "derived":
+            derived += 1
+            if refs != [canonical]:
+                integrity_fail += 1
+            continue
 
         acceptable: set[str] = set()
         for r in refs:
@@ -98,6 +109,7 @@ def build_report() -> dict:
 
     return {
         "total": total, "agree": agree,
+        "derived": derived, "integrity_fail": integrity_fail,
         "per_ref": per_ref, "disagreements": disagreements,
         "unknown_ref": unknown_ref,
     }
@@ -107,6 +119,11 @@ def print_report() -> dict:
     rep = build_report()
     rate = rep["agree"] / rep["total"] if rep["total"] else 0.0
     print("=== hue_family vs reference-family agreement ===")
+    if rep["derived"]:
+        print(f"  NOTE {rep['derived']} rows carry derived (not independent) labels "
+              f"after the Prompt 8 corruption fix -- excluded from agreement; "
+              f"integrity failures: {rep['integrity_fail']}")
+    print(f"  independent-label rows: {rep['total']}")
     print(f"  overall: {rep['agree']}/{rep['total']}  ({rate:.1%})")
     print("  per reference family (primary label):")
     for ref in sorted(rep["per_ref"]):
@@ -124,11 +141,20 @@ def print_report() -> dict:
 
 
 def test_family_agreement_report():
-    """Report-only validation (no hard gate). A very loose floor guards against a
-    classifier regression that breaks the mapping wholesale."""
+    """Report-only validation (no hard gate).
+
+    After the Prompt 8 corruption fix, reference_families are re-derived per-paint,
+    so there may be no INDEPENDENT labels left. In that case we assert the field is
+    self-consistent (every derived label equals the paint's own family); otherwise
+    a very loose floor guards against a classifier regression on the remaining
+    independent labels."""
     rep = build_report()
-    rate = rep["agree"] / rep["total"] if rep["total"] else 0.0
-    assert rate > 0.40, f"family agreement collapsed to {rate:.1%} — investigate"
+    assert rep["integrity_fail"] == 0, (
+        f"{rep['integrity_fail']} derived reference_families disagree with "
+        "compute_color_family — re-run scripts/fix_reference_families.py")
+    if rep["total"]:
+        rate = rep["agree"] / rep["total"]
+        assert rate > 0.40, f"family agreement collapsed to {rate:.1%} — investigate"
 
 
 if __name__ == "__main__":
