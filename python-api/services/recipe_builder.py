@@ -19,11 +19,13 @@ from config import WashMapping
 
 logger = logging.getLogger(__name__)
 
+# Brand display name -> frontend recipe key. Mirrors Affiliate.SUPPORTED_BRANDS
+# (the six brands with measured ground truth). Scale75 is intentionally absent —
+# it has no measured data, so it must never surface a (wash-only) recipe.
 BRAND_KEYS = {
     'Citadel': 'citadel',
     'Vallejo': 'vallejo',
     'Army Painter': 'army_painter',
-    'Scale75': 'scale75',
     'AK': 'ak',
     'Pro Acryl': 'pro_acryl',
     'Two Thin Coats': 'two_thin_coats',
@@ -110,6 +112,11 @@ def build_paint_recipe(recipe: Dict, family: str, color_lab: List[float],
     """
     paint_recipe = {}
     for brand, brand_key in BRAND_KEYS.items():
+        # Only emit brands the engine actually matched against (its base dict is
+        # keyed by every brand it processed). This guards against ever surfacing a
+        # wash-only recipe for an unsupported brand the engine never scored.
+        if brand not in recipe.get('base', {}):
+            continue
         base_match = recipe.get('base', {}).get(brand)
         highlight_match = recipe.get('highlight', {}).get(brand)
         shade_match = recipe.get('shade', {}).get(brand)

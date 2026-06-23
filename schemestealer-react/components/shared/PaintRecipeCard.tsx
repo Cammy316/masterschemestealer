@@ -31,13 +31,15 @@ interface PaintRecipeCardProps {
   coverage?: number;
 }
 
-type BrandKey = 'citadel' | 'vallejo' | 'army_painter' | 'scale75' | 'ak' | 'pro_acryl' | 'two_thin_coats';
+// The six supported brands (those with measured-swatch ground truth). Scale75 is
+// intentionally absent — it has no measured data, so the backend never returns a
+// recipe for it and it must not render a tab. Mirrors config.SUPPORTED_BRANDS.
+type BrandKey = 'citadel' | 'vallejo' | 'army_painter' | 'ak' | 'pro_acryl' | 'two_thin_coats';
 
 const BRANDS: { key: BrandKey; name: string; short: string }[] = [
   { key: 'citadel', name: 'Citadel', short: 'Citadel' },
   { key: 'vallejo', name: 'Vallejo', short: 'Vallejo' },
   { key: 'army_painter', name: 'Army Painter', short: 'Army P.' },
-  { key: 'scale75', name: 'Scale75', short: 'Scale75' },
   { key: 'ak', name: 'AK', short: 'AK' },
   { key: 'pro_acryl', name: 'Pro Acryl', short: 'Pro Acryl' },
   { key: 'two_thin_coats', name: 'Two Thin Coats', short: 'TTC' },
@@ -68,12 +70,6 @@ function BrandIcon({ brand, isActive, mode }: { brand: BrandKey; isActive: boole
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
         <path d="M12 3L4 7v6c0 5.5 3.8 10.3 8 11 4.2-.7 8-5.5 8-11V7l-8-4z" strokeLinecap="round" strokeLinejoin="round" fill={isActive ? color : 'none'} fillOpacity={isActive ? 0.2 : 0} />
         <path d="M12 8v5M9.5 11h5" strokeLinecap="round" />
-      </svg>
-    ),
-    scale75: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
-        <rect x="2" y="8" width="20" height="8" rx="1" strokeLinecap="round" strokeLinejoin="round" fill={isActive ? color : 'none'} fillOpacity={isActive ? 0.2 : 0} />
-        <path d="M6 8V6M10 8V5M14 8V6M18 8V5" strokeLinecap="round" />
       </svg>
     ),
     // New measured-swatch brands — generic paint-pot glyph.
@@ -176,9 +172,25 @@ export function PaintRecipeCard({
   const primaryVar = mode === 'miniature' ? 'var(--cogitator-green)' : 'var(--warp-purple)';
   const onPrimary = mode === 'miniature' ? 'var(--void-black)' : '#ffffff';
 
+  // Only show tabs for brands the backend actually returned. Scale75 (and any
+  // other unsupported brand) is absent from the response, so it never renders.
+  // Falls back to the full supported list if a response omits the key entirely.
+  const visibleBrands = useMemo(() => {
+    const present = BRANDS.filter((b) => paintRecipe[b.key]);
+    return present.length ? present : BRANDS;
+  }, [paintRecipe]);
+
+  // Derive the effective brand: the user's choice if it's present in this scan's
+  // response, otherwise the first available brand. Derived (not stored) so we
+  // never have to reset state in an effect.
+  const effectiveBrand: BrandKey = useMemo(
+    () => (visibleBrands.some((b) => b.key === selectedBrand) ? selectedBrand : visibleBrands[0].key),
+    [visibleBrands, selectedBrand]
+  );
+
   const currentRecipe: BrandRecipe = useMemo(
-    () => paintRecipe[selectedBrand] ?? { base: null, shade: null, highlight: null, wash: null },
-    [paintRecipe, selectedBrand]
+    () => paintRecipe[effectiveBrand] ?? { base: null, shade: null, highlight: null, wash: null },
+    [paintRecipe, effectiveBrand]
   );
 
   const difficulty = useMemo(() =>
@@ -189,7 +201,7 @@ export function PaintRecipeCard({
   const paintCount = [currentRecipe.base, currentRecipe.shade, currentRecipe.highlight, currentRecipe.wash].filter(Boolean).length;
 
   const handleAddToCart = useCallback((paint: PaintMatch) => {
-    const brandName = BRANDS.find((b) => b.key === selectedBrand)?.name || selectedBrand;
+    const brandName = BRANDS.find((b) => b.key === effectiveBrand)?.name || effectiveBrand;
     addToCart(
       {
         name: paint.name,
@@ -201,10 +213,10 @@ export function PaintRecipeCard({
       currentScan?.id
     );
     setAnnouncement(`${paint.name} added to cart`);
-  }, [selectedBrand, addToCart, currentMode, currentScan?.id]);
+  }, [effectiveBrand, addToCart, currentMode, currentScan?.id]);
 
   const handleCopyRecipe = useCallback(async () => {
-    const brandName = BRANDS.find((b) => b.key === selectedBrand)?.name || selectedBrand;
+    const brandName = BRANDS.find((b) => b.key === effectiveBrand)?.name || effectiveBrand;
     const slots = RECIPE_STEPS.map((step) => {
       const p = currentRecipe[step.key];
       return { role: step.label, name: p?.name ?? '', hex: p?.hex ?? '', deltaE: p?.deltaE };
@@ -213,7 +225,7 @@ export function PaintRecipeCard({
     setCopied(true);
     setAnnouncement('Recipe copied');
     setTimeout(() => setCopied(false), 2000);
-  }, [colorFamily, colorHex, coverage, currentRecipe, selectedBrand]);
+  }, [colorFamily, colorHex, coverage, currentRecipe, effectiveBrand]);
 
   const handleBrandChange = useCallback((brand: BrandKey) => {
     setSelectedBrand(brand);
@@ -223,14 +235,14 @@ export function PaintRecipeCard({
 
   // Swipe gesture (kept as a bonus; the tabs are the obvious control)
   const handleSwipe = useCallback((direction: 'left' | 'right') => {
-    const currentIndex = BRANDS.findIndex((b) => b.key === selectedBrand);
+    const currentIndex = visibleBrands.findIndex((b) => b.key === effectiveBrand);
     const newIndex = direction === 'left'
-      ? (currentIndex + 1) % BRANDS.length
-      : (currentIndex - 1 + BRANDS.length) % BRANDS.length;
+      ? (currentIndex + 1) % visibleBrands.length
+      : (currentIndex - 1 + visibleBrands.length) % visibleBrands.length;
     setSwipeDirection(direction);
-    handleBrandChange(BRANDS[newIndex].key);
+    handleBrandChange(visibleBrands[newIndex].key);
     setTimeout(() => setSwipeDirection(null), 300);
-  }, [selectedBrand, handleBrandChange]);
+  }, [effectiveBrand, handleBrandChange, visibleBrands]);
 
   const handleDragEnd = useCallback((
     _: MouseEvent | TouchEvent | PointerEvent,
@@ -330,10 +342,11 @@ export function PaintRecipeCard({
       </AnimatePresence>
 
       {/* Brand Selector Tabs — always-visible labels (no hidden swipe hint).
-          Wraps to a second row on narrow screens now that there are 7 brands. */}
+          Driven by the brands present in the response (the six supported brands),
+          wrapping to a second row on narrow screens. */}
       <div className="flex flex-wrap gap-1 p-1 bg-gray-900/80">
-        {BRANDS.map((brand) => {
-          const active = selectedBrand === brand.key;
+        {visibleBrands.map((brand) => {
+          const active = effectiveBrand === brand.key;
           return (
             <button
               key={brand.key}
@@ -355,7 +368,7 @@ export function PaintRecipeCard({
       <div className="p-3 bg-gray-900/50 overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
-            key={selectedBrand}
+            key={effectiveBrand}
             initial={{ opacity: 0, x: swipeDirection === 'left' ? 50 : swipeDirection === 'right' ? -50 : 10 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: swipeDirection === 'left' ? -50 : swipeDirection === 'right' ? 50 : -10 }}

@@ -11,6 +11,7 @@ from typing import Dict, List, Any, Optional
 from core.schemestealer_engine import SchemeStealerEngine
 from core.colour_maths import ciede2000_single
 from services.recipe_builder import build_paint_recipe
+from config import Affiliate
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +81,7 @@ class InspirationScannerService:
                 use_awb=True,
                 sat_boost=1.2,
                 detect_details=False,
-                brands=['Citadel', 'Vallejo', 'Army Painter', 'Scale75'],
+                brands=Affiliate.SUPPORTED_BRANDS,
             )
 
             logger.info(f"Detected {len(recipes)} colors")

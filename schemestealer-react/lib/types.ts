@@ -58,9 +58,9 @@ export interface PaintRecipe {
   citadel: BrandRecipe;
   vallejo: BrandRecipe;
   army_painter: BrandRecipe;
-  scale75: BrandRecipe;
   // New measured-swatch brands (Prompt 6). Optional so scans that pre-date
-  // these brands still satisfy the type.
+  // these brands still satisfy the type. Scale75 was removed (Prompt 8) — it has
+  // no measured ground truth, so the backend no longer returns a recipe for it.
   ak?: BrandRecipe;
   pro_acryl?: BrandRecipe;
   two_thin_coats?: BrandRecipe;

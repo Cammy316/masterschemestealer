@@ -28639,8 +28639,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "yellow"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-amp-orange-yellow",
@@ -28673,8 +28674,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "yellow"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-solar-flare",
@@ -28707,8 +28709,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "yellow"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-flaming-forge-orange",
@@ -28741,8 +28744,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "yellow"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-light-rust",
@@ -28775,8 +28779,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "yellow"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-ocher-orange",
@@ -28809,8 +28814,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "yellow"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-pastel-peach",
@@ -28843,8 +28849,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "yellow"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-light-orange",
@@ -28877,8 +28884,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "yellow"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-orange",
@@ -28911,8 +28919,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "yellow"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-luminous-orange",
@@ -28945,8 +28954,9 @@
     "opacity": 0.0,
     "opacity_rating": 0,
     "reference_families": [
-      "yellow"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-deep-orange",
@@ -28979,8 +28989,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "yellow"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-amp-red-orange",
@@ -29013,8 +29024,9 @@
     "opacity": 0.0,
     "opacity_rating": 0,
     "reference_families": [
-      "yellow"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-nova-orange",
@@ -29047,8 +29059,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "yellow"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-orange-flare",
@@ -29081,8 +29094,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "yellow"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dark-arts-archon-orange",
@@ -29115,8 +29129,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "yellow"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-medium-orange",
@@ -29149,8 +29164,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "yellow"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-fanatic-orange",
@@ -29183,8 +29199,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "yellow"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dark-arts-diablo-red",
@@ -29217,8 +29234,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "yellow"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-inferno-orange",
@@ -29251,9 +29269,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "orange",
-      "yellow"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-cadmium-red",
@@ -29286,9 +29304,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "orange",
-      "yellow"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-rust-orange",
@@ -29321,9 +29339,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "orange",
-      "yellow"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-amaranth-red",
@@ -29356,9 +29374,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "orange",
-      "yellow"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-burn-orange",
@@ -29391,9 +29409,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "orange",
-      "yellow"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-sun-red",
@@ -29426,9 +29444,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "orange",
-      "yellow"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-medium-rust",
@@ -29461,10 +29479,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ochre",
-      "orange",
-      "yellow"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-red-oxide",
@@ -29497,10 +29514,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ochre",
-      "orange",
-      "yellow"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-orange-brown",
@@ -29533,9 +29549,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ochre",
-      "yellow"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-deep-brown",
@@ -29568,9 +29584,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ochre",
-      "yellow"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dark-arts-grindhouse-orange",
@@ -29603,9 +29619,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "tan",
-      "yellow"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-red-rage",
@@ -29638,9 +29654,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "orange",
-      "yellow"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-scarlet-red",
@@ -29673,8 +29689,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "orange"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-centurion-red",
@@ -29707,8 +29724,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "orange"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-orange-red",
@@ -29741,8 +29759,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "orange"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-deep-red",
@@ -29775,8 +29794,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "orange"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-matt-red",
@@ -29809,8 +29829,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "orange"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-brick-red",
@@ -29843,8 +29864,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "orange"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-sanguine-scarlet",
@@ -29877,8 +29899,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "orange"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-amp-black-red",
@@ -29911,8 +29934,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "orange"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-apocalypse-sky",
@@ -29945,8 +29969,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "orange"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-evil-eye-red",
@@ -29979,8 +30004,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "orange"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-burnt-red",
@@ -30013,8 +30039,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "orange"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-burnt-red",
@@ -30047,8 +30074,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "orange"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-black-red",
@@ -30081,8 +30109,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "orange"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-dark-crimson",
@@ -30115,8 +30144,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "orange"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-berserker-red",
@@ -30149,8 +30179,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "orange"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dark-arts-blood-red-sky",
@@ -30183,8 +30214,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "orange"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-demon-red",
@@ -30217,8 +30249,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "orange"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-bold-pyrrole-red",
@@ -30251,8 +30284,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "orange"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-hellspawn-red",
@@ -30285,8 +30319,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "orange"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-blood-red",
@@ -30319,8 +30354,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "orange"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-asmodeus-red",
@@ -30353,9 +30389,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "orange",
       "red"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dread-red",
@@ -30388,8 +30424,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "orange"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dark-arts-flayer-red",
@@ -30422,8 +30459,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "orange"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-vermillion",
@@ -30456,8 +30494,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "orange"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-carmine",
@@ -30490,8 +30529,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "orange"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-emperor-red",
@@ -30524,9 +30564,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "orange",
       "red"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-dirty-red",
@@ -30559,9 +30599,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "orange",
       "red"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-wine-red",
@@ -30594,9 +30634,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "orange",
       "red"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-amphora-red",
@@ -30629,9 +30669,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "orange",
       "red"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-dead-red",
@@ -30664,9 +30704,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "magenta",
       "red"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-perisher-pink",
@@ -30700,7 +30740,8 @@
     "opacity_rating": 3,
     "reference_families": [
       "red"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-bordeaux-red",
@@ -30734,7 +30775,8 @@
     "opacity_rating": 3,
     "reference_families": [
       "red"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-burgundy",
@@ -30768,7 +30810,8 @@
     "opacity_rating": 3,
     "reference_families": [
       "red"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-pastel-pink",
@@ -30801,9 +30844,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "magenta",
-      "red"
-    ]
+      "pink"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-glistening-gums",
@@ -30836,8 +30879,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "red"
-    ]
+      "magenta"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-dark-burgundy",
@@ -30870,8 +30914,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "red"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-pink",
@@ -30904,9 +30949,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "magenta",
-      "red"
-    ]
+      "pink"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-magenta",
@@ -30939,9 +30984,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "magenta",
-      "red"
-    ]
+      "magenta"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-magenta",
@@ -30974,9 +31019,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "magenta",
-      "red"
-    ]
+      "magenta"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-laser-magenta",
@@ -31009,9 +31054,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "magenta",
-      "red"
-    ]
+      "magenta"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-dark-magenta",
@@ -31044,9 +31089,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "magenta",
       "red"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-sword-hilt-burgundy",
@@ -31080,7 +31125,8 @@
     "opacity_rating": 3,
     "reference_families": [
       "red"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-dark-plum",
@@ -31114,7 +31160,8 @@
     "opacity_rating": 3,
     "reference_families": [
       "red"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-royal-cloak",
@@ -31147,8 +31194,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "red"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-dragon-blood",
@@ -31181,9 +31229,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "magenta",
-      "red"
-    ]
+      "magenta"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-violet-red",
@@ -31216,9 +31264,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "magenta",
-      "red"
-    ]
+      "magenta"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-ruby",
@@ -31251,8 +31299,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "magenta"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-dark-hot-pink",
@@ -31285,8 +31334,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "magenta"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-pale-pink",
@@ -31319,8 +31369,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "magenta"
-    ]
+      "pink"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-sickly-pink",
@@ -31353,8 +31404,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "magenta"
-    ]
+      "pink"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-neo-pink",
@@ -31387,8 +31439,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "magenta"
-    ]
+      "pink"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-cyber-pink",
@@ -31422,7 +31475,8 @@
     "opacity_rating": 2,
     "reference_families": [
       "magenta"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-hot-pink",
@@ -31455,8 +31509,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "magenta"
-    ]
+      "pink"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-intense-pink",
@@ -31489,8 +31544,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "magenta"
-    ]
+      "pink"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-plum",
@@ -31524,7 +31580,8 @@
     "opacity_rating": 3,
     "reference_families": [
       "magenta"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-purple",
@@ -31558,7 +31615,8 @@
     "opacity_rating": 3,
     "reference_families": [
       "magenta"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-deep-purple",
@@ -31592,7 +31650,8 @@
     "opacity_rating": 3,
     "reference_families": [
       "magenta"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-spectral-purple",
@@ -31625,9 +31684,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "magenta",
-      "pink-purple"
-    ]
+      "magenta"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-purple",
@@ -31660,9 +31719,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "magenta",
-      "pink-purple"
-    ]
+      "magenta"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-king-purple",
@@ -31695,9 +31754,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "magenta",
-      "pink-purple"
-    ]
+      "magenta"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-von-evile-purple",
@@ -31730,9 +31789,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "magenta",
-      "pink-purple"
-    ]
+      "black"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-black-purple",
@@ -31765,10 +31824,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue-grey",
-      "magenta",
-      "pink-purple"
-    ]
+      "black"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-deep-violet",
@@ -31801,8 +31859,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "pink-purple"
-    ]
+      "purple"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-royal-purple",
@@ -31835,8 +31894,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "pink-purple"
-    ]
+      "purple"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-enchantress-purple",
@@ -31869,8 +31929,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "pink-purple"
-    ]
+      "purple"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-pastel-violet",
@@ -31903,8 +31964,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "pink-purple"
-    ]
+      "purple"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-amulet-purple",
@@ -31937,8 +31999,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "pink-purple"
-    ]
+      "purple"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-runic-purple",
@@ -31971,8 +32034,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "pink-purple"
-    ]
+      "purple"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-faded-plum",
@@ -32005,8 +32069,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "pink-purple"
-    ]
+      "purple"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-sorcerors-cloak",
@@ -32039,8 +32104,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "pink-purple"
-    ]
+      "purple"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-decadent-purple",
@@ -32073,8 +32139,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "pink-purple"
-    ]
+      "purple"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-enticing-purple",
@@ -32107,8 +32174,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "pink-purple"
-    ]
+      "purple"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-incubus-purple",
@@ -32141,8 +32209,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "pink-purple"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-blue-violet",
@@ -32175,9 +32244,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "lilac",
-      "pink-purple"
-    ]
+      "purple"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-dark-purple",
@@ -32210,8 +32279,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "pink-purple"
-    ]
+      "purple"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-amethyst-rayne",
@@ -32244,8 +32314,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "pink-purple"
-    ]
+      "purple"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-lilac",
@@ -32278,9 +32349,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "lilac",
-      "pink-purple"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-amethyst-blue",
@@ -32313,8 +32384,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "pink-purple"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-faded-ultramarine",
@@ -32347,8 +32419,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "lilac"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-abyss-blue",
@@ -32381,8 +32454,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "lilac"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-amp-dark-navy-blue",
@@ -32415,8 +32489,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "lilac"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-celestial-blue",
@@ -32449,8 +32524,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "lilac"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-elysium-blue",
@@ -32483,8 +32559,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "lilac"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-marine-blue",
@@ -32517,8 +32594,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "lilac"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-ultramarine",
@@ -32551,9 +32629,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "lilac",
-      "ultramarine"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-deep-blue",
@@ -32586,9 +32664,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "lilac",
-      "ultramarine"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-ultramarine",
@@ -32621,8 +32699,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "lilac"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-dark-blue",
@@ -32655,9 +32734,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "lilac",
-      "ultramarine"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-imperial-blue",
@@ -32690,8 +32769,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "lilac"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-spectrum-blue",
@@ -32724,9 +32804,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "grey",
-      "lilac"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-grey-blue",
@@ -32759,9 +32839,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "grey",
-      "lilac"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-grey-blue",
@@ -32794,11 +32874,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue",
-      "grey",
-      "lilac",
-      "ultramarine"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-oxford",
@@ -32831,8 +32909,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "lilac"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-dark-blue",
@@ -32865,11 +32944,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue",
-      "grey",
-      "lilac",
-      "ultramarine"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-paynes-grey",
@@ -32902,11 +32979,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue",
-      "blue-grey",
-      "grey",
-      "lilac"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-white-blue",
@@ -32939,10 +33014,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "blue",
-      "sea-blue",
-      "ultramarine"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-snow-blue",
@@ -32975,8 +33049,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "ultramarine"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-ion-blue",
@@ -33009,8 +33084,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "ultramarine"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-star-blue",
@@ -33043,8 +33119,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "ultramarine"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-medium-blue",
@@ -33077,9 +33154,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue",
-      "ultramarine"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-light-prussian-blue",
@@ -33112,9 +33189,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue",
-      "ultramarine"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-sky-blue",
@@ -33147,8 +33224,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "ultramarine"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-deep-sky-blue",
@@ -33181,8 +33259,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "ultramarine"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-seafarer-blue",
@@ -33215,8 +33294,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ultramarine"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-gigawatt-blue",
@@ -33249,8 +33329,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ultramarine"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-sky-blue",
@@ -33283,8 +33364,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ultramarine"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-ducat-blue",
@@ -33317,8 +33399,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "ultramarine"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-relic-blue",
@@ -33351,8 +33434,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ultramarine"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-blue",
@@ -33385,8 +33469,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ultramarine"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-leviathan-blue",
@@ -33419,8 +33504,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ultramarine"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-eldar-robe",
@@ -33453,8 +33539,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ultramarine"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-witching-hour-blue",
@@ -33487,8 +33574,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ultramarine"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-dark-prussian-blue",
@@ -33521,8 +33609,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "ultramarine"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-dark-grey-blue",
@@ -33556,7 +33645,8 @@
     "opacity_rating": 3,
     "reference_families": [
       "blue"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-blue-black",
@@ -33590,7 +33680,8 @@
     "opacity_rating": 3,
     "reference_families": [
       "blue"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-strong-dark-blue",
@@ -33624,7 +33715,8 @@
     "opacity_rating": 3,
     "reference_families": [
       "blue"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-pastel-blue",
@@ -33657,9 +33749,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "blue",
-      "sea-blue"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-ray-gun-glow",
@@ -33692,9 +33784,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue",
-      "sea-blue"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-turquoise",
@@ -33727,9 +33819,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue",
-      "sea-blue"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-dark-turquoise",
@@ -33762,9 +33854,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue",
-      "sea-blue"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-cursed-blue",
@@ -33797,9 +33889,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue",
-      "sea-blue"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-archaic-turquoise",
@@ -33832,9 +33924,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue",
-      "sea-blue"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-turquoise",
@@ -33867,9 +33959,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue",
-      "sea-blue"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-ocean-blue",
@@ -33902,9 +33994,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue",
-      "sea-blue"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-sentient-turquoise",
@@ -33937,9 +34029,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue",
-      "sea-blue"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dark-arts-cultmaster-green",
@@ -33972,12 +34064,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue",
-      "blue-grey",
-      "grey",
-      "sea-blue",
-      "turquoise"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-pale-blue",
@@ -34010,9 +34099,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue",
-      "grey"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-amp-bright-green-blue",
@@ -34045,8 +34134,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "blue"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-blue-grey",
@@ -34079,9 +34169,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue",
-      "grey"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-dark-blue-grey",
@@ -34114,9 +34204,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue",
-      "grey"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-anthracite-grey",
@@ -34149,9 +34239,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue",
-      "grey"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-blue-green",
@@ -34184,8 +34274,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "sea-blue"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-aquatic-turquoise",
@@ -34218,8 +34309,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "sea-blue"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-mythic-turquoise",
@@ -34252,9 +34344,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "sea-blue",
-      "turquoise"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-hydra-green",
@@ -34287,9 +34379,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "sea-blue",
-      "turquoise"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-dark-jade",
@@ -34322,9 +34414,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "sea-blue",
-      "turquoise"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-dark-sea-ben",
@@ -34357,9 +34449,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "sea-blue",
-      "turquoise"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-dark-sea-blue",
@@ -34392,10 +34484,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "grey",
-      "sea-blue",
-      "turquoise"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-war-master-green",
@@ -34428,11 +34519,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue-grey",
-      "grey",
-      "sea-blue",
-      "turquoise"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-oxidation-green",
@@ -34465,9 +34554,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "grey",
-      "sea-blue"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-pastel-green",
@@ -34500,8 +34589,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "turquoise"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-bright-jade",
@@ -34534,8 +34624,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "turquoise"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-antiquity-green",
@@ -34568,8 +34659,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "turquoise"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-jade",
@@ -34602,8 +34694,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "turquoise"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-jade-green",
@@ -34636,8 +34729,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "turquoise"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-cold-green",
@@ -34670,8 +34764,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "turquoise"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-dark-emerald",
@@ -34704,8 +34799,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "turquoise"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-bright-pale-green",
@@ -34738,8 +34834,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "turquoise"
-    ]
+      "green"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-elixir-green",
@@ -34772,8 +34869,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "turquoise"
-    ]
+      "green"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-mint-green",
@@ -34806,8 +34904,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "turquoise"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-ghoul-green",
@@ -34840,8 +34939,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "turquoise"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-emerald",
@@ -34874,8 +34974,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "turquoise"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-green-oxide",
@@ -34908,8 +35009,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "turquoise"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-lizard-green",
@@ -34942,8 +35044,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "turquoise"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-wyvern-green",
@@ -34976,9 +35079,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "teal-green",
-      "turquoise"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-legion-green",
@@ -35011,8 +35114,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "turquoise"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-traitor-green",
@@ -35045,8 +35149,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "turquoise"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-greenish-white",
@@ -35079,8 +35184,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "teal-green"
-    ]
+      "green"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-dark-green",
@@ -35113,8 +35219,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "teal-green"
-    ]
+      "green"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-light-green",
@@ -35147,8 +35254,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "teal-green"
-    ]
+      "green"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-bright-green",
@@ -35181,8 +35289,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "teal-green"
-    ]
+      "green"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-deep-green",
@@ -35215,8 +35324,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "teal-green"
-    ]
+      "green"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-green",
@@ -35249,8 +35359,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "teal-green"
-    ]
+      "green"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-greenskin-punch",
@@ -35283,8 +35394,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "teal-green"
-    ]
+      "green"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-emerald-green",
@@ -35317,8 +35429,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "teal-green"
-    ]
+      "green"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-black-green",
@@ -35351,9 +35464,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "green",
-      "teal-green"
-    ]
+      "green"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-green-sky",
@@ -35386,9 +35499,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "green",
-      "teal-green"
-    ]
+      "green"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-luminous-green",
@@ -35421,8 +35534,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "teal-green"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-laser-yellow",
@@ -35455,8 +35569,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "teal-green"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-pistachio",
@@ -35489,8 +35604,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "teal-green"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-bright-yellow-green",
@@ -35523,8 +35639,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "teal-green"
-    ]
+      "green"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-frog-green",
@@ -35557,8 +35674,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "teal-green"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-septic-green",
@@ -35591,8 +35709,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "teal-green"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-lime-green",
@@ -35625,8 +35744,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "teal-green"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-slime-green",
@@ -35659,8 +35779,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "teal-green"
-    ]
+      "green"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-talisman-green",
@@ -35693,8 +35814,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "teal-green"
-    ]
+      "green"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-grass-green",
@@ -35727,8 +35849,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "teal-green"
-    ]
+      "green"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-ethereal-green",
@@ -35761,8 +35884,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "teal-green"
-    ]
+      "green"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-black-green",
@@ -35795,8 +35919,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "teal-green"
-    ]
+      "green"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-alga-green",
@@ -35829,9 +35954,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "green",
-      "teal-green"
-    ]
+      "green"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-medium-olive-green",
@@ -35864,9 +35989,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "green",
-      "teal-green"
-    ]
+      "green"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-camo-green",
@@ -35899,9 +36024,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "green",
-      "teal-green"
-    ]
+      "green"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-pestilence-green",
@@ -35934,8 +36059,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "green"
-    ]
+      "bone"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-zombie-rot",
@@ -35968,8 +36094,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "green"
-    ]
+      "bone"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-yellow-green",
@@ -36002,8 +36129,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "green"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-golden-olive",
@@ -36036,8 +36164,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "green"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-olive-green",
@@ -36070,8 +36199,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "green"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-command-green",
@@ -36104,9 +36234,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "army-green",
-      "green"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-russian-green",
@@ -36139,9 +36269,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "army-green",
       "green"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-contagion-green",
@@ -36175,7 +36305,8 @@
     "opacity_rating": 3,
     "reference_families": [
       "green"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-extra-dark-green",
@@ -36209,7 +36340,8 @@
     "opacity_rating": 3,
     "reference_families": [
       "green"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-faded-green",
@@ -36243,7 +36375,8 @@
     "opacity_rating": 3,
     "reference_families": [
       "green"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-troll-snot-green",
@@ -36277,7 +36410,8 @@
     "opacity_rating": 3,
     "reference_families": [
       "green"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-goblinoid-green",
@@ -36311,7 +36445,8 @@
     "opacity_rating": 3,
     "reference_families": [
       "green"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-faded-green",
@@ -36345,7 +36480,8 @@
     "opacity_rating": 3,
     "reference_families": [
       "green"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-orc-hide",
@@ -36379,7 +36515,8 @@
     "opacity_rating": 3,
     "reference_families": [
       "green"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-intermediate-green",
@@ -36413,7 +36550,8 @@
     "opacity_rating": 3,
     "reference_families": [
       "green"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-gunship-green",
@@ -36447,7 +36585,8 @@
     "opacity_rating": 3,
     "reference_families": [
       "green"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-dark-green-grey",
@@ -36481,7 +36620,8 @@
     "opacity_rating": 3,
     "reference_families": [
       "green"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dark-arts-betrayer-green",
@@ -36515,7 +36655,8 @@
     "opacity_rating": 3,
     "reference_families": [
       "green"
-    ]
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dark-arts-crypt-grey",
@@ -36548,9 +36689,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "army-green",
-      "brown"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-ranger-cloak",
@@ -36583,8 +36724,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "army-green"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-field-grey",
@@ -36617,8 +36759,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "army-green"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-ivory",
@@ -36651,9 +36794,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "army-green",
-      "olive-green"
-    ]
+      "bone"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-green-grey",
@@ -36686,8 +36829,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "army-green"
-    ]
+      "bone"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-kobold-grey",
@@ -36720,8 +36864,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "army-green"
-    ]
+      "bone"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-german-field-grey",
@@ -36754,8 +36899,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "army-green"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-gung-ho-green",
@@ -36788,8 +36934,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "army-green"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-camouflage-green",
@@ -36822,8 +36969,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "army-green"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-khaki",
@@ -36856,8 +37004,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "army-green"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-green-beret",
@@ -36890,8 +37039,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "army-green"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-fury-green",
@@ -36924,8 +37074,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "army-green"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dark-arts-diabolical-green",
@@ -36958,8 +37109,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "army-green"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-interior-yellow-green",
@@ -36992,8 +37144,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "army-green"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-brownish-green",
@@ -37026,8 +37179,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "army-green"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-dark-yellow-green",
@@ -37060,8 +37214,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "army-green"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-reflective-green",
@@ -37094,8 +37249,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "army-green"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-us-dark-green",
@@ -37128,8 +37284,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "army-green"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-dark-camo-green",
@@ -37162,8 +37319,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "army-green"
-    ]
+      "green"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dark-arts-divination-white",
@@ -37196,8 +37354,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "olive-green"
-    ]
+      "bone"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-trooper-white",
@@ -37230,8 +37389,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "olive-green"
-    ]
+      "white"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-ivory-tusk",
@@ -37264,9 +37424,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "brown",
-      "olive-green"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-bone",
@@ -37299,8 +37459,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "olive-green"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-griffon-claw",
@@ -37333,9 +37494,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "brown",
-      "olive-green"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-ivory",
@@ -37368,8 +37529,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "olive-green"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-olive-flesh",
@@ -37402,9 +37564,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "olive-green",
-      "tan"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dark-arts-blight-cream",
@@ -37437,8 +37599,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "olive-green"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-bright-ivory",
@@ -37471,8 +37634,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "olive-green"
-    ]
+      "bone"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dark-arts-altar-ivory",
@@ -37505,8 +37669,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "olive-green"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-dark-ivory",
@@ -37539,8 +37704,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "olive-green"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-grimy-grey",
@@ -37573,8 +37739,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "olive-green"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-vampiric-flesh",
@@ -37607,8 +37774,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "olive-green"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-heavy-warm-white",
@@ -37641,8 +37809,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "olive-green"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-pale-sand",
@@ -37675,8 +37844,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "olive-green"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-vampire-fang",
@@ -37709,8 +37879,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "olive-green"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-skeleton-legion",
@@ -37743,8 +37914,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "olive-green"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-temple-stone",
@@ -37777,8 +37949,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "olive-green"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-sandstone",
@@ -37811,8 +37984,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "olive-green"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dust-bowl",
@@ -37845,8 +38019,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "olive-green"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-dark-sand",
@@ -37879,8 +38054,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "olive-green"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-buff",
@@ -37913,8 +38089,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "olive-green"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-beige",
@@ -37947,8 +38124,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "olive-green"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-light-earth",
@@ -37981,8 +38159,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "olive-green"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-decomposed-flesh",
@@ -38015,8 +38194,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "olive-green"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dragon-fang",
@@ -38049,8 +38229,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "olive-green"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-amp-green-brown",
@@ -38083,9 +38264,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "bone",
-      "olive-green"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-ambush-yellow",
@@ -38118,8 +38299,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "bone"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-flak-gun-yellow",
@@ -38152,8 +38334,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "bone"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dark-arts-abhorrent-ochre",
@@ -38186,8 +38369,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "bone"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-green-brown",
@@ -38220,8 +38404,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "bone"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-bright-yellow-ochre",
@@ -38254,8 +38439,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "bone"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-sand-yellow",
@@ -38288,8 +38474,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "bone"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dark-arts-malign-yellow",
@@ -38322,8 +38509,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "bone"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-dirty-yellow",
@@ -38356,8 +38544,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "bone"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-sahara-yellow",
@@ -38390,8 +38579,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "bone"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-japanese-brown",
@@ -38424,8 +38614,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "bone"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-panzer-yellow",
@@ -38458,8 +38649,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "bone"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-middle-stone",
@@ -38492,8 +38684,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "bone"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-ochre",
@@ -38526,8 +38719,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "bone"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-yellow-ochre",
@@ -38560,8 +38754,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "bone"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-golden-brown",
@@ -38594,8 +38789,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "bone"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dark-arts-pustule-ochre",
@@ -38628,10 +38824,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "bone",
-      "ochre",
-      "tan"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-green-ochre",
@@ -38664,8 +38859,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "bone"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-medium-sand",
@@ -38698,8 +38894,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "bone"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-gyzmo-fur",
@@ -38732,9 +38929,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "bone",
-      "rosy-flesh"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-dark-golden-brown",
@@ -38767,9 +38964,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "bone",
-      "rosy-flesh"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-dark-orange-brown",
@@ -38802,8 +38999,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "bone"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-british-khaki",
@@ -38836,8 +39034,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "bone"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-dark-green-brown",
@@ -38870,9 +39069,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "bone",
-      "rosy-flesh"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-drab-brown",
@@ -38905,8 +39104,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "bone"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-golden-brown",
@@ -38939,9 +39139,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ochre",
-      "tan"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-orange-brown",
@@ -38974,8 +39174,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "ochre"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-mantichore-ochre",
@@ -39008,8 +39209,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "ochre"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-light-brown",
@@ -39042,8 +39244,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "ochre"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-cerberus-brown",
@@ -39076,8 +39279,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ochre"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-burnt-orange",
@@ -39110,8 +39314,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ochre"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-satyr-brown",
@@ -39144,8 +39349,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "ochre"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-orange-oxide",
@@ -39178,8 +39384,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ochre"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dry-rust-brown",
@@ -39212,8 +39419,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ochre"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-beast-brown",
@@ -39246,8 +39454,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ochre"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-burnt-sienna",
@@ -39280,8 +39489,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ochre"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-boar-hide",
@@ -39314,8 +39524,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ochre"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-hull-red",
@@ -39348,8 +39559,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ochre"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-saddle-brown",
@@ -39382,8 +39594,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ochre"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-fur-cloak",
@@ -39416,8 +39629,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ochre"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-mahogany-brown",
@@ -39450,8 +39664,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ochre"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-amp-burnt-umber",
@@ -39484,9 +39699,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ochre",
-      "rosy-flesh"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-dark-rust",
@@ -39519,8 +39734,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ochre"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-dark-flesh",
@@ -39553,9 +39769,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "golden-flesh",
-      "ochre"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-cuirass-leather",
@@ -39588,8 +39804,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ochre"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-cork",
@@ -39622,9 +39839,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ochre",
-      "rosy-flesh"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-vambrace-brown",
@@ -39657,8 +39874,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ochre"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-boot-strap-brown",
@@ -39691,8 +39909,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ochre"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-noble-steed-brown",
@@ -39725,9 +39944,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ochre",
-      "rosy-flesh"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-scabbard-brown",
@@ -39760,8 +39979,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ochre"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-leather-brown",
@@ -39794,8 +40014,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ochre"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-mahogany",
@@ -39828,8 +40049,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "ochre"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-afro-shadow",
@@ -39862,11 +40084,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "golden-flesh",
-      "ochre",
-      "rosy-flesh",
-      "tan"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-ares-flesh",
@@ -39899,8 +40119,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "tan"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-kronos-flesh",
@@ -39933,8 +40154,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "tan"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-argonaut-skin",
@@ -39967,8 +40189,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "tan"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-luminous-flesh",
@@ -40001,8 +40224,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "tan"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-warm-flesh",
@@ -40035,8 +40259,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "tan"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-pale-skin",
@@ -40069,8 +40294,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "tan"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-elven-skin",
@@ -40103,8 +40329,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "tan"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-tan-earth",
@@ -40137,9 +40364,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "rosy-flesh",
-      "tan"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-radiant-flesh",
@@ -40172,8 +40399,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "tan"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-tan-yelow",
@@ -40206,8 +40434,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "tan"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-dark-flesh",
@@ -40240,8 +40469,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "tan"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-medium-flesh-tone",
@@ -40274,8 +40504,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "tan"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-basic-skin-tone",
@@ -40308,8 +40539,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "tan"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-dark-warm-flesh",
@@ -40342,8 +40574,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "tan"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-sunny-skin-tone",
@@ -40376,8 +40609,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "tan"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-advanced-flesh-tone",
@@ -40410,8 +40644,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "tan"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-amp-peach-flesh",
@@ -40444,9 +40679,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "golden-flesh",
-      "tan"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-beige-red",
@@ -40479,9 +40714,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "golden-flesh",
-      "tan"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dwarven-skin",
@@ -40514,9 +40749,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "golden-flesh",
-      "tan"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dark-arts-dystopian-dust",
@@ -40549,10 +40784,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "brown",
-      "rosy-flesh",
-      "tan"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-druid-flesh",
@@ -40585,8 +40819,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "tan"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-barbarian-brawn",
@@ -40619,9 +40854,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "golden-flesh",
-      "tan"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-bard-skin",
@@ -40654,9 +40889,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "golden-flesh",
-      "tan"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dark-arts-cinderborn-brown",
@@ -40689,10 +40924,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "golden-flesh",
-      "rosy-flesh",
-      "tan"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-paladin-flesh",
@@ -40725,9 +40959,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "golden-flesh",
-      "tan"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-light-flesh",
@@ -40760,8 +40994,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "golden-flesh"
-    ]
+      "pink"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-salmon",
@@ -40794,8 +41029,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "golden-flesh"
-    ]
+      "pink"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-bright-shadow-flesh",
@@ -40828,8 +41064,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "golden-flesh"
-    ]
+      "pink"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-shadow-flesh",
@@ -40862,8 +41099,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "golden-flesh"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-brown-rose",
@@ -40896,8 +41134,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "golden-flesh"
-    ]
+      "pink"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dark-arts-masque-flesh",
@@ -40930,8 +41169,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "golden-flesh"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-beige-red",
@@ -40964,8 +41204,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "golden-flesh"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-old-rose",
@@ -40998,8 +41239,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "golden-flesh"
-    ]
+      "pink"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-warm-brown",
@@ -41032,8 +41274,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "rosy-flesh"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-ancient-forest",
@@ -41066,8 +41309,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "rosy-flesh"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-dark-umber",
@@ -41100,8 +41344,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "rosy-flesh"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-black-brown",
@@ -41134,8 +41379,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "rosy-flesh"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-scorched-earth",
@@ -41168,8 +41414,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "rosy-flesh"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-redskin-shadow",
@@ -41202,8 +41449,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "rosy-flesh"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dark-arts-noir-brown",
@@ -41236,8 +41484,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "rosy-flesh"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-grim-brown",
@@ -41270,9 +41519,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue-grey",
-      "rosy-flesh"
-    ]
+      "black"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-amp-beige-grey",
@@ -41305,9 +41554,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "brown",
-      "rosy-flesh"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-caramel-brown",
@@ -41340,8 +41589,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "rosy-flesh"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-petroleum-brown",
@@ -41374,8 +41624,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "rosy-flesh"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-wasteland-brown",
@@ -41408,8 +41659,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "rosy-flesh"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-mud-brown",
@@ -41442,8 +41694,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "rosy-flesh"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-light-umber",
@@ -41476,8 +41729,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "rosy-flesh"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-dark-brown",
@@ -41510,8 +41764,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "rosy-flesh"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-chocolate-chipping",
@@ -41544,8 +41799,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "rosy-flesh"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-burnt-umber",
@@ -41578,8 +41834,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "rosy-flesh"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-deck-tan",
@@ -41612,8 +41869,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "brown"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-bright-warm-grey",
@@ -41646,8 +41904,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "brown"
-    ]
+      "green"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-medium-sea-green",
@@ -41680,8 +41939,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "brown"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-grey-green",
@@ -41714,8 +41974,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "brown"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-offwhite",
@@ -41748,8 +42009,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "brown"
-    ]
+      "white"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-rock-grey",
@@ -41782,8 +42044,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "brown"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-warm-grey",
@@ -41816,8 +42079,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "brown"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-amp-bright-brown-grey",
@@ -41850,8 +42114,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "brown"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-amp-grey-green",
@@ -41884,8 +42149,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "brown"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-rodent-grey",
@@ -41918,8 +42184,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "brown"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-eidolon-grey",
@@ -41952,8 +42219,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "brown"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-ashen-grey",
@@ -41986,10 +42254,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue-grey",
-      "brown",
-      "warm-grey"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-grey-brown",
@@ -42022,8 +42289,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "brown"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-brown-grey",
@@ -42056,8 +42324,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "brown"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-bone-satin",
@@ -42090,8 +42359,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "brown"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-reddish-grey",
@@ -42124,8 +42394,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "brown"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-red-grey",
@@ -42158,8 +42429,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "brown"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-dark-sea-grey",
@@ -42192,8 +42464,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "brown"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-silver-grey",
@@ -42226,8 +42499,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "brown"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-graphite",
@@ -42260,8 +42534,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "brown"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-warm-grey",
@@ -42294,9 +42569,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "brown",
-      "warm-grey"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-wizard-grey",
@@ -42329,8 +42604,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "brown"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-ash-grey",
@@ -42363,9 +42639,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "brown",
-      "warm-grey"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-dark-warm-grey",
@@ -42398,10 +42674,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue-grey",
-      "brown",
-      "warm-grey"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-bold-titanium-white",
@@ -42434,8 +42709,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "warm-grey"
-    ]
+      "white"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-heavy-titani-um-white",
@@ -42468,8 +42744,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "warm-grey"
-    ]
+      "white"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-white-star",
@@ -42502,8 +42779,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "warm-grey"
-    ]
+      "white"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-white",
@@ -42536,8 +42814,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "warm-grey"
-    ]
+      "white"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dark-arts-cherubic-white",
@@ -42570,8 +42849,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "warm-grey"
-    ]
+      "white"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-white-grey",
@@ -42604,8 +42884,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "warm-grey"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-bright-neutral-grey",
@@ -42638,8 +42919,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "warm-grey"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-pale-grey",
@@ -42672,8 +42954,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "warm-grey"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-sky-grey",
@@ -42706,8 +42989,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "warm-grey"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-carcharodon-grey",
@@ -42740,8 +43024,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "warm-grey"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-basalt-grey",
@@ -42774,8 +43059,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "warm-grey"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-medium-grey",
@@ -42808,8 +43094,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "warm-grey"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-amp-cool-grey",
@@ -42842,8 +43129,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "warm-grey"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-english-grey",
@@ -42876,8 +43164,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "warm-grey"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-neutral-grey",
@@ -42910,8 +43199,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "warm-grey"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-neutral-grey",
@@ -42944,8 +43234,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "warm-grey"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dungeon-stone-grey",
@@ -42978,8 +43269,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "warm-grey"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-dark-grey",
@@ -43012,9 +43304,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue-grey",
-      "warm-grey"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-lead-grey",
@@ -43047,9 +43339,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue-grey",
-      "warm-grey"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dark-arts-animus-black",
@@ -43082,10 +43374,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue-grey",
-      "grey",
-      "warm-grey"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-german-grey",
@@ -43118,9 +43409,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue-grey",
-      "warm-grey"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-dark-neutral-grey",
@@ -43153,9 +43444,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue-grey",
-      "warm-grey"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-wolf-grey",
@@ -43188,8 +43479,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "grey"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-gravestone-blue",
@@ -43222,8 +43514,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "grey"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-french-blue",
@@ -43256,8 +43549,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "grey"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-amp-slate-grey",
@@ -43290,8 +43584,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "grey"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-cold-corpse-blue",
@@ -43324,9 +43619,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue-grey",
-      "grey"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-intermediate-blue",
@@ -43359,8 +43654,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "grey"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-frost-blue",
@@ -43393,8 +43689,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "grey"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-shadow-blue",
@@ -43427,8 +43724,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "grey"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-faust-blue",
@@ -43461,9 +43759,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue-grey",
-      "grey"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-rubber-black",
@@ -43496,8 +43794,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue-grey"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-tenebrious-grey",
@@ -43530,8 +43829,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue-grey"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-smoke-black",
@@ -43564,8 +43864,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue-grey"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-death-reaper",
@@ -43598,8 +43899,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue-grey"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-coal-black",
@@ -43632,8 +43934,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue-grey"
-    ]
+      "black"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-black",
@@ -43666,8 +43969,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue-grey"
-    ]
+      "black"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-satin-black",
@@ -43700,8 +44004,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue-grey"
-    ]
+      "black"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-doom-death-black",
@@ -43734,8 +44039,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "blue-grey"
-    ]
+      "black"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-pearl",
@@ -43768,9 +44074,9 @@
     "opacity": 0.0,
     "opacity_rating": 0,
     "reference_families": [
-      "black",
-      "silver"
-    ]
+      "white"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-aluminium",
@@ -43803,9 +44109,9 @@
     "opacity": 0.0,
     "opacity_rating": 0,
     "reference_families": [
-      "black",
-      "silver"
-    ]
+      "white"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-dark-aluminium",
@@ -43838,8 +44144,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "black"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-silver",
@@ -43872,8 +44179,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "black"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-silver",
@@ -43906,8 +44214,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "black"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-mythril-blade",
@@ -43940,8 +44249,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "black"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dark-arts-ironclad-silver",
@@ -43974,9 +44284,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "black",
-      "gold"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-natural-steel",
@@ -44009,8 +44319,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "black"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-plate-armour",
@@ -44043,8 +44354,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "black"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-sir-coates-silver",
@@ -44077,8 +44389,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "black"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-oily-steel",
@@ -44111,8 +44424,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "black"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dwarven-iron",
@@ -44145,8 +44459,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "black"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-amp-steel",
@@ -44179,8 +44494,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "black"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-gun-metal",
@@ -44213,8 +44529,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "black"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-dark-silver",
@@ -44247,8 +44564,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "black"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-blue-steel",
@@ -44281,9 +44599,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "black",
-      "bronze-copper"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-astral-beryllium",
@@ -44316,9 +44634,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "black",
-      "bronze-copper"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-platinum-crown",
@@ -44351,9 +44669,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "gold",
-      "silver"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-white-gold",
@@ -44386,8 +44704,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "silver"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-light-bronze",
@@ -44420,8 +44739,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "silver"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-bright-gold",
@@ -44454,8 +44774,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "silver"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-gold",
@@ -44488,8 +44809,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "silver"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-glistening-gold",
@@ -44522,8 +44844,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "silver"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-heirloom-gold",
@@ -44556,8 +44879,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "silver"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-rich-gold",
@@ -44590,8 +44914,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "silver"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dragons-gold",
@@ -44624,8 +44949,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "silver"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-brass",
@@ -44658,8 +44984,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "silver"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-old-gold",
@@ -44692,8 +45019,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "silver"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-bronze",
@@ -44726,8 +45054,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "silver"
-    ]
+      "yellow"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-rusty-gold",
@@ -44760,8 +45089,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "silver"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-ancient-gold",
@@ -44794,8 +45124,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "silver"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-top-brass",
@@ -44828,8 +45159,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "gold"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-battle-axe-brass",
@@ -44862,8 +45194,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "gold"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-rusty-brass",
@@ -44896,8 +45229,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "gold"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-copper",
@@ -44930,8 +45264,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "gold"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-copper",
@@ -44964,8 +45299,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "gold"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-spartan-bronze",
@@ -44998,8 +45334,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "gold"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-steampunk-copper",
@@ -45032,8 +45369,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "gold"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-bitz-otin",
@@ -45066,8 +45404,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "gold"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-overlord-brass",
@@ -45100,9 +45439,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "bronze-copper",
-      "gold"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-chaos-bronze",
@@ -45135,8 +45474,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "gold"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dark-arts-ancient-iron",
@@ -45169,8 +45509,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "gold"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-dark-bronze",
@@ -45203,8 +45544,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "gold"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-doom-metal",
@@ -45237,8 +45579,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "gold"
-    ]
+      "black"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-bronze",
@@ -45271,8 +45614,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "gold"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-burnt-tin",
@@ -45305,8 +45649,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "gold"
-    ]
+      "brown"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "pro-acryl-magnesium",
@@ -45339,9 +45684,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "bronze-copper",
-      "gold"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-dark-arts-old-brown-metal",
@@ -45374,8 +45719,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "gold"
-    ]
+      "grey"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-fire-opal",
@@ -45408,8 +45754,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "bronze-copper"
-    ]
+      "orange"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-foundry-red",
@@ -45442,8 +45789,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "bronze-copper"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-scarab-red",
@@ -45476,8 +45824,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "bronze-copper"
-    ]
+      "red"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-anodized-violet",
@@ -45510,8 +45859,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "bronze-copper"
-    ]
+      "purple"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-emperors-purple",
@@ -45544,8 +45894,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "bronze-copper"
-    ]
+      "magenta"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-metallic-blue",
@@ -45578,8 +45929,9 @@
     "opacity": 0.333,
     "opacity_rating": 1,
     "reference_families": [
-      "bronze-copper"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-enchantment-blue",
@@ -45612,8 +45964,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "bronze-copper"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-cobalt-blue",
@@ -45646,8 +45999,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "bronze-copper"
-    ]
+      "blue"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-omega-blue",
@@ -45680,8 +46034,9 @@
     "opacity": 0.667,
     "opacity_rating": 2,
     "reference_families": [
-      "bronze-copper"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-metallic-green",
@@ -45714,8 +46069,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "bronze-copper"
-    ]
+      "green"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "two-thin-coats-carapace-green",
@@ -45748,8 +46104,9 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "bronze-copper"
-    ]
+      "green"
+    ],
+    "reference_families_source": "derived"
   },
   {
     "paint_id": "ak-3gen-emerald-metallic-green",
@@ -45782,7 +46139,8 @@
     "opacity": 1.0,
     "opacity_rating": 3,
     "reference_families": [
-      "bronze-copper"
-    ]
+      "cyan"
+    ],
+    "reference_families_source": "derived"
   }
 ]

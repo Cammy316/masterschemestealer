@@ -23,6 +23,7 @@ from scipy import ndimage
 from config import ColorDetection, Visualization, ShadeRules
 from utils.logging_config import logger
 from core.colour_maths import circular_mean_hue
+from core.recipe_geometry import allowed_families
 
 
 # ============================================================================
@@ -605,6 +606,15 @@ TRANSPARENCY_PENALTY: float = 8.0
 # (used in match_top_n deduplication).
 _DEDUP_THRESHOLD: float = 2.0
 
+# Roles whose candidate pool is gated to the detected colour's family + adjacent
+# families (Prompt 8, Issue 1). Shade/wash are family-keyed elsewhere and unchanged.
+FAMILY_GATED_ROLES = {'dominant', 'highlight'}
+
+# A base/highlight match beyond this CIEDE2000 distance is noise, not a
+# recommendation — return None so the slot honestly shows "No match found"
+# instead of a far-off (often cross-family) paint, e.g. a ΔE-44 grey for a pink.
+BASE_MATCH_DELTA_E_CEILING: float = 30.0
+
 from core.colour_maths import ciede2000_single as _ciede2000_single
 
 
@@ -620,6 +630,8 @@ class PaintMatcher:
         self.brands_arr = np.array([p.brand for p in matchable])               # (N,)
         self.types_arr  = np.array([p.type.lower() for p in matchable])        # (N,) lowercase
         self.finish_arr = np.array([p.finish.lower() for p in matchable])      # (N,)
+        self.family_arr = np.array([(p.color_family or '').lower()
+                                    for p in matchable])                        # (N,)
         self.transp_arr = np.array([p.transparency for p in matchable],
                                    dtype=float)                                 # (N,)
         logger.info(f"Paint matcher initialised: {len(matchable)}/{len(paint_db)} "
@@ -653,10 +665,17 @@ class PaintMatcher:
     def match_color(self, target_rgb: np.ndarray, brand: str,
                     role: str = 'dominant',
                     context: Dict = None,
-                    paint_type: str = None) -> Optional[Paint]:
+                    paint_type: str = None,
+                    target_family: str = None) -> Optional[Paint]:
         """Return the best-matching paint for target_rgb in the given brand/role.
 
         paint_type is accepted for backward compatibility and mapped to role.
+
+        target_family (the detected colour's canonical family) gates base/highlight
+        candidates to that family + its adjacent families and applies a ΔE ceiling,
+        so a brand with no in-family paint returns None ("No match found") rather
+        than a far-off cross-family paint (Prompt 8, Issue 1). When omitted, no
+        family gate is applied (preserves legacy callers/tests).
         """
         if paint_type is not None:
             role = _TYPE_TO_ROLE.get(paint_type.lower(), paint_type.lower())
@@ -665,6 +684,18 @@ class PaintMatcher:
         target_lab = color.rgb2lab(np.array([[target_rgb_norm]]))[0][0]
 
         mask = self._candidates_mask(brand, role)
+
+        # ── Colour-family gate (base/highlight only) ─────────────────────────
+        # Restrict to the detected family + adjacent families (shared adjacency
+        # with the recipe graph). If the gated pool is empty, return None so the
+        # slot honestly shows "No match found" instead of a cross-family paint.
+        if target_family and role.lower() in FAMILY_GATED_ROLES:
+            allowed = allowed_families(target_family)
+            if allowed is not None:
+                family_mask = mask & np.isin(self.family_arr, list(allowed))
+                if not family_mask.any():
+                    return None
+                mask = family_mask
 
         # ── Metallic finish gate (skip for shade/wash roles) ─────────────
         if role not in ('shade', 'wash') and context:
@@ -692,7 +723,11 @@ class PaintMatcher:
             return None
 
         candidate_labs = self.lab_matrix[candidate_indices]
-        distances = self._ciede2000_vs_matrix(target_lab, candidate_labs).copy()
+        # Keep the pure CIEDE2000 distances separate from the penalised ranking
+        # distances, so the ΔE ceiling is judged on true colour distance (not on a
+        # penalty-inflated score).
+        raw_distances = self._ciede2000_vs_matrix(target_lab, candidate_labs)
+        distances = raw_distances.copy()
 
         # ── Transparency penalty (dominant/highlight only) ────────────────
         if role in ('dominant', 'highlight'):
@@ -710,15 +745,27 @@ class PaintMatcher:
                     distances[local_i] += -30 if paint_metallic else 50
 
         best_local = int(np.argmin(distances))
+
+        # ── ΔE ceiling (base/highlight only) ──────────────────────────────
+        # A far-off winner is not a recommendation — return None so the slot
+        # shows "No match found" rather than a misleading cross-family paint.
+        if (role.lower() in FAMILY_GATED_ROLES
+                and raw_distances[best_local] > BASE_MATCH_DELTA_E_CEILING):
+            return None
+
         return self.paint_db[candidate_indices[best_local]]
 
     def match_top_n(self, target_lab: np.ndarray, brand: str = None,
                     role: str = None, n: int = 5,
-                    paint_type: str = None) -> List[Tuple[Paint, float]]:
+                    paint_type: str = None,
+                    target_family: str = None) -> List[Tuple[Paint, float]]:
         """Return top-N closest paints by CIEDE2000, optionally filtered by brand/role.
 
         paint_type accepted for backward compatibility.
         Results within ΔE 2.0 of each other (same brand) are deduplicated.
+
+        target_family applies the same base/highlight family gate as match_color
+        (detected family + adjacent families); omit it to leave candidates ungated.
         """
         if paint_type is not None and role is None:
             role = _TYPE_TO_ROLE.get(paint_type.lower(), paint_type.lower())
@@ -732,6 +779,14 @@ class PaintMatcher:
             mask = np.isin(self.types_arr, list(cats))
         else:
             mask = np.ones(len(self.paint_db), dtype=bool)
+
+        # Colour-family gate (base/highlight only), shared with match_color.
+        if target_family and role and role.lower() in FAMILY_GATED_ROLES:
+            allowed = allowed_families(target_family)
+            if allowed is not None:
+                family_mask = mask & np.isin(self.family_arr, list(allowed))
+                if family_mask.any():
+                    mask = family_mask
 
         candidate_indices = np.where(mask)[0]
         if len(candidate_indices) == 0:

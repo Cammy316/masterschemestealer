@@ -327,11 +327,12 @@ export function getFullPaintRecipe(
   colorLab: [number, number, number],
   colorFamily: string
 ): PaintRecipe {
+  // Scale75 dropped (Prompt 8): no measured ground truth, so it is not a
+  // supported brand. Offline mode mirrors the online supported-brand set.
   return {
     citadel: getRecipeForColor(colorLab, colorFamily, 'citadel'),
     vallejo: getRecipeForColor(colorLab, colorFamily, 'vallejo'),
     army_painter: getRecipeForColor(colorLab, colorFamily, 'army-painter'),
-    scale75: getRecipeForColor(colorLab, colorFamily, 'scale75'),
   };
 }
 
