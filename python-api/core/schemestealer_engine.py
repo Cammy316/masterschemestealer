@@ -35,12 +35,20 @@ def _slugify(*parts) -> str:
     return raw or 'paint'
 
 def resolve_paint_db_path(path: str = 'paints.json') -> str:
-    """Prefer the measured-swatch DB (Prompt 6) when it exists; otherwise fall
-    back to the given chart DB. The previous file is kept as a safety net."""
+    """Resolve the live paint DB, newest first, each falling back to the prior:
+      paints_groundtruth.json  (Prompt 7 — matchable restricted to measured)
+      paints_measured.json     (Prompt 6 — measured colours merged in)
+      paints.json              (original chart DB)
+    """
     import os
-    if path == 'paints.json' and os.path.exists('paints_measured.json'):
-        logger.info("Measured paint DB found — loading paints_measured.json")
-        return 'paints_measured.json'
+    if path == 'paints.json':
+        for candidate, label in (
+            ('paints_groundtruth.json', 'ground-truth (measured-only matchable)'),
+            ('paints_measured.json', 'measured-swatch'),
+        ):
+            if os.path.exists(candidate):
+                logger.info(f"Loading {label} paint DB: {candidate}")
+                return candidate
     return path
 
 
@@ -253,17 +261,15 @@ class SchemeStealerEngine:
                 else:
                     highlight_matches[b] = shade_matches[b] = wash_matches[b] = None
 
-            # Derive the displayed colour family from the best base match's
-            # curated color_family field — more reliable than the heuristic
-            # classifier for display and wash selection.
-            paint_derived_family = None
-            for b in brands:
-                bm = base_matches.get(b)
-                if bm and bm.get('color_family'):
-                    cf = bm['color_family']
-                    paint_derived_family = cf[0].upper() + cf[1:] if cf else None
-                    break
-            display_family = paint_derived_family or family
+            # Display the DETECTED colour's own canonical family (Prompt 7, Issue 1).
+            # The old paint_derived_family override inherited the nearest base
+            # paint's curated family, which corrupts pale/desaturated colours whose
+            # closest paint by ΔE sits across a family line (e.g. #c7afbd is pink but
+            # matched "Mourn Mountain Snow" -> showed White; baby-blue -> Green). The
+            # canonical hue_family classifier (already in `family`) is authoritative.
+            # The wash mapping downstream keys on recipe['family'], so it now also
+            # selects on the detected colour's family rather than a neighbour paint's.
+            display_family = family
 
             # Calculate spatial features
             spatial_mask = np.zeros(img_rgb.shape[:2], dtype=bool)
@@ -293,8 +299,8 @@ class SchemeStealerEngine:
             # Build comprehensive recipe with ML features
             recipe = {
                 # UI/Display data
-                'family': display_family,          # paint-curated family for API response
-                'heuristic_family': family,         # classifier output kept for internal use
+                'family': display_family,          # detected colour's canonical hue_family
+                'heuristic_family': family,         # same value, kept for internal callers
                 'dominance': color_data['coverage'],
                 'base': base_matches,
                 'highlight': highlight_matches,
