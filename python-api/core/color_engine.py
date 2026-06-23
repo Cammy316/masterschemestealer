@@ -781,18 +781,24 @@ class VisualizationEngine:
 
         Dims + desaturates the WHOLE image except this colour's mask, where the
         ORIGINAL full-colour pixels are revealed — so you can see exactly *where*
-        the colour appears on the mini. A themed rim traces the mask edges and a
-        single light reticle marks the densest region. `rim_rgb` is the per-mode
-        accent (green Imperial by default; pass purple for Warp).
+        the colour appears on the mini. The mask is first cleaned (speckle removed,
+        tiny components dropped) and the rim is drawn ONLY on the OUTER contours of
+        the surviving regions — never internal Canny edges, which previously lit up
+        the whole figure's edge web. `rim_rgb` is the per-mode accent (green
+        Imperial by default; pass purple for Warp).
         """
+        h, w = color_mask.shape[:2]
         gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
         gray_rgb = cv2.cvtColor(gray, cv2.COLOR_GRAY2RGB)
 
         # Dim, desaturated backdrop for everything outside the mask.
         overlay = gray_rgb.astype(float) * 0.32
 
-        if np.any(color_mask):
-            mask_float = color_mask.astype(float)
+        # Clean the mask so scattered noise doesn't read as highlight.
+        clean = VisualizationEngine._clean_mask(color_mask)
+
+        if np.any(clean):
+            mask_float = clean.astype(float)
 
             # Feather the mask so the reveal blends rather than aliases.
             soft = np.clip(cv2.GaussianBlur(mask_float, (9, 9), 0), 0.0, 1.0)
@@ -802,18 +808,47 @@ class VisualizationEngine:
             img_f = img.astype(float)
             overlay = overlay * (1.0 - soft3) + img_f * soft3
 
-            # Themed rim (slightly dilated) on the mask edges.
-            mask_uint8 = (mask_float * 255).astype(np.uint8)
-            edges = cv2.Canny(mask_uint8, 100, 200)
-            edges = cv2.dilate(edges, np.ones((2, 2), np.uint8), iterations=1)
-            overlay[edges > 0] = np.array(rim_rgb, dtype=float)
-
-        overlay = np.clip(overlay, 0, 255).astype(np.uint8)
+            # Thin rim on the OUTER contours of the cleaned regions only.
+            overlay = np.clip(overlay, 0, 255).astype(np.uint8)
+            contours, _ = cv2.findContours(
+                (mask_float * 255).astype(np.uint8),
+                cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            min_area = max(25.0, 0.0005 * h * w)
+            keep = [c for c in contours if cv2.contourArea(c) >= min_area]
+            cv2.drawContours(overlay, keep, -1,
+                             tuple(int(x) for x in rim_rgb), 2, lineType=cv2.LINE_AA)
+        else:
+            overlay = np.clip(overlay, 0, 255).astype(np.uint8)
 
         # Single, light centre reticle (no heavy HUD text/brackets).
         return VisualizationEngine._draw_minimal_reticle(
             overlay, reticle_pos[0], reticle_pos[1], rim_rgb
         )
+
+    @staticmethod
+    def _clean_mask(mask: np.ndarray) -> np.ndarray:
+        """Morphological open (drop speckle) + keep connected components above a
+        small area, so 'where the colour is' reads as coherent regions, not a
+        dusting of single pixels. Falls back to the largest blob if the area
+        filter would otherwise remove everything."""
+        m = (np.asarray(mask).astype(np.uint8) > 0).astype(np.uint8)
+        if not m.any():
+            return m.astype(bool)
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+        m = cv2.morphologyEx(m, cv2.MORPH_OPEN, kernel, iterations=1)
+        n, labels, stats, _ = cv2.connectedComponentsWithStats(m, connectivity=8)
+        if n <= 1:
+            return m.astype(bool)
+        h, w = m.shape
+        min_area = max(20, int(0.0004 * h * w))
+        out = np.zeros_like(m)
+        for i in range(1, n):
+            if stats[i, cv2.CC_STAT_AREA] >= min_area:
+                out[labels == i] = 1
+        if not out.any():
+            largest = 1 + int(np.argmax(stats[1:, cv2.CC_STAT_AREA]))
+            out[labels == largest] = 1
+        return out.astype(bool)
 
     @staticmethod
     def _draw_minimal_reticle(img: np.ndarray, x: int, y: int,
