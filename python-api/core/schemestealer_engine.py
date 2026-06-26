@@ -21,7 +21,7 @@ from core.color_engine import (
 )
 from core.smart_color_system import SmartColorExtractor
 from core.recipe_graph import RecipeGraph
-from core.recipe_geometry import PaintNode, best_geometric_edges, CANDIDATE_CATEGORIES
+from core.recipe_geometry import PaintNode, derive_partner, CANDIDATE_CATEGORIES
 from utils.helpers import apply_white_balance, increase_saturation
 from utils.logging_config import logger
 
@@ -94,6 +94,7 @@ class SchemeStealerEngine:
                 measured_lab=p.get('lab'),
                 color_source='measured',
                 opacity=p.get('opacity_rating'),
+                vibrancy=p.get('vibrancy'),
             )
             paint.compute_properties()
             self.paint_db.append(paint)
@@ -122,6 +123,7 @@ class SchemeStealerEngine:
                 category=(p.type or '').lower(), color_family=(p.color_family or '').lower(),
                 lab=(float(p.lab[0]), float(p.lab[1]), float(p.lab[2])),
                 matchable=p.matchable, discontinued=p.discontinued,
+                opacity_rating=p.opacity, vibrancy=p.vibrancy,
             )
             self._recipe_nodes[p.paint_id] = node
             if node.matchable and not node.discontinued and node.category in CANDIDATE_CATEGORIES:
@@ -363,22 +365,41 @@ class SchemeStealerEngine:
             out['source'] = source   # 'official' | 'computed'
         return out
 
+    @staticmethod
+    def _monotonic_ok(rel: str, base_lab, target_paint) -> bool:
+        """Phase 4 guard: a highlight must be strictly lighter than the base, a
+        shade strictly darker. Rejects inverted recipes (incl. stale graph edges)."""
+        if base_lab is None or target_paint is None or target_paint.lab is None:
+            return True  # can't compare → don't block
+        bl, tl = float(base_lab[0]), float(target_paint.lab[0])
+        return tl > bl if rel == 'highlight' else tl < bl
+
     def _recipe_partner(self, base_paint, rel: str, brand: str):
-        """Resolve a highlight/shade partner for base_paint: curated graph edge
-        first, then a live LAB-geometry fallback using the shared scorer. Returns
-        (Paint|None, source_kind|None)."""
+        """Resolve a highlight/shade partner for base_paint (Phase 4).
+
+        A curated/algorithmic graph edge is used only if it respects the
+        monotonicity guard; otherwise the partner is DERIVED from an explicit
+        target LAB via the tiered ladder (in-family → adjacent → relaxed → empty),
+        weighted by opacity/vibrancy. Returns (Paint|None, source_kind|None) and
+        logs the resolution tier."""
+        base_lab = getattr(base_paint, 'lab', None)
+
         edge = self.recipe_graph.get_edge(base_paint, rel)
         if edge is not None:
             target = self._paints_by_id.get(edge.to_id)
-            if target is not None:
+            if target is not None and self._monotonic_ok(rel, base_lab, target):
+                logger.debug("recipe %s for %s: tier=graph(%s) -> %s",
+                             rel, base_paint.paint_id, edge.kind, target.paint_id)
                 return target, edge.kind  # 'official' or 'computed'
 
         from_node = self._recipe_nodes.get(getattr(base_paint, 'paint_id', None))
         if from_node is None:
             return None, None
-        best = best_geometric_edges(from_node, self._recipe_pools.get(brand, []), rel, top_n=1)
-        if best:
-            return self._paints_by_id.get(best[0][0].paint_id), 'computed'
+        node, tier = derive_partner(from_node, self._recipe_pools.get(brand, []), rel)
+        logger.debug("recipe %s for %s: tier=%s -> %s", rel, base_paint.paint_id,
+                     tier, node.paint_id if node else None)
+        if node is not None:
+            return self._paints_by_id.get(node.paint_id), 'computed'
         return None, None
 
     def _recipe_wash(self, base_paint):

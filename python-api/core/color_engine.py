@@ -61,7 +61,8 @@ class Paint:
     measured_lab: Optional[list] = None
     measured_hex: str = ''
     color_source: str = 'chart'
-    opacity: Optional[float] = None
+    opacity: Optional[float] = None        # opacity_rating 0..3 (Phase 4 weighting)
+    vibrancy: Optional[str] = None         # None | 'slight' | 'significant'
 
     # Computed colour-space properties (populated by compute_properties)
     rgb: np.ndarray = None

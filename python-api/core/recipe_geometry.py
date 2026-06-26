@@ -16,7 +16,7 @@ Hue is measured as the LAB hue angle h_ab = atan2(b*, a*).
 """
 
 from dataclasses import dataclass
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 import math
 
 # ---------------------------------------------------------------------------
@@ -33,6 +33,13 @@ CHROMA_COLLAPSE_TOLERANCE = 5.0  # only penalise chroma loss beyond this
 
 # Candidates scoring above this are not good enough to suggest.
 SCORE_THRESHOLD = 30.0
+
+# Phase 4 candidate weighting (tie-breakers on the LAB-ΔE scale, NOT hard
+# filters): opaque paints make poor highlight/glaze layers, so penalise opacity
+# for the highlight role; reward vibrant paints when the target is saturated.
+OPACITY_HIGHLIGHT_PENALTY = 2.0   # per opacity_rating point (0..3) → up to +6 ΔE
+VIBRANCY_BONUS = 3.0              # 'significant' vibrancy when target is saturated
+SATURATED_CHROMA = 30.0          # target chroma above which vibrancy matters
 
 # Highlight "pull" target hue angles (degrees). Warm colours highlight toward
 # yellow (~90°); cool colours toward cyan (~200°, between green 180° and blue
@@ -92,6 +99,9 @@ class PaintNode:
     lab: Tuple[float, float, float]
     matchable: bool = True
     discontinued: bool = False
+    # Phase 4 candidate weighting (tie-breakers, never hard filters).
+    opacity_rating: Optional[int] = None    # 0 (translucent) .. 3 (opaque)
+    vibrancy: Optional[str] = None          # None | 'slight' | 'significant'
 
 
 def hue_angle_deg(a: float, b: float) -> float:
@@ -180,3 +190,88 @@ def best_geometric_edges(from_node: PaintNode,
             scored.append((cand, s))
     scored.sort(key=lambda x: x[1])
     return scored[:top_n]
+
+
+# ===========================================================================
+# Phase 4 — explicit target-LAB derivation with a monotonicity guard, a tiered
+# fallback ladder, and opacity/vibrancy candidate weighting.
+# ===========================================================================
+
+def ideal_hue_shift(h_from_deg: float, rel: str) -> float:
+    """Signed ideal hue rotation (deg): toward yellow/cyan for a highlight,
+    reversed for a shade — the same warm/cool logic score_edge uses."""
+    target_hue = WARM_HIGHLIGHT_TARGET if is_warm(h_from_deg) else COOL_HIGHLIGHT_TARGET
+    direction = 1.0 if _angular_diff(h_from_deg, target_hue) >= 0 else -1.0
+    dh = direction * IDEAL_HUE_SHIFT_DEG
+    return dh if rel == "highlight" else -dh
+
+
+def target_lab(from_lab: Tuple[float, float, float], rel: str) -> Tuple[float, float, float]:
+    """Explicit highlight/shade target LAB: lighten (+dL) or darken (-dL) the base
+    with a small hue rotation toward yellow (warm) / cyan (cool) and chroma kept."""
+    lf, af, bf = from_lab
+    h = hue_angle_deg(af, bf)
+    c = chroma(af, bf)
+    dl = IDEAL_DL_HIGHLIGHT if rel == "highlight" else IDEAL_DL_SHADE
+    h2 = math.radians((h + ideal_hue_shift(h, rel)) % 360.0)
+    return (lf + dl, c * math.cos(h2), c * math.sin(h2))
+
+
+def _lab_distance(a: Tuple[float, float, float], b: Tuple[float, float, float]) -> float:
+    """Euclidean LAB distance (ΔE76) — 'nearest to the target' selection metric."""
+    return math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2)
+
+
+def _candidate_penalty(cand: PaintNode, rel: str, target_chroma: float) -> float:
+    """Opacity/vibrancy tie-breaker added to the ΔE-to-target. Small vs the LAB
+    scale, so it only separates near-ties — never overrides colour (per Phase 4)."""
+    pen = 0.0
+    if rel == "highlight" and cand.opacity_rating is not None:
+        pen += OPACITY_HIGHLIGHT_PENALTY * float(cand.opacity_rating)  # opaque = worse glaze
+    if target_chroma >= SATURATED_CHROMA and cand.vibrancy:
+        pen -= VIBRANCY_BONUS if cand.vibrancy == "significant" else VIBRANCY_BONUS * 0.5
+    return pen
+
+
+def derive_partner(from_node: PaintNode, pool: List[PaintNode], rel: str
+                   ) -> Tuple[Optional[PaintNode], str]:
+    """Phase 4 derivation. Returns (best PaintNode | None, tier_label).
+
+    Picks the candidate nearest the explicit target LAB (weighted by
+    opacity/vibrancy) under a hard MONOTONICITY GUARD — a highlight must be
+    strictly lighter than the base, a shade strictly darker — walking a tiered
+    fallback ladder: in-family → adjacent-family → relaxed (any same-brand base) →
+    honest empty. A candidate that violates the guard is never returned.
+    """
+    tgt = target_lab(from_node.lab, rel)
+    target_c = chroma(tgt[1], tgt[2])
+    base_l = from_node.lab[0]
+    same_fam = (from_node.color_family or "").lower()
+    allowed = allowed_families(from_node.color_family) or {same_fam}
+
+    def _monotonic_ok(cand: PaintNode) -> bool:
+        return cand.lab[0] > base_l if rel == "highlight" else cand.lab[0] < base_l
+
+    def _base_ok(cand: PaintNode) -> bool:
+        return (cand.paint_id != from_node.paint_id and cand.matchable
+                and not cand.discontinued and cand.brand == from_node.brand
+                and (cand.category or "").lower() in CANDIDATE_CATEGORIES)
+
+    def _best(family_filter) -> Optional[PaintNode]:
+        scored = []
+        for c in pool:
+            if not _base_ok(c) or not _monotonic_ok(c):
+                continue
+            if family_filter is not None and (c.color_family or "").lower() not in family_filter:
+                continue
+            scored.append((_lab_distance(tgt, c.lab) + _candidate_penalty(c, rel, target_c), c))
+        scored.sort(key=lambda x: x[0])
+        return scored[0][1] if scored else None
+
+    for family_filter, tier in (({same_fam}, "in-family"),
+                                (allowed, "adjacent-family"),
+                                (None, "relaxed")):
+        cand = _best(family_filter)
+        if cand is not None:
+            return cand, tier
+    return None, "empty"
