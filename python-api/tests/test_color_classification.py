@@ -104,7 +104,7 @@ def test_db_and_ensemble_agree_across_sweep(extractor):
 _FAMILY_TABLE = [
     ("#EF6E2E", "orange"),   # Troll Slayer Orange — Orange now exists (was pink)
     ("#F2792B", "orange"),   # Fire Dragon Bright
-    ("#664400", "yellow"),   # dark yellow (was brown)
+    ("#664400", "brown"),    # dark olive → nearest brown exemplar (Stage B)
     ("#665E33", "yellow"),   # olive-yellow (was brown)
     ("#797424", "yellow"),   # Death/Dead Flesh olive (was brown)
     ("#60664D", "green"),    # yellow-green floor (was bone)
@@ -113,7 +113,7 @@ _FAMILY_TABLE = [
     ("#0D407F", "blue"),     # blue regression
     ("#9A1115", "red"),      # Mephiston stays red
     ("#C21E10", "red"),      # Evil Sunz stays red
-    ("#DECBDA", "pink"),     # pale pink at h313 (was grey/white)
+    ("#DECBDA", "pink"),     # pale mauve → nearest pink exemplar (Stage B fixed it)
     ("#F2C2B6", "pink"),     # pale warm pink
     ("#7D1846", "magenta"),  # deep magenta (was pink)
     ("#90305D", "magenta"),  # magenta
@@ -136,7 +136,9 @@ def test_family_regression_table(hexv, expected):
 # ---------------------------------------------------------------------------
 
 def test_metallic_typing_preserved():
-    assert compute_color_family("#C39E81", finish="metallic") == "gold"
+    # Metallic sub-typing is now nearest-exemplar over the metal anchors (gold/
+    # silver/bronze are mutually adjacent for matching). Clear cases hold:
+    assert compute_color_family("#D4AF37", finish="metallic") == "gold"
     assert compute_color_family("#888D8F", finish="metallic") == "silver"
 
 

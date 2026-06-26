@@ -366,182 +366,31 @@ class SmartColorExtractor:
         return False
     
     def _classify_family_ensemble_weighted(self, cluster: Dict, all_clusters: List[Dict] = None) -> Tuple[str, float]:
-        """Weighted ensemble voting around the canonical hue family.
+        """The single scan-time classification (Stage A consolidation).
 
-        The hue vote is color_engine.hue_family() — the SAME single source of
-        truth compute_color_family() uses — so the DB family and the scan family
-        agree by construction. The LAB and named-colour votes are corroboration /
-        tie-breakers only; they no longer define hue boundaries. The LAB vote
-        defers to the hue family for chromatic colours and asserts itself only as
-        a gold (metallic) overlay, which scan-time metallic detection relies on.
+        ONE call to color_engine.classify_family() on the cluster's median LAB,
+        with the metallic flag from the specular-variance detector
+        (is_metallic_surface). There is no voting, no nearest-named-colour table
+        and no gold/cyan LAB overlays any more — the scan family is produced by the
+        exact SAME function as the DB family, so they cannot diverge. The metallic
+        decision is stored on the cluster for the matcher's metallic gate.
         """
-        from collections import Counter
-        from core.color_engine import hue_family
+        from core.color_engine import classify_family, is_metallic_surface
 
-        hsv = cluster['median_hsv']
-        chroma = cluster['chroma']
         lab = cluster['median_lab']
-        h_deg = hsv[0] * 360
-        s, v = hsv[1], hsv[2]
+        chroma = float(cluster.get('chroma') or 0.0)
+        hsv = cluster.get('median_hsv', [0.0, 0.0, 0.0])
+        median_sat = hsv[1] if len(hsv) > 1 else 0.0
+        median_val = hsv[2] if len(hsv) > 2 else 0.0
 
-        # Vote 1: canonical hue family (flat lowercase → capitalised for voting).
-        hue_vote = hue_family(h_deg, s, v, chroma, lab=lab).capitalize()
+        is_metallic = is_metallic_surface(cluster.get('brightness_std', 0.0),
+                                          median_sat, median_val)
+        cluster['is_metallic'] = is_metallic
 
-        # Vote 2: LAB defers to the hue family — it corroborates the hue boundary
-        # rather than defining its own (this is what kills the cyan-as-green class
-        # of disagreement). Its only assertion is the gold metallic overlay,
-        # applied after the vote.
-        lab_vote = hue_vote
+        family = classify_family(lab, chroma, is_metallic).capitalize()
 
-        # Vote 3: nearest named colour (corroboration only).
-        named_vote = self._classify_by_nearest_named_color(cluster['median_rgb'])
-
-        # Confidence/agreement-based weights — the corrected hue vote is no longer
-        # drowned by a single LAB vote (old lab_weight=30 fixed vs hue=s*20).
-        hue_weight = int(np.clip(s * 25, 10, 25))
-        lab_weight = 18
-        named_weight = 8
-
-        votes = ([hue_vote] * hue_weight
-                 + [lab_vote] * lab_weight
-                 + [named_vote] * named_weight)
-
-        vote_counts = Counter(votes)
-        winner, count = vote_counts.most_common(1)[0]
-        confidence = count / len(votes)
-
-        # If hue and named agree, that family wins — unless LAB strongly indicates
-        # a (very neutral) achromatic colour. Stops a lone mis-quadranted LAB vote
-        # from overriding two agreeing chromatic voters (the cyan-as-green case).
-        L, a, b = lab
-        lab_strongly_achromatic = abs(a) < 3 and abs(b) < 3
-        if hue_vote == named_vote and not lab_strongly_achromatic:
-            winner = hue_vote
-            confidence = max(confidence, (hue_weight + named_weight) / len(votes))
-
-        # Gold metallic overlay: a YELLOW carrying a strong gold LAB signature is
-        # reported as "Gold" so scan-time metallic detection (which scans the
-        # family string for "Gold") still fires. Gold is metallic-yellow, so it
-        # normalises straight back to yellow for matte DB comparison — it never
-        # creates a hue disagreement. Restricted to yellow so tans/ochres/bone
-        # are not swept into gold.
-        if hue_vote == "Yellow" and self._is_gold_in_lab(lab):
-            return "Gold", confidence
-
-        logger.debug(f"Ensemble: {winner} (conf={confidence:.2f})")
-
-        return winner, confidence
-    
-    # _classify_by_hue() removed (Prompt 1.3): hue→family classification is now
-    # the single canonical color_engine.hue_family(), called by the ensemble
-    # above and by compute_color_family(), so the two can never disagree.
-
-    def _classify_by_lab_quadrant(self, lab: np.ndarray, v: float) -> str:
-            L, a, b = lab
-            
-            # Check for gold signature FIRST (already exists, but strengthen it)
-            if self._is_gold_in_lab(lab):
-                return "Gold"
-            
-            # Check for cyan signature
-            if self._is_cyan_in_lab(lab):
-                return "Cyan"
-            
-            # Check for pink signature
-            if self._is_pink_in_lab(lab):
-                return "Pink"
-            
-            if abs(a) < 5 and abs(b) < 5: 
-                return "Grey"
-            
-            if a > abs(b): 
-                return "Pink" if L > 75 else "Red"
-            elif a < -abs(b): 
-                return "Green"
-            elif b > abs(a):
-                # IMPROVED: More nuanced gold vs yellow
-                if b > 25 and L > 50:  # Strong yellow component, bright
-                    if a > -5:  # Even slightly red = gold
-                        return "Gold"
-                    else:
-                        return "Yellow"  # True yellow (no red)
-                else:
-                    return "Yellow" if a < 0 else "Gold"
-            elif b < -abs(a): 
-                return "Blue"
-            
-            return "Unknown"
-    
-    def _is_gold_in_lab(self, lab: np.ndarray) -> bool:
-            '''
-            Gold detection in LAB space
-            
-            Gold signature:
-            - L: 50-85 (bright but not white)
-            - a: -8 to 20 (can be slightly green to moderately red)
-            - b: 25+ (STRONG yellow component)
-            '''
-            L, a, b_val = lab
-            
-            is_gold = (
-                50 < L < 85 and
-                -8 < a < 20 and  # RELAXED: Allow slight green tint
-                b_val > 25  # RELAXED: Catch darker golds too
-            )
-            
-            if is_gold:
-                logger.debug(f"LAB gold detected: L={L:.1f}, a={a:.1f}, b={b_val:.1f}")
-            
-            return is_gold
-    
-    def _is_cyan_in_lab(self, lab: np.ndarray) -> bool:
-        """Cyan detection in LAB space (FIX #6)"""
-        L, a, b_val = lab
-        
-        # Cyan: a < 0 (green-ish) AND b < -10 (blue-ish)
-        is_cyan = (a < -5 and b_val < -10 and L > 40)
-        
-        if is_cyan:
-            logger.debug(f"LAB cyan detected: L={L:.1f}, a={a:.1f}, b={b_val:.1f}")
-        
-        return is_cyan
-    
-    def _is_pink_in_lab(self, lab: np.ndarray) -> bool:
-        """Pink detection in LAB space (FIX #7)"""
-        L, a, b_val = lab
-        
-        # Pink: High L (light), high a (red), moderate b
-        is_pink = (L > 60 and a > 20 and b_val > -5)
-        
-        if is_pink:
-            logger.debug(f"LAB pink detected: L={L:.1f}, a={a:.1f}, b={b_val:.1f}")
-        
-        return is_pink
-    
-    def _classify_by_nearest_named_color(self, rgb: np.ndarray) -> str:
-        """Classify by distance to named colors"""
-        named_colors = {
-            'Pink': [255, 192, 203],
-            'Red': [255, 0, 0],
-            'Gold': [255, 215, 0],
-            'Yellow': [255, 255, 0],
-            'Green': [0, 128, 0],
-            'Cyan': [0, 255, 255],
-            'Blue': [0, 0, 255],
-            'Purple': [128, 0, 128],
-            'Brown': [139, 69, 19],
-            'White': [255, 255, 255],
-            'Grey': [128, 128, 128],
-            'Black': [0, 0, 0]
-        }
-        
-        min_dist = float('inf')
-        nearest = "Unknown"
-        
-        for name, ref_rgb in named_colors.items():
-            dist = np.linalg.norm(rgb - np.array(ref_rgb))
-            if dist < min_dist:
-                min_dist = dist
-                nearest = name
-        
-        return nearest
+        # Confidence: high when clearly chromatic, easing off near the achromatic
+        # boundary where the call is least certain (drives detail/major filtering).
+        confidence = float(np.clip(0.55 + 0.4 * min(chroma / 40.0, 1.0), 0.5, 0.95))
+        logger.debug(f"Classify: {family} (metallic={is_metallic}, conf={confidence:.2f})")
+        return family, confidence

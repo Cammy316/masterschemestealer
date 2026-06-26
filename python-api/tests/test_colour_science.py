@@ -208,7 +208,8 @@ def paint_matcher_live():
 
 
 _MID_RED_RGB = np.array([154, 17, 21], dtype=np.uint8)
-_BRANDS = ["Citadel", "Vallejo", "Army Painter", "Scale75"]
+# Scale75 was dropped from the ground-truth DB (Prompt 7) — retired here.
+_BRANDS = ["Citadel", "Vallejo", "Army Painter"]
 
 # role='dominant' maps to base/layer/air/contrast (contrast is penalised but eligible).
 _DOMINANT_CATS = {"base", "layer", "air", "contrast"}
