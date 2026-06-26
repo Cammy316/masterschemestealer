@@ -24,7 +24,7 @@ from core.color_engine import (
 
 
 # ---------------------------------------------------------------------------
-# Helpers to build test Paint objects without needing paints.json
+# Helpers to build test Paint objects without needing paints_groundtruth.json
 # ---------------------------------------------------------------------------
 
 def _make_paint(name, brand, category, finish="matte", transparency=0.0,

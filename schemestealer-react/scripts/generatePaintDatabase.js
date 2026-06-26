@@ -195,12 +195,13 @@ function selectPaints(allPaints, targetCount = 1000) {
 function mapCategory(paint) {
   const category = (paint.category || paint.type || 'base').toLowerCase();
 
-  // Normalize category names
-  if (category.includes('shade') || category.includes('wash')) return 'Shade';
+  // Normalize category names. Metallic-ness is no longer a category/finish —
+  // it's the `metallic` boolean flag — so metallic bases map to 'Base'.
+  if (category.includes('shade') || category.includes('wash') ||
+      category.includes('ink')) return 'Shade';
   if (category.includes('layer')) return 'Layer';
   if (category.includes('base')) return 'Base';
   if (category.includes('contrast')) return 'Contrast';
-  if (category.includes('metallic') || paint.finish === 'metallic') return 'Metallic';
   if (category.includes('technical')) return 'Technical';
   if (category.includes('dry')) return 'Dry';
   if (category.includes('air')) return 'Air';
@@ -220,6 +221,13 @@ function generateTypeScript(paints) {
     const rgb = hexToRgb(paint.hex);
     const lab = rgbToLab(rgb);
 
+    // Derive the matcher's transparency penalty input from measured opacity,
+    // mirroring the backend loader: opacity_rating 0 (translucent) → 1.0;
+    // 3 (opaque) → 0.0. Falls back to any explicit transparency for old DBs.
+    const transparency = typeof paint.opacity_rating === 'number'
+      ? 1 - paint.opacity_rating / 3
+      : (typeof paint.transparency === 'number' ? paint.transparency : 0);
+
     return {
       paint_id: paint.paint_id || '',
       name: paint.name,
@@ -231,8 +239,9 @@ function generateTypeScript(paints) {
       colorFamily: (paint.color_family || 'unknown').toLowerCase(),
       rgb: rgb,  // { r, g, b } object
       lab: lab,  // { l, a, b } object
-      finish: (paint.finish || '').toLowerCase(),
-      transparency: typeof paint.transparency === 'number' ? paint.transparency : 0,
+      finish: (paint.finish || 'matte').toLowerCase(),  // sheen, never 'metallic'
+      metallic: paint.metallic === true,      // metallic-ness via flag, not finish
+      transparency,
       matchable: paint.matchable !== false,  // default true
       aliases: Array.isArray(paint.aliases) ? paint.aliases : [],
     };
@@ -248,7 +257,7 @@ function generateTypeScript(paints) {
  * Paint Database - Auto-generated
  *
  * Contains ${processedPaints.length} pre-computed paints with RGB and LAB values.
- * Generated from the master paints.json database.
+ * Generated from the master paints_groundtruth.json database.
  *
  * DO NOT EDIT MANUALLY - run \`node scripts/generatePaintDatabase.js\` to regenerate.
  *
@@ -268,7 +277,8 @@ export interface PaintData {
   category: string;      // raw lowercase DB category
   family: string;        // capitalised family — back-compat
   colorFamily: string;   // lowercase canonical family (matches backend color_family)
-  finish: string;
+  finish: string;        // sheen: flat/matte/satin/glossy (never 'metallic')
+  metallic: boolean;     // metallic-ness flag (replaces finish === 'metallic')
   transparency: number;
   matchable: boolean;
   aliases: string[];     // alt names (old Warpaints names, GW names) for search
@@ -340,26 +350,28 @@ export const PAINT_DATABASE_STATS = {
 // ============================================================================
 
 async function main() {
-  // Prefer the rebuilt database (Prompt 2.6); after Cam swaps it into place
-  // this falls through to paints.json automatically.
-  const rebuiltPath = path.join(__dirname, '../../python-api/paints_rebuilt.json');
-  const fallbackPath = path.join(__dirname, '../../python-api/paints.json');
+  // Single source of truth: the ground-truth DB. No fallbacks — fail loudly if
+  // it's missing so we never silently ship a stale offline DB.
+  const groundTruthPath = path.join(__dirname, '../../python-api/paints_groundtruth.json');
   const outputPath = path.join(__dirname, '../lib/paintDatabase.ts');
 
-  const paintsJsonPath = fs.existsSync(rebuiltPath) ? rebuiltPath : fallbackPath;
-  console.log(`Reading paints database from: ${path.basename(paintsJsonPath)}`);
-  const rawData = fs.readFileSync(paintsJsonPath, 'utf-8');
+  if (!fs.existsSync(groundTruthPath)) {
+    throw new Error(`Paint DB not found: ${groundTruthPath}. Expected ` +
+      `python-api/paints_groundtruth.json (the canonical database).`);
+  }
+  console.log(`Reading paints database from: ${path.basename(groundTruthPath)}`);
+  const rawData = fs.readFileSync(groundTruthPath, 'utf-8');
   const allPaints = JSON.parse(rawData);
 
   // Before/after bundle accounting
   const beforeBytes = fs.existsSync(outputPath) ? fs.statSync(outputPath).size : 0;
 
-  // Exclude paints explicitly marked non-matchable
-  const matchablePaints = allPaints.filter(p => p.matchable !== false);
-  console.log(`Matchable paints: ${matchablePaints.length} / ${allPaints.length} total`);
-
-  console.log('Selecting optimal paint subset...');
-  const selectedPaints = selectPaints(matchablePaints, 1000);
+  // Exclude paints explicitly marked non-matchable. The DB is small enough
+  // (~1.3k) to ship in full, so offline coverage matches the backend exactly —
+  // no scored subset, no silent coverage gap.
+  const selectedPaints = allPaints.filter(p => p.matchable !== false);
+  console.log(`Matchable paints: ${selectedPaints.length} / ${allPaints.length} total ` +
+    `(shipping all — no subset)`);
 
   console.log('\nGenerating TypeScript file...');
   const tsContent = generateTypeScript(selectedPaints);

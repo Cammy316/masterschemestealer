@@ -27,33 +27,39 @@ from utils.logging_config import logger
 
 
 def _slugify(*parts) -> str:
-    """ASCII lowercase hyphenated slug — mirrors scripts/build_paints_db.py
-    so a paint_id derived at load time matches the builder's output."""
+    """ASCII lowercase hyphenated slug — used only as a defensive fallback when
+    a paint record lacks an explicit paint_id (the ground-truth DB always has one)."""
     raw = '-'.join(str(p) for p in parts if p)
     raw = unicodedata.normalize('NFKD', raw).encode('ascii', 'ignore').decode('ascii')
     raw = re.sub(r'[^A-Za-z0-9]+', '-', raw).strip('-').lower()
     return raw or 'paint'
 
-def resolve_paint_db_path(path: str = 'paints.json') -> str:
-    """Resolve the live paint DB, newest first, each falling back to the prior:
-      paints_groundtruth.json  (Prompt 7 — matchable restricted to measured)
-      paints_measured.json     (Prompt 6 — measured colours merged in)
-      paints.json              (original chart DB)
+CANONICAL_PAINT_DB = 'paints_groundtruth.json'
+
+
+def resolve_paint_db_path(path: str = CANONICAL_PAINT_DB) -> str:
+    """Resolve the single source-of-truth paint DB: ``paints_groundtruth.json``.
+
+    There are no fallbacks any more (the old ``paints_measured.json`` /
+    ``paints.json`` chain is gone). A legacy caller still passing the old default
+    ``'paints.json'`` is transparently redirected to the canonical DB; any other
+    explicit path is honoured (test fixtures). If the resolved file is missing we
+    raise ``FileNotFoundError`` rather than silently loading a stale DB.
     """
     import os
-    if path == 'paints.json':
-        for candidate, label in (
-            ('paints_groundtruth.json', 'ground-truth (measured-only matchable)'),
-            ('paints_measured.json', 'measured-swatch'),
-        ):
-            if os.path.exists(candidate):
-                logger.info(f"Loading {label} paint DB: {candidate}")
-                return candidate
-    return path
+    candidate = CANONICAL_PAINT_DB if path in ('paints.json', CANONICAL_PAINT_DB) else path
+    if not os.path.exists(candidate):
+        raise FileNotFoundError(
+            f"Paint DB not found: {candidate!r}. The canonical database is "
+            f"'{CANONICAL_PAINT_DB}' in python-api/ — run from there or pass an "
+            "explicit existing path."
+        )
+    logger.info(f"Loading ground-truth paint DB: {candidate}")
+    return candidate
 
 
 class SchemeStealerEngine:
-    def __init__(self, paint_db_path: str = 'paints.json'):
+    def __init__(self, paint_db_path: str = CANONICAL_PAINT_DB):
         logger.info(f"Initializing SchemeStealer Engine v2.6 (ML-Enhanced)")
         paint_db_path = resolve_paint_db_path(paint_db_path)
 
@@ -62,29 +68,32 @@ class SchemeStealerEngine:
         
         self.paint_db = []
         for p in paint_data:
-            # paint_id derived from name when absent so the OLD paints.json
-            # (no paint_id) and the rebuilt file both load cleanly.
+            # paint_id is always present in the ground-truth DB; derive from
+            # name as a defensive fallback.
             paint_id = p.get('paint_id') or _slugify(p.get('brand', ''), p.get('name', ''))
+            # Every paint in the new DB is deterministically measured, so its
+            # stored `lab` IS the applied-colour LAB → it becomes the CIEDE2000
+            # matching target (measured_lab) and color_source is always 'measured'.
             paint = Paint(
                 name=p['name'],
                 brand=p['brand'],
                 hex=p['hex'],
-                type=p.get('type', p.get('category', 'paint')),
+                type=p.get('type', p.get('category', 'base')),
                 color_family=p.get('color_family', ''),
-                category=p.get('category', ''),
-                finish=p.get('finish', ''),
-                transparency=float(p.get('transparency', 0.0)),
+                category=p.get('category', 'base'),
+                finish=p.get('finish', 'matte'),                       # sheen, not metallic
+                # Transparency penalty input derived from measured opacity:
+                # opacity_rating 0 (translucent) → 1.0; 3 (opaque) → 0.0.
+                transparency=1.0 - (float(p.get('opacity_rating', 3)) / 3.0),
+                metallic=bool(p.get('metallic', False)),
                 matchable=bool(p.get('matchable', True)),
                 discontinued=bool(p.get('discontinued', False)),
                 paint_id=paint_id,
                 range=p.get('range', ''),
                 aliases=list(p.get('aliases', []) or []),
-                citadel_equiv=p.get('citadel_equiv'),
-                hex_source=p.get('hex_source', 'unknown'),
-                measured_lab=p.get('measured_lab'),
-                measured_hex=p.get('measured_hex', ''),
-                color_source=p.get('color_source', 'chart'),
-                opacity=p.get('opacity'),
+                measured_lab=p.get('lab'),
+                color_source='measured',
+                opacity=p.get('opacity_rating'),
             )
             paint.compute_properties()
             self.paint_db.append(paint)

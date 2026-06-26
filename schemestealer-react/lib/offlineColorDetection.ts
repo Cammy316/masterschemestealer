@@ -10,69 +10,68 @@ import { rgbToHex, rgbToHsv, rgbToLab, hexToRgb, type LAB } from './colorConvers
 import { findNClosestColors } from './deltaE';
 
 /**
- * Canonical hue → family classifier — a faithful port of the backend
- * `core/color_engine.py::hue_family` (Prompt 1.3), so the offline fallback and
- * the backend can never disagree on a colour's family.
+ * Canonical colour-family classifier — a byte-for-byte port of the backend
+ * `core/color_engine.py::_classify_family` (Phase 1.4), the single algorithm
+ * `paints_groundtruth.json` was built with. The offline fallback and the backend
+ * can therefore never disagree on a colour's family. If you change one, change
+ * BOTH (and the parity fixtures below).
  *
  * Returns the SAME flat lowercase vocabulary the backend uses
  * (red, orange, yellow, green, cyan, blue, purple, pink, magenta, brown, bone,
- * white, grey, black). Metals are not produced here.
+ * white, grey, black — plus gold/silver/bronze only when `isMetal`). The offline
+ * detector has no metallic cue, so it calls this with isMetal=false and never
+ * emits a metal family.
  *
  * @param hDeg  hue in degrees (0–360)
  * @param s     saturation 0–1   (note: rgbToHsv returns 0–100 — convert first)
  * @param v     value 0–1
- * @param chroma  sqrt(a*² + b*²) from LAB
- * @param lab   LAB (for the pale-pink rescue + desaturated exceptions)
+ * @param chroma  sqrt(a*² + b*²) — ignored when `lab` is supplied (recomputed
+ *                from a*/b* to stay identical to the backend)
+ * @param lab   LAB (a*/b* drive chroma + the warm-dark brown rescue)
+ * @param isMetal  metallic cue (DB: the `metallic` flag; detector: false)
  */
 export function hueFamily(
   hDeg: number,
   s: number,
   v: number,
   chroma: number,
-  lab?: LAB
+  lab?: LAB,
+  isMetal = false
 ): string {
   const h = ((hDeg % 360) + 360) % 360;
-  const L = lab ? lab.l : v * 100;
   const a = lab ? lab.a : 0;
+  const b = lab ? lab.b : 0;
+  const c = lab ? Math.hypot(a, b) : chroma;
 
-  // 1. ACHROMATIC / PALE-TINT GATE (value + chroma based)
-  if (v < 0.1) return 'black';
-  if (s < 0.1 || chroma < 12) {
-    if ((h < 24 || h >= 300) && L > 60 && a > 6 && v > 0.7) return 'pink'; // pale pink, both hue ends
-    if (h >= 195 && h < 256 && s > 0.05 && chroma > 3) return 'blue'; // desaturated blue
-    if (h >= 74 && h < 158 && s > 0.06 && chroma > 4) return 'green'; // desaturated green
-    if (h >= 158 && h < 195 && s > 0.06 && chroma > 3) return 'cyan'; // desaturated cyan
-    if (h >= 256 && h < 300 && s > 0.05 && chroma > 3) return 'purple'; // desaturated purple
-    if (v > 0.85) return 'white';
-    if (v > 0.18) return 'grey';
-    return 'black';
+  if (isMetal) {
+    if (h > 25 && h < 60 && s > 0.25) return 'gold';
+    if (((h > 5 && h <= 25) || h > 340) && s > 0.25) return 'bronze';
+    if (s < 0.2) return 'silver';
+    // else fall through to the hue logic below
   }
 
-  // 2. CHROMATIC — strictly hue-zoned; sub-splits live inside each zone only.
+  if (v < 0.1) return 'black';
+  if (v < 0.5 && c > 5 && c < 14 && a > 1.5 && b > 1.5) return 'brown'; // warm-dark rescue
+  if (s < 0.1 || c < 12) {
+    if (v > 0.85) return 'white';
+    return v > 0.18 ? 'grey' : 'black';
+  }
+  if (h >= 16 && h < 44 && v > 0.55 && s < 0.48) return 'bone'; // warm-pale bone
   if (h < 16 || h >= 336) {
     if (v > 0.72 && s < 0.55) return 'pink';
-    if (chroma < 16 && v < 0.55) return 'brown';
-    if (s < 0.45 && v < 0.4) return 'brown';
+    if ((c < 16 && v < 0.55) || (h >= 8 && h < 16 && c < 48 && v < 0.66)) return 'brown'; // leather-brown
     return 'red';
   }
-  if (h >= 16 && h < 40) {
-    if (s < 0.45 || v < 0.45) return 'brown';
-    return 'orange';
-  }
-  if (h >= 40 && h < 74) {
+  if (h < 40) return s < 0.45 || v < 0.52 ? 'brown' : 'orange';
+  if (h < 64) {
     if (s < 0.3 && v > 0.55) return 'bone';
-    if (v < 0.3) return 'brown';
-    return 'yellow';
+    return v < 0.3 && h < 54 ? 'brown' : 'yellow';
   }
-  if (h >= 74 && h < 158) return 'green';
-  if (h >= 158 && h < 195) return 'cyan';
-  if (h >= 195 && h < 256) return 'blue';
-  if (h >= 256 && h < 292) return 'purple';
-  if (h >= 292 && h < 336) {
-    if (v > 0.72 && s < 0.55) return 'pink';
-    return 'magenta';
-  }
-  return 'grey';
+  if (h < 158) return 'green'; // green band starts at 64°
+  if (h < 195) return 'cyan';
+  if (h < 256) return 'blue';
+  if (h < 292) return 'purple';
+  return v > 0.72 && s < 0.55 ? 'pink' : 'magenta';
 }
 
 /**
@@ -97,9 +96,9 @@ function determineColorFamily(rgb: [number, number, number], lab?: [number, numb
  */
 const HUE_FAMILY_PARITY_FIXTURES: ReadonlyArray<readonly [string, string]> = [
   ['#b2dfd1', 'cyan'],
-  ['#b6ce61', 'yellow'],
+  ['#b6ce61', 'green'], // ≥64° now lands in the green band (Phase 1.4)
   ['#EF6E2E', 'orange'],
-  ['#DECBDA', 'pink'],
+  ['#DECBDA', 'white'], // pale-pink rescue removed → achromatic white (Phase 1.4)
   ['#9A1115', 'red'],
 ];
 

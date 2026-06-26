@@ -24,7 +24,7 @@ class InspirationScannerService:
     - Returns paint recommendations with full recipe structure
     """
 
-    def __init__(self, paint_db_path: str = 'paints.json'):
+    def __init__(self, paint_db_path: str = 'paints_groundtruth.json'):
         """Initialize the scanner with paint database"""
         logger.info("Initializing Inspiration Scanner Service")
         from core.schemestealer_engine import resolve_paint_db_path

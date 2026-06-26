@@ -59,9 +59,10 @@ FAMILY_ADJACENCY = {
     "white": {"white", "bone", "grey"},
     "grey": {"grey", "white", "black", "silver"},
     "black": {"black", "grey"},
-    "silver": {"silver", "grey", "white"},
-    "gold": {"gold", "yellow", "bronze", "brown"},
-    "bronze": {"bronze", "gold", "copper", "brown"},
+    "silver": {"silver", "gold", "bronze", "grey", "white"},
+    # The three metals are mutually adjacent and all border grey (Phase 1.5).
+    "gold": {"gold", "silver", "bronze", "grey", "yellow", "brown"},
+    "bronze": {"bronze", "gold", "silver", "grey", "copper", "brown"},
     "copper": {"copper", "bronze", "brown"},
 }
 

@@ -151,7 +151,7 @@ def test_family_agreement_report():
     rep = build_report()
     assert rep["integrity_fail"] == 0, (
         f"{rep['integrity_fail']} derived reference_families disagree with "
-        "compute_color_family — re-run scripts/fix_reference_families.py")
+        "compute_color_family")
     if rep["total"]:
         rate = rep["agree"] / rep["total"]
         assert rate > 0.40, f"family agreement collapsed to {rate:.1%} — investigate"

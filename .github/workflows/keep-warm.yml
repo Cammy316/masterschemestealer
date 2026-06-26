@@ -1,0 +1,43 @@
+name: Keep backend warm
+
+# Defeats Render's ~30s cold start by pinging the backend during UK/EU peak
+# hours. GitHub Actions cron runs in UTC and is best-effort (it can be delayed
+# under load), so we ping every ~10 minutes across the UTC window that covers
+# 08:00–23:00 in both GMT and BST.
+#
+# Override the target without editing this file by setting a repo variable:
+#   Settings → Secrets and variables → Actions → Variables → KEEP_WARM_URL
+# Default is derived from render.yaml's service name (schemestealer-api).
+
+on:
+  schedule:
+    - cron: '*/10 7-23 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: keep-warm
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ping /health
+        env:
+          KEEP_WARM_URL: ${{ vars.KEEP_WARM_URL || 'https://schemestealer-api.onrender.com' }}
+        run: |
+          echo "Pinging ${KEEP_WARM_URL}/health"
+          # Render can take up to ~30s to wake; retry for up to ~2 minutes.
+          code=$(curl -sS -o /tmp/body -w '%{http_code}' \
+            --max-time 60 --retry 4 --retry-delay 30 --retry-all-errors \
+            "${KEEP_WARM_URL}/health" || true)
+          echo "HTTP ${code}"
+          cat /tmp/body || true
+          echo
+          if [ "${code}" != "200" ]; then
+            echo "::warning::keep-warm ping returned ${code} (backend may have been cold or down)"
+          fi
