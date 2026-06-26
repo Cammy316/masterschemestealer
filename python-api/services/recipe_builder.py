@@ -68,38 +68,79 @@ def format_paint_match(match: Optional[Dict], color_lab: List[float] = None) -> 
     return result
 
 
-def get_wash_for_family(family: str, brand: str, color_lab: List[float],
-                        wash_db: List[Dict]) -> Optional[Dict]:
-    """Fallback wash lookup: family -> WashMapping name -> matching wash in DB."""
-    wash_name = WashMapping.get_recommended_wash(family, brand)
+def _find_wash_paint(wash_db: List[Dict], brand: str, name: str) -> Optional[Dict]:
+    """A wash/shade/ink paint of `brand` whose name matches `name` — exact
+    (case-insensitive) first, then containment as a defensive fallback."""
+    if not name:
+        return None
+    bl, nl = brand.lower(), name.lower()
+    cands = [w for w in wash_db
+             if w.get('brand', '').lower() == bl
+             and (w.get('category', '').lower() in WASH_CATEGORIES
+                  or not w.get('category'))]
+    for w in cands:
+        if w.get('name', '').lower() == nl:
+            return w
+    for w in cands:
+        if nl in w.get('name', '').lower():
+            return w
+    return None
 
-    matching = None
-    for wash in wash_db:
-        if (wash.get('brand', '').lower() == brand.lower()
-                and wash_name.lower() in wash.get('name', '').lower()):
-            matching = wash
-            break
-    if not matching:
-        for wash in wash_db:
-            if wash.get('brand', '').lower() == brand.lower():
-                parts = wash_name.lower().split()
-                db_name = wash.get('name', '').lower()
-                if any(part in db_name for part in parts):
-                    matching = wash
-                    break
 
-    if not matching:
-        return {'name': wash_name, 'hex': '#000000', 'type': 'wash', 'deltaE': 0}
-
-    result = {'name': matching.get('name', wash_name),
-              'hex': matching.get('hex', '#000000'), 'type': 'wash'}
-    if color_lab and matching.get('hex'):
+def _wash_result(paint: Dict, color_lab: List[float], source: str) -> Dict:
+    """Assemble the API wash dict, tagging provenance ('official' | 'cross-brand')."""
+    result = {
+        'name': paint.get('name'),
+        'hex': paint.get('hex', '#000000'),
+        'type': 'wash',
+        'source': source,
+    }
+    if color_lab and paint.get('hex'):
         try:
-            delta_e = ciede2000_single(rgb_to_lab(hex_to_rgb(matching['hex'])), color_lab)
+            delta_e = ciede2000_single(rgb_to_lab(hex_to_rgb(paint['hex'])), color_lab)
             result['deltaE'] = round(float(delta_e), 1)
         except Exception:
             result['deltaE'] = 0
     return result
+
+
+def get_wash_for_family(family: str, brand: str, color_lab: List[float],
+                        wash_db: List[Dict]) -> Dict:
+    """Derive the wash slot from the detected base family — guaranteed-fill,
+    NEVER returns None (a wash is implied by the base, like the highlight).
+
+    Ladder (Phase 3.2):
+      1. family -> archetype -> the REQUESTED brand's matching wash  -> 'official'
+      2. the requested brand's universal dark/earth wash             -> 'official'
+      3. cross-brand universal (Citadel Nuln Oil / archetype)        -> 'cross-brand'
+      4. name-only display fallback (should never be reached)        -> 'cross-brand'
+    """
+    archetypes = WashMapping.archetypes_for_family(family)
+
+    # 1. The requested brand's own wash for the best-matching archetype.
+    for arch in archetypes:
+        name = WashMapping.brand_wash_name(brand, arch)
+        paint = _find_wash_paint(wash_db, brand, name)
+        if paint:
+            return _wash_result(paint, color_lab, 'official')
+
+    # 2. The requested brand's universal dark/earth wash.
+    name = WashMapping.brand_wash_name(brand, WashMapping.UNIVERSAL_ARCHETYPE)
+    paint = _find_wash_paint(wash_db, brand, name)
+    if paint:
+        return _wash_result(paint, color_lab, 'official')
+
+    # 3. Cross-brand universal — the donor brand's archetype wash, then its dark.
+    donor = WashMapping.CROSS_BRAND_DONOR
+    for arch in list(archetypes) + [WashMapping.UNIVERSAL_ARCHETYPE]:
+        name = WashMapping.brand_wash_name(donor, arch)
+        paint = _find_wash_paint(wash_db, donor, name)
+        if paint:
+            return _wash_result(paint, color_lab, 'cross-brand')
+
+    # 4. Last-ditch name-only fallback (no wash data loaded at all).
+    return {'name': WashMapping.UNIVERSAL_WASHES[0], 'hex': '#14141a',
+            'type': 'wash', 'source': 'cross-brand', 'deltaE': 0}
 
 
 def build_paint_recipe(recipe: Dict, family: str, color_lab: List[float],

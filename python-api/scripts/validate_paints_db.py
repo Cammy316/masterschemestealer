@@ -2,7 +2,7 @@
 """
 Paint database validation harness (Prompt 2.6).
 
-Runs against paints_rebuilt.json and FAILS (non-zero exit) on any structural
+Runs against paints_groundtruth.json and FAILS (non-zero exit) on any structural
 problem the engine would choke on. Also loads the database through the real
 SchemeStealerEngine and exercises PaintMatcher to prove the file is a drop-in
 replacement.
@@ -11,7 +11,7 @@ Run:
     cd python-api
     python scripts/validate_paints_db.py
     # or against a specific file:
-    python scripts/validate_paints_db.py paints_rebuilt.json
+    python scripts/validate_paints_db.py paints_groundtruth.json
 """
 
 import json
@@ -199,7 +199,7 @@ class Validator:
 
 def main():
     db_path = (_PYTHON_API_DIR /
-               (sys.argv[1] if len(sys.argv) > 1 else 'paints_rebuilt.json'))
+               (sys.argv[1] if len(sys.argv) > 1 else 'paints_groundtruth.json'))
     if not db_path.exists():
         sys.exit(f"ERROR: {db_path} not found")
 

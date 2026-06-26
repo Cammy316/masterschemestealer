@@ -137,6 +137,13 @@ async def root():
     }
 
 
+@app.get("/health")
+async def health():
+    """Lightweight liveness probe used by the keep-warm workflow to defeat
+    Render's cold start. Intentionally does no I/O or scanner work."""
+    return {"status": "ok"}
+
+
 @app.get("/api/ready")
 async def readiness():
     """
@@ -159,7 +166,8 @@ async def get_paints():
     global _paints_cache
     try:
         if _paints_cache is None:
-            with open('paints.json', 'r') as f:
+            from core.schemestealer_engine import resolve_paint_db_path
+            with open(resolve_paint_db_path(), 'r') as f:
                 _paints_cache = json.load(f)
         return {"paints": _paints_cache}
     except Exception as e:

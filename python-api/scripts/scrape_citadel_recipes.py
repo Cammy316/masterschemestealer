@@ -5,7 +5,7 @@ Self-contained: no dependency on the removed Prompt-2.6 scraper machinery. It
 politely fetches the Citadel Colour site (>=2s between requests, descriptive
 User-Agent, on-disk cache so re-runs make zero network calls), tries to extract
 ONLY structured paint-name relationships (paint A -> paint B + relationship),
-resolves names to paint_id via paints.json, and merges any found
+resolves names to paint_id via paints_groundtruth.json, and merges any found
 `citadel_official` edges idempotently into recipes.json.
 
 Reality (verified June 2026): paint.warhammer.com is a WordPress site whose paint
@@ -36,7 +36,7 @@ _ROOT = os.path.dirname(_HERE)  # python-api
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 logger = logging.getLogger("scrape_citadel_recipes")
 
-PAINTS_PATH = os.path.join(_ROOT, "paints.json")
+PAINTS_PATH = os.path.join(_ROOT, "paints_groundtruth.json")
 RECIPES_PATH = os.path.join(_ROOT, "recipes.json")
 CACHE_DIR = os.path.join(_HERE, ".scrape_cache")
 

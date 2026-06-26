@@ -175,14 +175,14 @@ def test_metallic_flat_dark_grey_is_not_metallic():
 
 @pytest.fixture(scope="module")
 def paint_matcher_live():
-    """Load the real paints.json and build a PaintMatcher.
+    """Load the real paints_groundtruth.json and build a PaintMatcher.
 
-    Skipped automatically when paints.json is not present (CI without assets).
+    Skipped automatically when paints_groundtruth.json is not present (CI without assets).
     """
     import json
-    db_path = Path(__file__).resolve().parent.parent / "paints.json"
+    db_path = Path(__file__).resolve().parent.parent / "paints_groundtruth.json"
     if not db_path.exists():
-        pytest.skip("paints.json not found — skipping live matcher tests")
+        pytest.skip("paints_groundtruth.json not found — skipping live matcher tests")
 
     from core.color_engine import Paint, PaintMatcher
 

@@ -38,16 +38,17 @@ class Paint:
     hex: str
     type: str
 
-    # Curated metadata loaded from paints.json
+    # Curated metadata loaded from paints_groundtruth.json
     color_family: str = ''
     category: str = ''
-    finish: str = ''
+    finish: str = ''            # sheen: flat/matte/satin/glossy (no longer 'metallic')
     transparency: float = 0.0
+    metallic: bool = False      # metallic-ness now carried by this flag, not finish
     matchable: bool = True
     discontinued: bool = False
 
-    # Provenance / identity metadata (Prompt 2.6 rebuilt schema).
-    # Defaults keep the OLD paints.json loadable without these keys.
+    # Provenance / identity metadata. Defaults keep paints loadable when these
+    # keys are absent (the lean paints_groundtruth.json omits most of them).
     paint_id: str = ''
     range: str = ''
     aliases: List[str] = field(default_factory=list)
@@ -362,10 +363,10 @@ class ColorAnalyzer:
 #
 # classify_color_family() returns composite display strings ("Gold/Brass",
 # "Off-White/Bone", "Pink/Purple"). The DB and scan-time code agree on a flat
-# lowercase vocabulary. compute_color_family() is the SINGLE code path that both
-# the engine and scripts/build_paints_db.py use, so DB families and detection
-# families are produced by identical logic (the root-cause fix for the
-# "grey that is actually pink" bug).
+# lowercase vocabulary. _classify_family() is the SINGLE algorithm the DB
+# builder, compute_color_family() and the scan ensemble all use, so DB families
+# and detection families are produced by identical logic (the root-cause fix for
+# the "grey that is actually pink" bug).
 
 # Flat lowercase families the DB and engine recognise.
 RECOGNISED_FAMILIES = {
@@ -422,111 +423,106 @@ _METALLIC_TYPE_TO_FAMILY = {
 }
 
 
-def hue_family(h_deg: float, s: float, v: float, chroma: float,
-               lab=None, finish: str = 'matte') -> str:
-    """Canonical colour-family classifier — the ONLY hue/family decision logic
-    in the codebase.
+def _classify_family(hd: float, s: float, v: float,
+                     a: float, b: float, is_metal: bool = False) -> str:
+    """Canonical colour-family algorithm — the SINGLE source of truth shared by
+    the DB builder, compute_color_family() and the scan-time ensemble, so the DB
+    family and the detected family can never disagree by construction.
 
-    Both compute_color_family() and the ensemble's hue vote call this, so the DB
-    family and the scan family can never disagree by construction. Output is a
-    flat lowercase family from RECOGNISED_FAMILIES, and it NEVER returns a metal
-    family — matte paints must never carry one. Metallic typing is handled
-    separately (see _metallic_type_from_hsv / ColorAnalyzer.detect_metallic).
+    Inputs (derived once by the callers):
+      hd     hue in degrees [0, 360)
+      s, v   HSV saturation / value in [0, 1]
+      a, b   CIELAB a*, b* (D65)  → chroma = hypot(a, b)
+      is_metal  True only when a metallic cue exists (DB: the `metallic` flag;
+                detector: scan-time metallic detection). Matte / sheen paints
+                pass False and therefore never receive a metal family.
 
-    lab (L, a, b) is optional but enables the pale-pink rescue and the
-    desaturated-colour exceptions; pass it whenever available (the DB path
-    computes it from the hex; the ensemble cluster already carries median_lab).
+    This is the exact algorithm `paints_groundtruth.json` was built with. Do NOT
+    edit one copy without porting the identical change to the frontend offline
+    classifier (schemestealer-react/lib/offlineColorDetection.ts).
     """
-    h = float(h_deg) % 360.0
-    if lab is not None:
-        L, a, b = float(lab[0]), float(lab[1]), float(lab[2])
-    else:
-        # Fall back to a neutral LAB lean so the pale-tint rescues simply
-        # don't fire when no LAB is supplied.
-        L, a, b = v * 100.0, 0.0, 0.0
+    chroma = float(np.hypot(a, b))
 
-    # 1. ACHROMATIC / PALE-TINT GATE (value + chroma based)
+    if is_metal:
+        if 25 < hd < 60 and s > 0.25:
+            return 'gold'
+        if (5 < hd <= 25 or hd > 340) and s > 0.25:
+            return 'bronze'
+        if s < 0.20:
+            return 'silver'
+        # else fall through to the hue logic below
+
     if v < 0.10:
         return 'black'
+    if v < 0.50 and 5 < chroma < 14 and a > 1.5 and b > 1.5:
+        return 'brown'                          # warm-dark rescue
     if s < 0.10 or chroma < 12:
-        # Pale tints still carry a family — rescue by hue/LAB lean before neutral.
-        if (h < 24 or h >= 300) and L > 60 and a > 6 and v > 0.7:
-            return 'pink'                       # pale pink lives at BOTH hue ends
-        if 195 <= h < 256 and s > 0.05 and chroma > 3:
-            return 'blue'                       # desaturated blue (Ultramarine/Space Wolf)
-        if 74 <= h < 158 and s > 0.06 and chroma > 4:
-            return 'green'                      # desaturated green (Dark Angels/Death Guard)
-        if 158 <= h < 195 and s > 0.06 and chroma > 3:
-            return 'cyan'                       # desaturated cyan/turquoise
-        if 256 <= h < 300 and s > 0.05 and chroma > 3:
-            return 'purple'                     # desaturated purple
         if v > 0.85:
             return 'white'
-        if v > 0.18:
-            return 'grey'
-        return 'black'
-
-    # 2. CHROMATIC — strictly hue-zoned; sub-splits live INSIDE each zone only.
-    if h < 16 or h >= 336:                       # RED zone (pink ok; magenta does not belong)
+        return 'grey' if v > 0.18 else 'black'
+    if 16 <= hd < 44 and v > 0.55 and s < 0.48:
+        return 'bone'                           # warm-pale bone
+    if hd < 16 or hd >= 336:
         if v > 0.72 and s < 0.55:
-            return 'pink'                        # light desaturated tint of red
-        if chroma < 16 and v < 0.55:
-            return 'brown'                       # dull + dark = brown (leather)
-        if s < 0.45 and v < 0.4:
-            return 'brown'
+            return 'pink'
+        if (chroma < 16 and v < 0.55) or (8 <= hd < 16 and chroma < 48 and v < 0.66):
+            return 'brown'                      # leather-brown
         return 'red'
-    if 16 <= h < 40:                             # ORANGE / BROWN zone (pink NOT reachable here)
-        if s < 0.45 or v < 0.45:
-            return 'brown'                       # desaturated/dark warm = brown
-        return 'orange'
-    if 40 <= h < 74:                             # YELLOW / BONE zone
+    if hd < 40:
+        return 'brown' if (s < 0.45 or v < 0.52) else 'orange'
+    if hd < 64:
         if s < 0.30 and v > 0.55:
-            return 'bone'                        # pale desaturated = bone/beige
-        if v < 0.30:
-            return 'brown'                       # ONLY very dark => brown; dark yellows STAY yellow
-        return 'yellow'
-    if 74 <= h < 158:
-        return 'green'
-    if 158 <= h < 195:                           # cyan owns this band with NO high-chroma gate
+            return 'bone'
+        return 'brown' if (v < 0.30 and hd < 54) else 'yellow'
+    if hd < 158:
+        return 'green'                          # green band starts at 64°
+    if hd < 195:
         return 'cyan'
-    if 195 <= h < 256:
+    if hd < 256:
         return 'blue'
-    if 256 <= h < 292:
+    if hd < 292:
         return 'purple'
-    if 292 <= h < 336:                           # MAGENTA / PINK zone
-        if v > 0.72 and s < 0.55:
-            return 'pink'                        # light tint => pink
-        return 'magenta'                         # deep => magenta
-    return 'grey'                                 # unreachable fallback
+    return 'pink' if (v > 0.72 and s < 0.55) else 'magenta'
+
+
+def hue_family(h_deg: float, s: float, v: float, chroma: float = None,
+               lab=None, finish: str = 'matte') -> str:
+    """Non-metallic family classifier used by the scan-time ensemble's hue vote.
+
+    Thin wrapper over _classify_family with is_metal=False, so it NEVER emits a
+    metal family (matte paints must not carry one). a*/b* come from `lab`; the
+    legacy `chroma` argument is ignored — chroma is derived from a*/b* inside
+    _classify_family so this stays byte-identical to compute_color_family.
+    """
+    if lab is not None:
+        a, b = float(lab[1]), float(lab[2])
+    else:
+        a = b = 0.0
+    return _classify_family(float(h_deg) % 360.0, s, v, a, b, is_metal=False)
 
 
 def compute_color_family(hex_str: str, finish: str = 'matte') -> str:
-    """Compute a paint's canonical flat colour family from its hex.
+    """Compute a colour's canonical flat family from its hex.
 
-    Non-metallic paints route through hue_family() — the single source of truth
-    also used by the scan-time ensemble's hue vote, so DB and scan families agree
-    by construction. finish='metallic' returns the metallic typing (gold/silver/
-    bronze) instead; UNKNOWN metallic falls back to the hue family.
+    Routes through _classify_family — the same algorithm the DB was built with
+    and the scan ensemble votes on — so DB and detection families agree by
+    construction. finish='metallic' is the detector's metallic cue (is_metal);
+    under the new schema `finish` holds sheen for DB paints and never reaches
+    here ('metallic' is no longer a finish), and DB families are stored, not
+    recomputed on load.
     """
     h = hex_str.lstrip('#')
     rgb = np.array([int(h[i:i + 2], 16) for i in (0, 2, 4)]) / 255.0
     lab = color.rgb2lab(np.array([[rgb]]))[0][0]
     hsv = colorsys.rgb_to_hsv(*rgb)
     h_deg, s, v = hsv[0] * 360, hsv[1], hsv[2]
-    chroma = float(np.sqrt(lab[1] ** 2 + lab[2] ** 2))
-
-    if (finish or '').lower() == 'metallic':
-        metal = _METALLIC_TYPE_TO_FAMILY.get(_metallic_type_from_hsv(h_deg, s, v))
-        if metal:
-            return metal
-        # UNKNOWN metallic → fall through to the hue family below.
-
-    canonical = hue_family(h_deg, s, v, chroma, lab=lab, finish=finish)
-    # Safety net: hue_family never emits a metal family, but guard anyway so a
-    # matte paint can never carry one.
-    if canonical in _NON_METALLIC_REMAP:
-        canonical = _NON_METALLIC_REMAP[canonical]
-    return canonical if canonical in RECOGNISED_FAMILIES else 'grey'
+    is_metal = (finish or '').lower() == 'metallic'
+    fam = _classify_family(h_deg, s, v, float(lab[1]), float(lab[2]), is_metal=is_metal)
+    # Safety net for the non-metal path: never let a matte paint carry a metal
+    # family (is_metal=False can't reach the metal branch, but guard anyway).
+    if not is_metal and fam in _NON_METALLIC_REMAP:
+        fam = _NON_METALLIC_REMAP[fam]
+    return fam if fam in RECOGNISED_FAMILIES else 'grey'
 
 
 # ============================================================================
@@ -629,7 +625,10 @@ class PaintMatcher:
         self.lab_matrix = np.array([p.lab for p in matchable], dtype=float)   # (N, 3)
         self.brands_arr = np.array([p.brand for p in matchable])               # (N,)
         self.types_arr  = np.array([p.type.lower() for p in matchable])        # (N,) lowercase
-        self.finish_arr = np.array([p.finish.lower() for p in matchable])      # (N,)
+        self.finish_arr = np.array([p.finish.lower() for p in matchable])      # (N,) sheen only
+        # Metallic-ness now comes from the `metallic` flag, NOT finish (sheen).
+        self.metallic_arr = np.array([bool(p.metallic) for p in matchable],
+                                     dtype=bool)                                # (N,)
         self.family_arr = np.array([(p.color_family or '').lower()
                                     for p in matchable])                        # (N,)
         self.transp_arr = np.array([p.transparency for p in matchable],
@@ -706,17 +705,17 @@ class PaintMatcher:
             metallic_score = float(raw)
 
             if metallic_score >= 0.5:
-                metallic_mask = mask & (self.finish_arr == 'metallic')
+                metallic_mask = mask & self.metallic_arr
                 if metallic_mask.any():
                     mask = metallic_mask
                 else:
                     logger.info(f"Metallic pool empty for {brand}/{role}, "
                                 "falling back to unrestricted candidates")
             elif metallic_score == 0.0:
-                mask = mask & (self.finish_arr != 'metallic')
+                mask = mask & ~self.metallic_arr
         elif role not in ('shade', 'wash'):
             # No context → exclude metallics from opaque paint matches
-            mask = mask & (self.finish_arr != 'metallic')
+            mask = mask & ~self.metallic_arr
 
         candidate_indices = np.where(mask)[0]
         if len(candidate_indices) == 0:

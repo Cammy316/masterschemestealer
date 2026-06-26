@@ -381,8 +381,8 @@ export function enhanceWithPaintRecipes(scanResult: ScanResult): ScanResult {
  * paint: Army Painter's pre-Fanatic Warpaints names, and Citadel display names.
  * The alias data lives on each `PaintData.aliases` (generated into
  * paintDatabase.ts) and is also served verbatim by the backend `/api/paints`
- * endpoint, which returns the full paints.json (every record includes
- * `aliases`). The canonical `alias → paint_id` map is emitted alongside the DB
+ * endpoint, which returns the full paints_groundtruth.json (every record
+ * includes `aliases`). The canonical `alias → paint_id` map is emitted alongside the DB
  * build at `python-api/scripts/sources/name_aliases.json`.
  *
  * This is the single consumption point for client-side alias search; Prompt 6's

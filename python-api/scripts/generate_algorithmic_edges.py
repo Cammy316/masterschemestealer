@@ -1,14 +1,21 @@
 """
-Generate algorithmic recipe edges and merge them into recipes.json.
+Build recipes.json (Phase 2 — recipe-graph edge regeneration).
 
-For every matchable, non-discontinued paint lacking a CURATED (non-algorithmic)
-edge for a relationship, compute fallback highlight/shade edges using the shared
-LAB-geometry scorer (core.recipe_geometry — the same one the engine uses live).
-Also emits the config WashMapping into the graph as `manual` wash edges so the
-wash slot can flow through a single graph lookup too.
+- Regenerates this script's OWNED `algorithmic` highlight/shade edges for every
+  base paint across all six brands via the shared LAB-geometry scorer
+  (core.recipe_geometry — the same one the engine uses live), honouring
+  is_eligible: same brand, base/layer/air category, same-or-adjacent colour
+  family, candidate different / matchable / non-discontinued. Geometry is scored
+  on each paint's MEASURED LAB (the engine's CIEDE2000 target).
+- PRESERVES every other edge — curated (e.g. `citadel_official`) and `manual`
+  wash edges (confidence 0.9) — but ONLY where both endpoints still exist in the
+  ground-truth DB. Any edge referencing a removed/renamed paint (all Scale75,
+  renamed IDs) is dropped and reported.
+- Wash *derivation* (the always-fill ladder) is Phase 3's job in
+  services/recipe_builder.py; this script no longer synthesises wash edges, it
+  only carries forward the still-valid manual ones.
 
-Idempotent: re-running keeps curated edges (citadel_official / tutorial) and
-replaces only this script's own `algorithmic` and `manual` edges.
+Idempotent: re-running keeps curated/manual edges and rebuilds only `algorithmic`.
 
 Run:  python scripts/generate_algorithmic_edges.py
 """
@@ -17,6 +24,7 @@ import os
 import sys
 import json
 import logging
+from collections import Counter
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 _ROOT = os.path.dirname(_HERE)  # python-api
@@ -26,29 +34,15 @@ import numpy as np  # noqa: E402
 from skimage import color as sk_color  # noqa: E402
 
 from core.recipe_geometry import PaintNode, best_geometric_edges, CANDIDATE_CATEGORIES  # noqa: E402
-from config import WashMapping  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
-logger = logging.getLogger("generate_algorithmic_edges")
+logger = logging.getLogger("build_recipes")
 
-def _resolve_paints_path():
-    """Use the same live DB the engine matches against (newest first), so edges
-    are generated for the ACTUAL matchable pool — incl. the measured-swatch
-    colours and the new brands (AK / Pro Acryl / Two Thin Coats). Generating
-    against the old chart paints.json was why the new brands had no recipe edges."""
-    for name in ("paints_groundtruth.json", "paints_measured.json", "paints.json"):
-        p = os.path.join(_ROOT, name)
-        if os.path.exists(p):
-            return p
-    return os.path.join(_ROOT, "paints.json")
-
-
-PAINTS_PATH = _resolve_paints_path()
+CANONICAL_DB = os.path.join(_ROOT, "paints_groundtruth.json")
 RECIPES_PATH = os.path.join(_ROOT, "recipes.json")
 
-# Sources this script owns and regenerates; everything else is curated and kept.
-OWNED_SOURCES = {"algorithmic", "manual"}
-WASH_CATEGORIES = {"wash", "shade", "ink"}
+# Only this source is regenerated; everything else is preserved (if still valid).
+OWNED_SOURCES = {"algorithmic"}
 
 
 def _lab_from_hex(hex_str):
@@ -59,11 +53,10 @@ def _lab_from_hex(hex_str):
 
 
 def _node(p):
-    # Prefer the measured applied-colour LAB (the engine's CIEDE2000 target) so
-    # edge geometry is scored against the same colours the live matcher uses.
-    measured = p.get("measured_lab")
-    lab = (tuple(float(x) for x in measured) if measured
-           else _lab_from_hex(p["hex"]))
+    # Every ground-truth paint carries a measured `lab` — the engine's CIEDE2000
+    # target — so score edge geometry on it (fall back to the hex only if absent).
+    lab = p.get("lab")
+    lab = tuple(float(x) for x in lab) if lab else _lab_from_hex(p["hex"])
     return PaintNode(
         paint_id=p["paint_id"], name=p["name"], brand=p["brand"],
         category=(p.get("category") or "").lower(),
@@ -74,52 +67,48 @@ def _node(p):
     )
 
 
-def _resolve_wash(brand, wash_name, paints):
-    """Find a wash/shade/ink paint of this brand matching the wash name."""
-    wl = wash_name.lower()
-    cands = [
-        p for p in paints
-        if p["brand"] == brand and (p.get("category") or "").lower() in WASH_CATEGORIES
-    ]
-    for p in cands:  # exact-ish containment
-        if wl in p["name"].lower() or p["name"].lower() in wl:
-            return p["paint_id"], p["name"]
-    parts = wl.split()
-    for p in cands:  # partial token match
-        if any(part in p["name"].lower() for part in parts):
-            return p["paint_id"], p["name"]
-    return None, None
-
-
 def main():
-    paints = json.load(open(PAINTS_PATH, encoding="utf-8"))
+    if not os.path.exists(CANONICAL_DB):
+        raise FileNotFoundError(f"Paint DB not found: {CANONICAL_DB}")
+    paints = json.load(open(CANONICAL_DB, encoding="utf-8"))
+    ids = {p["paint_id"] for p in paints}
+    id_brand = {p["paint_id"]: p["brand"] for p in paints}
     nodes = [_node(p) for p in paints]
-    nodes_by_id = {n.paint_id: n for n in nodes}
 
-    # Load existing recipes, keep curated edges, drop this script's owned ones.
     existing = {"version": 1, "edges": []}
     if os.path.exists(RECIPES_PATH):
         existing = json.load(open(RECIPES_PATH, encoding="utf-8"))
-    kept = [e for e in existing.get("edges", []) if e.get("source") not in OWNED_SOURCES]
+    old_edges = existing.get("edges", [])
 
-    # Which (from_id, rel) already have a curated edge → don't override.
+    # 1. Preserve non-owned edges (curated + manual), dropping any that dangle.
+    #    Owned (algorithmic) edges are discarded here and rebuilt in step 3.
+    dropped = []
+    kept = []
+    for e in old_edges:
+        dangling = e["from_id"] not in ids or e["to_id"] not in ids
+        if e.get("source") in OWNED_SOURCES:
+            if dangling:
+                dropped.append(e)   # report it; the rebuild won't recreate it
+            continue
+        (dropped if dangling else kept).append(e)
+
+    # Curated/manual (from_id, rel) we must not override with an algorithmic edge.
     curated_keys = {(e["from_id"], e["rel"]) for e in kept}
 
-    # Per-brand candidate pools (base/layer/air paints) for geometry.
+    # 2. Per-brand base/layer/air candidate pools for the geometry.
     pools = {}
     for n in nodes:
         if n.matchable and not n.discontinued and n.category in CANDIDATE_CATEGORIES:
             pools.setdefault(n.brand, []).append(n)
 
+    # 3. Regenerate algorithmic highlight/shade edges for every base paint.
     new_edges = []
-    hl = sh = wash = 0
-
     for n in nodes:
         if not n.matchable or n.discontinued:
             continue
+        if n.category not in CANDIDATE_CATEGORIES:   # only recipe bases get HL/shade
+            continue
         pool = pools.get(n.brand, [])
-
-        # Highlight / shade algorithmic edges (skip if curated already exists).
         for rel in ("highlight", "shade"):
             if (n.paint_id, rel) in curated_keys:
                 continue
@@ -129,25 +118,8 @@ def main():
                     "from": n.name, "to": cand.name,
                     "rel": rel, "source": "algorithmic", "confidence": 0.5,
                 })
-                if rel == "highlight":
-                    hl += 1
-                else:
-                    sh += 1
 
-        # Wash edge from WashMapping (only for recipe-base roles; skip if curated).
-        if n.category in CANDIDATE_CATEGORIES and (n.paint_id, "wash") not in curated_keys:
-            wash_name = WashMapping.get_recommended_wash(n.color_family, n.brand)
-            if wash_name:
-                wid, wname = _resolve_wash(n.brand, wash_name, paints)
-                if wid and wid != n.paint_id:
-                    new_edges.append({
-                        "from_id": n.paint_id, "to_id": wid,
-                        "from": n.name, "to": wname,
-                        "rel": "wash", "source": "manual", "confidence": 0.9,
-                    })
-                    wash += 1
-
-    # Dedupe on the full edge tuple, then write.
+    # 4. Merge + dedupe on the full edge identity.
     merged, seen = [], set()
     for e in kept + new_edges:
         key = (e["from_id"], e["to_id"], e["rel"], e.get("source"))
@@ -159,9 +131,27 @@ def main():
     out = {"version": existing.get("version", 1), "edges": merged}
     json.dump(out, open(RECIPES_PATH, "w", encoding="utf-8"), indent=2)
 
-    logger.info("Kept %d curated edges; added algorithmic highlight=%d shade=%d wash=%d",
-                len(kept), hl, sh, wash)
-    logger.info("recipes.json now has %d edges total", len(merged))
+    # 5. Report.
+    by_rel = Counter(e["rel"] for e in merged)
+    logger.info("recipes.json rebuilt: %d edges total (highlight=%d shade=%d wash=%d)",
+                len(merged), by_rel["highlight"], by_rel["shade"], by_rel["wash"])
+    logger.info("Preserved %d curated/manual edges; regenerated %d algorithmic HL/shade edges.",
+                len(kept), len(new_edges))
+
+    per_brand = {}
+    for e in merged:
+        per_brand.setdefault(id_brand.get(e["from_id"], "?"), Counter())[e["rel"]] += 1
+    logger.info("Per-brand edge counts (final):")
+    for b in sorted(per_brand):
+        c = per_brand[b]
+        logger.info("  %-16s highlight=%-4d shade=%-4d wash=%-4d",
+                    b, c["highlight"], c["shade"], c["wash"])
+
+    logger.info("Dropped %d edges referencing paints no longer in the DB:", len(dropped))
+    for e in sorted(dropped, key=lambda x: (x.get("source", ""), x["rel"], x["from_id"])):
+        miss = [i for i in (e["from_id"], e["to_id"]) if i not in ids]
+        logger.info("  DROP [%s/%s] %s -> %s  (missing: %s)",
+                    e.get("source"), e["rel"], e["from_id"], e["to_id"], ", ".join(miss))
 
 
 if __name__ == "__main__":

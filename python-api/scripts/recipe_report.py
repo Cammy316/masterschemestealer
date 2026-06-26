@@ -25,7 +25,7 @@ BASES = [
 
 
 def main():
-    eng = SchemeStealerEngine(paint_db_path=os.path.join(_ROOT, "paints.json"))
+    eng = SchemeStealerEngine(paint_db_path=os.path.join(_ROOT, "paints_groundtruth.json"))
     by_name = {p.name.lower(): p for p in eng.paint_db if p.brand == "Citadel"}
 
     print("=" * 68)
