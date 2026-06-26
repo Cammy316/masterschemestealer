@@ -46,7 +46,7 @@
    -1.77,
    30.4
   ],
-  "color_family": "yellow",
+  "color_family": "bone",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 1,
@@ -64,7 +64,7 @@
    -2.34,
    29.94
   ],
-  "color_family": "yellow",
+  "color_family": "bone",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 2,
@@ -1252,7 +1252,7 @@
    61.81,
    65.06
   ],
-  "color_family": "orange",
+  "color_family": "red",
   "category": "base",
   "finish": "satin",
   "opacity_rating": 0,
@@ -1324,7 +1324,7 @@
    35.5,
    37.01
   ],
-  "color_family": "orange",
+  "color_family": "pink",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 2,
@@ -1396,7 +1396,7 @@
    50.99,
    53.25
   ],
-  "color_family": "red",
+  "color_family": "orange",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 1,
@@ -1684,7 +1684,7 @@
    37.71,
    24.18
   ],
-  "color_family": "red",
+  "color_family": "pink",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -1810,7 +1810,7 @@
    33.36,
    35.4
   ],
-  "color_family": "orange",
+  "color_family": "red",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 2,
@@ -1828,7 +1828,7 @@
    38.89,
    33.21
   ],
-  "color_family": "red",
+  "color_family": "orange",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -2260,7 +2260,7 @@
    31.28,
    18.43
   ],
-  "color_family": "red",
+  "color_family": "brown",
   "category": "base",
   "finish": "satin",
   "opacity_rating": 2,
@@ -2278,7 +2278,7 @@
    29.0,
    18.27
   ],
-  "color_family": "red",
+  "color_family": "brown",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -2350,7 +2350,7 @@
    30.62,
    20.63
   ],
-  "color_family": "red",
+  "color_family": "brown",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -2386,7 +2386,7 @@
    33.13,
    22.41
   ],
-  "color_family": "red",
+  "color_family": "brown",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -3466,7 +3466,7 @@
    41.36,
    3.32
   ],
-  "color_family": "red",
+  "color_family": "magenta",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 2,
@@ -3502,7 +3502,7 @@
    30.84,
    1.99
   ],
-  "color_family": "red",
+  "color_family": "magenta",
   "category": "base",
   "finish": "satin",
   "opacity_rating": 2,
@@ -3520,7 +3520,7 @@
    34.08,
    1.95
   ],
-  "color_family": "red",
+  "color_family": "magenta",
   "category": "base",
   "finish": "satin",
   "opacity_rating": 3,
@@ -3538,7 +3538,7 @@
    17.29,
    -1.1
   ],
-  "color_family": "red",
+  "color_family": "brown",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -3574,7 +3574,7 @@
    13.02,
    -2.0
   ],
-  "color_family": "magenta",
+  "color_family": "brown",
   "category": "base",
   "finish": "satin",
   "opacity_rating": 3,
@@ -3610,7 +3610,7 @@
    9.83,
    1.67
   ],
-  "color_family": "brown",
+  "color_family": "black",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -3664,7 +3664,7 @@
    20.81,
    -8.1
   ],
-  "color_family": "magenta",
+  "color_family": "black",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -3934,7 +3934,7 @@
    57.1,
    -16.79
   ],
-  "color_family": "magenta",
+  "color_family": "pink",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 2,
@@ -4015,7 +4015,7 @@
  },
  {
   "paint_id": "citadel-emperor-s-children",
-  "name": "Emperor‘s Children",
+  "name": "Emperor\u2018s Children",
   "brand": "Citadel",
   "range": "Citadel",
   "hex": "#e4639b",
@@ -4024,7 +4024,7 @@
    55.69,
    -5.35
   ],
-  "color_family": "magenta",
+  "color_family": "pink",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 1,
@@ -4186,7 +4186,7 @@
    35.86,
    -30.3
   ],
-  "color_family": "purple",
+  "color_family": "magenta",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -4681,7 +4681,7 @@
  },
  {
   "paint_id": "two-thin-coats-sorceror-s-cloak",
-  "name": "Sorceror‘s Cloak",
+  "name": "Sorceror\u2018s Cloak",
   "brand": "Two Thin Coats",
   "range": "Two Thin Coats",
   "hex": "#6b4786",
@@ -4708,7 +4708,7 @@
    20.21,
    -24.14
   ],
-  "color_family": "purple",
+  "color_family": "magenta",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -4906,7 +4906,7 @@
    24.82,
    -41.48
   ],
-  "color_family": "blue",
+  "color_family": "purple",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -4960,7 +4960,7 @@
    18.63,
    -25.85
   ],
-  "color_family": "purple",
+  "color_family": "blue",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -4978,7 +4978,7 @@
    16.53,
    -24.18
   ],
-  "color_family": "blue",
+  "color_family": "purple",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -4996,7 +4996,7 @@
    9.43,
    -14.29
   ],
-  "color_family": "blue",
+  "color_family": "purple",
   "category": "base",
   "finish": "satin",
   "opacity_rating": 3,
@@ -5266,7 +5266,7 @@
    1.44,
    -15.0
   ],
-  "color_family": "blue",
+  "color_family": "black",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -5428,7 +5428,7 @@
    7.88,
    -11.13
   ],
-  "color_family": "purple",
+  "color_family": "black",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -5662,7 +5662,7 @@
    -8.26,
    -26.62
   ],
-  "color_family": "blue",
+  "color_family": "cyan",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -5806,7 +5806,7 @@
    -1.21,
    -12.79
   ],
-  "color_family": "blue",
+  "color_family": "purple",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -5824,7 +5824,7 @@
    1.66,
    -16.11
   ],
-  "color_family": "blue",
+  "color_family": "purple",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -5896,7 +5896,7 @@
    2.82,
    -12.45
   ],
-  "color_family": "blue",
+  "color_family": "grey",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -5905,7 +5905,7 @@
  },
  {
   "paint_id": "pro-acryl-payne-s-grey",
-  "name": "Payne’s Grey",
+  "name": "Payne\u2019s Grey",
   "brand": "Pro Acryl",
   "range": "Pro Acryl",
   "hex": "#252732",
@@ -5968,7 +5968,7 @@
    -5.98,
    -13.2
   ],
-  "color_family": "blue",
+  "color_family": "white",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 2,
@@ -6040,7 +6040,7 @@
    -10.95,
    -21.9
   ],
-  "color_family": "blue",
+  "color_family": "cyan",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 2,
@@ -6076,7 +6076,7 @@
    -12.57,
    -31.7
   ],
-  "color_family": "blue",
+  "color_family": "cyan",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 2,
@@ -6274,7 +6274,7 @@
    -13.45,
    -30.43
   ],
-  "color_family": "blue",
+  "color_family": "cyan",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 2,
@@ -6292,7 +6292,7 @@
    -11.61,
    -30.66
   ],
-  "color_family": "blue",
+  "color_family": "cyan",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 2,
@@ -6760,7 +6760,7 @@
    11.32,
    -24.52
   ],
-  "color_family": "blue",
+  "color_family": "black",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -7120,7 +7120,7 @@
    -13.45,
    -20.32
   ],
-  "color_family": "blue",
+  "color_family": "cyan",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -7246,7 +7246,7 @@
    -9.49,
    -18.01
   ],
-  "color_family": "blue",
+  "color_family": "cyan",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -7282,7 +7282,7 @@
    -9.92,
    -21.43
   ],
-  "color_family": "blue",
+  "color_family": "cyan",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -7318,7 +7318,7 @@
    -5.95,
    -12.14
   ],
-  "color_family": "blue",
+  "color_family": "grey",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 2,
@@ -7858,7 +7858,7 @@
    -6.73,
    -11.05
   ],
-  "color_family": "blue",
+  "color_family": "black",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -7894,7 +7894,7 @@
    -8.65,
    -9.27
   ],
-  "color_family": "cyan",
+  "color_family": "black",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -7912,7 +7912,7 @@
    -5.43,
    -6.19
   ],
-  "color_family": "grey",
+  "color_family": "black",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -7948,7 +7948,7 @@
    -4.72,
    -5.25
   ],
-  "color_family": "grey",
+  "color_family": "black",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -8002,7 +8002,7 @@
    -4.32,
    -11.83
   ],
-  "color_family": "blue",
+  "color_family": "grey",
   "category": "base",
   "finish": "satin",
   "opacity_rating": 3,
@@ -8020,7 +8020,7 @@
    -2.63,
    -11.54
   ],
-  "color_family": "grey",
+  "color_family": "black",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -8344,7 +8344,7 @@
    -10.86,
    -4.13
   ],
-  "color_family": "grey",
+  "color_family": "cyan",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -8362,7 +8362,7 @@
    -28.13,
    7.67
   ],
-  "color_family": "green",
+  "color_family": "cyan",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -8416,7 +8416,7 @@
    -44.3,
    9.96
   ],
-  "color_family": "cyan",
+  "color_family": "green",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -8632,7 +8632,7 @@
    -20.23,
    5.35
   ],
-  "color_family": "green",
+  "color_family": "cyan",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -8776,7 +8776,7 @@
    -10.85,
    -6.15
   ],
-  "color_family": "cyan",
+  "color_family": "grey",
   "category": "base",
   "finish": "satin",
   "opacity_rating": 1,
@@ -8830,7 +8830,7 @@
    -9.11,
    -5.8
   ],
-  "color_family": "grey",
+  "color_family": "black",
   "category": "base",
   "finish": "satin",
   "opacity_rating": 2,
@@ -8848,7 +8848,7 @@
    -10.44,
    12.3
   ],
-  "color_family": "green",
+  "color_family": "bone",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 2,
@@ -9010,7 +9010,7 @@
    -32.98,
    17.76
   ],
-  "color_family": "green",
+  "color_family": "cyan",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -9118,7 +9118,7 @@
    -35.5,
    18.58
   ],
-  "color_family": "green",
+  "color_family": "cyan",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 2,
@@ -9154,7 +9154,7 @@
    -13.32,
    6.03
   ],
-  "color_family": "green",
+  "color_family": "grey",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -9244,7 +9244,7 @@
    -16.91,
    6.58
   ],
-  "color_family": "green",
+  "color_family": "cyan",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -9262,7 +9262,7 @@
    -32.92,
    81.35
   ],
-  "color_family": "green",
+  "color_family": "yellow",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 1,
@@ -9280,7 +9280,7 @@
    -22.44,
    66.2
   ],
-  "color_family": "green",
+  "color_family": "yellow",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 0,
@@ -9856,7 +9856,7 @@
    -11.73,
    25.05
   ],
-  "color_family": "green",
+  "color_family": "bone",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 2,
@@ -9874,7 +9874,7 @@
    -9.61,
    22.01
   ],
-  "color_family": "green",
+  "color_family": "bone",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -9892,7 +9892,7 @@
    -10.08,
    24.01
   ],
-  "color_family": "green",
+  "color_family": "yellow",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 2,
@@ -9946,7 +9946,7 @@
    -15.66,
    41.9
   ],
-  "color_family": "green",
+  "color_family": "yellow",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -10108,7 +10108,7 @@
    -6.85,
    12.79
   ],
-  "color_family": "green",
+  "color_family": "grey",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -10288,7 +10288,7 @@
    -21.98,
    33.86
   ],
-  "color_family": "green",
+  "color_family": "yellow",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -10468,7 +10468,7 @@
    -12.45,
    5.62
   ],
-  "color_family": "green",
+  "color_family": "cyan",
   "category": "base",
   "finish": "satin",
   "opacity_rating": 3,
@@ -10486,7 +10486,7 @@
    -10.66,
    4.47
   ],
-  "color_family": "grey",
+  "color_family": "green",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 2,
@@ -10612,7 +10612,7 @@
    -12.33,
    -0.66
   ],
-  "color_family": "cyan",
+  "color_family": "grey",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 2,
@@ -10738,7 +10738,7 @@
    -8.11,
    4.7
   ],
-  "color_family": "black",
+  "color_family": "grey",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 2,
@@ -10774,7 +10774,7 @@
    -2.48,
    5.84
   ],
-  "color_family": "grey",
+  "color_family": "white",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 1,
@@ -10810,7 +10810,7 @@
    -3.59,
    14.53
   ],
-  "color_family": "bone",
+  "color_family": "grey",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 2,
@@ -11044,7 +11044,7 @@
    -1.67,
    14.58
   ],
-  "color_family": "yellow",
+  "color_family": "bone",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -11062,7 +11062,7 @@
    -2.7,
    9.47
   ],
-  "color_family": "grey",
+  "color_family": "yellow",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -11080,7 +11080,7 @@
    -2.1,
    9.22
   ],
-  "color_family": "grey",
+  "color_family": "yellow",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -11134,7 +11134,7 @@
    -4.94,
    17.15
   ],
-  "color_family": "yellow",
+  "color_family": "green",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -11260,7 +11260,7 @@
    -3.57,
    12.74
   ],
-  "color_family": "yellow",
+  "color_family": "green",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -11296,7 +11296,7 @@
    2.36,
    20.98
   ],
-  "color_family": "brown",
+  "color_family": "yellow",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -11620,7 +11620,7 @@
    -11.23,
    27.7
   ],
-  "color_family": "green",
+  "color_family": "yellow",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -11746,7 +11746,7 @@
    -5.82,
    10.27
   ],
-  "color_family": "grey",
+  "color_family": "green",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -11836,7 +11836,7 @@
    -0.21,
    4.94
   ],
-  "color_family": "grey",
+  "color_family": "white",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 1,
@@ -11980,7 +11980,7 @@
    4.22,
    13.0
   ],
-  "color_family": "bone",
+  "color_family": "white",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 1,
@@ -12070,7 +12070,7 @@
    3.83,
    11.6
   ],
-  "color_family": "bone",
+  "color_family": "grey",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 1,
@@ -12574,7 +12574,7 @@
    5.82,
    39.51
   ],
-  "color_family": "orange",
+  "color_family": "bone",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 2,
@@ -12628,7 +12628,7 @@
    7.28,
    38.15
   ],
-  "color_family": "orange",
+  "color_family": "yellow",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -12646,7 +12646,7 @@
    5.3,
    38.2
   ],
-  "color_family": "orange",
+  "color_family": "yellow",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 2,
@@ -12664,7 +12664,7 @@
    5.12,
    38.37
   ],
-  "color_family": "orange",
+  "color_family": "yellow",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 2,
@@ -12736,7 +12736,7 @@
    5.22,
    31.69
   ],
-  "color_family": "orange",
+  "color_family": "yellow",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -13150,7 +13150,7 @@
    6.98,
    47.82
   ],
-  "color_family": "yellow",
+  "color_family": "orange",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -13186,7 +13186,7 @@
    3.38,
    40.16
   ],
-  "color_family": "yellow",
+  "color_family": "orange",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -13546,7 +13546,7 @@
    11.4,
    26.6
   ],
-  "color_family": "orange",
+  "color_family": "brown",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -13636,7 +13636,7 @@
    15.17,
    34.44
   ],
-  "color_family": "orange",
+  "color_family": "brown",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -13744,7 +13744,7 @@
    5.85,
    30.79
   ],
-  "color_family": "orange",
+  "color_family": "yellow",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -13798,7 +13798,7 @@
    0.97,
    14.07
   ],
-  "color_family": "brown",
+  "color_family": "yellow",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -13996,7 +13996,7 @@
    30.44,
    37.57
   ],
-  "color_family": "orange",
+  "color_family": "red",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 2,
@@ -14032,7 +14032,7 @@
    28.97,
    30.9
   ],
-  "color_family": "orange",
+  "color_family": "brown",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -14086,7 +14086,7 @@
    29.25,
    30.8
   ],
-  "color_family": "orange",
+  "color_family": "brown",
   "category": "base",
   "finish": "satin",
   "opacity_rating": 2,
@@ -14176,7 +14176,7 @@
    26.96,
    18.99
   ],
-  "color_family": "red",
+  "color_family": "brown",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -14302,7 +14302,7 @@
    26.08,
    17.42
   ],
-  "color_family": "red",
+  "color_family": "brown",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -14338,7 +14338,7 @@
    30.86,
    21.7
   ],
-  "color_family": "red",
+  "color_family": "brown",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 2,
@@ -14356,7 +14356,7 @@
    32.46,
    21.31
   ],
-  "color_family": "red",
+  "color_family": "brown",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -14518,7 +14518,7 @@
    7.03,
    3.33
   ],
-  "color_family": "brown",
+  "color_family": "black",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -14554,7 +14554,7 @@
    15.76,
    20.55
   ],
-  "color_family": "bone",
+  "color_family": "orange",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -14698,7 +14698,7 @@
    14.2,
    8.81
   ],
-  "color_family": "red",
+  "color_family": "brown",
   "category": "base",
   "finish": "satin",
   "opacity_rating": 2,
@@ -15022,7 +15022,7 @@
    16.18,
    28.62
   ],
-  "color_family": "orange",
+  "color_family": "bone",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 1,
@@ -15040,7 +15040,7 @@
    15.21,
    28.77
   ],
-  "color_family": "orange",
+  "color_family": "bone",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -15058,7 +15058,7 @@
    12.83,
    19.41
   ],
-  "color_family": "orange",
+  "color_family": "brown",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -15328,7 +15328,7 @@
    22.61,
    23.72
   ],
-  "color_family": "orange",
+  "color_family": "brown",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -15436,7 +15436,7 @@
    25.61,
    26.47
   ],
-  "color_family": "orange",
+  "color_family": "pink",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -15490,7 +15490,7 @@
    21.77,
    19.93
   ],
-  "color_family": "red",
+  "color_family": "orange",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -15571,7 +15571,7 @@
  },
  {
   "paint_id": "citadel-bugman-s-glow",
-  "name": "Bugman‘s Glow",
+  "name": "Bugman\u2018s Glow",
   "brand": "Citadel",
   "range": "Citadel",
   "hex": "#875853",
@@ -15616,7 +15616,7 @@
    16.45,
    10.6
   ],
-  "color_family": "red",
+  "color_family": "brown",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -16048,7 +16048,7 @@
    38.86,
    24.53
   ],
-  "color_family": "red",
+  "color_family": "pink",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -16156,7 +16156,7 @@
    25.43,
    19.43
   ],
-  "color_family": "brown",
+  "color_family": "pink",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 2,
@@ -16192,7 +16192,7 @@
    26.49,
    19.64
   ],
-  "color_family": "brown",
+  "color_family": "red",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -16273,7 +16273,7 @@
  },
  {
   "paint_id": "army-painter-tiger-s-eye-skin",
-  "name": "Tiger‘s Eye Skin",
+  "name": "Tiger\u2018s Eye Skin",
   "brand": "Army Painter",
   "range": "Warpaints Fanatic",
   "hex": "#834a4c",
@@ -16714,7 +16714,7 @@
    3.42,
    2.6
   ],
-  "color_family": "grey",
+  "color_family": "brown",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -16750,7 +16750,7 @@
    4.58,
    1.71
   ],
-  "color_family": "grey",
+  "color_family": "brown",
   "category": "base",
   "finish": "satin",
   "opacity_rating": 3,
@@ -16786,7 +16786,7 @@
    19.75,
    33.86
   ],
-  "color_family": "orange",
+  "color_family": "brown",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -16984,7 +16984,7 @@
    10.22,
    25.59
   ],
-  "color_family": "bone",
+  "color_family": "orange",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -17254,7 +17254,7 @@
    2.6,
    7.99
   ],
-  "color_family": "brown",
+  "color_family": "grey",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -17398,7 +17398,7 @@
    -4.42,
    9.03
   ],
-  "color_family": "grey",
+  "color_family": "green",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -17470,7 +17470,7 @@
    -0.64,
    9.89
   ],
-  "color_family": "grey",
+  "color_family": "white",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -17668,7 +17668,7 @@
    3.28,
    10.23
   ],
-  "color_family": "brown",
+  "color_family": "yellow",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -18946,7 +18946,7 @@
    -0.24,
    -18.26
   ],
-  "color_family": "blue",
+  "color_family": "purple",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -18964,7 +18964,7 @@
    0.4,
    -12.77
   ],
-  "color_family": "blue",
+  "color_family": "grey",
   "category": "base",
   "finish": "matte",
   "opacity_rating": 3,
@@ -19072,7 +19072,7 @@
    -6.7,
    -12.57
   ],
-  "color_family": "blue",
+  "color_family": "grey",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -19090,7 +19090,7 @@
    -3.81,
    -11.46
   ],
-  "color_family": "blue",
+  "color_family": "grey",
   "category": "base",
   "finish": "flat",
   "opacity_rating": 3,
@@ -20023,7 +20023,7 @@
    0.66,
    -0.19
   ],
-  "color_family": "black",
+  "color_family": "silver",
   "category": "base",
   "finish": "satin",
   "metallic": true,
@@ -20080,7 +20080,7 @@
    1.05,
    -0.09
   ],
-  "color_family": "black",
+  "color_family": "silver",
   "category": "base",
   "finish": "satin",
   "metallic": true,
@@ -20289,7 +20289,7 @@
    -3.24,
    -11.28
   ],
-  "color_family": "grey",
+  "color_family": "silver",
   "category": "base",
   "finish": "glossy",
   "metallic": true,
@@ -20308,7 +20308,7 @@
    -4.12,
    -13.29
   ],
-  "color_family": "blue",
+  "color_family": "silver",
   "category": "base",
   "finish": "glossy",
   "metallic": true,
@@ -20327,7 +20327,7 @@
    -2.86,
    -9.08
   ],
-  "color_family": "grey",
+  "color_family": "silver",
   "category": "base",
   "finish": "glossy",
   "metallic": true,
@@ -20622,7 +20622,7 @@
  },
  {
   "paint_id": "two-thin-coats-dragon-s-gold",
-  "name": "Dragon‘s Gold",
+  "name": "Dragon\u2018s Gold",
   "brand": "Two Thin Coats",
   "range": "Two Thin Coats",
   "hex": "#a6621b",
@@ -20641,7 +20641,7 @@
  },
  {
   "paint_id": "citadel-gehenna-s-gold",
-  "name": "Gehenna‘s Gold",
+  "name": "Gehenna\u2018s Gold",
   "brand": "Citadel",
   "range": "Citadel",
   "hex": "#a15513",
@@ -20916,7 +20916,7 @@
    -3.3,
    22.13
   ],
-  "color_family": "gold",
+  "color_family": "bronze",
   "category": "base",
   "finish": "glossy",
   "metallic": true,
@@ -21011,7 +21011,7 @@
    5.35,
    12.95
   ],
-  "color_family": "bone",
+  "color_family": "silver",
   "category": "base",
   "finish": "satin",
   "metallic": true,
@@ -21125,7 +21125,7 @@
    26.51,
    42.41
   ],
-  "color_family": "bronze",
+  "color_family": "gold",
   "category": "base",
   "finish": "glossy",
   "metallic": true,
@@ -21429,7 +21429,7 @@
    9.19,
    4.07
   ],
-  "color_family": "brown",
+  "color_family": "silver",
   "category": "base",
   "finish": "satin",
   "metallic": true,
@@ -21600,7 +21600,7 @@
    13.97,
    7.11
   ],
-  "color_family": "brown",
+  "color_family": "bronze",
   "category": "base",
   "finish": "glossy",
   "metallic": true,
@@ -21619,7 +21619,7 @@
    3.61,
    2.86
   ],
-  "color_family": "bronze",
+  "color_family": "silver",
   "category": "base",
   "finish": "satin",
   "metallic": true,
@@ -21638,7 +21638,7 @@
    8.96,
    18.96
   ],
-  "color_family": "gold",
+  "color_family": "bronze",
   "category": "base",
   "finish": "glossy",
   "metallic": true,
@@ -21676,7 +21676,7 @@
    -1.11,
    7.97
   ],
-  "color_family": "grey",
+  "color_family": "gold",
   "category": "base",
   "finish": "glossy",
   "metallic": true,
@@ -21714,7 +21714,7 @@
    2.45,
    8.36
   ],
-  "color_family": "gold",
+  "color_family": "silver",
   "category": "base",
   "finish": "glossy",
   "metallic": true,
@@ -21771,7 +21771,7 @@
    51.31,
    35.86
   ],
-  "color_family": "red",
+  "color_family": "bronze",
   "category": "base",
   "finish": "glossy",
   "metallic": true,
@@ -21809,7 +21809,7 @@
    18.42,
    -24.76
   ],
-  "color_family": "purple",
+  "color_family": "blue",
   "category": "base",
   "finish": "satin",
   "metallic": true,
@@ -21828,7 +21828,7 @@
    34.0,
    -22.5
   ],
-  "color_family": "magenta",
+  "color_family": "blue",
   "category": "base",
   "finish": "glossy",
   "metallic": true,
@@ -21847,7 +21847,7 @@
    -17.37,
    -26.86
   ],
-  "color_family": "blue",
+  "color_family": "cyan",
   "category": "base",
   "finish": "glossy",
   "metallic": true,
@@ -22073,7 +22073,7 @@
    -20.08,
    4.85
   ],
-  "color_family": "cyan",
+  "color_family": "green",
   "category": "ink",
   "finish": "matte",
   "opacity_rating": 0,
@@ -22217,7 +22217,7 @@
    14.83,
    5.33
   ],
-  "color_family": "brown",
+  "color_family": "black",
   "category": "ink",
   "finish": "matte",
   "opacity_rating": 0,
@@ -22343,7 +22343,7 @@
    30.75,
    34.47
   ],
-  "color_family": "orange",
+  "color_family": "brown",
   "category": "wash",
   "finish": "matte",
   "opacity_rating": 0,
@@ -22433,7 +22433,7 @@
    -12.21,
    5.98
   ],
-  "color_family": "green",
+  "color_family": "black",
   "category": "wash",
   "finish": "matte",
   "opacity_rating": 3,
@@ -22487,7 +22487,7 @@
    -2.14,
    26.58
   ],
-  "color_family": "yellow",
+  "color_family": "bone",
   "category": "wash",
   "finish": "matte",
   "opacity_rating": 0,

@@ -237,18 +237,11 @@ class SchemeStealerEngine:
                 color_data, color_data.get('brightness_std', 30), family
             )
 
-            # Metallic detection
-            is_metallic = (
-                "Gold" in family or 
-                "Silver" in family or 
-                "Metal" in family or
-                "Bronze" in family or
-                "Brass" in family or
-                "Copper" in family or
-                "Gunmetal" in family or
-                "Steel" in family
-            )
-            
+            # Metallic flag from the specular-variance detector run during
+            # classification (is_metallic_surface), NOT a family-string match.
+            # The old "Gold" in family / _is_gold_in_lab heuristic is gone.
+            is_metallic = bool(color_data.get('is_metallic', False))
+
             context = {
                 'is_metallic': is_metallic,
                 'is_saturated': median_hsv[1] > 0.5 if len(median_hsv) > 1 else False,

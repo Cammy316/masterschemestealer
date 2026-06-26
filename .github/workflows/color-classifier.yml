@@ -1,0 +1,57 @@
+name: Colour-family classifier
+
+# Locks the single colour-family classifier: the backend (Python) and the
+# frontend (TypeScript) must both classify every golden fixture identically.
+# If you change one classifier, the other side's test forces you to change it
+# too — that parity is the whole point.
+
+on:
+  push:
+    paths:
+      - 'python-api/core/color_engine.py'
+      - 'python-api/core/smart_color_system.py'
+      - 'python-api/color_anchors.json'
+      - 'python-api/scripts/build_color_anchors.py'
+      - 'python-api/tests/color_family_fixtures.json'
+      - 'python-api/tests/color_family_stage_b_targets.json'
+      - 'python-api/tests/test_color_family_fixtures.py'
+      - 'schemestealer-react/lib/offlineColorDetection.ts'
+      - 'schemestealer-react/lib/colorConversion.ts'
+      - 'schemestealer-react/lib/colorAnchors.ts'
+      - 'schemestealer-react/lib/__tests__/colorFamily.test.ts'
+      - '.github/workflows/color-classifier.yml'
+  pull_request:
+  workflow_dispatch: {}
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: python-api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install engine deps
+        run: pip install -r requirements.txt
+      - name: Run colour-family fixtures (Python)
+        run: python -m pytest tests/test_color_family_fixtures.py -q
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: schemestealer-react
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: schemestealer-react/package-lock.json
+      - name: Install deps
+        run: npm ci
+      - name: Run colour-family fixtures (TypeScript / vitest)
+        run: npm test

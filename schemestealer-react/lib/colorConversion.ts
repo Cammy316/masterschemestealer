@@ -36,10 +36,13 @@ export function rgbToLab(rgb: RGB): LAB {
   g = g > 0.04045 ? Math.pow((g + 0.055) / 1.055, 2.4) : g / 12.92;
   b = b > 0.04045 ? Math.pow((b + 0.055) / 1.055, 2.4) : b / 12.92;
 
-  // Convert to XYZ using D65 illuminant
-  const x = (r * 0.4124564 + g * 0.3575761 + b * 0.1804375) * 100;
-  const y = (r * 0.2126729 + g * 0.7151522 + b * 0.0721750) * 100;
-  const z = (r * 0.0193339 + g * 0.1191920 + b * 0.9503041) * 100;
+  // sRGB → XYZ (0–100), D65. These are skimage's exact xyz_from_rgb constants —
+  // the backend uses skimage.color.rgb2lab, so matching them bit-for-bit is what
+  // makes the LAB (and therefore the nearest-exemplar family) identical to the
+  // backend. Do not "modernise" these coefficients.
+  const x = (r * 0.412453 + g * 0.35758 + b * 0.180423) * 100;
+  const y = (r * 0.212671 + g * 0.71516 + b * 0.072169) * 100;
+  const z = (r * 0.019334 + g * 0.119193 + b * 0.950227) * 100;
 
   // Step 2: XYZ to LAB
   // D65 reference white point
@@ -87,10 +90,13 @@ export function labToRgb(lab: LAB): RGB {
   const y = yr * 100.000;
   const z = zr * 108.883;
 
-  // Step 2: XYZ to RGB
-  let r = (x * 0.032406 - y * 0.015372 - z * 0.004986) / 100;
-  let g = (-x * 0.009689 + y * 0.018758 + z * 0.000415) / 100;
-  let b = (x * 0.000557 - y * 0.002040 + z * 0.010570) / 100;
+  // Step 2: XYZ (0–100) → linear sRGB (0–1), D65 — skimage's exact rgb_from_xyz
+  // (the inverse of the forward matrix above). The /100 rescales because x/y/z
+  // are carried in 0–100. (The original matrix here was 100× too small, so
+  // labToRgb returned near-black — a real bug that's now fixed.)
+  let r = (x * 3.240481343201 - y * 1.537151516271 - z * 0.498536326169) / 100;
+  let g = (-x * 0.969254949997 + y * 1.875990001490 + z * 0.041555926558) / 100;
+  let b = (x * 0.055646639135 - y * 0.204041338367 + z * 1.057311069645) / 100;
 
   // Apply inverse gamma correction
   r = r > 0.0031308 ? 1.055 * Math.pow(r, 1 / 2.4) - 0.055 : 12.92 * r;

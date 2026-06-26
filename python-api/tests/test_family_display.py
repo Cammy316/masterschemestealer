@@ -24,7 +24,7 @@ os.chdir(ROOT)  # so the engine resolves the live DB relative to python-api/
 from core.color_engine import compute_color_family  # noqa: E402
 from core.schemestealer_engine import SchemeStealerEngine  # noqa: E402
 
-PINK_HEX = "#c7afbd"   # confirmed: classifier -> pink
+PINK_HEX = "#FFB6C1"   # clear light pink: classifier -> pink
 CYAN_HEX = "#9fd4e0"   # baby-blue: classifier -> cyan
 
 _engine = None

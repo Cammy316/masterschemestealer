@@ -13,6 +13,7 @@ import cv2
 import numpy as np
 import colorsys
 import json
+import os
 from sklearn.cluster import KMeans
 from skimage import color
 from skimage.color import deltaE_ciede2000
@@ -96,184 +97,6 @@ class ColorAnalyzer:
     """Color classification and metallic detection - FINAL VERSION"""
     
     @staticmethod
-    def classify_color_family(h: float, s: float, v: float, 
-                             chroma: float, is_metallic: bool = False,
-                             metallic_type: str = None) -> Tuple[str, float]:
-        """
-        Classify color with confidence score
-        WITH COMPLETE FIX SUITE FOR ALL COLOR FAMILIES
-        """
-        h_deg = h * 360 if h <= 1 else h
-        
-        logger.debug(f"Classifying: h={h_deg:.1f}°, s={s:.2f}, v={v:.2f}, "
-                    f"chroma={chroma:.1f}, metallic={is_metallic}, type={metallic_type}")
-        
-        # 1. SPECIAL METALLICS (High confidence) - WITH HUE-AWARE TYPING
-        if is_metallic and metallic_type:
-            if metallic_type == 'GOLD':
-                return ('Gold/Brass', 0.95)
-            elif metallic_type == 'COPPER':
-                return ('Bronze/Copper', 0.92)
-            elif metallic_type == 'SILVER':
-                return ('Silver/Steel', 0.95)
-            elif metallic_type == 'GUNMETAL':
-                return ('Gunmetal/Iron', 0.95)
-            else:
-                # Fallback
-                if chroma > 20:
-                    if v > 0.65 and 35 < h_deg < 65:
-                        return ('Gold/Brass', 0.95)
-                    else:
-                        return ('Bronze/Copper', 0.90)
-                elif v > 0.65:
-                    return ('Silver/Steel', 0.95)
-                else:
-                    return ('Gunmetal/Iron', 0.95)
-
-        # 2. ACHROMATIC / NEAR-NEUTRAL - WITH ALL COLOR EXCEPTIONS
-        is_blue_hue = 180 < h_deg < 260
-        is_green_hue = 70 < h_deg < 170
-        is_purple_hue = 270 < h_deg < 320
-        
-        if s < 0.15 or (s < 0.25 and v < 0.4):
-            # EXCEPTION 1: Desaturated blues (Ultramarines, Space Wolves)
-            if is_blue_hue and s > 0.05 and chroma > 3:
-                return ('Blue', 0.75)
-            
-            # EXCEPTION 2: Desaturated greens (Dark Angels, Salamanders, Death Guard)
-            if is_green_hue and s > 0.06 and chroma > 4:
-                return ('Green', 0.75)
-            
-            # EXCEPTION 3: Desaturated purples (Emperor's Children, Drukhari)
-            if is_purple_hue and s > 0.05 and chroma > 3:
-                return ('Purple', 0.75)
-            
-            # Standard achromatic classification
-            if v > 0.90: return ('Pure White', 0.95)
-            elif v > 0.75: return ('Off-White/Bone', 0.85)
-            elif v > 0.60: return ('Grey', 0.90)
-            elif v > 0.15: return ('Gunmetal/Grey', 0.85)
-            elif v > 0.10: return ('Black', 0.95)
-            else: return ('Deep Shadow', 0.30)
-
-        families = []
-        
-        # 3. CHROMATIC CLASSIFICATION - COMPLETE FIX SUITE
-        
-        # RED ZONE (0-25° and 330-360°)
-        if h_deg > 330 or h_deg < 25:
-            dist = min(abs(h_deg), abs(360 - h_deg), abs(h_deg - 360))
-            conf = max(0, 1.0 - dist / 25)
-            
-            # Pink detection — pink is a LIGHT, comparatively desaturated
-            # tint of red. Deep/bright saturated reds (Mephiston Red #9A1115:
-            # s≈0.89; Evil Sunz #C21E10: s≈0.92) must stay Red even when their
-            # value is moderate-to-high. Only treat as pink when saturation is
-            # genuinely below the pure-red range.
-            if v > 0.6 and s < 0.65:
-                families.append(('Pink', conf))
-            else:
-                # Red vs Brown - USE CHROMA (FIX #8)
-                if h_deg < 20:
-                    if chroma < 15:
-                        families.append(('Brown', conf))  # Low chroma = brown
-                    elif s < 0.6 and v < 0.4:
-                        families.append(('Brown', conf))
-                    else:
-                        families.append(('Red', conf))  # High chroma = dark red
-                elif h_deg < 30 and s < 0.4:
-                     families.append(('Gunmetal/Rust', 0.7))
-                else:
-                    families.append(('Red', conf))
-        
-        # GOLD/BRONZE/BROWN ZONE (10-60°) - IMPROVED
-        if 10 < h_deg < 60:
-            # True Gold: Yellow-ish (32-60°), bright, saturated
-            if 32 < h_deg < 60 and v > 0.45 and s > 0.35:
-                if v > 0.65 and s > 0.55:
-                    families.append(('Gold/Yellow', 0.95))
-                elif v > 0.50:
-                    families.append(('Gold', 0.90))
-                else:
-                    families.append(('Bronze/Gold', 0.85))
-            
-            # Bronze/Copper: Redder or darker
-            elif h_deg < 32 or (v < 0.45 and s > 0.35):
-                if s < 0.40 and v < 0.50:
-                    families.append(('Brown', 0.85))
-                else:
-                    families.append(('Bronze/Copper', 0.85))
-            
-            # Ochre/Tan: Desaturated
-            elif s < 0.35:
-                families.append(('Brown/Tan', 0.75))
-            else:
-                families.append(('Brown', 0.70))
-        
-        # YELLOW ZONE (45-95°) - EXPANDED (FIX #9)
-        if 45 < h_deg < 95:
-            if s > 0.50 and v > 0.65:
-                families.append(('Yellow', 0.9))
-            elif s > 0.30 and v > 0.75:
-                families.append(('Yellow', 0.85))  # Pale yellow
-            else:
-                families.append(('Bone/Beige', 0.8))
-        
-        # GREEN ZONE (60-170°) - WITH CYAN DISAMBIGUATION (FIX #6)
-        if 60 < h_deg < 170:
-            # Check if it's actually cyan (165-180° overlap)
-            if 165 < h_deg < 180 and chroma > 25:
-                families.append(('Cyan/Turquoise', 0.9))
-            else:
-                conf = 1.0 - abs(h_deg - 110) / 50
-                families.append(('Green', max(0, conf)))
-        
-        # CYAN ZONE (170-190°) - STRICT RANGE
-        if 170 < h_deg < 190:
-            conf = 1.0 - abs(h_deg - 180) / 10
-            families.append(('Cyan/Turquoise', max(0, conf)))
-        
-        # BLUE ZONE (185-260°) - Starts later to avoid cyan overlap
-        if 185 < h_deg < 260:
-            conf = 1.0 - abs(h_deg - 220) / 40
-            if s > 0.2:
-                families.append(('Blue', max(0, conf)))
-            else:
-                families.append(('Grey/Blue', 0.6))
-        
-        # PURPLE ZONE (250-320°)
-        if 250 < h_deg < 320:
-            conf = 1.0 - abs(h_deg - 285) / 35
-            if v < 0.6:
-                families.append(('Purple', max(0, conf)))
-            else:
-                families.append(('Pink/Purple', max(0, conf)))
-        
-        # MAGENTA ZONE (290-340°)
-        if 290 < h_deg < 340:
-            conf = 1.0 - abs(h_deg - 315) / 25
-            if v > 0.5:
-                families.append(('Pink/Magenta', max(0, conf)))
-            else:
-                families.append(('Magenta', max(0, conf)))
-        
-        if families:
-            best = max(families, key=lambda x: x[1])
-            if best[1] > 0.15:
-                return best
-            else:
-                return best
-        
-        # Improved fallback
-        if s < 0.15:
-            if v > 0.70: return ('Light Grey', 0.4)
-            elif v > 0.40: return ('Grey', 0.4)
-            elif v > 0.15: return ('Dark Grey', 0.4)
-            else: return ('Near Black', 0.3)
-        
-        return ('Unknown', 0.0)
-    
-    @staticmethod
     def detect_metallic(pixels_hsv: np.ndarray) -> Tuple[bool, Optional[str]]:
         """
         Detect metallic surfaces AND determine type
@@ -286,13 +109,9 @@ class ColorAnalyzer:
         # Use circular mean so red pixels near 0°/360° are not misclassified as cyan.
         median_hue = circular_mean_hue(pixels_hsv[:, 0]) * 360
 
-        # Check if metallic.
-        is_std_metallic = (brightness_std > 25)
-        # Require meaningful brightness variance to avoid flagging flat dark-grey
-        # surfaces (shaded armour, black cloaks) as gunmetal.
-        is_dark_gunmetal = (brightness_std > 18) and (median_val < 0.65) and (median_sat < 0.25)
-        is_metallic = is_std_metallic or is_dark_gunmetal
-        
+        # Single metallic-surface decision (shared with the live scan).
+        is_metallic = is_metallic_surface(brightness_std, median_sat, median_val)
+
         logger.debug(f"Metallic check: std={brightness_std:.1f}, sat={median_sat:.2f}, "
                     f"val={median_val:.2f}, hue={median_hue:.1f}°")
         
@@ -301,8 +120,8 @@ class ColorAnalyzer:
         
         # DETERMINE METALLIC TYPE by hue and saturation
         
-        # Gold: Yellow-orange (25-60°) with saturation (floor 25° mirrors
-        # _metallic_type_from_hsv so warm golds like Retributor read GOLD).
+        # Gold: Yellow-orange (25-60°) with saturation (floor 25° so warm golds
+        # like Retributor read GOLD; copper/bronze stay in the redder 5-25° band).
         if 25 < median_hue < 60 and median_sat > 0.25:
             logger.info("Metallic type: GOLD")
             return True, 'GOLD'
@@ -376,22 +195,6 @@ RECOGNISED_FAMILIES = {
     'gold', 'silver', 'bronze', 'copper',
 }
 
-# classify_color_family() composite output -> canonical flat family.
-_FAMILY_NORMALISE = {
-    'gold/brass': 'gold', 'gold/yellow': 'gold', 'gold': 'gold',
-    'bronze/gold': 'bronze', 'bronze/copper': 'bronze',
-    'silver/steel': 'silver', 'gunmetal/iron': 'silver',
-    'gunmetal/grey': 'grey', 'gunmetal/rust': 'brown',
-    'pure white': 'white', 'off-white/bone': 'bone', 'bone/beige': 'bone',
-    'grey': 'grey', 'light grey': 'grey', 'dark grey': 'grey',
-    'grey/blue': 'blue', 'black': 'black', 'deep shadow': 'black',
-    'near black': 'black', 'blue': 'blue', 'green': 'green',
-    'purple': 'purple', 'pink': 'pink', 'pink/purple': 'pink',
-    'pink/magenta': 'pink', 'magenta': 'magenta', 'brown': 'brown',
-    'brown/tan': 'brown', 'red': 'red', 'cyan/turquoise': 'cyan',
-    'yellow': 'yellow', 'unknown': 'grey',
-}
-
 # When a NON-metallic paint lands on a metallic-ish family via the hue zones
 # (e.g. a dark warm brown returning "Bronze/Copper"), remap to the nearest
 # non-metallic family so matte paints never carry a metal family.
@@ -400,130 +203,111 @@ _NON_METALLIC_REMAP = {
 }
 
 
-def _metallic_type_from_hsv(h_deg: float, s: float, v: float) -> str:
-    """Single-colour metallic typing — mirrors ColorAnalyzer.detect_metallic.
+def is_metallic_surface(brightness_std: float, median_sat: float,
+                        median_val: float) -> bool:
+    """The single metallic-SURFACE test (specular variance).
 
-    Gold floor is 25° (not 30°) so bright warm metallics such as Retributor
-    Armour (#C39E81, h≈26°) type as GOLD rather than COPPER; copper/bronze stay
-    in the redder 5–25° band. Only affects metallic-finish paints.
+    Metallic paint scatters light unevenly, so a cluster's per-pixel brightness
+    has high variance (specular highlights); a dark, desaturated surface with
+    moderate variance reads as gunmetal/iron. This is the up-to-date detector
+    that replaces the old `_is_gold_in_lab` hue hack — it is shared by
+    `ColorAnalyzer.detect_metallic` (from a pixel array) and the live scan (from
+    a cluster's stats) so there is exactly ONE metallic decision.
     """
-    if 25 < h_deg < 60 and s > 0.25:
-        return 'GOLD'
-    if (5 < h_deg <= 25 or h_deg > 340) and s > 0.25:
-        return 'COPPER'
-    if s < 0.20 and v > 0.45:
-        return 'SILVER'
-    if s < 0.20 and v < 0.45:
-        return 'GUNMETAL'
-    return 'UNKNOWN'
+    if brightness_std > 25:
+        return True
+    return brightness_std > 18 and median_val < 0.65 and median_sat < 0.25
 
 
-# Metallic typing → canonical flat metal family (used only when finish=metallic).
-_METALLIC_TYPE_TO_FAMILY = {
-    'GOLD': 'gold', 'COPPER': 'bronze', 'SILVER': 'silver', 'GUNMETAL': 'silver',
-}
+_ANCHORS_PATH = os.path.join(os.path.dirname(__file__), '..', 'color_anchors.json')
+_ANCHORS = None
 
 
-def _classify_family(hd: float, s: float, v: float,
-                     a: float, b: float, is_metal: bool = False) -> str:
-    """Canonical colour-family algorithm — the SINGLE source of truth shared by
-    the DB builder, compute_color_family() and the scan-time ensemble, so the DB
-    family and the detected family can never disagree by construction.
+def _load_anchors():
+    """Load + cache color_anchors.json, pre-stacking each group into one (N,3)
+    LAB array with an aligned family list for vectorised nearest-exemplar."""
+    global _ANCHORS
+    if _ANCHORS is None:
+        with open(_ANCHORS_PATH, encoding='utf-8') as f:
+            raw = json.load(f)
 
-    Inputs (derived once by the callers):
-      hd     hue in degrees [0, 360)
-      s, v   HSV saturation / value in [0, 1]
-      a, b   CIELAB a*, b* (D65)  → chroma = hypot(a, b)
-      is_metal  True only when a metallic cue exists (DB: the `metallic` flag;
-                detector: scan-time metallic detection). Matte / sheen paints
-                pass False and therefore never receive a metal family.
+        def _stack(items):
+            pts, fams = [], []
+            for fam, labs in items:
+                for lab in labs:
+                    pts.append(lab)
+                    fams.append(fam)
+            return np.asarray(pts, dtype=float), fams
 
-    This is the exact algorithm `paints_groundtruth.json` was built with. Do NOT
-    edit one copy without porting the identical change to the frontend offline
-    classifier (schemestealer-react/lib/offlineColorDetection.ts).
+        fam_items = list(raw['families'].items())
+        metal_items = list(raw['metallic'].items())
+        fallback = set(raw.get('metallic_fallback', []))
+        # Non-metallic path: every family (chromatic + neutral).
+        chromatic = _stack(fam_items)
+        # Metallic path: the three metals PLUS only the vivid fallback families,
+        # so a coloured metallic keeps its hue while warm-pale / neutral families
+        # can't steal gold/silver/bronze.
+        metallic = _stack(metal_items + [(f, l) for f, l in fam_items
+                                         if f in fallback])
+        _ANCHORS = {'thresholds': raw['thresholds'],
+                    'chromatic': chromatic, 'metallic': metallic}
+    return _ANCHORS
+
+
+def _nearest_family(group, L, a, b):
+    """Family of the nearest exemplar by ΔE76 (Euclidean LAB)."""
+    pts, fams = group
+    d = (pts[:, 0] - L) ** 2 + (pts[:, 1] - a) ** 2 + (pts[:, 2] - b) ** 2
+    return fams[int(np.argmin(d))]
+
+
+def classify_family(lab, chroma: float = None, is_metallic: bool = False) -> str:
+    """THE single colour-family classifier (Stage B: LAB nearest-exemplar).
+
+    Input is CIELAB (D65), an optional precomputed chroma, and the metallic flag.
+    `hue_family()` and `compute_color_family()` are thin adapters over this; the
+    live scan calls it once per cluster (no voting); the frontend `classifyFamily`
+    in offlineColorDetection.ts is its port over the SAME color_anchors.json — so
+    the DB, the online scan and the offline scan can never disagree.
+
+    Method (no hard hue bands anywhere — perceptually uniform, same LAB space as
+    the matcher):
+      1. metallic flag → nearest of the gold/silver/bronze metallic anchors.
+      2. hard black floor: L < black_l → black (very dark colours carry no
+         reliable hue). This is the ONLY explicit threshold.
+      3. otherwise → nearest exemplar by ΔE76 over ALL families, neutrals
+         included (grey/white/black are anchors too) — so a faint tint resolves
+         to its hue and a true neutral resolves to grey, by distance not by
+         boundary. You tune by moving / adding a clear exemplar in
+         color_anchors.json, never by nudging a threshold.
     """
-    chroma = float(np.hypot(a, b))
+    L, a, b = float(lab[0]), float(lab[1]), float(lab[2])
+    A = _load_anchors()
 
-    if is_metal:
-        if 25 < hd < 60 and s > 0.25:
-            return 'gold'
-        if (5 < hd <= 25 or hd > 340) and s > 0.25:
-            return 'bronze'
-        if s < 0.20:
-            return 'silver'
-        # else fall through to the hue logic below
-
-    if v < 0.10:
+    if is_metallic:
+        return _nearest_family(A['metallic'], L, a, b)
+    if L < A['thresholds']['black_l']:
         return 'black'
-    if v < 0.50 and 5 < chroma < 14 and a > 1.5 and b > 1.5:
-        return 'brown'                          # warm-dark rescue
-    if s < 0.10 or chroma < 12:
-        if v > 0.85:
-            return 'white'
-        return 'grey' if v > 0.18 else 'black'
-    if 16 <= hd < 44 and v > 0.55 and s < 0.48:
-        return 'bone'                           # warm-pale bone
-    if hd < 16 or hd >= 336:
-        if v > 0.72 and s < 0.55:
-            return 'pink'
-        if (chroma < 16 and v < 0.55) or (8 <= hd < 16 and chroma < 48 and v < 0.66):
-            return 'brown'                      # leather-brown
-        return 'red'
-    if hd < 40:
-        return 'brown' if (s < 0.45 or v < 0.52) else 'orange'
-    if hd < 64:
-        if s < 0.30 and v > 0.55:
-            return 'bone'
-        return 'brown' if (v < 0.30 and hd < 54) else 'yellow'
-    if hd < 158:
-        return 'green'                          # green band starts at 64°
-    if hd < 195:
-        return 'cyan'
-    if hd < 256:
-        return 'blue'
-    if hd < 292:
-        return 'purple'
-    return 'pink' if (v > 0.72 and s < 0.55) else 'magenta'
+    return _nearest_family(A['chromatic'], L, a, b)
 
 
 def hue_family(h_deg: float, s: float, v: float, chroma: float = None,
                lab=None, finish: str = 'matte') -> str:
-    """Non-metallic family classifier used by the scan-time ensemble's hue vote.
-
-    Thin wrapper over _classify_family with is_metal=False, so it NEVER emits a
-    metal family (matte paints must not carry one). a*/b* come from `lab`; the
-    legacy `chroma` argument is ignored — chroma is derived from a*/b* inside
-    _classify_family so this stays byte-identical to compute_color_family.
-    """
-    if lab is not None:
-        a, b = float(lab[1]), float(lab[2])
-    else:
-        a = b = 0.0
-    return _classify_family(float(h_deg) % 360.0, s, v, a, b, is_metal=False)
+    """Back-compat shim → `classify_family` (non-metallic). The LAB drives the
+    result; the legacy HSV args are ignored. Kept so existing callers/tests that
+    still pass HSV keep working — new code should call `classify_family(lab)`."""
+    if lab is None:
+        return 'grey'
+    return classify_family(lab, chroma, is_metallic=False)
 
 
 def compute_color_family(hex_str: str, finish: str = 'matte') -> str:
-    """Compute a colour's canonical flat family from its hex.
-
-    Routes through _classify_family — the same algorithm the DB was built with
-    and the scan ensemble votes on — so DB and detection families agree by
-    construction. finish='metallic' is the detector's metallic cue (is_metal);
-    under the new schema `finish` holds sheen for DB paints and never reaches
-    here ('metallic' is no longer a finish), and DB families are stored, not
-    recomputed on load.
-    """
+    """Hex adapter over `classify_family` (the single classifier). Used by the DB
+    builder, scripts and display. `finish='metallic'` is the metallic cue."""
     h = hex_str.lstrip('#')
     rgb = np.array([int(h[i:i + 2], 16) for i in (0, 2, 4)]) / 255.0
     lab = color.rgb2lab(np.array([[rgb]]))[0][0]
-    hsv = colorsys.rgb_to_hsv(*rgb)
-    h_deg, s, v = hsv[0] * 360, hsv[1], hsv[2]
-    is_metal = (finish or '').lower() == 'metallic'
-    fam = _classify_family(h_deg, s, v, float(lab[1]), float(lab[2]), is_metal=is_metal)
-    # Safety net for the non-metal path: never let a matte paint carry a metal
-    # family (is_metal=False can't reach the metal branch, but guard anyway).
-    if not is_metal and fam in _NON_METALLIC_REMAP:
-        fam = _NON_METALLIC_REMAP[fam]
-    return fam if fam in RECOGNISED_FAMILIES else 'grey'
+    return classify_family(lab, None, is_metallic=(finish or '').lower() == 'metallic')
 
 
 # ============================================================================

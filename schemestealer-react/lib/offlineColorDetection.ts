@@ -6,121 +6,80 @@
 
 import type { ScanResult, Color, Paint, ScanMode } from './types';
 import { extractDominantColors } from './colorClustering';
-import { rgbToHex, rgbToHsv, rgbToLab, hexToRgb, type LAB } from './colorConversion';
+import { rgbToHex, rgbToLab, type LAB } from './colorConversion';
 import { findNClosestColors } from './deltaE';
+import { COLOR_ANCHORS } from './colorAnchors';
 
 /**
- * Canonical colour-family classifier — a byte-for-byte port of the backend
- * `core/color_engine.py::_classify_family` (Phase 1.4), the single algorithm
- * `paints_groundtruth.json` was built with. The offline fallback and the backend
- * can therefore never disagree on a colour's family. If you change one, change
- * BOTH (and the parity fixtures below).
- *
- * Returns the SAME flat lowercase vocabulary the backend uses
- * (red, orange, yellow, green, cyan, blue, purple, pink, magenta, brown, bone,
- * white, grey, black — plus gold/silver/bronze only when `isMetal`). The offline
- * detector has no metallic cue, so it calls this with isMetal=false and never
- * emits a metal family.
- *
- * @param hDeg  hue in degrees (0–360)
- * @param s     saturation 0–1   (note: rgbToHsv returns 0–100 — convert first)
- * @param v     value 0–1
- * @param chroma  sqrt(a*² + b*²) — ignored when `lab` is supplied (recomputed
- *                from a*/b* to stay identical to the backend)
- * @param lab   LAB (a*/b* drive chroma + the warm-dark brown rescue)
- * @param isMetal  metallic cue (DB: the `metallic` flag; detector: false)
+ * Nearest-exemplar colour-family classifier (Stage B) — the port of the backend
+ * `color_engine.classify_family`, reading the SAME exemplar set
+ * (`color_anchors.json`, compiled into ./colorAnchors). There are NO hue-band
+ * thresholds: a colour's family is the family of its nearest LAB exemplar by
+ * ΔE76. Backend and frontend cannot diverge because they share the anchors and
+ * run the same tiny algorithm — change anchors in python-api and re-run
+ * scripts/build_color_anchors.py to regenerate ./colorAnchors.
  */
-export function hueFamily(
-  hDeg: number,
-  s: number,
-  v: number,
-  chroma: number,
-  lab?: LAB,
-  isMetal = false
-): string {
-  const h = ((hDeg % 360) + 360) % 360;
-  const a = lab ? lab.a : 0;
-  const b = lab ? lab.b : 0;
-  const c = lab ? Math.hypot(a, b) : chroma;
+type AnchorSet = { pts: number[][]; fams: string[] };
 
-  if (isMetal) {
-    if (h > 25 && h < 60 && s > 0.25) return 'gold';
-    if (((h > 5 && h <= 25) || h > 340) && s > 0.25) return 'bronze';
-    if (s < 0.2) return 'silver';
-    // else fall through to the hue logic below
+function _stack(entries: [string, number[][]][]): AnchorSet {
+  const pts: number[][] = [];
+  const fams: string[] = [];
+  for (const [fam, labs] of entries) {
+    for (const lab of labs) { pts.push(lab); fams.push(fam); }
   }
+  return { pts, fams };
+}
 
-  if (v < 0.1) return 'black';
-  if (v < 0.5 && c > 5 && c < 14 && a > 1.5 && b > 1.5) return 'brown'; // warm-dark rescue
-  if (s < 0.1 || c < 12) {
-    if (v > 0.85) return 'white';
-    return v > 0.18 ? 'grey' : 'black';
+const _FAM_ENTRIES = Object.entries(COLOR_ANCHORS.families);
+const _FALLBACK = new Set(COLOR_ANCHORS.metallic_fallback);
+// Non-metallic path: every family (chromatic + neutral).
+const _NON_METAL = _stack(_FAM_ENTRIES);
+// Metallic path: the three metals + only the vivid fallback families.
+const _METAL = _stack([
+  ...Object.entries(COLOR_ANCHORS.metallic),
+  ..._FAM_ENTRIES.filter(([f]) => _FALLBACK.has(f)),
+]);
+
+function nearestFamily(set: AnchorSet, L: number, a: number, b: number): string {
+  let best = 0;
+  let bestD = Infinity;
+  for (let i = 0; i < set.pts.length; i++) {
+    const p = set.pts[i];
+    const dL = p[0] - L, da = p[1] - a, db = p[2] - b;
+    const d = dL * dL + da * da + db * db;
+    if (d < bestD) { bestD = d; best = i; }
   }
-  if (h >= 16 && h < 44 && v > 0.55 && s < 0.48) return 'bone'; // warm-pale bone
-  if (h < 16 || h >= 336) {
-    if (v > 0.72 && s < 0.55) return 'pink';
-    if ((c < 16 && v < 0.55) || (h >= 8 && h < 16 && c < 48 && v < 0.66)) return 'brown'; // leather-brown
-    return 'red';
-  }
-  if (h < 40) return s < 0.45 || v < 0.52 ? 'brown' : 'orange';
-  if (h < 64) {
-    if (s < 0.3 && v > 0.55) return 'bone';
-    return v < 0.3 && h < 54 ? 'brown' : 'yellow';
-  }
-  if (h < 158) return 'green'; // green band starts at 64°
-  if (h < 195) return 'cyan';
-  if (h < 256) return 'blue';
-  if (h < 292) return 'purple';
-  return v > 0.72 && s < 0.55 ? 'pink' : 'magenta';
+  return set.fams[best];
 }
 
 /**
- * Display colour family for a detected colour. Thin wrapper over hueFamily():
- * converts HSV scale, derives chroma from LAB, and Capitalises the canonical
- * family for display (matching the backend's Capitalised display families).
+ * THE single colour-family classifier. Input is CIELAB (D65); `chroma` is unused
+ * (kept for signature parity with the backend); `isMetallic` selects the metallic
+ * exemplar set. Mirrors `color_engine.classify_family` exactly.
+ */
+export function classifyFamily(lab: LAB, _chroma?: number, isMetallic = false): string {
+  const { l: L, a, b } = lab;
+  if (isMetallic) return nearestFamily(_METAL, L, a, b);
+  if (L < COLOR_ANCHORS.thresholds.black_l) return 'black';
+  return nearestFamily(_NON_METAL, L, a, b);
+}
+
+/**
+ * Display colour family for a detected colour. Thin wrapper over classifyFamily;
+ * the offline detector has no metallic cue, so isMetallic is false. Capitalised
+ * for display, matching the backend's Capitalised display families.
  */
 function determineColorFamily(rgb: [number, number, number], lab?: [number, number, number]): string {
-  const hsv = rgbToHsv({ r: rgb[0], g: rgb[1], b: rgb[2] });
   const labObj: LAB = lab
     ? { l: lab[0], a: lab[1], b: lab[2] }
     : rgbToLab({ r: rgb[0], g: rgb[1], b: rgb[2] });
-  const chroma = Math.sqrt(labObj.a * labObj.a + labObj.b * labObj.b);
-  const family = hueFamily(hsv.h, hsv.s / 100, hsv.v / 100, chroma, labObj);
+  const family = classifyFamily(labObj);
   return family.charAt(0).toUpperCase() + family.slice(1);
 }
 
-/**
- * Dev-only parity check: the ported hueFamily MUST agree with the backend
- * hue_family on these fixtures (the baby-blue-shows-green class of mismatch).
- * Logs an error in development if any drift creeps in; no-op in production.
- */
-const HUE_FAMILY_PARITY_FIXTURES: ReadonlyArray<readonly [string, string]> = [
-  ['#b2dfd1', 'cyan'],
-  ['#b6ce61', 'green'], // ≥64° now lands in the green band (Phase 1.4)
-  ['#EF6E2E', 'orange'],
-  ['#DECBDA', 'white'], // pale-pink rescue removed → achromatic white (Phase 1.4)
-  ['#9A1115', 'red'],
-];
-
-export function runHueFamilyParityCheck(): { hex: string; expected: string; got: string }[] {
-  const failures: { hex: string; expected: string; got: string }[] = [];
-  for (const [hex, expected] of HUE_FAMILY_PARITY_FIXTURES) {
-    const rgb = hexToRgb(hex);
-    const hsv = rgbToHsv(rgb);
-    const lab = rgbToLab(rgb);
-    const chroma = Math.sqrt(lab.a * lab.a + lab.b * lab.b);
-    const got = hueFamily(hsv.h, hsv.s / 100, hsv.v / 100, chroma, lab);
-    if (got !== expected) failures.push({ hex, expected, got });
-  }
-  return failures;
-}
-
-if (process.env.NODE_ENV !== 'production') {
-  const failures = runHueFamilyParityCheck();
-  if (failures.length > 0) {
-    console.error('[hueFamily] parity check FAILED — offline classifier diverged from backend:', failures);
-  }
-}
+// Backend/frontend parity is enforced comprehensively in CI by the shared golden
+// fixtures (lib/__tests__/colorFamily.test.ts vs the Python test) — no inline
+// dev check needed.
 
 /**
  * Load image from file or URL
