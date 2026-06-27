@@ -142,7 +142,7 @@ def main():
               "// python-api/scripts/build_color_anchors.py — DO NOT EDIT.\n"
               "// The single colour-family exemplar set, shared with the backend.\n\n"
               "export interface ColorAnchors {\n"
-              "  thresholds: { black_l: number };\n"
+              "  thresholds: Record<string, number>;\n"
               "  neutrals: string[];\n"
               "  metallic_fallback: string[];\n"
               "  families: Record<string, number[][]>;\n"
