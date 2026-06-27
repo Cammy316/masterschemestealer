@@ -34,8 +34,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install engine deps
-        run: pip install -r requirements.txt
+      - name: Install classifier deps
+        # Only what core.color_engine imports — and opencv-python-HEADLESS so the
+        # headless runner doesn't need libGL (the full requirements.txt pulls the
+        # GUI opencv-python plus heavy ML deps this unit test never uses).
+        run: pip install pytest numpy scipy scikit-image scikit-learn opencv-python-headless
       - name: Run colour-family fixtures (Python)
         run: python -m pytest tests/test_color_family_fixtures.py -q
 
