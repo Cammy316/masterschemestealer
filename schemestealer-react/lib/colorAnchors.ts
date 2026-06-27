@@ -3,7 +3,7 @@
 // The single colour-family exemplar set, shared with the backend.
 
 export interface ColorAnchors {
-  thresholds: { black_l: number };
+  thresholds: Record<string, number>;
   neutrals: string[];
   metallic_fallback: string[];
   families: Record<string, number[][]>;
