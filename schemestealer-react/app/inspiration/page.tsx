@@ -213,26 +213,41 @@ export default function InspirationPage() {
 
       {/* Instructions */}
       <motion.div
-        className="max-w-2xl mx-auto px-4 mt-8"
+        className="max-w-2xl mx-auto px-4 mt-8 relative"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.6 }}
       >
         <div
-          className="rounded-lg p-4 text-sm"
+          className="rounded-lg p-4 text-sm relative overflow-hidden group shadow-[0_0_15px_rgba(139,92,246,0.15)]"
           style={{
-            background: 'linear-gradient(135deg, var(--cosmic-purple), var(--void-blue))',
+            background: 'linear-gradient(135deg, rgba(30,27,75,0.8), rgba(15,15,35,0.9))',
             border: '1px solid var(--warp-purple)',
           }}
         >
-          <h3 className="font-bold mb-2 text-white gothic-text text-center">
-            ◆ CHANNELING GUIDANCE ◆
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(139,92,246,0.15)_0%,transparent_70%)] pointer-events-none" />
+          <h3 className="font-bold mb-3 text-warp-purple-light gothic-text text-center text-shadow-sm flex items-center justify-center gap-2">
+            <span className="text-warp-purple-light/50 text-xs">◆</span>
+            CHANNELING GUIDANCE
+            <span className="text-warp-purple-light/50 text-xs">◆</span>
           </h3>
-          <ul className="space-y-1 text-white/80 text-xs font-medium">
-            <li>• Upload any image: artwork, sunsets, photographs, landscapes</li>
-            <li>• The Warp will extract 5-8 dominant hues from your offering</li>
-            <li>• Receive paint recommendations to manifest these colors</li>
-            <li>• No background removal - the entire image feeds the ritual</li>
+          <ul className="space-y-2 text-warp-purple-light/90 text-xs font-medium relative z-10 pl-2 mx-4" style={{ borderLeft: '1px solid rgba(139,92,246,0.3)' }}>
+            <li className="flex items-start gap-2">
+              <span className="text-warp-purple-light/50 mt-0.5 text-[10px]">✧</span>
+              Upload any image: artwork, sunsets, photographs, landscapes
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-warp-purple-light/50 mt-0.5 text-[10px]">✧</span>
+              The Warp will extract 5-8 dominant hues from your offering
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-warp-purple-light/50 mt-0.5 text-[10px]">✧</span>
+              Receive paint recommendations to manifest these colors
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-warp-purple-light/50 mt-0.5 text-[10px]">✧</span>
+              No background removal - the entire image feeds the ritual
+            </li>
           </ul>
         </div>
       </motion.div>

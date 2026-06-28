@@ -275,15 +275,30 @@ export default function MiniscanPage() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.4 }}
       >
-        <div className="parchment-bg rounded-lg p-4 text-sm">
-          <h3 className="font-bold mb-2 text-void-black gothic-text text-center">
-            ⚙ OPERATIONAL GUIDANCE ⚙
+        <div className="rounded-lg p-4 text-sm border border-cogitator-green/30 bg-black/60 relative overflow-hidden group shadow-[0_0_15px_rgba(0,255,65,0.05)]">
+          <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,255,65,0.03)_2px,rgba(0,255,65,0.03)_4px)] pointer-events-none" />
+          <h3 className="font-bold mb-3 text-cogitator-green cyber-text text-center text-shadow-sm flex items-center justify-center gap-2">
+            <span className="text-cogitator-green/60">⚙</span>
+            OPERATIONAL GUIDANCE
+            <span className="text-cogitator-green/60">⚙</span>
           </h3>
-          <ul className="space-y-1 text-void-black/80 tech-text text-xs">
-            <li>• Ensure adequate illumination for optimal pict-capture</li>
-            <li>• Center miniature within targeting reticle</li>
-            <li>• Avoid reflective surfaces that may confuse the auspex</li>
-            <li>• For best results, photograph against neutral background</li>
+          <ul className="space-y-2 text-cogitator-green/80 tech-text text-xs relative z-10 pl-2 border-l border-cogitator-green/20 mx-4">
+            <li className="flex items-start gap-2">
+              <span className="text-cogitator-green/50 mt-0.5">{'>'}</span>
+              Ensure adequate illumination for optimal pict-capture
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-cogitator-green/50 mt-0.5">{'>'}</span>
+              Center miniature within targeting reticle
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-cogitator-green/50 mt-0.5">{'>'}</span>
+              Avoid reflective surfaces that may confuse the auspex
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-cogitator-green/50 mt-0.5">{'>'}</span>
+              For best results, photograph against neutral background
+            </li>
           </ul>
         </div>
       </motion.div>
