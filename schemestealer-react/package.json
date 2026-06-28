@@ -11,6 +11,8 @@
     "postinstall": "node scripts/patch-tailwind-postcss.js"
   },
   "dependencies": {
+    "@emnapi/core": "^1.11.1",
+    "@emnapi/runtime": "^1.11.1",
     "@headlessui/react": "^2.2.9",
     "@imgly/background-removal": "^1.7.0",
     "framer-motion": "^12.27.2",
