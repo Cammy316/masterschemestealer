@@ -3,7 +3,13 @@
  */
 
 import { ModeSelector } from '@/components/ModeSelector';
+import { AdMechBackground } from '@/components/shared/AdMechBackground';
 
 export default function Home() {
-  return <ModeSelector />;
+  return (
+    <>
+      <AdMechBackground />
+      <ModeSelector />
+    </>
+  );
 }
