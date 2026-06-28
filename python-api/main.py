@@ -29,7 +29,7 @@ from fastapi.responses import JSONResponse
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 Image.MAX_IMAGE_PIXELS = 25_000_000  # Prevent Decompression Bomb OOM crashes (max ~25 megapixels)
 import numpy as np
 from typing import List, Dict, Any
@@ -211,6 +211,9 @@ async def scan_miniature(request: Request, file: UploadFile = File(...)):
         logger.info(f"Miniature scan complete: {len(result['colors'])} colors detected")
         return JSONResponse(content=result)
 
+    except UnidentifiedImageError:
+        logger.warning(f"Invalid image file uploaded: {file.filename}")
+        raise HTTPException(status_code=400, detail="Invalid image file format.")
     except HTTPException:
         raise
     except Exception as e:
@@ -242,6 +245,9 @@ async def scan_inspiration(request: Request, file: UploadFile = File(...)):
         logger.info(f"Inspiration scan complete: {len(result['colors'])} colors detected")
         return JSONResponse(content=result)
 
+    except UnidentifiedImageError:
+        logger.warning(f"Invalid image file uploaded: {file.filename}")
+        raise HTTPException(status_code=400, detail="Invalid image file format.")
     except HTTPException:
         raise
     except Exception as e:

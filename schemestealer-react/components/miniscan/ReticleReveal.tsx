@@ -131,13 +131,11 @@ export function ReticleReveal({
       {/* Reveal Button - The magic moment trigger */}
       <motion.button
         onClick={handleReveal}
-        className="w-full py-4 px-6 rounded-lg relative overflow-hidden touch-target"
-        style={{
-          background: isRevealed
-            ? 'linear-gradient(135deg, var(--cogitator-green-dark), var(--cogitator-green-dim))'
-            : 'linear-gradient(135deg, var(--dark-gothic), var(--charcoal))',
-          border: `2px solid ${isRevealed ? 'var(--cogitator-green)' : 'var(--brass)'}`,
-        }}
+        className={`w-full py-4 px-6 rounded-lg relative overflow-hidden touch-target border-2 ${
+          isRevealed 
+            ? 'bg-gradient-to-br from-cogitator-green-dark to-cogitator-green-dim border-cogitator-green' 
+            : 'bg-gradient-to-br from-dark-gothic to-charcoal border-brass'
+        }`}
         whileHover={{
           scale: 1.02,
           boxShadow: isRevealed
@@ -233,10 +231,7 @@ export function ReticleReveal({
         {/* Pulse effect when revealed */}
         {isRevealed && (
           <motion.div
-            className="absolute inset-0 rounded-lg"
-            style={{
-              border: '2px solid var(--cogitator-green)',
-            }}
+            className="absolute inset-0 rounded-lg border-2 border-cogitator-green"
             animate={{
               scale: [1, 1.05, 1],
               opacity: [0.3, 0, 0.3],
@@ -410,12 +405,7 @@ export function ReticleReveal({
                   </div>
                 ) : (
                   /* Fallback if no reticle image */
-                  <div className="p-8 text-center textured" style={{
-                    background: 'linear-gradient(135deg, #1a1500 0%, #0d0a00 100%)',
-                    border: '1px solid rgba(255, 170, 0, 0.3)',
-                    borderLeft: '3px solid #ffaa00',
-                    borderRadius: '8px'
-                  }}>
+                  <div className="p-8 text-center textured bg-gradient-to-br from-[#1a1500] to-[#0d0a00] border border-[#ffaa00]/30 border-l-[3px] border-l-[#ffaa00] rounded-lg">
                     {/* Warning icon - stylized skull instead of emoji */}
                     <div className="mb-4 flex justify-center">
                       <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ffaa00" strokeWidth="1.5">
@@ -438,11 +428,7 @@ export function ReticleReveal({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 1 }}
-                  className="px-4 py-3 flex items-center justify-between"
-                  style={{
-                    background: 'linear-gradient(to bottom, var(--dark-gothic), var(--void-black))',
-                    borderTop: '1px solid var(--brass)',
-                  }}
+                  className="px-4 py-3 flex items-center justify-between bg-gradient-to-b from-dark-gothic to-void-black border-t border-brass"
                 >
                   <div className="flex items-center gap-2">
                     <div

@@ -466,8 +466,7 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
         {/* Canvas particle system with trails */}
         <canvas
           ref={canvasRef}
-          className="absolute inset-0 w-full h-full rounded-full pointer-events-none"
-          style={{ mixBlendMode: 'screen' }}
+          className="absolute inset-0 w-full h-full rounded-full pointer-events-none mix-blend-screen"
         />
 
         {/* Layer 7: Center text - dynamic based on state */}

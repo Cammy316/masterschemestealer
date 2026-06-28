@@ -243,3 +243,18 @@ def test_match_color_wash_returns_wash_category(paint_matcher_live, brand):
     assert result.type.lower() in _WASH_CATS, (
         f"Returned paint has type {result.type!r}, expected a wash category"
     )
+
+def test_neutral_colors_bypass_hue_shift():
+    from core.recipe_geometry import target_lab
+    # Very dark, neutral grey (chroma near 0)
+    black_lab = (5.0, 0.1, 0.1)
+    
+    hlt_lab = target_lab(black_lab, "highlight")
+    
+    # L must strictly increase for a highlight
+    assert hlt_lab[0] > black_lab[0]
+    
+    # Hue shift is bypassed, so 'a' and 'b' remain nearly identical to their original small values
+    # (they are re-calculated from the non-shifted angle, preserving small chroma)
+    assert abs(hlt_lab[1] - 0.1) < 1e-5
+    assert abs(hlt_lab[2] - 0.1) < 1e-5

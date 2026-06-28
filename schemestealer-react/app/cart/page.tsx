@@ -155,6 +155,13 @@ export default function CartPage() {
                 <p className="text-xs text-brass/70 text-center mb-4 tech-text">
                   Acquire your paints from these vetted supply depots ({selectedRegion.toUpperCase()})
                 </p>
+                
+                {/* ASA Affiliate Disclosure */}
+                <div className="mb-4 p-2 border border-brass/30 bg-brass/5 rounded text-center">
+                  <p className="text-[10px] text-brass/60 uppercase">
+                    Commissions may be earned from links on this page.
+                  </p>
+                </div>
 
                 <div className="space-y-2">
                   {merchants.map((merchant, index) => (

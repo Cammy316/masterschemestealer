@@ -47,6 +47,15 @@ export const useAppStore = create<AppStore>()(
       setMode: (mode: ScanMode) => set({ currentMode: mode, error: null }),
 
       setScanResult: (result: ScanResult) => {
+        // Prevent race condition: if user switched modes while scan was pending, discard result
+        const currentMode = get().currentMode;
+        if (currentMode && currentMode !== result.mode) {
+          if (process.env.NODE_ENV === 'development') {
+             console.warn(`Discarding scan result for ${result.mode} because UI shifted to ${currentMode}`);
+          }
+          return;
+        }
+
         // Revoke the previous scan's object URL before it is replaced so blob
         // URLs from earlier scans don't leak for the lifetime of the tab.
         revokeBlobUrl(get().currentScan?.imageUrl ?? undefined);

@@ -12164,3 +12164,511 @@
 2026-04-21 21:04:01,329 - SchemeStealer - INFO -   Green: 6.9% (conf=0.70)
 2026-04-21 21:04:01,329 - SchemeStealer - INFO -   Yellow: 4.3% (conf=0.64)
 2026-04-21 21:04:01,329 - SchemeStealer - INFO -   Pink: 4.0% (conf=0.58)
+2026-06-28 15:00:03,032 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 15:00:03,035 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-06-28 15:00:03,035 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 15:00:03,048 - SchemeStealer - INFO - Loaded 1312 paints from paints_groundtruth.json (1312 matchable)
+2026-06-28 15:00:03,049 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (vectorised CIEDE2000)
+2026-06-28 15:00:03,061 - SchemeStealer - INFO - Engine initialization complete - ML features enabled (4723 recipe edges)
+2026-06-28 15:00:03,066 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 15:00:03,066 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-06-28 15:00:03,066 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 15:00:03,078 - SchemeStealer - INFO - Loaded 1312 paints from paints_groundtruth.json (1312 matchable)
+2026-06-28 15:00:03,079 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (vectorised CIEDE2000)
+2026-06-28 15:00:03,091 - SchemeStealer - INFO - Engine initialization complete - ML features enabled (4723 recipe edges)
+2026-06-28 15:00:03,139 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 15:00:03,443 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 15:00:03,452 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 15:00:30,514 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 15:00:30,514 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-06-28 15:00:30,514 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 15:00:30,526 - SchemeStealer - INFO - Loaded 1312 paints from paints_groundtruth.json (1312 matchable)
+2026-06-28 15:00:30,528 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (vectorised CIEDE2000)
+2026-06-28 15:00:30,539 - SchemeStealer - INFO - Engine initialization complete - ML features enabled (4723 recipe edges)
+2026-06-28 15:00:30,543 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 15:00:30,543 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-06-28 15:00:30,543 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 15:00:30,554 - SchemeStealer - INFO - Loaded 1312 paints from paints_groundtruth.json (1312 matchable)
+2026-06-28 15:00:30,557 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (vectorised CIEDE2000)
+2026-06-28 15:00:30,568 - SchemeStealer - INFO - Engine initialization complete - ML features enabled (4723 recipe edges)
+2026-06-28 15:00:30,584 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 15:00:30,586 - SchemeStealer - INFO - Overexposure corrected
+2026-06-28 15:00:30,667 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-28 15:00:30,889 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 15:00:30,890 - SchemeStealer - WARNING - Blurry image detected
+2026-06-28 15:00:30,891 - SchemeStealer - INFO - Overexposure corrected
+2026-06-28 15:00:30,891 - SchemeStealer - INFO - Photo quality score: 45/100 (Fair)
+2026-06-28 15:00:30,906 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 15:00:30,908 - SchemeStealer - INFO - Glare detected and corrected
+2026-06-28 15:00:30,908 - SchemeStealer - INFO - Overexposure corrected
+2026-06-28 15:00:30,909 - SchemeStealer - INFO - Photo quality score: 55/100 (Fair)
+2026-06-28 15:00:30,925 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 15:00:30,926 - SchemeStealer - INFO - Glare detected and corrected
+2026-06-28 15:00:30,926 - SchemeStealer - INFO - Overexposure corrected
+2026-06-28 15:00:30,927 - SchemeStealer - INFO - Photo quality score: 55/100 (Fair)
+2026-06-28 15:01:20,525 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 15:01:20,525 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-06-28 15:01:20,525 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 15:01:20,537 - SchemeStealer - INFO - Loaded 1312 paints from paints_groundtruth.json (1312 matchable)
+2026-06-28 15:01:20,538 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (vectorised CIEDE2000)
+2026-06-28 15:01:20,551 - SchemeStealer - INFO - Engine initialization complete - ML features enabled (4723 recipe edges)
+2026-06-28 15:01:20,554 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 15:01:20,554 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-06-28 15:01:20,555 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 15:01:20,566 - SchemeStealer - INFO - Loaded 1312 paints from paints_groundtruth.json (1312 matchable)
+2026-06-28 15:01:20,568 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (vectorised CIEDE2000)
+2026-06-28 15:01:20,580 - SchemeStealer - INFO - Engine initialization complete - ML features enabled (4723 recipe edges)
+2026-06-28 15:01:20,598 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 15:01:20,600 - SchemeStealer - INFO - Overexposure corrected
+2026-06-28 15:01:20,683 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-28 15:01:20,693 - SchemeStealer - INFO - Starting base detection v2.0 on 300x300 image
+2026-06-28 15:01:20,912 - SchemeStealer - INFO - Base detection complete: removed 20.0% as base material
+2026-06-28 15:01:20,912 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-28 15:01:20,933 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-28 15:01:21,245 - SchemeStealer - INFO - After shadow filtering: 8 clusters remain
+2026-06-28 15:01:21,245 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Red'
+2026-06-28 15:01:21,246 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Brown'
+2026-06-28 15:01:21,246 - SchemeStealer - INFO - Final: 3 major + 0 details
+2026-06-28 15:01:21,246 - SchemeStealer - INFO -   White: 82.2% (conf=0.55)
+2026-06-28 15:01:21,246 - SchemeStealer - INFO -   Brown: 10.9% (conf=0.91)
+2026-06-28 15:01:21,246 - SchemeStealer - INFO -   Red: 6.9% (conf=0.95)
+2026-06-28 15:01:21,506 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 15:01:21,507 - SchemeStealer - WARNING - Blurry image detected
+2026-06-28 15:01:21,509 - SchemeStealer - INFO - Overexposure corrected
+2026-06-28 15:01:21,509 - SchemeStealer - INFO - Photo quality score: 45/100 (Fair)
+2026-06-28 15:01:21,518 - SchemeStealer - INFO - Starting base detection v2.0 on 300x300 image
+2026-06-28 15:01:21,523 - SchemeStealer - INFO - Base detection complete: removed 20.0% as base material
+2026-06-28 15:01:21,523 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-28 15:01:21,548 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-28 15:01:21,833 - SchemeStealer - INFO - After shadow filtering: 10 clusters remain
+2026-06-28 15:01:21,833 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Brown'
+2026-06-28 15:01:21,834 - SchemeStealer - INFO - Deduplicating 4 clusters of family 'Red'
+2026-06-28 15:01:21,834 - SchemeStealer - INFO - Final: 4 major + 2 details
+2026-06-28 15:01:21,834 - SchemeStealer - INFO -   White: 81.6% (conf=0.55)
+2026-06-28 15:01:21,834 - SchemeStealer - INFO -   Red: 8.8% (conf=0.93)
+2026-06-28 15:01:21,834 - SchemeStealer - INFO -   Brown: 5.7% (conf=0.80)
+2026-06-28 15:01:21,835 - SchemeStealer - INFO -   Black: 3.4% (conf=0.76)
+2026-06-28 15:01:21,835 - SchemeStealer - INFO -   Grey: 0.3% (conf=0.60)
+2026-06-28 15:01:21,835 - SchemeStealer - INFO -   Pink: 0.3% (conf=0.85)
+2026-06-28 15:01:21,920 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 15:01:21,922 - SchemeStealer - INFO - Glare detected and corrected
+2026-06-28 15:01:21,923 - SchemeStealer - INFO - Overexposure corrected
+2026-06-28 15:01:21,924 - SchemeStealer - INFO - Photo quality score: 55/100 (Fair)
+2026-06-28 15:01:21,933 - SchemeStealer - INFO - Starting base detection v2.0 on 300x300 image
+2026-06-28 15:01:21,938 - SchemeStealer - INFO - Base detection complete: removed 20.0% as base material
+2026-06-28 15:01:21,938 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-28 15:01:21,959 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-28 15:01:22,768 - SchemeStealer - INFO - After shadow filtering: 15 clusters remain
+2026-06-28 15:01:22,768 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Purple'
+2026-06-28 15:01:22,768 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Red'
+2026-06-28 15:01:22,768 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Cyan'
+2026-06-28 15:01:22,768 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-28 15:01:22,768 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Grey'
+2026-06-28 15:01:22,768 - SchemeStealer - INFO - Final: 9 major + 0 details
+2026-06-28 15:01:22,768 - SchemeStealer - INFO -   Cyan: 16.8% (conf=0.71)
+2026-06-28 15:01:22,768 - SchemeStealer - INFO -   Purple: 15.3% (conf=0.81)
+2026-06-28 15:01:22,768 - SchemeStealer - INFO -   Pink: 14.0% (conf=0.71)
+2026-06-28 15:01:22,768 - SchemeStealer - INFO -   Red: 13.0% (conf=0.89)
+2026-06-28 15:01:22,769 - SchemeStealer - INFO -   Grey: 12.0% (conf=0.61)
+2026-06-28 15:01:22,769 - SchemeStealer - INFO -   White: 9.3% (conf=0.57)
+2026-06-28 15:01:22,769 - SchemeStealer - INFO -   Bone: 7.6% (conf=0.72)
+2026-06-28 15:01:22,769 - SchemeStealer - INFO -   Blue: 6.9% (conf=0.69)
+2026-06-28 15:01:22,769 - SchemeStealer - INFO -   Brown: 5.1% (conf=0.95)
+2026-06-28 15:01:22,969 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 15:01:22,971 - SchemeStealer - INFO - Glare detected and corrected
+2026-06-28 15:01:22,972 - SchemeStealer - INFO - Overexposure corrected
+2026-06-28 15:01:22,973 - SchemeStealer - INFO - Photo quality score: 55/100 (Fair)
+2026-06-28 15:01:22,980 - SchemeStealer - INFO - Starting base detection v2.0 on 300x300 image
+2026-06-28 15:01:22,985 - SchemeStealer - INFO - Base detection complete: removed 20.0% as base material
+2026-06-28 15:01:22,985 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-28 15:01:23,004 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-28 15:01:23,294 - SchemeStealer - INFO - After shadow filtering: 8 clusters remain
+2026-06-28 15:01:23,294 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Brown'
+2026-06-28 15:01:23,294 - SchemeStealer - INFO - Deduplicating 4 clusters of family 'Red'
+2026-06-28 15:01:23,294 - SchemeStealer - INFO - Final: 3 major + 0 details
+2026-06-28 15:01:23,294 - SchemeStealer - INFO -   White: 82.2% (conf=0.55)
+2026-06-28 15:01:23,294 - SchemeStealer - INFO -   Red: 12.1% (conf=0.95)
+2026-06-28 15:01:23,294 - SchemeStealer - INFO -   Brown: 5.8% (conf=0.90)
+2026-06-28 15:02:17,943 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 15:02:17,943 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-06-28 15:02:17,943 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 15:02:17,955 - SchemeStealer - INFO - Loaded 1312 paints from paints_groundtruth.json (1312 matchable)
+2026-06-28 15:02:17,956 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (vectorised CIEDE2000)
+2026-06-28 15:02:17,968 - SchemeStealer - INFO - Engine initialization complete - ML features enabled (4723 recipe edges)
+2026-06-28 15:02:17,972 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 15:02:17,972 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-06-28 15:02:17,972 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 15:02:17,983 - SchemeStealer - INFO - Loaded 1312 paints from paints_groundtruth.json (1312 matchable)
+2026-06-28 15:02:17,986 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (vectorised CIEDE2000)
+2026-06-28 15:02:17,998 - SchemeStealer - INFO - Engine initialization complete - ML features enabled (4723 recipe edges)
+2026-06-28 15:02:18,014 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 15:02:18,017 - SchemeStealer - INFO - Overexposure corrected
+2026-06-28 15:02:18,099 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-28 15:02:18,109 - SchemeStealer - INFO - Starting base detection v2.0 on 300x300 image
+2026-06-28 15:02:18,133 - SchemeStealer - INFO - Base detection complete: removed 20.0% as base material
+2026-06-28 15:02:18,133 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-28 15:02:18,153 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-28 15:02:18,464 - SchemeStealer - INFO - After shadow filtering: 8 clusters remain
+2026-06-28 15:02:18,464 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Red'
+2026-06-28 15:02:18,464 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Brown'
+2026-06-28 15:02:18,464 - SchemeStealer - INFO - Final: 3 major + 0 details
+2026-06-28 15:02:18,464 - SchemeStealer - INFO -   White: 82.2% (conf=0.55)
+2026-06-28 15:02:18,464 - SchemeStealer - INFO -   Brown: 10.9% (conf=0.91)
+2026-06-28 15:02:18,464 - SchemeStealer - INFO -   Red: 6.9% (conf=0.95)
+2026-06-28 15:02:18,725 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 15:02:18,727 - SchemeStealer - WARNING - Blurry image detected
+2026-06-28 15:02:18,728 - SchemeStealer - INFO - Overexposure corrected
+2026-06-28 15:02:18,729 - SchemeStealer - INFO - Photo quality score: 45/100 (Fair)
+2026-06-28 15:02:18,738 - SchemeStealer - INFO - Starting base detection v2.0 on 300x300 image
+2026-06-28 15:02:18,743 - SchemeStealer - INFO - Base detection complete: removed 20.0% as base material
+2026-06-28 15:02:18,743 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-28 15:02:18,762 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-28 15:02:19,057 - SchemeStealer - INFO - After shadow filtering: 10 clusters remain
+2026-06-28 15:02:19,057 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Brown'
+2026-06-28 15:02:19,057 - SchemeStealer - INFO - Deduplicating 4 clusters of family 'Red'
+2026-06-28 15:02:19,058 - SchemeStealer - INFO - Final: 4 major + 2 details
+2026-06-28 15:02:19,058 - SchemeStealer - INFO -   White: 81.6% (conf=0.55)
+2026-06-28 15:02:19,058 - SchemeStealer - INFO -   Red: 8.8% (conf=0.93)
+2026-06-28 15:02:19,058 - SchemeStealer - INFO -   Brown: 5.7% (conf=0.80)
+2026-06-28 15:02:19,058 - SchemeStealer - INFO -   Black: 3.4% (conf=0.76)
+2026-06-28 15:02:19,058 - SchemeStealer - INFO -   Grey: 0.3% (conf=0.60)
+2026-06-28 15:02:19,058 - SchemeStealer - INFO -   Pink: 0.3% (conf=0.85)
+2026-06-28 15:02:19,147 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 15:02:19,149 - SchemeStealer - INFO - Glare detected and corrected
+2026-06-28 15:02:19,150 - SchemeStealer - INFO - Overexposure corrected
+2026-06-28 15:02:19,151 - SchemeStealer - INFO - Photo quality score: 55/100 (Fair)
+2026-06-28 15:02:19,181 - SchemeStealer - INFO - Starting base detection v2.0 on 300x300 image
+2026-06-28 15:02:19,188 - SchemeStealer - INFO - Base detection complete: removed 20.0% as base material
+2026-06-28 15:02:19,188 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-28 15:02:19,211 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-28 15:02:20,252 - SchemeStealer - INFO - After shadow filtering: 15 clusters remain
+2026-06-28 15:02:20,252 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Purple'
+2026-06-28 15:02:20,252 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Cyan'
+2026-06-28 15:02:20,252 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Red'
+2026-06-28 15:02:20,252 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-28 15:02:20,253 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'White'
+2026-06-28 15:02:20,253 - SchemeStealer - INFO - Final: 9 major + 0 details
+2026-06-28 15:02:20,253 - SchemeStealer - INFO -   Cyan: 17.3% (conf=0.71)
+2026-06-28 15:02:20,253 - SchemeStealer - INFO -   White: 16.4% (conf=0.60)
+2026-06-28 15:02:20,253 - SchemeStealer - INFO -   Purple: 15.7% (conf=0.81)
+2026-06-28 15:02:20,253 - SchemeStealer - INFO -   Pink: 13.8% (conf=0.71)
+2026-06-28 15:02:20,253 - SchemeStealer - INFO -   Red: 12.7% (conf=0.90)
+2026-06-28 15:02:20,253 - SchemeStealer - INFO -   Bone: 7.4% (conf=0.72)
+2026-06-28 15:02:20,253 - SchemeStealer - INFO -   Blue: 6.3% (conf=0.69)
+2026-06-28 15:02:20,253 - SchemeStealer - INFO -   Grey: 5.3% (conf=0.56)
+2026-06-28 15:02:20,253 - SchemeStealer - INFO -   Brown: 5.1% (conf=0.95)
+2026-06-28 15:02:20,469 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 15:02:20,472 - SchemeStealer - INFO - Glare detected and corrected
+2026-06-28 15:02:20,473 - SchemeStealer - INFO - Overexposure corrected
+2026-06-28 15:02:20,474 - SchemeStealer - INFO - Photo quality score: 55/100 (Fair)
+2026-06-28 15:02:20,486 - SchemeStealer - INFO - Starting base detection v2.0 on 300x300 image
+2026-06-28 15:02:20,491 - SchemeStealer - INFO - Base detection complete: removed 20.0% as base material
+2026-06-28 15:02:20,491 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-28 15:02:20,510 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-28 15:02:20,818 - SchemeStealer - INFO - After shadow filtering: 8 clusters remain
+2026-06-28 15:02:20,818 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Brown'
+2026-06-28 15:02:20,818 - SchemeStealer - INFO - Deduplicating 4 clusters of family 'Red'
+2026-06-28 15:02:20,818 - SchemeStealer - INFO - Final: 3 major + 0 details
+2026-06-28 15:02:20,818 - SchemeStealer - INFO -   White: 82.2% (conf=0.55)
+2026-06-28 15:02:20,818 - SchemeStealer - INFO -   Red: 12.1% (conf=0.95)
+2026-06-28 15:02:20,818 - SchemeStealer - INFO -   Brown: 5.8% (conf=0.90)
+2026-06-28 15:03:40,557 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 15:03:40,557 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-06-28 15:03:40,557 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 15:03:40,569 - SchemeStealer - INFO - Loaded 1312 paints from paints_groundtruth.json (1312 matchable)
+2026-06-28 15:03:40,570 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (vectorised CIEDE2000)
+2026-06-28 15:03:40,582 - SchemeStealer - INFO - Engine initialization complete - ML features enabled (4723 recipe edges)
+2026-06-28 15:03:40,586 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 15:03:40,586 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-06-28 15:03:40,586 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 15:03:40,598 - SchemeStealer - INFO - Loaded 1312 paints from paints_groundtruth.json (1312 matchable)
+2026-06-28 15:03:40,600 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (vectorised CIEDE2000)
+2026-06-28 15:03:40,612 - SchemeStealer - INFO - Engine initialization complete - ML features enabled (4723 recipe edges)
+2026-06-28 15:03:40,643 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 15:03:40,646 - SchemeStealer - INFO - Overexposure corrected
+2026-06-28 15:03:40,727 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-28 15:03:40,736 - SchemeStealer - INFO - Starting base detection v2.0 on 300x300 image
+2026-06-28 15:03:40,760 - SchemeStealer - INFO - Base detection complete: removed 20.0% as base material
+2026-06-28 15:03:40,760 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-28 15:03:40,778 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-28 15:03:41,083 - SchemeStealer - INFO - After shadow filtering: 8 clusters remain
+2026-06-28 15:03:41,084 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Red'
+2026-06-28 15:03:41,084 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Brown'
+2026-06-28 15:03:41,084 - SchemeStealer - INFO - Final: 3 major + 0 details
+2026-06-28 15:03:41,084 - SchemeStealer - INFO -   White: 82.2% (conf=0.55)
+2026-06-28 15:03:41,084 - SchemeStealer - INFO -   Brown: 10.9% (conf=0.91)
+2026-06-28 15:03:41,084 - SchemeStealer - INFO -   Red: 6.9% (conf=0.95)
+2026-06-28 15:03:41,351 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 15:03:41,352 - SchemeStealer - WARNING - Blurry image detected
+2026-06-28 15:03:41,353 - SchemeStealer - INFO - Overexposure corrected
+2026-06-28 15:03:41,354 - SchemeStealer - INFO - Photo quality score: 45/100 (Fair)
+2026-06-28 15:03:41,362 - SchemeStealer - INFO - Starting base detection v2.0 on 300x300 image
+2026-06-28 15:03:41,367 - SchemeStealer - INFO - Base detection complete: removed 20.0% as base material
+2026-06-28 15:03:41,367 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-28 15:03:41,385 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-28 15:03:41,669 - SchemeStealer - INFO - After shadow filtering: 10 clusters remain
+2026-06-28 15:03:41,670 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Brown'
+2026-06-28 15:03:41,670 - SchemeStealer - INFO - Deduplicating 4 clusters of family 'Red'
+2026-06-28 15:03:41,670 - SchemeStealer - INFO - Final: 4 major + 2 details
+2026-06-28 15:03:41,671 - SchemeStealer - INFO -   White: 81.6% (conf=0.55)
+2026-06-28 15:03:41,671 - SchemeStealer - INFO -   Red: 8.8% (conf=0.93)
+2026-06-28 15:03:41,671 - SchemeStealer - INFO -   Brown: 5.7% (conf=0.80)
+2026-06-28 15:03:41,671 - SchemeStealer - INFO -   Black: 3.4% (conf=0.76)
+2026-06-28 15:03:41,671 - SchemeStealer - INFO -   Grey: 0.3% (conf=0.60)
+2026-06-28 15:03:41,671 - SchemeStealer - INFO -   Pink: 0.3% (conf=0.85)
+2026-06-28 15:03:41,777 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 15:03:41,780 - SchemeStealer - INFO - Glare detected and corrected
+2026-06-28 15:03:41,780 - SchemeStealer - INFO - Overexposure corrected
+2026-06-28 15:03:41,781 - SchemeStealer - INFO - Photo quality score: 55/100 (Fair)
+2026-06-28 15:03:41,789 - SchemeStealer - INFO - Starting base detection v2.0 on 300x300 image
+2026-06-28 15:03:41,794 - SchemeStealer - INFO - Base detection complete: removed 20.0% as base material
+2026-06-28 15:03:41,794 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-28 15:03:41,813 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-28 15:03:42,647 - SchemeStealer - INFO - After shadow filtering: 15 clusters remain
+2026-06-28 15:03:42,647 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Red'
+2026-06-28 15:03:42,648 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Purple'
+2026-06-28 15:03:42,648 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Cyan'
+2026-06-28 15:03:42,648 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Grey'
+2026-06-28 15:03:42,648 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-28 15:03:42,648 - SchemeStealer - INFO - Final: 9 major + 0 details
+2026-06-28 15:03:42,648 - SchemeStealer - INFO -   Cyan: 16.5% (conf=0.71)
+2026-06-28 15:03:42,648 - SchemeStealer - INFO -   Purple: 16.1% (conf=0.81)
+2026-06-28 15:03:42,648 - SchemeStealer - INFO -   Pink: 13.9% (conf=0.71)
+2026-06-28 15:03:42,648 - SchemeStealer - INFO -   Red: 12.8% (conf=0.90)
+2026-06-28 15:03:42,648 - SchemeStealer - INFO -   Grey: 12.0% (conf=0.61)
+2026-06-28 15:03:42,648 - SchemeStealer - INFO -   White: 9.3% (conf=0.57)
+2026-06-28 15:03:42,648 - SchemeStealer - INFO -   Bone: 7.4% (conf=0.71)
+2026-06-28 15:03:42,648 - SchemeStealer - INFO -   Blue: 6.7% (conf=0.67)
+2026-06-28 15:03:42,648 - SchemeStealer - INFO -   Brown: 5.3% (conf=0.95)
+2026-06-28 15:03:42,856 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 15:03:42,859 - SchemeStealer - INFO - Glare detected and corrected
+2026-06-28 15:03:42,860 - SchemeStealer - INFO - Overexposure corrected
+2026-06-28 15:03:42,860 - SchemeStealer - INFO - Photo quality score: 55/100 (Fair)
+2026-06-28 15:03:42,882 - SchemeStealer - INFO - Starting base detection v2.0 on 300x300 image
+2026-06-28 15:03:42,886 - SchemeStealer - INFO - Base detection complete: removed 20.0% as base material
+2026-06-28 15:03:42,887 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-28 15:03:42,905 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-28 15:03:43,189 - SchemeStealer - INFO - After shadow filtering: 8 clusters remain
+2026-06-28 15:03:43,189 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Brown'
+2026-06-28 15:03:43,189 - SchemeStealer - INFO - Deduplicating 4 clusters of family 'Red'
+2026-06-28 15:03:43,189 - SchemeStealer - INFO - Final: 3 major + 0 details
+2026-06-28 15:03:43,189 - SchemeStealer - INFO -   White: 82.2% (conf=0.55)
+2026-06-28 15:03:43,189 - SchemeStealer - INFO -   Red: 12.1% (conf=0.95)
+2026-06-28 15:03:43,189 - SchemeStealer - INFO -   Brown: 5.8% (conf=0.90)
+2026-06-28 15:04:34,572 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 15:04:34,572 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-06-28 15:04:34,572 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 15:04:34,585 - SchemeStealer - INFO - Loaded 1312 paints from paints_groundtruth.json (1312 matchable)
+2026-06-28 15:04:34,586 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (vectorised CIEDE2000)
+2026-06-28 15:04:34,598 - SchemeStealer - INFO - Engine initialization complete - ML features enabled (4723 recipe edges)
+2026-06-28 15:04:34,602 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 15:04:34,602 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-06-28 15:04:34,602 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 15:04:34,614 - SchemeStealer - INFO - Loaded 1312 paints from paints_groundtruth.json (1312 matchable)
+2026-06-28 15:04:34,616 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (vectorised CIEDE2000)
+2026-06-28 15:04:34,636 - SchemeStealer - INFO - Engine initialization complete - ML features enabled (4723 recipe edges)
+2026-06-28 15:04:34,656 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 15:04:34,659 - SchemeStealer - INFO - Overexposure corrected
+2026-06-28 15:04:34,743 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-28 15:04:34,752 - SchemeStealer - INFO - Starting base detection v2.0 on 300x300 image
+2026-06-28 15:04:34,778 - SchemeStealer - INFO - Base detection complete: removed 20.0% as base material
+2026-06-28 15:04:34,778 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-28 15:04:34,797 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-28 15:04:35,114 - SchemeStealer - INFO - After shadow filtering: 8 clusters remain
+2026-06-28 15:04:35,114 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Red'
+2026-06-28 15:04:35,114 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Brown'
+2026-06-28 15:04:35,114 - SchemeStealer - INFO - Final: 3 major + 0 details
+2026-06-28 15:04:35,114 - SchemeStealer - INFO -   White: 82.2% (conf=0.55)
+2026-06-28 15:04:35,114 - SchemeStealer - INFO -   Brown: 10.9% (conf=0.91)
+2026-06-28 15:04:35,114 - SchemeStealer - INFO -   Red: 6.9% (conf=0.95)
+2026-06-28 15:04:35,165 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 15:04:35,167 - SchemeStealer - WARNING - Blurry image detected
+2026-06-28 15:04:35,168 - SchemeStealer - INFO - Overexposure corrected
+2026-06-28 15:04:35,169 - SchemeStealer - INFO - Photo quality score: 45/100 (Fair)
+2026-06-28 15:04:35,182 - SchemeStealer - INFO - Starting base detection v2.0 on 300x300 image
+2026-06-28 15:04:35,188 - SchemeStealer - INFO - Base detection complete: removed 20.0% as base material
+2026-06-28 15:04:35,188 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-28 15:04:35,207 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-28 15:04:35,499 - SchemeStealer - INFO - After shadow filtering: 10 clusters remain
+2026-06-28 15:04:35,499 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Brown'
+2026-06-28 15:04:35,499 - SchemeStealer - INFO - Deduplicating 4 clusters of family 'Red'
+2026-06-28 15:04:35,500 - SchemeStealer - INFO - Final: 4 major + 2 details
+2026-06-28 15:04:35,500 - SchemeStealer - INFO -   White: 81.6% (conf=0.55)
+2026-06-28 15:04:35,500 - SchemeStealer - INFO -   Red: 8.8% (conf=0.93)
+2026-06-28 15:04:35,500 - SchemeStealer - INFO -   Brown: 5.7% (conf=0.80)
+2026-06-28 15:04:35,500 - SchemeStealer - INFO -   Black: 3.4% (conf=0.76)
+2026-06-28 15:04:35,500 - SchemeStealer - INFO -   Grey: 0.3% (conf=0.60)
+2026-06-28 15:04:35,500 - SchemeStealer - INFO -   Pink: 0.3% (conf=0.85)
+2026-06-28 15:04:35,591 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 15:04:35,595 - SchemeStealer - INFO - Glare detected and corrected
+2026-06-28 15:04:35,596 - SchemeStealer - INFO - Overexposure corrected
+2026-06-28 15:04:35,597 - SchemeStealer - INFO - Photo quality score: 55/100 (Fair)
+2026-06-28 15:04:35,616 - SchemeStealer - INFO - Starting base detection v2.0 on 300x300 image
+2026-06-28 15:04:35,621 - SchemeStealer - INFO - Base detection complete: removed 20.0% as base material
+2026-06-28 15:04:35,621 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-28 15:04:35,640 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-28 15:04:36,390 - SchemeStealer - INFO - After shadow filtering: 15 clusters remain
+2026-06-28 15:04:36,390 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-28 15:04:36,390 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Red'
+2026-06-28 15:04:36,390 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Grey'
+2026-06-28 15:04:36,391 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Purple'
+2026-06-28 15:04:36,391 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Cyan'
+2026-06-28 15:04:36,391 - SchemeStealer - INFO - Final: 9 major + 0 details
+2026-06-28 15:04:36,391 - SchemeStealer - INFO -   Cyan: 16.8% (conf=0.71)
+2026-06-28 15:04:36,391 - SchemeStealer - INFO -   Purple: 14.9% (conf=0.82)
+2026-06-28 15:04:36,391 - SchemeStealer - INFO -   Pink: 13.7% (conf=0.71)
+2026-06-28 15:04:36,391 - SchemeStealer - INFO -   Red: 13.0% (conf=0.90)
+2026-06-28 15:04:36,391 - SchemeStealer - INFO -   Grey: 12.0% (conf=0.61)
+2026-06-28 15:04:36,391 - SchemeStealer - INFO -   White: 10.4% (conf=0.57)
+2026-06-28 15:04:36,391 - SchemeStealer - INFO -   Bone: 7.5% (conf=0.71)
+2026-06-28 15:04:36,391 - SchemeStealer - INFO -   Blue: 6.8% (conf=0.69)
+2026-06-28 15:04:36,391 - SchemeStealer - INFO -   Brown: 4.8% (conf=0.95)
+2026-06-28 15:04:36,610 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 15:04:36,613 - SchemeStealer - INFO - Glare detected and corrected
+2026-06-28 15:04:36,614 - SchemeStealer - INFO - Overexposure corrected
+2026-06-28 15:04:36,615 - SchemeStealer - INFO - Photo quality score: 55/100 (Fair)
+2026-06-28 15:04:36,623 - SchemeStealer - INFO - Starting base detection v2.0 on 300x300 image
+2026-06-28 15:04:36,628 - SchemeStealer - INFO - Base detection complete: removed 20.0% as base material
+2026-06-28 15:04:36,628 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-28 15:04:36,648 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-28 15:04:36,934 - SchemeStealer - INFO - After shadow filtering: 8 clusters remain
+2026-06-28 15:04:36,934 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Brown'
+2026-06-28 15:04:36,934 - SchemeStealer - INFO - Deduplicating 4 clusters of family 'Red'
+2026-06-28 15:04:36,934 - SchemeStealer - INFO - Final: 3 major + 0 details
+2026-06-28 15:04:36,934 - SchemeStealer - INFO -   White: 82.2% (conf=0.55)
+2026-06-28 15:04:36,934 - SchemeStealer - INFO -   Red: 12.1% (conf=0.95)
+2026-06-28 15:04:36,934 - SchemeStealer - INFO -   Brown: 5.8% (conf=0.90)
+2026-06-28 20:09:25,726 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (vectorised CIEDE2000)
+2026-06-28 20:09:25,753 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 20:09:25,753 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-06-28 20:09:25,753 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 20:09:25,775 - SchemeStealer - INFO - Loaded 1312 paints from paints_groundtruth.json (1312 matchable)
+2026-06-28 20:09:25,776 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (vectorised CIEDE2000)
+2026-06-28 20:09:25,788 - SchemeStealer - INFO - Engine initialization complete - ML features enabled (4723 recipe edges)
+2026-06-28 20:09:25,792 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 20:09:25,792 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-06-28 20:09:25,792 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 20:09:25,803 - SchemeStealer - INFO - Loaded 1312 paints from paints_groundtruth.json (1312 matchable)
+2026-06-28 20:09:25,805 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (vectorised CIEDE2000)
+2026-06-28 20:09:25,817 - SchemeStealer - INFO - Engine initialization complete - ML features enabled (4723 recipe edges)
+2026-06-28 20:09:25,835 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 20:09:25,862 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 20:09:25,871 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 20:09:26,245 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-06-28 20:09:26,246 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 20:09:26,257 - SchemeStealer - INFO - Loaded 1312 paints from paints_groundtruth.json (1312 matchable)
+2026-06-28 20:09:26,259 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (vectorised CIEDE2000)
+2026-06-28 20:09:26,272 - SchemeStealer - INFO - Engine initialization complete - ML features enabled (4723 recipe edges)
+2026-06-28 20:09:26,276 - SchemeStealer - INFO - Paint matcher initialised: 6/7 matchable paints (vectorised CIEDE2000)
+2026-06-28 20:09:26,281 - SchemeStealer - INFO - Metallic pool empty for Citadel/dominant, falling back to unrestricted candidates
+2026-06-28 20:09:26,282 - SchemeStealer - INFO - Paint matcher initialised: 2/2 matchable paints (vectorised CIEDE2000)
+2026-06-28 20:09:26,282 - SchemeStealer - INFO - Metallic pool empty for TestBrand/dominant, falling back to unrestricted candidates
+2026-06-28 20:09:26,284 - SchemeStealer - INFO - Paint matcher initialised: 2/2 matchable paints (vectorised CIEDE2000)
+2026-06-28 20:09:26,285 - SchemeStealer - INFO - Paint matcher initialised: 2/2 matchable paints (vectorised CIEDE2000)
+2026-06-28 20:09:26,286 - SchemeStealer - INFO - Paint matcher initialised: 2/2 matchable paints (vectorised CIEDE2000)
+2026-06-28 20:09:26,286 - SchemeStealer - INFO - Paint matcher initialised: 3/3 matchable paints (vectorised CIEDE2000)
+2026-06-28 20:09:26,287 - SchemeStealer - INFO - Paint matcher initialised: 2/2 matchable paints (vectorised CIEDE2000)
+2026-06-28 20:11:44,649 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (vectorised CIEDE2000)
+2026-06-28 20:11:44,657 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 20:11:44,657 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-06-28 20:11:44,657 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 20:11:44,669 - SchemeStealer - INFO - Loaded 1312 paints from paints_groundtruth.json (1312 matchable)
+2026-06-28 20:11:44,670 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (vectorised CIEDE2000)
+2026-06-28 20:11:44,691 - SchemeStealer - INFO - Engine initialization complete - ML features enabled (4723 recipe edges)
+2026-06-28 20:11:44,695 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 20:11:44,696 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-06-28 20:11:44,696 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 20:11:44,707 - SchemeStealer - INFO - Loaded 1312 paints from paints_groundtruth.json (1312 matchable)
+2026-06-28 20:11:44,709 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (vectorised CIEDE2000)
+2026-06-28 20:11:44,720 - SchemeStealer - INFO - Engine initialization complete - ML features enabled (4723 recipe edges)
+2026-06-28 20:11:44,739 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 20:11:44,741 - SchemeStealer - INFO - Overexposure corrected
+2026-06-28 20:11:44,824 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-28 20:11:44,834 - SchemeStealer - INFO - Starting base detection v2.0 on 300x300 image
+2026-06-28 20:11:44,862 - SchemeStealer - INFO - Base detection complete: removed 20.0% as base material
+2026-06-28 20:11:44,862 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-28 20:11:44,881 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-28 20:11:45,192 - SchemeStealer - INFO - After shadow filtering: 8 clusters remain
+2026-06-28 20:11:45,193 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Red'
+2026-06-28 20:11:45,193 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Brown'
+2026-06-28 20:11:45,193 - SchemeStealer - INFO - Final: 3 major + 0 details
+2026-06-28 20:11:45,193 - SchemeStealer - INFO -   White: 82.2% (conf=0.55)
+2026-06-28 20:11:45,193 - SchemeStealer - INFO -   Brown: 10.9% (conf=0.91)
+2026-06-28 20:11:45,193 - SchemeStealer - INFO -   Red: 6.9% (conf=0.95)
+2026-06-28 20:11:45,262 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 20:11:45,264 - SchemeStealer - WARNING - Blurry image detected
+2026-06-28 20:11:45,266 - SchemeStealer - INFO - Overexposure corrected
+2026-06-28 20:11:45,267 - SchemeStealer - INFO - Photo quality score: 45/100 (Fair)
+2026-06-28 20:11:45,276 - SchemeStealer - INFO - Starting base detection v2.0 on 300x300 image
+2026-06-28 20:11:45,282 - SchemeStealer - INFO - Base detection complete: removed 20.0% as base material
+2026-06-28 20:11:45,282 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-28 20:11:45,301 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-28 20:11:45,589 - SchemeStealer - INFO - After shadow filtering: 10 clusters remain
+2026-06-28 20:11:45,590 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Brown'
+2026-06-28 20:11:45,590 - SchemeStealer - INFO - Deduplicating 4 clusters of family 'Red'
+2026-06-28 20:11:45,591 - SchemeStealer - INFO - Final: 4 major + 2 details
+2026-06-28 20:11:45,591 - SchemeStealer - INFO -   White: 81.6% (conf=0.55)
+2026-06-28 20:11:45,591 - SchemeStealer - INFO -   Red: 8.8% (conf=0.93)
+2026-06-28 20:11:45,591 - SchemeStealer - INFO -   Brown: 5.7% (conf=0.80)
+2026-06-28 20:11:45,591 - SchemeStealer - INFO -   Black: 3.4% (conf=0.76)
+2026-06-28 20:11:45,591 - SchemeStealer - INFO -   Grey: 0.3% (conf=0.60)
+2026-06-28 20:11:45,591 - SchemeStealer - INFO -   Pink: 0.3% (conf=0.85)
+2026-06-28 20:11:45,700 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 20:11:45,705 - SchemeStealer - INFO - Glare detected and corrected
+2026-06-28 20:11:45,705 - SchemeStealer - INFO - Overexposure corrected
+2026-06-28 20:11:45,706 - SchemeStealer - INFO - Photo quality score: 55/100 (Fair)
+2026-06-28 20:11:45,714 - SchemeStealer - INFO - Starting base detection v2.0 on 300x300 image
+2026-06-28 20:11:45,720 - SchemeStealer - INFO - Base detection complete: removed 20.0% as base material
+2026-06-28 20:11:45,720 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-28 20:11:45,739 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-28 20:11:46,136 - SchemeStealer - INFO - After shadow filtering: 15 clusters remain
+2026-06-28 20:11:46,136 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Red'
+2026-06-28 20:11:46,136 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Purple'
+2026-06-28 20:11:46,136 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-28 20:11:46,137 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Grey'
+2026-06-28 20:11:46,137 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Cyan'
+2026-06-28 20:11:46,137 - SchemeStealer - INFO - Final: 9 major + 0 details
+2026-06-28 20:11:46,137 - SchemeStealer - INFO -   Cyan: 16.5% (conf=0.71)
+2026-06-28 20:11:46,137 - SchemeStealer - INFO -   Purple: 15.8% (conf=0.81)
+2026-06-28 20:11:46,137 - SchemeStealer - INFO -   Pink: 13.9% (conf=0.71)
+2026-06-28 20:11:46,137 - SchemeStealer - INFO -   Red: 13.0% (conf=0.90)
+2026-06-28 20:11:46,137 - SchemeStealer - INFO -   Grey: 12.3% (conf=0.61)
+2026-06-28 20:11:46,137 - SchemeStealer - INFO -   White: 9.2% (conf=0.57)
+2026-06-28 20:11:46,137 - SchemeStealer - INFO -   Bone: 7.5% (conf=0.72)
+2026-06-28 20:11:46,137 - SchemeStealer - INFO -   Blue: 6.7% (conf=0.68)
+2026-06-28 20:11:46,137 - SchemeStealer - INFO -   Brown: 5.1% (conf=0.95)
+2026-06-28 20:11:46,372 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-28 20:11:46,375 - SchemeStealer - INFO - Glare detected and corrected
+2026-06-28 20:11:46,376 - SchemeStealer - INFO - Overexposure corrected
+2026-06-28 20:11:46,377 - SchemeStealer - INFO - Photo quality score: 55/100 (Fair)
+2026-06-28 20:11:46,385 - SchemeStealer - INFO - Starting base detection v2.0 on 300x300 image
+2026-06-28 20:11:46,390 - SchemeStealer - INFO - Base detection complete: removed 20.0% as base material
+2026-06-28 20:11:46,390 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-28 20:11:46,409 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-28 20:11:46,699 - SchemeStealer - INFO - After shadow filtering: 8 clusters remain
+2026-06-28 20:11:46,699 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Brown'
+2026-06-28 20:11:46,699 - SchemeStealer - INFO - Deduplicating 4 clusters of family 'Red'
+2026-06-28 20:11:46,700 - SchemeStealer - INFO - Final: 3 major + 0 details
+2026-06-28 20:11:46,700 - SchemeStealer - INFO -   White: 82.2% (conf=0.55)
+2026-06-28 20:11:46,700 - SchemeStealer - INFO -   Red: 12.1% (conf=0.95)
+2026-06-28 20:11:46,700 - SchemeStealer - INFO -   Brown: 5.8% (conf=0.90)
+2026-06-28 20:11:46,792 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-06-28 20:11:46,792 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-28 20:11:46,804 - SchemeStealer - INFO - Loaded 1312 paints from paints_groundtruth.json (1312 matchable)
+2026-06-28 20:11:46,805 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (vectorised CIEDE2000)
+2026-06-28 20:11:46,821 - SchemeStealer - INFO - Engine initialization complete - ML features enabled (4723 recipe edges)
+2026-06-28 20:11:46,825 - SchemeStealer - INFO - Paint matcher initialised: 6/7 matchable paints (vectorised CIEDE2000)
+2026-06-28 20:11:46,829 - SchemeStealer - INFO - Metallic pool empty for Citadel/dominant, falling back to unrestricted candidates
+2026-06-28 20:11:46,831 - SchemeStealer - INFO - Paint matcher initialised: 2/2 matchable paints (vectorised CIEDE2000)
+2026-06-28 20:11:46,831 - SchemeStealer - INFO - Metallic pool empty for TestBrand/dominant, falling back to unrestricted candidates
+2026-06-28 20:11:46,832 - SchemeStealer - INFO - Paint matcher initialised: 2/2 matchable paints (vectorised CIEDE2000)
+2026-06-28 20:11:46,833 - SchemeStealer - INFO - Paint matcher initialised: 2/2 matchable paints (vectorised CIEDE2000)
+2026-06-28 20:11:46,834 - SchemeStealer - INFO - Paint matcher initialised: 2/2 matchable paints (vectorised CIEDE2000)
+2026-06-28 20:11:46,835 - SchemeStealer - INFO - Paint matcher initialised: 3/3 matchable paints (vectorised CIEDE2000)
+2026-06-28 20:11:46,836 - SchemeStealer - INFO - Paint matcher initialised: 2/2 matchable paints (vectorised CIEDE2000)
+2026-06-28 20:12:08,984 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-28 20:12:08,985 - SchemeStealer - WARNING - Specular filter skipped: too few pixels would remain
+2026-06-28 20:12:08,985 - SchemeStealer - INFO - Initial clustering into 8 clusters...
+2026-06-28 20:12:11,485 - SchemeStealer - INFO - After shadow filtering: 1 clusters remain
+2026-06-28 20:12:11,485 - SchemeStealer - INFO - Final: 1 major + 0 details
+2026-06-28 20:12:11,485 - SchemeStealer - INFO -   Green: 100.0% (conf=0.95)

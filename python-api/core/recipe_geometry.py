@@ -214,7 +214,15 @@ def target_lab(from_lab: Tuple[float, float, float], rel: str) -> Tuple[float, f
     h = hue_angle_deg(af, bf)
     c = chroma(af, bf)
     dl = IDEAL_DL_HIGHLIGHT if rel == "highlight" else IDEAL_DL_SHADE
-    h2 = math.radians((h + ideal_hue_shift(h, rel)) % 360.0)
+    
+    # If the color is heavily achromatic (neutral), hue shift is mathematically unstable
+    # and visually undesirable. Lock hue shift to 0.0.
+    if c < 5.0:
+        dh = 0.0
+    else:
+        dh = ideal_hue_shift(h, rel)
+        
+    h2 = math.radians((h + dh) % 360.0)
     return (lf + dl, c * math.cos(h2), c * math.sin(h2))
 
 
