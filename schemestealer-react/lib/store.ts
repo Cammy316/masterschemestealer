@@ -101,7 +101,10 @@ export const useAppStore = create<AppStore>()(
           if (existingItemIndex >= 0) {
             // Increase quantity
             const newCart = [...state.cart];
-            newCart[existingItemIndex].quantity += 1;
+            newCart[existingItemIndex] = {
+              ...newCart[existingItemIndex],
+              quantity: newCart[existingItemIndex].quantity + 1
+            };
             return { cart: newCart };
           }
 

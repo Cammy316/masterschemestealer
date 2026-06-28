@@ -43,6 +43,7 @@ export function useScan(mode: ScanMode, options: UseScanOptions = {}): UseScanRe
   const [result, setResult] = useState<ScanResult | null>(null);
 
   const lastFileRef = useRef<File | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
   // URL of an uncommitted result this hook produced; revoked if the next scan
   // replaces it before the page commits it, or if the scan fails.
   const pendingUrlRef = useRef<string | null>(null);
@@ -73,6 +74,12 @@ export function useScan(mode: ScanMode, options: UseScanOptions = {}): UseScanRe
 
   const runScan = useCallback(
     async (file: File) => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      const controller = new AbortController();
+      abortControllerRef.current = controller;
+
       lastFileRef.current = file;
       revokePending(); // drop any prior uncommitted result's URL
       setIsProcessing(true);
@@ -83,9 +90,16 @@ export function useScan(mode: ScanMode, options: UseScanOptions = {}): UseScanRe
       try {
         const fileToScan = preprocessRef.current ? await preprocessRef.current(file) : file;
         const scanResult =
-          mode === 'miniature' ? await scanMiniature(fileToScan) : await scanInspiration(fileToScan);
+          mode === 'miniature' 
+            ? await scanMiniature(fileToScan, controller.signal) 
+            : await scanInspiration(fileToScan, controller.signal);
+            
+        if (controller.signal.aborted) return;
+        
         completeWith(scanResult);
       } catch (err) {
+        if (controller.signal.aborted) return;
+        
         if (process.env.NODE_ENV === 'development') console.error('Scan error:', err);
         revokePending(); // failed scan's object URL never reaches the store
         setError(mapScanError(err, mode));
@@ -146,7 +160,13 @@ export function useScan(mode: ScanMode, options: UseScanOptions = {}): UseScanRe
   // If the page unmounts before committing the result (e.g. navigating away
   // mid-reveal), revoke the still-uncommitted object URL. A committed URL has
   // already been released via markCommitted, so this is a no-op for it.
-  useEffect(() => () => revokePending(), [revokePending]);
+  // We also abort any pending API requests.
+  useEffect(() => () => {
+    revokePending();
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+  }, [revokePending]);
 
   return { isProcessing, error, result, scan, retry, fallbackToOffline, reset, markCommitted };
 }

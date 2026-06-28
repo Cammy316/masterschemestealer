@@ -68,6 +68,10 @@ export const apiClient = {
     const timeout = config?.timeout || 180000; // 180s default for uploads
 
     const timeoutId = setTimeout(() => controller.abort(), timeout);
+    const abortHandler = () => controller.abort();
+    if (config?.signal) {
+      config.signal.addEventListener('abort', abortHandler);
+    }
 
     try {
       const { body: _, ...restConfig } = config || {};
@@ -83,6 +87,9 @@ export const apiClient = {
       });
 
       clearTimeout(timeoutId);
+      if (config?.signal) {
+        config.signal.removeEventListener('abort', abortHandler);
+      }
 
       if (!response.ok) {
         const error = await response.json().catch(() => ({}));
@@ -138,6 +145,10 @@ export const apiClient = {
     const timeout = config?.timeout || 30000; // 30s default
 
     const timeoutId = setTimeout(() => controller.abort(), timeout);
+    const abortHandler = () => controller.abort();
+    if (config?.signal) {
+      config.signal.addEventListener('abort', abortHandler);
+    }
 
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
@@ -153,6 +164,9 @@ export const apiClient = {
       });
 
       clearTimeout(timeoutId);
+      if (config?.signal) {
+        config.signal.removeEventListener('abort', abortHandler);
+      }
 
       if (!response.ok) {
         const error = await response.json().catch(() => ({}));
