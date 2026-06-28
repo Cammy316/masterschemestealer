@@ -133,3 +133,14 @@ def test_miniature_scan_pipeline(degradation):
     assert ml_data["status"] == "success"
     assert "colours_logged" in ml_data
     assert ml_data["colours_logged"] == len(colors)
+
+def test_invalid_image_upload_returns_400():
+    fake_image_bytes = b"This is not a real image file, just text data."
+    
+    response = client.post(
+        "/api/scan/miniature",
+        files={"file": ("fake.png", fake_image_bytes, "image/png")}
+    )
+    
+    assert response.status_code == 400
+    assert "Invalid image file format" in response.json()["detail"]
