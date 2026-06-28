@@ -35,7 +35,6 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
     };
     updateSize();
 
-    // Particle system
     interface Particle {
       x: number;
       y: number;
@@ -45,124 +44,119 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
       maxLife: number;
       color: string;
       size: number;
-      trail: { x: number; y: number; life: number }[];
+      angle: number;
+      radius: number;
+      speed: number;
+      wobble: number;
+      wobbleSpeed: number;
     }
 
     const particles: Particle[] = [];
-    const centerX = canvas.offsetWidth / 2;
-    const centerY = canvas.offsetHeight / 2;
+    const centerX = canvas.offsetWidth; // Remember we scaled by 2, but offsetWidth is logical CSS pixels. 
+    // Wait, the canvas context is scaled by 2, but the width/height are also *2. 
+    // So logical center is just offsetWidth / offsetHeight.
+    const cy = canvas.offsetHeight / 2;
+    const cx = canvas.offsetWidth / 2;
 
-    // Create particles
-    const createParticle = () => {
+    const createParticle = (initial: boolean = false) => {
       const angle = Math.random() * Math.PI * 2;
-      const distance = 140 + Math.random() * 20;
-      const x = centerX + Math.cos(angle) * distance;
-      const y = centerY + Math.sin(angle) * distance;
-
-      // Calculate velocity toward center with slight curve
-      const dx = centerX - x;
-      const dy = centerY - y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      const speed = 0.5 + Math.random() * 0.5;
-
+      const maxRadius = 144; // w-72 = 288px diameter
+      const radius = initial ? Math.random() * maxRadius : maxRadius + Math.random() * 10;
+      
       const colors = [
-        'rgba(139, 92, 246, 0.8)',  // purple
-        'rgba(236, 72, 153, 0.8)',   // pink
-        'rgba(20, 184, 166, 0.8)',   // teal
-        'rgba(168, 85, 247, 0.8)',   // light purple
+        'rgba(139, 92, 246, 0.4)',  // purple
+        'rgba(236, 72, 153, 0.4)',   // pink
+        'rgba(20, 184, 166, 0.3)',   // teal
+        'rgba(168, 85, 247, 0.4)',   // light purple
+        'rgba(255, 255, 255, 0.8)'   // lightning bright white/purple
       ];
+      
+      const isLightning = Math.random() > 0.95;
 
       return {
-        x,
-        y,
-        vx: (dx / dist) * speed,
-        vy: (dy / dist) * speed,
+        x: cx + Math.cos(angle) * radius,
+        y: cy + Math.sin(angle) * radius,
+        vx: 0,
+        vy: 0,
         life: 1,
-        maxLife: 150 + Math.random() * 100,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        size: 2 + Math.random() * 2,
-        trail: [],
+        maxLife: isLightning ? 20 : 200 + Math.random() * 150, // slightly longer life
+        color: isLightning ? colors[4] : colors[Math.floor(Math.random() * 4)],
+        size: isLightning ? 1 + Math.random() * 2 : 2 + Math.random() * 4,
+        angle,
+        radius,
+        speed: 0.005 + Math.random() * 0.015,
+        wobble: Math.random() * Math.PI * 2,
+        wobbleSpeed: 0.02 + Math.random() * 0.05,
       };
     };
 
-    // Initialize particles
-    for (let i = 0; i < 30; i++) {
-      particles.push(createParticle());
+    for (let i = 0; i < 150; i++) {
+      particles.push(createParticle(true));
     }
 
-    // Animation loop
     let animationId: number;
+    let time = 0;
 
     const animate = () => {
-      // Fade trail effect instead of clearing
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+      time += 0.01;
+      
+      // Strong fade for motion blur effect
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
       ctx.fillRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
+      
+      ctx.globalCompositeOperation = 'screen';
 
-      // Update and draw particles
-      particles.forEach((particle, index) => {
-        // Update trail
-        particle.trail.push({ x: particle.x, y: particle.y, life: 1 });
-        if (particle.trail.length > 10) particle.trail.shift();
+      particles.forEach((p, index) => {
+        // Warp maelstrom math
+        p.angle += p.speed + (p.radius < 50 ? 0.1 : 0); 
+        p.radius -= (p.radius > 20 ? 0.3 : 0.05); // suck inward
+        p.wobble += p.wobbleSpeed;
 
-        // Update trail life
-        particle.trail.forEach(t => t.life *= 0.95);
+        const isLightning = p.color === 'rgba(255, 255, 255, 0.8)';
 
-        // Draw trail
-        particle.trail.forEach((t, i) => {
-          if (i > 0) {
-            const prev = particle.trail[i - 1];
-            ctx.beginPath();
-            ctx.moveTo(prev.x, prev.y);
-            ctx.lineTo(t.x, t.y);
-            ctx.strokeStyle = particle.color.replace('0.8', `${t.life * 0.4}`);
-            ctx.lineWidth = particle.size * (t.life * 0.5);
-            ctx.stroke();
-          }
-        });
-
-        // Draw particle
-        ctx.beginPath();
-        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-        ctx.fillStyle = particle.color;
-        ctx.fill();
-
-        // Add glow
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = particle.color;
-        ctx.fill();
-        ctx.shadowBlur = 0;
-
-        // Move particle
-        particle.x += particle.vx;
-        particle.y += particle.vy;
-        particle.life--;
-
-        // Accelerate toward center as it gets closer
-        const dx = centerX - particle.x;
-        const dy = centerY - particle.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < 80) {
-          const accel = (80 - dist) / 80;
-          particle.vx += (dx / dist) * accel * 0.2;
-          particle.vy += (dy / dist) * accel * 0.2;
+        // Calculate new position
+        let targetX = cx + Math.cos(p.angle) * p.radius;
+        let targetY = cy + Math.sin(p.angle) * p.radius;
+        
+        // Add chaotic turbulence
+        if (isLightning) {
+          targetX += (Math.random() - 0.5) * 20;
+          targetY += (Math.random() - 0.5) * 20;
+        } else {
+          targetX += Math.cos(p.wobble) * 10;
+          targetY += Math.sin(p.wobble) * 10;
         }
 
-        // Remove dead particles or ones that reached center
-        if (particle.life <= 0 || dist < 10) {
-          particles.splice(index, 1);
-          particles.push(createParticle());
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(targetX, targetY);
+        ctx.strokeStyle = p.color;
+        ctx.lineWidth = p.size * (p.life / p.maxLife);
+        ctx.lineCap = 'round';
+        ctx.stroke();
+
+        p.x = targetX;
+        p.y = targetY;
+        p.life++;
+
+        if (p.radius < 5 || p.life > p.maxLife) {
+          particles[index] = createParticle();
         }
       });
+
+      // Occasional lightning flash
+      if (Math.random() > 0.95) {
+        ctx.fillStyle = 'rgba(236, 72, 153, 0.05)';
+        ctx.fillRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
+      }
 
       animationId = requestAnimationFrame(animate);
     };
 
     animate();
 
-    return () => {
-      cancelAnimationFrame(animationId);
-    };
+    return () => cancelAnimationFrame(animationId);
   }, []);
 
   // Generate logarithmic spiral path
@@ -201,117 +195,70 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
     ];
   }, []);
 
-  // Bright parallax stars
-  // Generated once via a useState lazy initialiser (not useMemo) so the impure
-  // Math.random() calls stay out of the render body, satisfying react-hooks/purity.
-  const [starLayers] = React.useState(() => {
-    return [
-      // Near layer - large, bright, fast parallax
-      {
-        stars: [...Array(30)].map(() => ({
-          x: 10 + Math.random() * 80,
-          y: 10 + Math.random() * 80,
-          size: 2 + Math.random() * 2,
-          brightness: 0.8 + Math.random() * 0.2,
-          speed: 2 + Math.random() * 2,
-          delay: Math.random() * 2,
-        })),
-        parallax: 1.5,
-      },
-      // Mid layer - medium stars
-      {
-        stars: [...Array(50)].map(() => ({
-          x: 10 + Math.random() * 80,
-          y: 10 + Math.random() * 80,
-          size: 1.5 + Math.random() * 1,
-          brightness: 0.6 + Math.random() * 0.3,
-          speed: 3 + Math.random() * 2,
-          delay: Math.random() * 2,
-        })),
-        parallax: 1,
-      },
-      // Far layer - small, dim, slow parallax
-      {
-        stars: [...Array(70)].map(() => ({
-          x: 10 + Math.random() * 80,
-          y: 10 + Math.random() * 80,
-          size: 1,
-          brightness: 0.4 + Math.random() * 0.3,
-          speed: 4 + Math.random() * 3,
-          delay: Math.random() * 2,
-        })),
-        parallax: 0.5,
-      },
-    ];
-  });
-
   return (
-    <div className="relative flex items-center justify-center min-h-[400px] py-8 overflow-hidden">
+    <div className="relative flex items-center justify-center min-h-[400px] py-8">
       {/* TODO(asset): warp-vortex.png hero art + the eye/skull decorative array would
           layer in here once the art exists. Blocked on art — the CSS/SVG vortex and
           parallax starfield below are the intentional fallback. */}
-      {/* Enhanced parallax starfield background */}
-      <div className="absolute inset-0 rounded-2xl overflow-hidden bg-void-black">
-        {starLayers.map((layer, layerIndex) => (
-          <motion.div
-            key={layerIndex}
-            className="absolute inset-0"
-            style={{ willChange: 'transform' }}
-            animate={{
-              x: [0, -5 * layer.parallax, 0, 5 * layer.parallax, 0],
-              y: [0, -3 * layer.parallax, 0, 3 * layer.parallax, 0],
-            }}
-            transition={{
-              duration: 20 + layerIndex * 5,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-          >
-            {layer.stars.map((star, i) => (
-              <motion.div
-                key={`${layerIndex}-${i}`}
-                className="absolute rounded-full"
-                style={{
-                  left: `${star.x}%`,
-                  top: `${star.y}%`,
-                  width: `${star.size}px`,
-                  height: `${star.size}px`,
-                  background: `radial-gradient(circle, rgba(255, 255, 255, ${star.brightness}), transparent)`,
-                  boxShadow: `0 0 ${star.size * 2}px rgba(255, 255, 255, ${star.brightness * 0.8})`,
-                }}
-                animate={{
-                  opacity: [star.brightness * 0.6, star.brightness, star.brightness * 0.6],
-                  scale: [0.8, 1.2, 0.8],
-                }}
-                transition={{
-                  duration: star.speed,
-                  repeat: Infinity,
-                  delay: star.delay,
-                  ease: 'easeInOut',
-                }}
-              />
-            ))}
-          </motion.div>
-        ))}
-      </div>
+
+
+      {/* Eye of the Storm: Nebula Clouds */}
+      <motion.div
+        className="absolute w-[500px] h-[500px] bg-purple-900/30 blur-[100px] rounded-full pointer-events-none -z-10"
+        animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        className="absolute w-[600px] h-[600px] bg-pink-900/20 blur-[120px] rounded-full pointer-events-none -z-10"
+        animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.4, 0.2] }}
+        transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
+      {/* Eye of the Storm: Space Dust / Debris */}
+      <motion.div
+        className="absolute w-[400px] h-[400px] rounded-full pointer-events-none -z-10"
+        animate={{ rotate: 360 }}
+        transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+      >
+        <div className="absolute top-0 left-1/2 w-2 h-2 bg-purple-400/40 rounded-full blur-sm" />
+        <div className="absolute bottom-10 right-10 w-3 h-3 bg-pink-400/30 rounded-full blur-[2px]" />
+        <div className="absolute top-1/4 left-0 w-1.5 h-1.5 bg-white/30 rounded-full" />
+      </motion.div>
+      <motion.div
+        className="absolute w-[500px] h-[500px] rounded-full pointer-events-none -z-10"
+        animate={{ rotate: -360 }}
+        transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
+      >
+        <div className="absolute bottom-0 left-1/4 w-2 h-2 bg-purple-300/40 rounded-full blur-[1px]" />
+        <div className="absolute top-10 right-1/4 w-1 h-1 bg-white/40 rounded-full" />
+        <div className="absolute top-1/2 right-0 w-2.5 h-2.5 bg-teal-400/20 rounded-full blur-sm" />
+      </motion.div>
 
       {/* Main portal button */}
       <motion.button
         ref={portalRef}
         onClick={onActivate}
         disabled={disabled}
-        className="relative w-72 h-72 rounded-full focus:outline-none focus-visible-warp disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
+        className="relative w-72 h-72 rounded-full focus:outline-none focus-visible-warp disabled:opacity-50 disabled:cursor-not-allowed"
         whileHover={{ scale: disabled ? 1 : 1.05 }}
         whileTap={{ scale: disabled ? 1 : 0.95 }}
         animate={{
           filter: isActive ? 'brightness(1.5)' : 'brightness(1)',
         }}
       >
-        {/* TODO(asset): drop warp-vortex.png in here as the rotating vortex
-            texture once it exists (behind the CSS rings below, which then become
-            the rim/overlay). Blocked on art — no raster assets in public/. */}
+        {/* SVG Filter Definition for Torn Reality Effect */}
+        <svg className="hidden" width="0" height="0">
+          <filter id="warp-tear">
+            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise">
+              <animate attributeName="baseFrequency" values="0.04;0.05;0.04" dur="8s" repeatCount="indefinite" />
+            </feTurbulence>
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="15" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+        </svg>
 
-        {/* Layer 1: Outer glow — slow "breathing" so the portal feels alive */}
+        {/* Torn Reality Wrapper - Applies jagged edges to all visual layers but NOT the text */}
+        <div className="absolute inset-0" style={{ filter: 'url(#warp-tear)' }}>
+          {/* Layer 1: Outer glow — slow "breathing" so the portal feels alive */}
         <motion.div
           className="absolute inset-0 rounded-full bg-purple-600/20 blur-3xl"
           animate={{ scale: [1, 1.04, 1], opacity: [0.6, 0.9, 0.6] }}
@@ -468,13 +415,14 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
           ref={canvasRef}
           className="absolute inset-0 w-full h-full rounded-full pointer-events-none mix-blend-screen"
         />
+        </div>
 
-        {/* Layer 7: Center text - dynamic based on state */}
+        {/* Layer 7: Center text - dynamic based on state (Outside filter so text isn't torn) */}
         <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
           {hasUploaded ? (
             <>
               <motion.span
-                className="text-white text-xl font-bold tracking-[0.2em] drop-shadow-lg responsive-section-title"
+                className="text-white text-lg sm:text-xl md:text-2xl font-bold tracking-[0.2em] drop-shadow-lg gothic-text warp-text text-center px-4 leading-tight"
                 style={{
                   textShadow: `
                     0 0 15px rgba(255, 255, 255, 1),
@@ -489,65 +437,27 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
               >
                 VEIL BREACHED
               </motion.span>
-              <motion.span
-                className="text-pink-200 mt-2 tracking-wider responsive-label"
-                style={{
-                  textShadow: `
-                    0 0 10px rgba(236, 72, 153, 0.8),
-                    0 0 20px rgba(236, 72, 153, 0.6)
-                  `,
-                }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-              >
-                Essence Captured
-              </motion.span>
             </>
           ) : (
             <>
-              <span
-                className="text-white text-xl font-bold tracking-[0.2em] drop-shadow-lg responsive-section-title"
-                style={{
-                  textShadow: `
-                    0 0 10px rgba(255, 255, 255, 0.9),
-                    0 0 20px rgba(139, 92, 246, 0.8),
-                    0 0 40px rgba(139, 92, 246, 0.6),
-                    0 0 60px rgba(139, 92, 246, 0.4)
-                  `,
+              <motion.span
+                className="text-white text-lg sm:text-xl md:text-2xl font-bold tracking-[0.2em] drop-shadow-lg gothic-text warp-text text-center px-4 leading-tight"
+                animate={{
+                  textShadow: [
+                    '0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(139, 92, 246, 0.8), 0 0 40px rgba(139, 92, 246, 0.6)',
+                    '0 0 15px rgba(255, 255, 255, 1), 0 0 30px rgba(139, 92, 246, 1), 0 0 60px rgba(139, 92, 246, 0.8)',
+                    '0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(139, 92, 246, 0.8), 0 0 40px rgba(139, 92, 246, 0.6)'
+                  ]
                 }}
+                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
               >
                 {isActive ? 'CHANNELING...' : 'TOUCH THE VEIL'}
-              </span>
-              <span
-                className="text-purple-200 mt-2 tracking-wider responsive-label"
-                style={{
-                  textShadow: `
-                    0 0 10px rgba(192, 132, 252, 0.8),
-                    0 0 20px rgba(139, 92, 246, 0.6)
-                  `,
-                }}
-              >
-                {isActive ? 'The Warp Stirs' : 'Enter the Immaterium'}
-              </span>
+              </motion.span>
             </>
           )}
         </div>
       </motion.button>
 
-      {/* Instruction text */}
-      {!isActive && (
-        <motion.div
-          className="absolute bottom-8 left-0 right-0 text-center px-4"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-        >
-          <p className="responsive-label text-white/60 font-medium">
-            Upload an image or take a photo to extract its chromatic essence
-          </p>
-        </motion.div>
-      )}
     </div>
   );
 }

@@ -9,6 +9,7 @@ import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { WarpPortal } from '@/components/inspiration/WarpPortal';
+import { CosmicBackground } from '@/components/shared/CosmicBackground';
 import { LoadingAnimation } from '@/components/shared/LoadingAnimations';
 import { motion } from 'framer-motion';
 import { useApiReady } from '@/hooks/useApiReady';
@@ -61,7 +62,7 @@ export default function InspirationPage() {
   if (!apiReady) {
     return (
       <div className="min-h-dvh flex items-center justify-center void-bg">
-        <div className="starfield-bg fixed inset-0 pointer-events-none overflow-hidden" />
+        <CosmicBackground />
         <div className="text-center px-8 relative z-10">
           <motion.div
             className="text-5xl mb-6"
@@ -99,41 +100,27 @@ export default function InspirationPage() {
 
   return (
     <div className="min-h-dvh pb-24 void-bg overflow-x-hidden">
-      {/* Full-page fixed starfield (sits behind all content, not just the hero) */}
-      <div className="starfield-bg fixed inset-0 pointer-events-none overflow-hidden" />
+      {/* Full-page fixed starfield */}
+      <CosmicBackground />
 
       {/* Header */}
       <motion.div
-        className="max-w-2xl mx-auto pt-8 px-4 text-center"
+        className="max-w-2xl mx-auto pt-4 sm:pt-8 px-4 text-center relative z-20"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="text-3xl font-bold gothic-text mb-2 warp-text">
-          ◆ INSPIRATION PROTOCOL ◆
+        <h1 className="text-[clamp(1.2rem,5vw,1.875rem)] whitespace-nowrap font-bold gothic-text mb-2 warp-text text-shadow-lg" style={{ textShadow: '0 0 20px var(--ethereal-glow-strong)' }}>
+          ◆ IMMATERIUM CONDUIT ◆
         </h1>
         <p className="text-warp-purple-light text-sm gothic-text">
-          Extract chromatic essence from the Immaterium
+          Offer a visual sacrifice to divine its chromatic essence
         </p>
-        <motion.div
-          className="mt-2 text-xs text-warp-teal font-medium"
-          animate={{
-            opacity: [0.5, 1, 0.5],
-            textShadow: [
-              '0 0 10px var(--ethereal-glow)',
-              '0 0 20px var(--ethereal-glow)',
-              '0 0 10px var(--ethereal-glow)',
-            ],
-          }}
-          transition={{ duration: 3, repeat: Infinity }}
-        >
-          ◆ THE WARP AWAITS ◆
-        </motion.div>
       </motion.div>
 
       {/* Warp Portal - THE HERO */}
       <motion.div
-        className="relative overflow-hidden"
+        className="relative z-10"
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.7, delay: 0.2 }}

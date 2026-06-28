@@ -101,12 +101,14 @@ export default function InspirationResultsPage() {
       <div className="min-h-screen flex items-center justify-center px-6 void-bg">
         <div className="starfield-bg fixed inset-0 -z-10" />
         <div className="text-center max-w-sm">
-          <h1 className="text-2xl font-bold gothic-text warp-text mb-3">
-            ◆ THE VEIL IS EMPTY ◆
-          </h1>
-          <p className="text-warp-purple-light text-sm mb-6 font-medium">
-            No scan data found in the archives. Channel a new image to continue.
-          </p>
+          <div className="border-b border-warp-purple-dark/50 pb-4 mb-6">
+            <h1 className="text-[clamp(1.2rem,5vw,1.5rem)] whitespace-nowrap font-bold gothic-text warp-text mb-3">
+              ◆ THE VEIL IS EMPTY ◆
+            </h1>
+            <p className="text-warp-purple-light text-sm mb-6 font-medium">
+              No scan data found in the archives. Channel a new image to continue.
+            </p>
+          </div>
           <button
             onClick={() => router.push('/inspiration')}
             className="w-full py-4 px-6 rounded-lg border-2 border-purple-500 bg-void-blue touch-target warp-text font-bold"
@@ -137,7 +139,7 @@ export default function InspirationResultsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className="text-3xl font-bold gothic-text mb-2 warp-text text-shadow-lg">
+          <h1 className="text-[clamp(1.5rem,5vw,1.875rem)] whitespace-nowrap font-bold gothic-text mb-2 warp-text text-shadow-lg">
             ◆ ESSENCE EXTRACTED ◆
           </h1>
           <p className="text-warp-purple-light tech-text">

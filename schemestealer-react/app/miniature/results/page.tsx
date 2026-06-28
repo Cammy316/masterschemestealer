@@ -103,8 +103,8 @@ export default function MiniscanResultsPage() {
         className="min-h-screen flex items-center justify-center px-6"
         style={{ background: 'var(--void-black)' }}
       >
-        <div className="text-center max-w-sm">
-          <h1 className="text-2xl font-bold gothic-text auspex-text mb-3">
+        <div className="border-b border-cogitator-green-dim/30 pb-4 mb-6">
+          <h1 className="text-[clamp(1.2rem,5vw,1.5rem)] whitespace-nowrap font-bold gothic-text auspex-text mb-3">
             ◆ ARCHIVE EMPTY ◆
           </h1>
           <p className="text-cogitator-green-dim tech-text text-sm mb-6">
@@ -140,7 +140,7 @@ export default function MiniscanResultsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className="text-3xl font-bold gothic-text mb-2 auspex-text">
+          <h1 className="text-[clamp(1.5rem,5vw,1.875rem)] whitespace-nowrap font-bold gothic-text mb-2 auspex-text">
             ◆ SCAN COMPLETE ◆
           </h1>
           <p className="text-cogitator-green-dim tech-text">
