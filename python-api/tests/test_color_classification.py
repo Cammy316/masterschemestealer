@@ -106,7 +106,7 @@ _FAMILY_TABLE = [
     ("#F2792B", "orange"),   # Fire Dragon Bright
     ("#664400", "brown"),    # dark olive → nearest brown exemplar (Stage B)
     ("#665E33", "yellow"),   # olive-yellow (was brown)
-    ("#797424", "yellow"),   # Death/Dead Flesh olive (was brown)
+    ("#797424", "green"),    # Death/Dead Flesh olive (was brown)
     ("#60664D", "green"),    # yellow-green floor (was bone)
     ("#B2DFD1", "cyan"),     # blue-spike bug (was green)
     ("#3FB8C8", "cyan"),     # cyan regression

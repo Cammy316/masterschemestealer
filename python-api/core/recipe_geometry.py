@@ -18,6 +18,7 @@ Hue is measured as the LAB hue angle h_ab = atan2(b*, a*).
 from dataclasses import dataclass
 from typing import List, Optional, Tuple
 import math
+import numpy as np
 
 # ---------------------------------------------------------------------------
 # Tunables (documented; kept identical across script + engine via this module)
@@ -258,15 +259,28 @@ def derive_partner(from_node: PaintNode, pool: List[PaintNode], rel: str
                 and (cand.category or "").lower() in CANDIDATE_CATEGORIES)
 
     def _best(family_filter) -> Optional[PaintNode]:
-        scored = []
+        valid_cands = []
         for c in pool:
             if not _base_ok(c) or not _monotonic_ok(c):
                 continue
             if family_filter is not None and (c.color_family or "").lower() not in family_filter:
                 continue
-            scored.append((_lab_distance(tgt, c.lab) + _candidate_penalty(c, rel, target_c), c))
-        scored.sort(key=lambda x: x[0])
-        return scored[0][1] if scored else None
+            valid_cands.append(c)
+
+        if not valid_cands:
+            return None
+
+        # Vectorized distance calculation
+        labs = np.array([c.lab for c in valid_cands])
+        tgt_arr = np.array(tgt)
+        
+        distances = np.linalg.norm(labs - tgt_arr, axis=1)
+        penalties = np.array([_candidate_penalty(c, rel, target_c) for c in valid_cands])
+        
+        total_scores = distances + penalties
+        best_idx = np.argmin(total_scores)
+        
+        return valid_cands[best_idx]
 
     for family_filter, tier in (({same_fam}, "in-family"),
                                 (allowed, "adjacent-family"),
