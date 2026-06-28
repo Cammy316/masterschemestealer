@@ -163,10 +163,14 @@ def test_metallic_flat_dark_grey_is_not_metallic():
         0.0, 1.0
     )
 
-    is_metallic, metallic_type = ColorAnalyzer.detect_metallic(pixels_hsv)
-    assert not is_metallic, (
-        f"Flat dark grey incorrectly flagged as metallic (type={metallic_type})"
-    )
+    from core.color_engine import is_metallic_surface
+    
+    brightness_std = float(np.std(pixels_hsv[:, 2]) * 255.0)
+    median_sat = float(np.median(pixels_hsv[:, 1]))
+    median_val = float(np.median(pixels_hsv[:, 2]))
+    
+    is_metallic = is_metallic_surface(brightness_std, median_sat, median_val)
+    assert not is_metallic, "Flat dark grey incorrectly flagged as metallic"
 
 
 # ============================================================================

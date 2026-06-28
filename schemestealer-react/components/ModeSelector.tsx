@@ -37,10 +37,7 @@ export function ModeSelector() {
 
       {/* Vignette effect */}
       <div
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.5) 100%)',
-        }}
+        className="fixed inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.5)_100%)]"
       />
 
       {/* Content */}
@@ -98,11 +95,7 @@ export function ModeSelector() {
           {/* Miniscan Card - Left */}
           <motion.button
             onClick={() => handleModeSelect('miniature')}
-            className="group relative rounded-xl overflow-hidden touch-target textured flex-1"
-            style={{
-              background: 'linear-gradient(135deg, #0d1a0d 0%, #1a2a1a 100%)',
-              border: '2px solid rgba(0, 255, 65, 0.3)',
-            }}
+            className="group relative rounded-xl overflow-hidden touch-target textured flex-1 bg-gradient-to-br from-[#0d1a0d] to-[#1a2a1a] border-2 border-[#00FF41]/30"
             whileHover={{
               scale: 1.02,
               borderColor: 'rgba(0, 255, 65, 0.6)',
@@ -119,10 +112,7 @@ export function ModeSelector() {
 
             {/* Scanline effect on hover */}
             <motion.div
-              className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100"
-              style={{
-                background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 255, 65, 0.03) 2px, rgba(0, 255, 65, 0.03) 4px)',
-              }}
+              className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,255,65,0.03)_2px,rgba(0,255,65,0.03)_4px)]"
             />
 
             {/* Pulse ring animation on hover */}
@@ -166,11 +156,7 @@ export function ModeSelector() {
           {/* Inspiration Card - Right */}
           <motion.button
             onClick={() => handleModeSelect('inspiration')}
-            className="group relative rounded-xl overflow-hidden touch-target textured flex-1"
-            style={{
-              background: 'linear-gradient(135deg, #1a0d1a 0%, #2a1a2a 100%)',
-              border: '2px solid rgba(139, 92, 246, 0.3)',
-            }}
+            className="group relative rounded-xl overflow-hidden touch-target textured flex-1 bg-gradient-to-br from-[#1a0d1a] to-[#2a1a2a] border-2 border-[#8B5CF6]/30"
             whileHover={{
               scale: 1.02,
               borderColor: 'rgba(139, 92, 246, 0.6)',
@@ -187,10 +173,7 @@ export function ModeSelector() {
 
             {/* Ethereal shimmer on hover */}
             <motion.div
-              className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100"
-              style={{
-                background: 'radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 70%)',
-              }}
+              className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 bg-[radial-gradient(circle_at_50%_50%,rgba(139,92,246,0.1)_0%,transparent_70%)]"
               animate={{
                 scale: [1, 1.2, 1],
                 opacity: [0, 0.5, 0],
