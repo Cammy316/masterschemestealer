@@ -30,6 +30,7 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from PIL import Image
+Image.MAX_IMAGE_PIXELS = 25_000_000  # Prevent Decompression Bomb OOM crashes (max ~25 megapixels)
 import numpy as np
 from typing import List, Dict, Any
 import logging
