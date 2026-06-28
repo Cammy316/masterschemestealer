@@ -97,56 +97,6 @@ class ColorAnalyzer:
     """Color classification and metallic detection - FINAL VERSION"""
     
     @staticmethod
-    def detect_metallic(pixels_hsv: np.ndarray) -> Tuple[bool, Optional[str]]:
-        """
-        Detect metallic surfaces AND determine type
-        WITH HUE-AWARE TYPING
-        """
-        brightness_values = pixels_hsv[:, 2] * 255
-        brightness_std = np.std(brightness_values)
-        median_sat = np.median(pixels_hsv[:, 1])
-        median_val = np.median(pixels_hsv[:, 2])
-        # Use circular mean so red pixels near 0°/360° are not misclassified as cyan.
-        median_hue = circular_mean_hue(pixels_hsv[:, 0]) * 360
-
-        # Single metallic-surface decision (shared with the live scan).
-        is_metallic = is_metallic_surface(brightness_std, median_sat, median_val)
-
-        logger.debug(f"Metallic check: std={brightness_std:.1f}, sat={median_sat:.2f}, "
-                    f"val={median_val:.2f}, hue={median_hue:.1f}°")
-        
-        if not is_metallic:
-            return False, None
-        
-        # DETERMINE METALLIC TYPE by hue and saturation
-        
-        # Gold: Yellow-orange (25-60°) with saturation (floor 25° so warm golds
-        # like Retributor read GOLD; copper/bronze stay in the redder 5-25° band).
-        if 25 < median_hue < 60 and median_sat > 0.25:
-            logger.info("Metallic type: GOLD")
-            return True, 'GOLD'
-
-        # Copper/Bronze: Orange-red (5-25° or 340-360°)
-        elif (5 < median_hue <= 25 or median_hue > 340) and median_sat > 0.25:
-            logger.info("Metallic type: COPPER")
-            return True, 'COPPER'
-        
-        # Silver/Steel: Desaturated, bright
-        elif median_sat < 0.20 and median_val > 0.45:
-            logger.info("Metallic type: SILVER")
-            return True, 'SILVER'
-        
-        # Gunmetal/Iron: Desaturated, dark
-        elif median_sat < 0.20 and median_val < 0.45:
-            logger.info("Metallic type: GUNMETAL")
-            return True, 'GUNMETAL'
-        
-        # Unknown metallic
-        else:
-            logger.info("Metallic type: UNKNOWN")
-            return True, 'UNKNOWN'
-    
-    @staticmethod
     def analyze_color_temperature(lab: np.ndarray) -> str:
         """
         Determine if color is warm, cool, or neutral
@@ -255,10 +205,12 @@ def _load_anchors():
 
 
 def _nearest_family(group, L, a, b):
-    """Family of the nearest exemplar by ΔE76 (Euclidean LAB)."""
+    """Family of the nearest exemplar by CIEDE2000."""
     pts, fams = group
-    d = (pts[:, 0] - L) ** 2 + (pts[:, 1] - a) ** 2 + (pts[:, 2] - b) ** 2
-    return fams[int(np.argmin(d))]
+    target = np.array([[[L, a, b]]])
+    candidates = pts.reshape(-1, 1, 3)
+    dists = deltaE_ciede2000(target, candidates).flatten()
+    return fams[int(np.argmin(dists))]
 
 
 def classify_family(lab, chroma: float = None, is_metallic: bool = False) -> str:
