@@ -64,16 +64,25 @@ export function ModeSelector() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <motion.h1
-            className="font-bold gothic-text mb-1 header-text responsive-header flex items-center justify-center gap-2"
-            style={{
-              color: 'var(--imperial-gold)',
-            }}
-          >
-            <span className="text-amber-500/80">⚙</span>
-            <span>═══ SCHEMESTEALER ═══</span>
-            <span className="text-amber-500/80">⚙</span>
-          </motion.h1>
+          <motion.div className="flex flex-col items-center mb-2">
+            <div className="flex items-center gap-3">
+              <span className="text-amber-500/80 text-2xl drop-shadow-md">⚙</span>
+              <h1
+                className="font-bold gothic-text text-4xl md:text-5xl"
+                style={{
+                  background: 'linear-gradient(to bottom, var(--imperial-gold) 0%, var(--brass) 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.9))',
+                  letterSpacing: '0.15em'
+                }}
+              >
+                SCHEMESTEALER
+              </h1>
+              <span className="text-amber-500/80 text-2xl drop-shadow-md">⚙</span>
+            </div>
+            <div className="h-px w-64 bg-gradient-to-r from-transparent via-amber-500/50 to-transparent mt-3"></div>
+          </motion.div>
           <motion.p
             className="text-brass/70 tech-text responsive-label"
             initial={{ opacity: 0 }}

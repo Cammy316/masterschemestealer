@@ -167,13 +167,23 @@ function NavLink({ href, icon, label, isActive, theme }: NavLinkProps) {
   return (
     <Link href={href} className="relative touch-target">
       <motion.div
-        className="flex flex-col items-center justify-center px-3 py-2 rounded-lg relative"
+        className="flex flex-col items-center justify-center px-3 py-2 rounded-lg relative overflow-hidden"
         whileTap={{ scale: 0.9 }}
-        animate={{
-          backgroundColor: isActive ? colors.bg : 'transparent',
-        }}
         transition={{ duration: 0.2 }}
       >
+        {/* Active premium styling: Top glow border + radial gradient */}
+        {isActive && (
+          <motion.div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              borderTop: `2px solid ${colors.active}`,
+              background: `radial-gradient(100% 100% at 50% 0%, ${colors.glow} 0%, transparent 100%)`
+            }}
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          />
+        )}
         {/* Active glow effect */}
         {isActive && (
           <motion.div
@@ -220,19 +230,7 @@ function NavLink({ href, icon, label, isActive, theme }: NavLinkProps) {
           {label}
         </motion.span>
 
-        {/* Active indicator line */}
-        {isActive && (
-          <motion.div
-            className="absolute top-0 left-1/2 w-8 h-0.5 rounded-full"
-            style={{
-              backgroundColor: colors.active,
-              boxShadow: `0 0 10px ${colors.glow}`,
-            }}
-            initial={{ scaleX: 0, x: '-50%' }}
-            animate={{ scaleX: 1, x: '-50%' }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          />
-        )}
+        {/* Active indicator line - replaced by the top border styling above, so removed */}
       </motion.div>
     </Link>
   );

@@ -695,7 +695,7 @@ export function FeedbackModal({
               {showThankYou ? (
                 <button
                   onClick={handleClose}
-                  className={`flex-1 py-3 px-4 rounded ${theme.buttonBg} ${theme.buttonText} font-bold`}
+                  className={`flex-1 py-3 px-4 rounded ${theme.buttonBg} ${theme.buttonText} font-bold cyber-text`}
                 >
                   Close
                 </button>
@@ -703,14 +703,14 @@ export function FeedbackModal({
                 <>
                   <button
                     onClick={handleClose}
-                    className={`flex-1 py-3 px-4 rounded border ${theme.checkboxBorder} ${theme.accentColorDim} hover:border-current transition-colors`}
+                    className={`flex-1 py-3 px-4 rounded border ${theme.checkboxBorder} ${theme.accentColor} hover:bg-white/5 transition-colors cyber-text text-sm`}
                   >
                     Skip
                   </button>
                   <button
                     onClick={handleSubmit}
                     disabled={rating === 0 || isSubmitting}
-                    className={`flex-1 py-3 px-4 rounded font-bold transition-all ${
+                    className={`flex-1 py-3 px-4 rounded font-bold transition-all cyber-text text-sm ${
                       rating === 0 || isSubmitting
                         ? `${theme.buttonBg}/30 ${theme.buttonText}/50 cursor-not-allowed opacity-50`
                         : `${theme.buttonBg} ${theme.buttonText} ${theme.buttonHover}`

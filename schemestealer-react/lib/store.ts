@@ -42,6 +42,7 @@ export const useAppStore = create<AppStore>()(
       error: null,
       offlineMode: false,
       preferredBrands: ['all'], // Default to showing all brands
+      preferredRegion: 'global', // Default region
 
       // Mode and scan actions
       setMode: (mode: ScanMode) => set({ currentMode: mode, error: null }),
@@ -175,6 +176,9 @@ export const useAppStore = create<AppStore>()(
 
       // Brand preferences
       setPreferredBrands: (brands: string[]) => set({ preferredBrands: brands }),
+
+      // Region preferences
+      setPreferredRegion: (region: string) => set({ preferredRegion: region }),
     }),
     {
       name: 'schemestealer-storage', // LocalStorage key
@@ -186,6 +190,7 @@ export const useAppStore = create<AppStore>()(
         scanHistory: state.scanHistory,
         currentScan: state.currentScan ? toPersistableScan(state.currentScan) : null,
         preferredBrands: state.preferredBrands,
+        preferredRegion: state.preferredRegion,
       }),
     }
   )

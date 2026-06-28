@@ -40,13 +40,15 @@ const AFFILIATE_MERCHANTS: Record<Region, { name: string; searchUrl: (query: str
 
 export default function CartPage() {
   const cart = useAppStore((state) => state.cart);
-  const [selectedBrand, setSelectedBrand] = useState<PaintBrand>('all');
-  const [selectedRegion, setSelectedRegion] = useState<Region>('global');
+  const preferredBrands = useAppStore((state) => state.preferredBrands);
+  const setPreferredBrands = useAppStore((state) => state.setPreferredBrands);
+  const preferredRegion = useAppStore((state) => state.preferredRegion) as Region;
+  const setPreferredRegion = useAppStore((state) => state.setPreferredRegion);
   // Decorative manifest number — generated once on mount (kept out of render so
   // it doesn't change every render; the span suppresses hydration diffing).
   const [manifestId] = useState(() => Date.now().toString().slice(-6));
 
-  const merchants = AFFILIATE_MERCHANTS[selectedRegion] || AFFILIATE_MERCHANTS.global;
+  const merchants = AFFILIATE_MERCHANTS[preferredRegion] || AFFILIATE_MERCHANTS.global;
 
   return (
     <div
@@ -71,19 +73,28 @@ export default function CartPage() {
           transition={{ duration: 0.5 }}
         >
           <div className="flex items-center justify-center gap-3 mb-2">
-            <svg className="w-8 h-8 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg className="w-8 h-8 text-amber-500/80 drop-shadow-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <rect x="3" y="8" width="18" height="13" rx="1" />
               <path d="M3 13h18M3 17h18M8 8V6a4 4 0 0 1 8 0v2" />
             </svg>
-            <h1 className="responsive-header font-bold gothic-text text-amber-500">
+            <h1 
+              className="responsive-header font-bold gothic-text text-4xl md:text-5xl"
+              style={{
+                background: 'linear-gradient(to bottom, var(--imperial-gold) 0%, var(--brass) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.9))',
+                letterSpacing: '0.1em'
+              }}
+            >
               SUPPLY REQUISITION
             </h1>
-            <svg className="w-8 h-8 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg className="w-8 h-8 text-amber-500/80 drop-shadow-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <rect x="3" y="8" width="18" height="13" rx="1" />
               <path d="M3 13h18M3 17h18M8 8V6a4 4 0 0 1 8 0v2" />
             </svg>
           </div>
-          <p className="text-amber-500/60 tech-text responsive-label">
+          <p className="text-brass/70 tech-text responsive-label">
             Departmento Munitorum - Paint Division
           </p>
         </motion.div>
@@ -125,13 +136,13 @@ export default function CartPage() {
 
                 <div className="flex flex-wrap gap-3 justify-center">
                   <BrandSelector
-                    value={selectedBrand}
-                    onChange={setSelectedBrand}
+                    value={preferredBrands.includes('all') ? 'all' : preferredBrands[0] as PaintBrand}
+                    onChange={(val) => setPreferredBrands([val])}
                     compact
                   />
                   <RegionSelector
-                    value={selectedRegion}
-                    onChange={setSelectedRegion}
+                    value={preferredRegion}
+                    onChange={setPreferredRegion}
                     compact
                   />
                 </div>
@@ -153,7 +164,7 @@ export default function CartPage() {
                 </h3>
 
                 <p className="text-xs text-brass/70 text-center mb-4 tech-text">
-                  Acquire your paints from these vetted supply depots ({selectedRegion.toUpperCase()})
+                  Acquire your paints from these vetted supply depots ({preferredRegion.toUpperCase()})
                 </p>
                 
                 {/* ASA Affiliate Disclosure */}
@@ -224,14 +235,30 @@ export default function CartPage() {
         {/* Empty Cart Actions */}
         {cart.length === 0 && (
           <motion.div
-            className="space-y-3"
+            className="space-y-6 flex flex-col items-center mt-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            {/* TODO(asset): empty-cart illustration + Chromus mascot belong above these
-                actions once the art exists. Blocked on art — no raster assets in public/. */}
-            <Link href="/miniature">
+            {/* Empty Cart Graphic */}
+            <div className="w-full max-w-md mx-auto bg-void-black/80 border-2 border-dashed border-brass/30 rounded-xl p-8 text-center relative overflow-hidden group">
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(184,134,11,0.05)_0%,transparent_70%)] pointer-events-none" />
+              <motion.div 
+                className="w-24 h-24 mx-auto mb-6 text-brass/40"
+                animate={{ rotate: [0, 3, -3, 0], opacity: [0.5, 0.8, 0.5], scale: [1, 1.05, 1] }}
+                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="drop-shadow-[0_0_15px_rgba(184,134,11,0.3)]">
+                  <path d="M4 7v10c0 2 1 3 3 3h10c2 0 3-1 3-3V7c0-2-1-3-3-3H7c-2 0-3 1-3 3z" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M9 4L4 9M15 4l5 5M9 20l-5-5M15 20l5-5M12 4v16M4 12h16" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </motion.div>
+              <h2 className="gothic-text text-xl font-bold text-brass/70 mb-2 tracking-wider drop-shadow-sm">REQUISITION EMPTY</h2>
+              <p className="tech-text text-sm text-brass/50">Initiate a scan or channel the warp to discover sacred paints.</p>
+            </div>
+
+            <div className="w-full space-y-3">
+              <Link href="/miniature">
               <SlabButton theme="cogitator">
                 <span className="flex items-center justify-center gap-3">
                   <span className="text-2xl">💀</span>
@@ -248,6 +275,7 @@ export default function CartPage() {
                 </span>
               </SlabButton>
             </Link>
+            </div>
           </motion.div>
         )}
       </div>

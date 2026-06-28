@@ -117,6 +117,7 @@ export interface AppState {
   error: string | null;
   offlineMode: boolean;
   preferredBrands: string[]; // ['all'], ['citadel'], ['vallejo'], ['army-painter'], or combinations
+  preferredRegion: string; // 'uk', 'us', 'eu', 'au', 'global'
 }
 
 export interface AppActions {
@@ -137,6 +138,7 @@ export interface AppActions {
   clearError: () => void;
   setOfflineMode: (enabled: boolean) => void;
   setPreferredBrands: (brands: string[]) => void;
+  setPreferredRegion: (region: string) => void;
 }
 
 export type AppStore = AppState & AppActions;
