@@ -618,27 +618,27 @@ class VisualizationEngine:
 
     @staticmethod
     def _clean_mask(mask: np.ndarray) -> np.ndarray:
-        """Morphological open (drop speckle) + keep connected components above a
-        small area, so 'where the colour is' reads as coherent regions, not a
-        dusting of single pixels. Falls back to the largest blob if the area
-        filter would otherwise remove everything."""
+        """Keep connected components above a tiny area threshold (5 px) to drop 
+        pure camera noise, but preserve thin edge highlights, chains, and text.
+        No destructive morphological open is used."""
         m = (np.asarray(mask).astype(np.uint8) > 0).astype(np.uint8)
         if not m.any():
             return m.astype(bool)
-        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
-        m = cv2.morphologyEx(m, cv2.MORPH_OPEN, kernel, iterations=1)
+            
         n, labels, stats, _ = cv2.connectedComponentsWithStats(m, connectivity=8)
         if n <= 1:
             return m.astype(bool)
-        h, w = m.shape
-        min_area = max(20, int(0.0004 * h * w))
+            
+        min_area = 5
         out = np.zeros_like(m)
         for i in range(1, n):
             if stats[i, cv2.CC_STAT_AREA] >= min_area:
                 out[labels == i] = 1
+                
         if not out.any():
             largest = 1 + int(np.argmax(stats[1:, cv2.CC_STAT_AREA]))
             out[labels == largest] = 1
+            
         return out.astype(bool)
 
     @staticmethod
