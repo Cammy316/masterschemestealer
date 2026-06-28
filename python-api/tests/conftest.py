@@ -5,8 +5,10 @@ for pure-Python/numpy code can run without a full production install.
 import sys
 from unittest.mock import MagicMock
 
+import os
+
 # Stub cv2 so helpers.py and color_engine.py can be imported without OpenCV.
-if 'cv2' not in sys.modules:
+if 'cv2' not in sys.modules and not os.environ.get('USE_REAL_CV2'):
     cv2_mock = MagicMock()
     cv2_mock.COLOR_RGB2LAB = 44
     cv2_mock.COLOR_LAB2RGB = 46

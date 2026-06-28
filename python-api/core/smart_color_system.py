@@ -169,13 +169,26 @@ class SmartColorExtractor:
                 major_colors.append(cluster)
             elif coverage >= 0.2:
                 cluster['is_detail'] = True
-                if self._is_unique_from_majors(cluster, major_colors):
+                is_unique, conflicting_major = self._is_unique_from_majors(cluster, major_colors)
+                if is_unique:
                     detail_colors.append(cluster)
+                elif conflicting_major is not None:
+                    # Not unique: merge pixels into the conflicting major cluster so they aren't lost from the mask
+                    conflicting_major['pixel_indices'] = np.concatenate([
+                        conflicting_major['pixel_indices'], cluster['pixel_indices']
+                    ])
+                    conflicting_major['coverage'] += cluster['coverage']
             elif coverage >= 0.5 and cluster_chroma > 50:
                 logger.info(f"Preserving micro-detail: {cluster['family']} ({coverage:.1f}%)")
                 cluster['is_detail'] = True
-                if self._is_unique_from_majors(cluster, major_colors):
+                is_unique, conflicting_major = self._is_unique_from_majors(cluster, major_colors)
+                if is_unique:
                     detail_colors.append(cluster)
+                elif conflicting_major is not None:
+                    conflicting_major['pixel_indices'] = np.concatenate([
+                        conflicting_major['pixel_indices'], cluster['pixel_indices']
+                    ])
+                    conflicting_major['coverage'] += cluster['coverage']
         
         logger.info(f"Final: {len(major_colors)} major + {len(detail_colors)} details")
         for c in major_colors + detail_colors:
@@ -305,9 +318,9 @@ class SmartColorExtractor:
             'pixel_indices': all_indices
         }
     
-    def _is_unique_from_majors(self, detail: Dict, majors: List[Dict]) -> bool:
-        """Chroma-aware uniqueness checking"""
-        if not majors: return True
+    def _is_unique_from_majors(self, detail: Dict, majors: List[Dict]) -> Tuple[bool, Optional[Dict]]:
+        """Chroma-aware uniqueness checking. Returns (is_unique, conflicting_major)"""
+        if not majors: return True, None
         detail_lab = detail['median_lab']
         detail_chroma = detail.get('chroma', 0)
         
@@ -330,8 +343,8 @@ class SmartColorExtractor:
             threshold = max(threshold, 10.0)
             
             if dist < threshold: 
-                return False
-        return True
+                return False, major
+        return True, None
     
     def _is_likely_shadow(self, cluster: Dict, all_clusters: List[Dict]) -> bool:
         """Detect if a dark cluster is likely a shadow"""
