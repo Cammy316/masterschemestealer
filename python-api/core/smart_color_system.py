@@ -257,7 +257,7 @@ class SmartColorExtractor:
                 dist_matrix[j, i] = dist
         
         mean_distance = np.mean(dist_matrix[dist_matrix > 0])
-        merge_threshold = min(15.0, mean_distance * 0.5)
+        merge_threshold = min(6.0, mean_distance * 0.5)
         
         merged = []
         used = set()
@@ -359,7 +359,7 @@ class SmartColorExtractor:
                 np.array([[other_lab]])
             )[0][0]
             
-            if deltaE < 40 and other_v > v + 0.20:
+            if deltaE < 15.0 and other_v > v + 0.20:
                 logger.info(f"Shadow detected: similar to {other.get('family', 'unknown')}")
                 return True
         

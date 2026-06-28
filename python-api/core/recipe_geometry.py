@@ -123,7 +123,7 @@ def is_warm(h_ab_deg: float) -> bool:
     yellow-greens); everything else (greens/cyans/blues/purples/magentas) is
     cool. The boundary is documented here so script + engine agree."""
     h = h_ab_deg % 360.0
-    return h <= 120.0 or h >= 340.0
+    return h <= 120.0 + 1e-5 or h >= 340.0 - 1e-5
 
 
 def score_edge(from_lab: Tuple[float, float, float],

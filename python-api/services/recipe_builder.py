@@ -138,9 +138,8 @@ def get_wash_for_family(family: str, brand: str, color_lab: List[float],
         if paint:
             return _wash_result(paint, color_lab, 'cross-brand')
 
-    # 4. Last-ditch name-only fallback (no wash data loaded at all).
-    return {'name': WashMapping.UNIVERSAL_WASHES[0], 'hex': '#14141a',
-            'type': 'wash', 'source': 'cross-brand', 'deltaE': 0}
+    # 4. Last-ditch fallback (no wash data loaded at all).
+    return None
 
 
 def build_paint_recipe(recipe: Dict, family: str, color_lab: List[float],

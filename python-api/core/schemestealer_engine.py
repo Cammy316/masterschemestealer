@@ -363,7 +363,7 @@ class SchemeStealerEngine:
         """Phase 4 guard: a highlight must be strictly lighter than the base, a
         shade strictly darker. Rejects inverted recipes (incl. stale graph edges)."""
         if base_lab is None or target_paint is None or target_paint.lab is None:
-            return True  # can't compare → don't block
+            return False  # Missing data fails the guard safely
         bl, tl = float(base_lab[0]), float(target_paint.lab[0])
         return tl > bl if rel == 'highlight' else tl < bl
 
