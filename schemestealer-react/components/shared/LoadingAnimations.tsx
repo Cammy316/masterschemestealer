@@ -63,208 +63,117 @@ export function LoadingAnimation({ mode, message }: LoadingAnimationProps) {
 
 function ServoSkull({ className }: { className?: string }) {
   return (
-    <svg
-      width="120"
-      height="120"
-      viewBox="0 0 120 120"
-      fill="none"
-      className={className}
-    >
-      {/* Definitions */}
-      <defs>
-        {/* Glow filter */}
-        <filter id="skullGlow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="3" result="blur" />
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-        {/* Metal gradient */}
-        <linearGradient id="skullMetal" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#3a3a3a" />
-          <stop offset="50%" stopColor="#5a5a5a" />
-          <stop offset="100%" stopColor="#2a2a2a" />
-        </linearGradient>
-        {/* Brass gradient */}
-        <linearGradient id="brassAccent" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#B8860B" />
-          <stop offset="50%" stopColor="#DAA520" />
-          <stop offset="100%" stopColor="#8B6508" />
-        </linearGradient>
-      </defs>
+    <div className={`relative ${className}`} style={{ width: 120, height: 120 }}>
+      {/* Glitch Animation Styles */}
+      <style>{`
+        @keyframes hologramGlitch {
+          0% { clip-path: inset(10% 0 80% 0); transform: translate(-2px, 2px); }
+          5% { clip-path: inset(40% 0 10% 0); transform: translate(2px, -2px); }
+          10% { clip-path: inset(80% 0 5% 0); transform: translate(-2px, 0); }
+          15% { clip-path: inset(0 0 0 0); transform: translate(0, 0); }
+          100% { clip-path: inset(0 0 0 0); transform: translate(0, 0); }
+        }
+        @keyframes floatHolo {
+          0% { transform: translateY(0px) rotateY(0deg); }
+          50% { transform: translateY(-5px) rotateY(5deg); }
+          100% { transform: translateY(0px) rotateY(0deg); }
+        }
+        .holo-glitch {
+          animation: floatHolo 4s ease-in-out infinite, hologramGlitch 3s infinite linear alternate-reverse;
+        }
+      `}</style>
+      
+      {/* Emitting Data Particles */}
+      {[...Array(12)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-1 h-1 rounded-full"
+          style={{ backgroundColor: 'var(--cogitator-green)', boxShadow: '0 0 5px var(--cogitator-green)' }}
+          initial={{ x: 60, y: 60, opacity: 0 }}
+          animate={{ 
+            x: 60 + (Math.random() - 0.5) * 120, 
+            y: 60 + (Math.random() - 0.5) * 120, 
+            opacity: [0, 1, 0],
+            scale: [1, 2, 0]
+          }}
+          transition={{ 
+            duration: 1.5 + Math.random() * 2, 
+            repeat: Infinity, 
+            delay: Math.random() * 2,
+            ease: "easeOut"
+          }}
+        />
+      ))}
 
-      {/* Anti-grav suspensor field (subtle circle) */}
-      <circle
-        cx="60"
-        cy="60"
-        r="55"
-        stroke="var(--cogitator-green)"
-        strokeWidth="0.5"
+      {/* Hologram SVG */}
+      <svg
+        width="120"
+        height="120"
+        viewBox="0 0 120 120"
         fill="none"
-        opacity="0.3"
-        strokeDasharray="4 4"
+        className="holo-glitch relative z-10"
+        style={{ filter: 'drop-shadow(0 0 10px rgba(0,255,0,0.5))' }}
       >
-        <animateTransform
-          attributeName="transform"
-          type="rotate"
-          from="0 60 60"
-          to="360 60 60"
-          dur="10s"
-          repeatCount="indefinite"
-        />
-      </circle>
+        <defs>
+          <filter id="holoGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="1.5" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
 
-      {/* Main skull cranium */}
-      <path
-        d="M60 15 C35 15 20 35 20 55 C20 70 28 82 38 90 L38 100 L82 100 L82 90 C92 82 100 70 100 55 C100 35 85 15 60 15Z"
-        fill="url(#skullMetal)"
-        stroke="#4a4a4a"
-        strokeWidth="1"
-      />
+        <g stroke="var(--cogitator-green)" strokeWidth="1.5" fill="none" filter="url(#holoGlow)">
+          {/* Wireframe Cranium */}
+          <path d="M60 15 C35 15 20 35 20 55 C20 70 28 82 38 90 L38 100 L82 100 L82 90 C92 82 100 70 100 55 C100 35 85 15 60 15Z" strokeDasharray="6 3" />
+          
+          {/* Topographic Lines */}
+          <path d="M60 25 C45 25 30 40 30 55" strokeWidth="0.5" strokeDasharray="2 2" />
+          <path d="M60 25 C75 25 90 40 90 55" strokeWidth="0.5" strokeDasharray="2 2" />
+          <path d="M60 35 C50 35 40 45 40 55" strokeWidth="0.5" strokeDasharray="2 2" />
+          <path d="M60 35 C70 35 80 45 80 55" strokeWidth="0.5" strokeDasharray="2 2" />
 
-      {/* Cranium ridges/details */}
-      <path
-        d="M40 25 Q60 20 80 25"
-        stroke="#5a5a5a"
-        strokeWidth="2"
-        fill="none"
-      />
-      <path
-        d="M35 35 Q60 30 85 35"
-        stroke="#4a4a4a"
-        strokeWidth="1"
-        fill="none"
-      />
+          {/* Holographic Eyes */}
+          <polygon points="35,50 45,45 55,50 45,65" fill="rgba(0,255,0,0.15)" stroke="var(--cogitator-green)" strokeWidth="1" />
+          <polygon points="65,50 75,45 85,50 75,65" fill="rgba(0,255,0,0.15)" stroke="var(--cogitator-green)" strokeWidth="1" />
+          
+          {/* Glowing Lenses */}
+          <circle cx="45" cy="53" r="4" fill="var(--cogitator-green)">
+            <animate attributeName="opacity" values="0.3;1;0.3" dur="1s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="75" cy="53" r="4" fill="var(--cogitator-green)">
+            <animate attributeName="opacity" values="0.3;1;0.3" dur="1.2s" repeatCount="indefinite" />
+          </circle>
 
-      {/* Left eye socket */}
-      <ellipse cx="45" cy="55" rx="12" ry="14" fill="#0d0d0d" />
-      {/* Left eye lens (mechanical) */}
-      <circle cx="45" cy="55" r="8" fill="#1a1a1a" stroke="url(#brassAccent)" strokeWidth="2" />
-      {/* Left eye glow */}
-      <circle cx="45" cy="55" r="5" fill="var(--cogitator-green)" filter="url(#skullGlow)">
-        <animate
-          attributeName="opacity"
-          values="0.6;1;0.6"
-          dur="2s"
-          repeatCount="indefinite"
-        />
-      </circle>
-      {/* Left eye pupil */}
-      <circle cx="45" cy="55" r="2" fill="#0d0d0d" />
+          {/* Jaw & Teeth Wireframe */}
+          <path d="M38 90 L38 105 L50 112 L70 112 L82 105 L82 90" strokeDasharray="4 2" />
+          <line x1="45" y1="90" x2="45" y2="108" />
+          <line x1="52" y1="90" x2="52" y2="110" />
+          <line x1="60" y1="90" x2="60" y2="112" />
+          <line x1="68" y1="90" x2="68" y2="110" />
+          <line x1="75" y1="90" x2="75" y2="108" />
 
-      {/* Right eye socket */}
-      <ellipse cx="75" cy="55" rx="12" ry="14" fill="#0d0d0d" />
-      {/* Right eye lens (mechanical) */}
-      <circle cx="75" cy="55" r="8" fill="#1a1a1a" stroke="url(#brassAccent)" strokeWidth="2" />
-      {/* Right eye glow */}
-      <circle cx="75" cy="55" r="5" fill="var(--cogitator-green)" filter="url(#skullGlow)">
-        <animate
-          attributeName="opacity"
-          values="0.6;1;0.6"
-          dur="2s"
-          repeatCount="indefinite"
-          begin="0.5s"
-        />
-      </circle>
-      {/* Right eye pupil */}
-      <circle cx="75" cy="55" r="2" fill="#0d0d0d" />
+          {/* Holographic Mechadendrites */}
+          <path d="M30 75 Q15 90 10 115" strokeDasharray="2 4" strokeWidth="1" />
+          <path d="M25 65 Q5 80 15 110" strokeDasharray="4 2" strokeWidth="1" />
+          <path d="M90 75 Q105 90 110 115" strokeDasharray="2 4" strokeWidth="1" />
+          <path d="M95 65 Q115 80 105 110" strokeDasharray="4 2" strokeWidth="1" />
 
-      {/* Nose cavity */}
-      <path d="M55 65 L60 78 L65 65 Z" fill="#0d0d0d" />
-
-      {/* Cheekbone details */}
-      <path d="M28 60 Q32 70 38 75" stroke="#5a5a5a" strokeWidth="1" fill="none" />
-      <path d="M92 60 Q88 70 82 75" stroke="#5a5a5a" strokeWidth="1" fill="none" />
-
-      {/* Jaw / lower skull */}
-      <path
-        d="M38 90 L38 105 Q40 112 50 112 L70 112 Q80 112 82 105 L82 90"
-        fill="url(#skullMetal)"
-        stroke="#4a4a4a"
-        strokeWidth="1"
-      />
-
-      {/* Teeth */}
-      <g fill="#e0e0e0">
-        <rect x="42" y="95" width="4" height="8" rx="1" />
-        <rect x="48" y="95" width="4" height="8" rx="1" />
-        <rect x="54" y="95" width="4" height="9" rx="1" />
-        <rect x="60" y="95" width="4" height="9" rx="1" />
-        <rect x="66" y="95" width="4" height="8" rx="1" />
-        <rect x="72" y="95" width="4" height="8" rx="1" />
-      </g>
-
-      {/* Mechanical augments - left side */}
-      <circle cx="22" cy="45" r="6" fill="url(#brassAccent)" />
-      <circle cx="22" cy="45" r="3" fill="#1a1a1a" />
-      <line x1="28" y1="45" x2="35" y2="50" stroke="url(#brassAccent)" strokeWidth="2" />
-
-      {/* Mechanical augments - right side */}
-      <circle cx="98" cy="45" r="6" fill="url(#brassAccent)" />
-      <circle cx="98" cy="45" r="3" fill="#1a1a1a" />
-      <line x1="92" y1="45" x2="85" y2="50" stroke="url(#brassAccent)" strokeWidth="2" />
-
-      {/* Top cogitator unit */}
-      <rect x="50" y="8" width="20" height="10" rx="2" fill="url(#brassAccent)" />
-      <circle cx="55" cy="13" r="2" fill="var(--cogitator-green)">
-        <animate
-          attributeName="opacity"
-          values="0.3;1;0.3"
-          dur="0.5s"
-          repeatCount="indefinite"
-        />
-      </circle>
-      <circle cx="65" cy="13" r="2" fill="var(--cogitator-green)">
-        <animate
-          attributeName="opacity"
-          values="1;0.3;1"
-          dur="0.5s"
-          repeatCount="indefinite"
-        />
-      </circle>
-
-      {/* Wiring/cables */}
-      <path
-        d="M22 51 Q15 70 20 90"
-        stroke="#2a2a2a"
-        strokeWidth="3"
-        fill="none"
-      />
-      <path
-        d="M98 51 Q105 70 100 90"
-        stroke="#2a2a2a"
-        strokeWidth="3"
-        fill="none"
-      />
-
-      {/* Scanner beam from eyes (animated) */}
-      <g opacity="0.4">
-        <path
-          d="M45 55 L30 80 L60 80 Z"
-          fill="var(--cogitator-green)"
-        >
-          <animate
-            attributeName="opacity"
-            values="0;0.3;0"
-            dur="3s"
-            repeatCount="indefinite"
-          />
-        </path>
-        <path
-          d="M75 55 L60 80 L90 80 Z"
-          fill="var(--cogitator-green)"
-        >
-          <animate
-            attributeName="opacity"
-            values="0;0.3;0"
-            dur="3s"
-            repeatCount="indefinite"
-            begin="1.5s"
-          />
-        </path>
-      </g>
-    </svg>
+          {/* Scan Rings */}
+          <circle cx="60" cy="60" r="55" strokeWidth="0.5" opacity="0.4" strokeDasharray="4 8">
+            <animateTransform attributeName="transform" type="rotate" from="0 60 60" to="360 60 60" dur="10s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="60" cy="60" r="45" strokeWidth="0.5" opacity="0.5" strokeDasharray="15 5">
+            <animateTransform attributeName="transform" type="rotate" from="360 60 60" to="0 60 60" dur="15s" repeatCount="indefinite" />
+          </circle>
+          
+          {/* Grid lines through the skull to emphasize hologram */}
+          <line x1="20" y1="55" x2="100" y2="55" strokeWidth="0.5" opacity="0.4" />
+          <line x1="60" y1="15" x2="60" y2="100" strokeWidth="0.5" opacity="0.4" />
+        </g>
+      </svg>
+    </div>
   );
 }
 

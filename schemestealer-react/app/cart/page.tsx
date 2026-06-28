@@ -78,7 +78,7 @@ export default function CartPage() {
               <path d="M3 13h18M3 17h18M8 8V6a4 4 0 0 1 8 0v2" />
             </svg>
             <h1 
-              className="responsive-header font-bold gothic-text text-4xl md:text-5xl"
+              className="responsive-header font-bold gothic-text text-[clamp(1.5rem,6vw,3rem)] whitespace-nowrap"
               style={{
                 background: 'linear-gradient(to bottom, var(--imperial-gold) 0%, var(--brass) 100%)',
                 WebkitBackgroundClip: 'text',
