@@ -441,9 +441,9 @@ function WarpVortexLoading({ phrase }: { phrase: string }) {
           </motion.div>
         </div>
 
-        {/* Pulsing ethereal overlay */}
+        {/* Pulsing ethereal overlay - restricted to the vortex area */}
         <motion.div
-          className="absolute inset-0 pointer-events-none rounded-full"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 pointer-events-none rounded-full -z-10"
           style={{
             background: 'radial-gradient(circle, var(--ethereal-glow), transparent)',
           }}
