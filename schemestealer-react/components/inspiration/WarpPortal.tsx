@@ -208,13 +208,13 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
       {/* Eye of the Storm: Nebula Clouds */}
       <motion.div
         className="absolute w-[500px] h-[500px] pointer-events-none -z-10 rounded-full"
-        style={{ background: 'radial-gradient(circle, rgba(88,28,135,0.4) 0%, transparent 60%)' }}
+        style={{ background: 'radial-gradient(circle, rgba(88,28,135,0.4) 0%, rgba(88,28,135,0) 60%)' }}
         animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
         transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
         className="absolute w-[600px] h-[600px] pointer-events-none -z-10 rounded-full"
-        style={{ background: 'radial-gradient(circle, rgba(131,24,67,0.3) 0%, transparent 60%)' }}
+        style={{ background: 'radial-gradient(circle, rgba(131,24,67,0.3) 0%, rgba(131,24,67,0) 60%)' }}
         animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.4, 0.2] }}
         transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
       />
@@ -283,7 +283,7 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
         {/* Layer 1: Outer glow — breathes slowly */}
         <motion.div
           className="absolute inset-[-40px] morph-blob-1"
-          style={{ background: 'radial-gradient(circle, rgba(147,51,234,0.3) 0%, transparent 60%)' }}
+          style={{ background: 'radial-gradient(circle, rgba(147,51,234,0.3) 0%, rgba(147,51,234,0) 60%)' }}
           animate={{ scale: [1, 1.1, 1], opacity: [0.6, 0.9, 0.6] }}
           transition={{ duration: isActive ? 2 : 6, repeat: Infinity, ease: 'easeInOut' }}
         />

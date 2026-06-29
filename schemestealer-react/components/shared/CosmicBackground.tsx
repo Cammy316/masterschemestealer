@@ -86,7 +86,7 @@ export function CosmicBackground() {
           ))}
         </motion.div>
       ))}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(139,92,246,0.1)_0%,transparent_80%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(139,92,246,0.1)_0%,rgba(139,92,246,0)_80%)] pointer-events-none" />
     </div>
   );
 }
