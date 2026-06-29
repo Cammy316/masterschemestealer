@@ -45,8 +45,8 @@ export function ActiveAuspexScan({
       // Calculate reticle positions based on actual rendered image size
       if (imgRef.current && containerRef.current) {
         const img = imgRef.current;
-        const scaleX = img.clientWidth / 1000;
-        const scaleY = img.clientHeight / 1000;
+        const scaleX = img.clientWidth;
+        const scaleY = img.clientHeight;
         
         const mapped = reticleData.map((r, i) => ({
           ...r,
@@ -62,12 +62,6 @@ export function ActiveAuspexScan({
         // Wait for the wind-down phase to complete quickly
         await new Promise(r => setTimeout(r, 300));
         setPhase('wipe');
-        
-        // 3-second slow wipe from top to bottom
-        wipeControls.start({
-          height: '100%',
-          transition: { duration: 3, ease: 'linear' },
-        });
 
         // Spawn crosshairs based on Y-coordinate passing
         if (imgRef.current) {
@@ -105,8 +99,9 @@ export function ActiveAuspexScan({
       */}
       <div className="relative w-full h-full bg-[#030804]">
         {/* Safe, non-inverting green tint filter */}
-        <div className={`relative w-full h-full transition-opacity duration-300 ${phase === 'wind-down' ? 'opacity-0' : 'opacity-100'}`}>
+        <div className="relative w-full h-full">
           <img 
+            ref={imgRef}
             src={localImageUrl!} 
             alt="Scanning..." 
             className="w-full h-auto object-contain max-h-[60vh] opacity-30"
@@ -116,7 +111,7 @@ export function ActiveAuspexScan({
           {/* Volumetric Phosphor Sweep (Pure CSS animation to prevent main-thread freezing) */}
           {(phase === 'loading' || phase === 'wind-down') && (
             <div 
-              className="absolute left-0 right-0 h-[30vh] animate-[scan-line_1.5s_linear_infinite] pointer-events-none mix-blend-screen"
+              className="absolute left-0 right-0 h-[150px] animate-[scan-line_2s_linear_infinite] pointer-events-none mix-blend-screen"
             style={{
               background: 'linear-gradient(to bottom, transparent, rgba(0,255,65,0.05) 50%, rgba(0,255,65,0.4) 95%, rgba(0,255,65,0.9) 100%)',
               borderBottom: '3px solid var(--cogitator-green)',
@@ -177,21 +172,39 @@ export function ActiveAuspexScan({
         <motion.div 
           className="absolute top-0 left-0 w-full overflow-hidden border-b-[3px] border-cogitator-green shadow-[0_5px_20px_var(--cogitator-green)]"
           initial={{ height: '0%' }}
-          animate={wipeControls}
+          animate={{ height: '100%' }}
+          transition={{ duration: 3, ease: 'linear' }}
           style={{ zIndex: 10 }}
         >
           <img 
-            ref={imgRef}
             src={resultImageUrl || localImageUrl!} 
             alt="Result" 
             className="w-full h-auto object-contain max-h-[60vh]"
           />
           
-          {/* Grid Overlay inside the wipe */}
-          <div className="absolute inset-0 pointer-events-none opacity-20"
+          {/* High-Tech Neon Grid Overlay */}
+          <div className="absolute inset-0 pointer-events-none mix-blend-screen opacity-40"
             style={{
-              backgroundImage: 'linear-gradient(to right, rgba(0,255,0,0.4) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,255,0,0.4) 1px, transparent 1px)',
-              backgroundSize: '40px 40px'
+              backgroundImage: `
+                linear-gradient(to right, rgba(0,255,65,0.3) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0,255,65,0.3) 1px, transparent 1px),
+                linear-gradient(to right, rgba(0,255,65,0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0,255,65,0.1) 1px, transparent 1px)
+              `,
+              backgroundSize: '100px 100px, 100px 100px, 20px 20px, 20px 20px',
+              backgroundPosition: 'center'
+            }}
+          />
+          
+          {/* Inner pulse glow on the revealed area */}
+          <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_50px_rgba(0,255,65,0.2)] border border-cogitator-green/30" />
+
+          {/* Sweeping Scanner Bar (anchored to the bottom of the wipe) */}
+          <div className="absolute bottom-0 left-0 right-0 h-[50px] pointer-events-none mix-blend-screen"
+            style={{
+              background: 'linear-gradient(to bottom, transparent, rgba(0,255,65,0.8))',
+              borderBottom: '3px solid var(--cogitator-green)',
+              boxShadow: '0 10px 30px rgba(0, 255, 65, 0.8)'
             }}
           />
         </motion.div>
