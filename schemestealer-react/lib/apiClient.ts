@@ -3,7 +3,12 @@
  * Centralised HTTP client with base URL configuration and common headers
  */
 
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+let defaultApiUrl = 'http://localhost:8000';
+if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+  defaultApiUrl = `http://${window.location.hostname}:8000`;
+}
+
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || defaultApiUrl;
 
 /**
  * Custom error class for API errors
