@@ -8,7 +8,7 @@ from sklearn.cluster import DBSCAN, KMeans
 from sklearn.preprocessing import StandardScaler
 from skimage import color
 from scipy.spatial.distance import cdist
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Optional
 import colorsys
 from utils.logging_config import logger
 
