@@ -90,7 +90,7 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
       };
     };
 
-    for (let i = 0; i < 150; i++) {
+    for (let i = 0; i < 80; i++) {
       particles.push(createParticle(true));
     }
 
@@ -245,13 +245,12 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
         animate={{
           filter: isActive ? 'brightness(1.5)' : 'brightness(1)',
         }}
+        style={{ willChange: 'transform', transform: 'translateZ(0)' }}
       >
         {/* SVG Filter Definition for Torn Reality Effect */}
         <svg style={{ position: 'absolute', width: 0, height: 0, pointerEvents: 'none' }}>
           <filter id="warp-tear">
-            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise">
-              <animate attributeName="baseFrequency" values="0.04;0.05;0.04" dur="8s" repeatCount="indefinite" />
-            </feTurbulence>
+            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
             <feDisplacementMap in="SourceGraphic" in2="noise" scale="15" xChannelSelector="R" yChannelSelector="G" />
           </filter>
         </svg>
