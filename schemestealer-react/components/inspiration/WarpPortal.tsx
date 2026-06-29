@@ -100,9 +100,9 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
     const animate = () => {
       time += 0.01;
       
-      // Strong fade for motion blur effect
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+      // Fade existing particles to create trails without filling with a solid background
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.15)'; // Alpha determines fade speed
       ctx.fillRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
       
       ctx.globalCompositeOperation = 'screen';
@@ -147,6 +147,7 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
 
       // Occasional lightning flash
       if (Math.random() > 0.95) {
+        ctx.globalCompositeOperation = 'source-over';
         ctx.fillStyle = 'rgba(236, 72, 153, 0.05)';
         ctx.fillRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
       }
@@ -300,7 +301,7 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
 
         {/* Blob 2: Bright Pink Counter-Swirl */}
         <motion.div
-          className="absolute inset-2 morph-blob-2 mix-blend-screen opacity-80"
+          className="absolute inset-2 morph-blob-2 opacity-80"
           style={{
             background: `conic-gradient(from 180deg, rgba(236, 72, 153, 0.6), rgba(168, 85, 247, 0.5), rgba(236, 72, 153, 0.6))`
           }}
@@ -310,7 +311,7 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
 
         {/* Blob 3: Inner Fast Teal/Purple Swirl */}
         <motion.div
-          className="absolute inset-6 morph-blob-3 mix-blend-overlay opacity-90"
+          className="absolute inset-6 morph-blob-3 opacity-90"
           style={{
             background: `conic-gradient(from 90deg, rgba(192, 132, 252, 0.8), rgba(20, 184, 166, 0.6), rgba(192, 132, 252, 0.8))`
           }}
@@ -399,7 +400,7 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
         {/* Canvas particle system with trails */}
         <canvas
           ref={canvasRef}
-          className="absolute inset-0 w-full h-full rounded-full pointer-events-none mix-blend-screen"
+          className="absolute inset-0 w-full h-full rounded-full pointer-events-none"
         />
 
         {/* The Singularity - Absolute Center Void
