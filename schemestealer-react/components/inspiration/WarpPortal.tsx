@@ -241,13 +241,20 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
         ref={portalRef}
         onClick={onActivate}
         disabled={disabled}
-        className="relative w-72 h-72 rounded-full focus:outline-none focus-visible-warp disabled:opacity-50 disabled:cursor-not-allowed"
+        className="warp-container relative w-72 h-72 rounded-full focus:outline-none focus-visible-warp disabled:opacity-50 disabled:cursor-not-allowed"
         whileHover={{ scale: disabled ? 1 : 1.05 }}
         whileTap={{ scale: disabled ? 1 : 0.95 }}
         animate={{
-          filter: isActive ? 'brightness(1.5)' : 'brightness(1)',
+          filter: isActive ? 'brightness(1.5) contrast(1.2)' : 'brightness(1) contrast(1)',
+          scale: isActive ? 1.05 : 1
         }}
-        style={{ willChange: 'transform', transform: 'translateZ(0)' }}
+        style={{ 
+          '--morph-speed-1': isActive ? '1.5s' : '8s',
+          '--morph-speed-2': isActive ? '2s' : '10s',
+          '--morph-speed-3': isActive ? '1s' : '12s',
+          willChange: 'transform', 
+          transform: 'translateZ(0)' 
+        } as React.CSSProperties}
       >
         <style>{`
           @keyframes morph-1 {
@@ -265,16 +272,16 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
             50% { border-radius: 40% 60% 50% 50% / 30% 70% 60% 40%; }
             100% { border-radius: 50% 50% 40% 60% / 70% 30% 40% 60%; }
           }
-          .morph-blob-1 { animation: morph-1 8s ease-in-out infinite; }
-          .morph-blob-2 { animation: morph-2 10s ease-in-out infinite alternate; }
-          .morph-blob-3 { animation: morph-3 12s ease-in-out infinite; }
+          .warp-container .morph-blob-1 { animation: morph-1 var(--morph-speed-1) ease-in-out infinite; }
+          .warp-container .morph-blob-2 { animation: morph-2 var(--morph-speed-2) ease-in-out infinite alternate; }
+          .warp-container .morph-blob-3 { animation: morph-3 var(--morph-speed-3) ease-in-out infinite; }
         `}</style>
 
         {/* Layer 1: Outer glow — breathes slowly */}
         <motion.div
           className="absolute inset-0 bg-purple-600/20 blur-3xl morph-blob-1"
           animate={{ scale: [1, 1.1, 1], opacity: [0.6, 0.9, 0.6] }}
-          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+          transition={{ duration: isActive ? 2 : 6, repeat: Infinity, ease: 'easeInOut' }}
         />
 
         {/* Blob 1: Deep Purple Base Swirl */}
@@ -284,7 +291,7 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
             background: `conic-gradient(from 0deg, rgba(139, 92, 246, 0.4), rgba(236, 72, 153, 0.3), rgba(20, 184, 166, 0.3), rgba(139, 92, 246, 0.4))`
           }}
           animate={{ rotate: 360 }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          transition={{ duration: isActive ? 2 : 20, repeat: Infinity, ease: "linear" }}
         />
 
         {/* Blob 2: Bright Pink Counter-Swirl */}
@@ -294,7 +301,7 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
             background: `conic-gradient(from 180deg, rgba(236, 72, 153, 0.6), rgba(168, 85, 247, 0.5), rgba(236, 72, 153, 0.6))`
           }}
           animate={{ rotate: -360 }}
-          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+          transition={{ duration: isActive ? 1.5 : 15, repeat: Infinity, ease: "linear" }}
         />
 
         {/* Blob 3: Inner Fast Teal/Purple Swirl */}
@@ -304,7 +311,7 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
             background: `conic-gradient(from 90deg, rgba(192, 132, 252, 0.8), rgba(20, 184, 166, 0.6), rgba(192, 132, 252, 0.8))`
           }}
           animate={{ rotate: 360 }}
-          transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+          transition={{ duration: isActive ? 1 : 10, repeat: Infinity, ease: "linear" }}
         />
 
         {/* Event Horizon (The Void Core) */}
@@ -358,17 +365,17 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
                 }}
                 transition={{
                   strokeDashoffset: {
-                    duration: spiral.duration * 0.8,
+                    duration: isActive ? 1.5 : spiral.duration * 0.8,
                     repeat: Infinity,
                     ease: "linear",
                   },
                   rotate: {
-                    duration: spiral.duration,
+                    duration: isActive ? 2 : spiral.duration,
                     repeat: Infinity,
                     ease: "linear",
                   },
                   scale: {
-                    duration: spiral.duration * 0.5,
+                    duration: isActive ? 1 : spiral.duration * 0.5,
                     repeat: Infinity,
                     ease: "easeInOut",
                   }

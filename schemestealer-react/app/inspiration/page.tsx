@@ -94,9 +94,9 @@ export default function InspirationPage() {
     );
   }
 
-  if (isProcessing) {
-    return <LoadingAnimation mode="inspiration" />;
-  }
+  // We no longer return the LoadingAnimation early here.
+  // Instead, the WarpPortal component stays mounted and uses the isActive={isProcessing}
+  // prop to transition into its "Hyper-Drive" loading state!
 
   return (
     <div className="min-h-dvh pb-24 void-bg overflow-x-hidden">
@@ -198,14 +198,16 @@ export default function InspirationPage() {
         </motion.div>
       )}
 
-      {/* Instructions */}
-      <motion.div
-        className="max-w-2xl mx-auto px-4 mt-8 relative"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.6 }}
-      >
-        <div
+      {/* Instructions - Hide during processing so focus is entirely on the portal */}
+      {!isProcessing && (
+        <motion.div
+          className="max-w-2xl mx-auto px-4 mt-8 relative"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+        >
+          <div
           className="rounded-lg p-4 text-sm relative overflow-hidden group shadow-[0_0_15px_rgba(139,92,246,0.15)]"
           style={{
             background: 'linear-gradient(135deg, rgba(30,27,75,0.8), rgba(15,15,35,0.9))',
@@ -238,6 +240,7 @@ export default function InspirationPage() {
           </ul>
         </div>
       </motion.div>
+      )}
 
     </div>
   );
