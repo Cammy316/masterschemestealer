@@ -1,0 +1,6 @@
+timestamp,event_name,session_id,page_path,user_agent,properties
+2026-06-29T10:25:11.508Z,page_view,6ed507ce-73ab-46ab-bfda-81981701978b,/,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36","{""path"": ""/"", ""referrer"": null}"
+2026-06-29T10:25:41.544Z,page_view,6ed507ce-73ab-46ab-bfda-81981701978b,/inspiration,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36","{""path"": ""/inspiration"", ""referrer"": ""/""}"
+2026-06-29T10:25:56.602Z,page_view,6ed507ce-73ab-46ab-bfda-81981701978b,/,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36","{""path"": ""/"", ""referrer"": null}"
+2026-06-29T10:56:16.798Z,page_view,6ed507ce-73ab-46ab-bfda-81981701978b,/miniature,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36","{""path"": ""/miniature"", ""referrer"": ""/""}"
+2026-06-29T10:56:27.437Z,page_view,6ed507ce-73ab-46ab-bfda-81981701978b,/inspiration,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36","{""path"": ""/inspiration"", ""referrer"": ""/miniature""}"

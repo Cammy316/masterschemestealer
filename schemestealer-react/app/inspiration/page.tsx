@@ -110,7 +110,7 @@ export default function InspirationPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="text-[clamp(1.2rem,5vw,1.875rem)] whitespace-nowrap font-bold gothic-text mb-2 warp-text text-shadow-lg" style={{ textShadow: '0 0 20px var(--ethereal-glow-strong)' }}>
+        <h1 className="text-[clamp(1.2rem,5vw,1.875rem)] text-balance font-bold gothic-text mb-2 warp-text text-shadow-lg" style={{ textShadow: '0 0 20px var(--ethereal-glow-strong)' }}>
           ◆ IMMATERIUM CONDUIT ◆
         </h1>
         <p className="text-warp-purple-light text-sm gothic-text">
