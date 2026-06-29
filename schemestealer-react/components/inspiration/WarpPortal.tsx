@@ -289,13 +289,14 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
 
         {/* Blob 1: Deep Purple Base Swirl */}
         <motion.div
-          className="absolute inset-0 morph-blob-1 shadow-[inset_0_0_50px_rgba(139,92,246,0.8),0_0_20px_rgba(139,92,246,0.5)]"
+          className="absolute inset-0 morph-blob-1"
           style={{
             background: `conic-gradient(from 0deg, rgba(139, 92, 246, 0.4), rgba(236, 72, 153, 0.3), rgba(20, 184, 166, 0.3), rgba(139, 92, 246, 0.4))`
           }}
           animate={{ rotate: 360 }}
           transition={{ duration: isActive ? 2 : 20, repeat: Infinity, ease: "linear" }}
         />
+        <div className="absolute inset-0 rounded-full pointer-events-none shadow-[inset_0_0_50px_rgba(139,92,246,0.8),0_0_20px_rgba(139,92,246,0.5)]" />
 
         {/* Blob 2: Bright Pink Counter-Swirl */}
         <motion.div
@@ -309,24 +310,30 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
 
         {/* Blob 3: Inner Fast Teal/Purple Swirl */}
         <motion.div
-          className="absolute inset-6 morph-blob-3 mix-blend-overlay opacity-90 shadow-[inset_0_0_30px_rgba(0,0,0,0.8)]"
+          className="absolute inset-6 morph-blob-3 mix-blend-overlay opacity-90"
           style={{
             background: `conic-gradient(from 90deg, rgba(192, 132, 252, 0.8), rgba(20, 184, 166, 0.6), rgba(192, 132, 252, 0.8))`
           }}
           animate={{ rotate: 360 }}
           transition={{ duration: isActive ? 1 : 10, repeat: Infinity, ease: "linear" }}
         />
+        <div className="absolute inset-6 rounded-full pointer-events-none shadow-[inset_0_0_30px_rgba(0,0,0,0.8)]" />
 
         {/* Event Horizon (The Void Core) */}
         <div
           className="absolute inset-12 morph-blob-1"
           style={{
             background: `radial-gradient(circle, #000000 0%, #05000a 40%, #1a0030 70%, rgba(167, 139, 250, 0.9) 100%)`,
+          }}
+        />
+        <div 
+          className="absolute inset-12 rounded-full pointer-events-none"
+          style={{
             boxShadow: `
               inset 0 0 40px 15px rgba(0, 0, 0, 0.9),
               inset 0 0 60px 30px rgba(0, 0, 0, 0.7),
               0 0 30px 5px rgba(167, 139, 250, 0.6)
-            `,
+            `
           }}
         />
 
