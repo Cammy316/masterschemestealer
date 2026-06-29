@@ -7,7 +7,9 @@ export function AdMechBackground() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -27,58 +29,76 @@ export function AdMechBackground() {
       {/* Falling Binary Rain */}
       {mounted && (
         <div className="absolute inset-0 z-0 opacity-25 overflow-hidden" style={{ color: '#00ff41', textShadow: '0 0 5px #00ff41', fontFamily: 'monospace', fontSize: '14px', lineHeight: '14px', whiteSpace: 'pre' }}>
-          {[...Array(20)].map((_, colIndex) => (
-            <motion.div
-              key={colIndex}
-              className="absolute top-[-100%]"
-              style={{ left: `${(colIndex * 5) + (Math.random() * 2)}%` }}
-              animate={{ top: ['0%', '150%'] }}
-              transition={{
-                duration: 20 + Math.random() * 20,
-                repeat: Infinity,
-                ease: 'linear',
-                delay: Math.random() * -20,
-              }}
-            >
-              {[...Array(40)].map((_, rowIndex) => (
-                <div key={rowIndex} className="opacity-75">
-                  {Math.random() > 0.5 ? '1' : '0'}
-                </div>
-              ))}
-            </motion.div>
-          ))}
+          {[...Array(20)].map((_, colIndex) => {
+            const r1 = (colIndex * 13) % 100 / 100;
+            const r2 = (colIndex * 29) % 100 / 100;
+            const r3 = (colIndex * 47) % 100 / 100;
+            
+            return (
+              <motion.div
+                key={colIndex}
+                className="absolute top-[-100%]"
+                style={{ left: `${(colIndex * 5) + (r1 * 2)}%` }}
+                animate={{ top: ['0%', '150%'] }}
+                transition={{
+                  duration: 20 + r2 * 20,
+                  repeat: Infinity,
+                  ease: 'linear',
+                  delay: r3 * -20,
+                }}
+              >
+                {[...Array(40)].map((_, rowIndex) => {
+                  const isOne = ((colIndex * 37 + rowIndex * 19) % 100 / 100) > 0.5;
+                  return (
+                    <div key={rowIndex} className="opacity-75">
+                      {isOne ? '1' : '0'}
+                    </div>
+                  );
+                })}
+              </motion.div>
+            );
+          })}
         </div>
       )}
 
       {/* Slow Falling Embers */}
       {mounted && (
         <div className="absolute inset-0 z-20">
-          {[...Array(15)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute rounded-full"
-              style={{
-                width: Math.random() * 3 + 2 + 'px',
-                height: Math.random() * 3 + 2 + 'px',
-                backgroundColor: '#ffaa00',
-                boxShadow: '0 0 10px #ff5500',
-                left: Math.random() * 100 + '%',
-                top: '-20px',
-              }}
-              animate={{
-                y: [0, 800 + Math.random() * 400],
-                x: [0, (Math.random() - 0.5) * 150],
-                opacity: [0, 1, 1, 0],
-                scale: [1, Math.random() * 1.5 + 0.5, 0]
-              }}
-              transition={{
-                duration: 15 + Math.random() * 15,
-                repeat: Infinity,
-                ease: 'linear',
-                delay: Math.random() * 15,
-              }}
-            />
-          ))}
+          {[...Array(15)].map((_, i) => {
+            const r1 = (i * 17) % 100 / 100;
+            const r2 = (i * 31) % 100 / 100;
+            const r3 = (i * 43) % 100 / 100;
+            const r4 = (i * 59) % 100 / 100;
+            const r5 = (i * 73) % 100 / 100;
+            const r6 = (i * 89) % 100 / 100;
+
+            return (
+              <motion.div
+                key={i}
+                className="absolute rounded-full"
+                style={{
+                  width: r1 * 3 + 2 + 'px',
+                  height: r1 * 3 + 2 + 'px',
+                  backgroundColor: '#ffaa00',
+                  boxShadow: '0 0 10px #ff5500',
+                  left: r2 * 100 + '%',
+                  top: '-20px',
+                }}
+                animate={{
+                  y: [0, 800 + r3 * 400],
+                  x: [0, (r4 - 0.5) * 150],
+                  opacity: [0, 1, 1, 0],
+                  scale: [1, r5 * 1.5 + 0.5, 0]
+                }}
+                transition={{
+                  duration: 15 + r6 * 15,
+                  repeat: Infinity,
+                  ease: 'linear',
+                  delay: r1 * 15,
+                }}
+              />
+            );
+          })}
         </div>
       )}
 

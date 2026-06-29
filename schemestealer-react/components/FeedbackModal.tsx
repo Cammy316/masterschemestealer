@@ -164,89 +164,138 @@ function RatingIcon({
   mode: ScanMode;
 }) {
   if (mode === 'miniature') {
-    // Servo-skull icons for Cogitator theme
     const glowColor = isSelected ? 'drop-shadow(0 0 8px var(--cogitator-green-glow))' : 'none';
-    const fillColor = isSelected ? 'var(--brass)' : 'var(--cogitator-green)';
     const opacity = isSelected ? 1 : 0.3;
-
-    // Different skull states based on rating
-    const eyeColor = rating >= 4 ? 'var(--cogitator-green)' : rating <= 2 ? '#ff4444' : '#666';
-    const hasCracks = rating <= 2;
-    const hasAugments = rating >= 4;
+    const fill = isSelected ? 'var(--brass)' : '#666';
+    const eye = isSelected ? 'var(--cogitator-green)' : '#222';
+    const badEye = isSelected ? '#ff4444' : '#222';
 
     return (
       <svg
-        width="32"
-        height="32"
-        viewBox="0 0 24 24"
-        fill={fillColor}
+        width="36" height="36" viewBox="0 0 24 24"
         style={{ filter: glowColor, opacity, transition: 'all 0.2s ease' }}
       >
-        {/* Main skull */}
-        <path d="M12 2C8 2 5 5 5 9c0 2.5 1 4 2 5v3h10v-3c1-1 2-2.5 2-5 0-4-3-7-7-7z" />
-        {/* Eye sockets */}
-        <circle cx="9" cy="10" r="1.5" fill={eyeColor} />
-        <circle cx="15" cy="10" r="1.5" fill={eyeColor} />
-        {/* Jaw */}
-        <path d="M8 17h8v2c0 1-1 2-2 2h-4c-1 0-2-1-2-2v-2z" />
-        {/* Mechanical augments for high ratings */}
-        {hasAugments && (
-          <>
-            <circle cx="6" cy="6" r="1" fill="var(--cogitator-green)" opacity="0.8" />
-            <circle cx="18" cy="6" r="1" fill="var(--cogitator-green)" opacity="0.8" />
-          </>
+        {rating === 1 && (
+          // Stage 1: Broken (Cracked, missing jaw, red dead eye)
+          <g>
+            <path d="M12 2C7.5 2 4 5.5 4 10c0 2.5 1.5 4.5 3.5 5.5l1-2 1.5 1 2-2 2 2 1.5-1 1 2C18.5 14.5 20 12.5 20 10c0-4.5-3.5-8-8-8z" fill={fill} />
+            <circle cx="9" cy="11" r="2" fill={badEye} />
+            <circle cx="15" cy="11" r="2" fill="#111" />
+            <path d="M11 14l1 2 1-2z" fill="#111" />
+            <path d="M6 4l2 3-1 2M17 5l-1.5 2 1 2" stroke="#111" strokeWidth="1" fill="none" />
+            {isSelected && <path d="M16 16l-1 2 2 1-3 2" stroke="#ffaa00" strokeWidth="1" fill="none" />}
+          </g>
         )}
-        {/* Cracks for low ratings */}
-        {hasCracks && (
-          <path d="M8 5l1 3-0.5 1M16 5l-1 3 0.5 1" stroke="#333" strokeWidth="0.3" fill="none" />
+        {rating === 2 && (
+          // Stage 2: Damaged (Minor cracks, jaw intact but crooked, dull red eyes)
+          <g>
+            <path d="M12 2C7.5 2 4 5.5 4 10c0 2.5 1.5 4.5 3.5 5.5V18l1.5 1h6l1.5-1v-2.5C18.5 14.5 20 12.5 20 10c0-4.5-3.5-8-8-8z" fill={fill} />
+            <circle cx="9" cy="11" r="2" fill={badEye} />
+            <circle cx="15" cy="11" r="2" fill={badEye} />
+            <path d="M11 14l1 2 1-2z" fill="#111" />
+            <path d="M8 18l8-1" stroke="#111" strokeWidth="1.5" />
+            <path d="M15 4l-1 3" stroke="#111" strokeWidth="1" fill="none" />
+          </g>
         )}
-        {/* Nose */}
-        <path d="M11 12l1 2 1-2z" fill="#0d0d0d" />
-        {/* Teeth */}
-        <path d="M9 14h6" stroke="#0d0d0d" strokeWidth="0.5" />
+        {rating === 3 && (
+          // Stage 3: Functional (Standard skull, green eyes, straight jaw)
+          <g>
+            <path d="M12 2C7.5 2 4 5.5 4 10c0 2.5 1.5 4.5 3.5 5.5V19a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1v-3.5C18.5 14.5 20 12.5 20 10c0-4.5-3.5-8-8-8z" fill={fill} />
+            <circle cx="9" cy="11" r="2" fill={eye} />
+            <circle cx="15" cy="11" r="2" fill={eye} />
+            <path d="M11 14l1 2 1-2z" fill="#111" />
+            <path d="M8 17h8M9 19h6M10 17v2M12 17v2M14 17v2" stroke="#111" strokeWidth="1" />
+          </g>
+        )}
+        {rating === 4 && (
+          // Stage 4: Enhanced (Standard + mechanical augments, brighter eyes)
+          <g>
+            <path d="M12 2C7.5 2 4 5.5 4 10c0 2.5 1.5 4.5 3.5 5.5V19a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1v-3.5C18.5 14.5 20 12.5 20 10c0-4.5-3.5-8-8-8z" fill={fill} />
+            <path d="M4 10h16" stroke={fill} strokeWidth="2" />
+            <circle cx="9" cy="11" r="2.5" fill={eye} />
+            <circle cx="15" cy="11" r="2.5" fill={eye} />
+            <path d="M11 14l1 2 1-2z" fill="#111" />
+            <path d="M8 17h8M9 19h6M10 17v2M12 17v2M14 17v2" stroke="#111" strokeWidth="1" />
+            {/* Augments */}
+            <circle cx="5" cy="7" r="1.5" fill={eye} />
+            <circle cx="19" cy="7" r="1.5" fill={eye} />
+            <path d="M5 7v-4h2" stroke={fill} strokeWidth="1.5" fill="none" />
+          </g>
+        )}
+        {rating === 5 && (
+          // Stage 5: Blessed (Iron halo, pristine, glowing)
+          <g>
+            {/* Iron Halo */}
+            <circle cx="12" cy="10" r="11" stroke="var(--brass)" strokeWidth="1" strokeDasharray="2 3" fill="none" opacity="0.8" />
+            <path d="M12 0v2M4 4l1.5 1.5M20 4l-1.5 1.5M2 10h2M22 10h-2" stroke="var(--brass)" strokeWidth="1.5" />
+            {/* Pristine Skull */}
+            <path d="M12 3C8 3 5 6 5 10c0 2 1 3.5 2.5 4.5V19a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1v-4.5C18 13.5 19 12 19 10c0-4-3-7-7-7z" fill={fill} />
+            <circle cx="9.5" cy="10.5" r="2.5" fill={eye} />
+            <circle cx="14.5" cy="10.5" r="2.5" fill={eye} />
+            <path d="M11 14l1 2 1-2z" fill="#111" />
+            <path d="M8 17h8M9 19h6M10 17v2M12 17v2M14 17v2" stroke="#111" strokeWidth="1" />
+            <path d="M12 4l1 2h-2z" fill="var(--brass)" />
+          </g>
+        )}
       </svg>
     );
   } else {
-    // Warp spirit/eye icons for Inspiration theme
+    // Warp Eyes for Inspiration theme
     const glowColor = isSelected ? 'drop-shadow(0 0 10px var(--ethereal-glow))' : 'none';
     const opacity = isSelected ? 1 : 0.3;
-
-    // Different states based on rating
-    const outerColor = isSelected ? 'var(--warp-purple-light)' : 'var(--warp-purple)';
-    const innerColor = rating >= 4 ? 'var(--warp-pink)' : rating <= 2 ? '#ff4444' : 'var(--warp-purple)';
-    const pupilColor = rating >= 4 ? 'var(--warp-teal)' : rating <= 2 ? '#660000' : 'var(--warp-pink)';
-    const hasTendrils = rating >= 4;
-    const hasCorruption = rating <= 2;
+    const outer = isSelected ? 'var(--warp-purple-light)' : 'var(--warp-purple)';
+    const core = isSelected ? 'var(--warp-pink)' : '#222';
+    const badCore = isSelected ? '#ff4444' : '#222';
 
     return (
       <svg
-        width="32"
-        height="32"
-        viewBox="0 0 24 24"
-        fill="none"
+        width="36" height="36" viewBox="0 0 24 24"
         style={{ filter: glowColor, opacity, transition: 'all 0.2s ease' }}
       >
-        {/* Ethereal orb */}
-        <circle cx="12" cy="12" r="10" fill={outerColor} opacity="0.4" />
-        <circle cx="12" cy="12" r="7" fill={innerColor} opacity="0.6" />
-        {/* Eye */}
-        <ellipse cx="12" cy="12" rx="4" ry="5" fill="#0d0d0d" />
-        {/* Pupil */}
-        <circle cx="12" cy="12" r={rating >= 4 ? 2 : rating <= 2 ? 0.8 : 1.5} fill={pupilColor} />
-        {/* Warp tendrils for high ratings */}
-        {hasTendrils && (
-          <g stroke="var(--warp-pink)" strokeWidth="1" opacity="0.6">
-            <path d="M4 12c3-1.5 4-3 4-5" fill="none" />
-            <path d="M20 12c-3-1.5-4-3-4-5" fill="none" />
-            <path d="M12 20c1.5-3 3-4 5-4" fill="none" />
-            <path d="M12 4c-1.5 3-3 4-5 4" fill="none" />
+        {rating === 1 && (
+          // Stage 1: Bleeding, closed eye
+          <g>
+            <path d="M4 12c4-2 12-2 16 0-4 2-12 2-16 0z" fill={outer} opacity="0.5" />
+            <path d="M4 12c4 1 12 1 16 0" stroke={outer} strokeWidth="1.5" fill="none" />
+            <path d="M12 12v6M9 11v4M15 11v5" stroke={badCore} strokeWidth="1" strokeLinecap="round" />
           </g>
         )}
-        {/* Corruption marks for low ratings */}
-        {hasCorruption && (
-          <g stroke="#ff4444" strokeWidth="0.8" opacity="0.6">
-            <line x1="6" y1="6" x2="9" y2="9" />
-            <line x1="18" y1="6" x2="15" y2="9" />
+        {rating === 2 && (
+          // Stage 2: Slit eye, erratic tendrils
+          <g>
+            <path d="M3 12c5-3 13-3 18 0-5 3-13 3-18 0z" fill={outer} opacity="0.6" />
+            <ellipse cx="12" cy="12" rx="2" ry="4" fill={badCore} />
+            <path d="M12 2v4M12 18v4M4 4l3 3M20 20l-3-3" stroke={outer} strokeWidth="1" opacity="0.5" />
+          </g>
+        )}
+        {rating === 3 && (
+          // Stage 3: Functional Warp Eye
+          <g>
+            <path d="M2 12c6-5 14-5 20 0-6 5-14 5-20 0z" fill={outer} opacity="0.7" />
+            <circle cx="12" cy="12" r="5" fill={core} />
+            <ellipse cx="12" cy="12" rx="2" ry="4" fill="#111" />
+          </g>
+        )}
+        {rating === 4 && (
+          // Stage 4: Enhanced Warp Eye (glowing, tendrils)
+          <g>
+            <path d="M1 12c6-6 16-6 22 0-6 6-16 6-22 0z" fill={outer} opacity="0.8" />
+            <circle cx="12" cy="12" r="6" fill={core} />
+            <ellipse cx="12" cy="12" rx="1.5" ry="5" fill="#111" />
+            <circle cx="12" cy="12" r="2" fill="var(--warp-teal)" />
+            <path d="M12 2c-2 2-2 6 0 8M12 22c2-2 2-6 0-8M2 12c2 2 6 2 8 0M22 12c-2-2-6-2-8 0" stroke={core} strokeWidth="1" fill="none" opacity="0.5" />
+          </g>
+        )}
+        {rating === 5 && (
+          // Stage 5: Omniscient Third Eye (fully open, intense glow)
+          <g>
+            <circle cx="12" cy="12" r="11" fill={outer} opacity="0.3" />
+            <circle cx="12" cy="12" r="9" fill={outer} opacity="0.6" />
+            <circle cx="12" cy="12" r="7" fill={core} />
+            <circle cx="12" cy="12" r="3" fill="var(--warp-teal)" />
+            <circle cx="12" cy="12" r="1" fill="#fff" />
+            {/* Radiating energy */}
+            <path d="M12 0v3M12 21v3M0 12h3M21 12h3M3.5 3.5l2 2M18.5 18.5l2 2M20.5 3.5l-2 2M3.5 20.5l2-2" stroke="var(--warp-teal)" strokeWidth="1.5" strokeLinecap="round" opacity="0.8" />
           </g>
         )}
       </svg>
