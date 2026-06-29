@@ -12,22 +12,27 @@ export function ServoSkull({ className = '', isScanning = false }: ServoSkullPro
     <div
       className={`relative ${className} ${isScanning ? 'animate-[float_1.5s_ease-in-out_infinite]' : 'animate-[float_3s_ease-in-out_infinite]'}`}
     >
-      {/* Volumetric Laser Sweep Beam (only when scanning) */}
-      <div
-        className={`absolute left-[45%] top-[60%] w-[200px] h-[300px] -translate-x-1/2 origin-top pointer-events-none z-20 mix-blend-screen transition-all duration-300 ${isScanning ? 'opacity-100' : 'opacity-0 scale-y-0'}`}
-        style={{
-          background: 'linear-gradient(to bottom, rgba(0, 255, 65, 0.6), rgba(0, 255, 65, 0))',
-          clipPath: 'polygon(48% 0, 52% 0, 100% 100%, 0% 100%)',
-          animation: isScanning ? 'searchlight-swing 2s ease-in-out infinite' : 'none'
-        }}
-      />
+      <style>{`
+        @keyframes svg-searchlight {
+          0%   { transform: rotate(-15deg) scaleY(0.5); }
+          20%  { transform: rotate(10deg) scaleY(1.3); }
+          40%  { transform: rotate(-5deg) scaleY(0.8); }
+          60%  { transform: rotate(15deg) scaleY(1.5); }
+          80%  { transform: rotate(-2deg) scaleY(0.9); }
+          100% { transform: rotate(-15deg) scaleY(0.5); }
+        }
+      `}</style>
 
       {/* Halo Glow */}
       <div className="absolute inset-0 bg-cogitator-green/20 blur-[20px] rounded-full scale-110" />
 
       {/* Upgraded High-Fidelity Servo-Skull SVG */}
-      <svg width="80" height="90" viewBox="0 0 100 110" fill="none" className="relative z-10 drop-shadow-xl">
+      <svg width="80" height="90" viewBox="0 0 100 110" fill="none" className="relative z-10 drop-shadow-xl overflow-visible">
         <defs>
+          <linearGradient id="beamGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="rgba(0, 255, 65, 0.6)" />
+            <stop offset="100%" stopColor="rgba(0, 255, 65, 0)" />
+          </linearGradient>
           <linearGradient id="skullBone" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#e3dccc" />
             <stop offset="60%" stopColor="#8c8577" />
@@ -137,6 +142,17 @@ export function ServoSkull({ className = '', isScanning = false }: ServoSkullPro
         <path d="M78 60 L72 65 L72 72 L78 68 Z" fill="#000" />
         <line x1="77" y1="63" x2="73" y2="66" stroke="#444" />
         <line x1="77" y1="65" x2="73" y2="68" stroke="#444" />
+
+        {/* Volumetric Laser Sweep Beam */}
+        {isScanning && (
+          <g style={{ transformOrigin: '35px 43.5px', animation: 'svg-searchlight 6s ease-in-out infinite' }}>
+            <polygon 
+              points="31,43.5 39,43.5 150,400 -80,400" 
+              fill="url(#beamGradient)" 
+              className="mix-blend-screen"
+            />
+          </g>
+        )}
       </svg>
     </div>
   );

@@ -706,10 +706,12 @@ h1, h2, h3, h4, h5, h6 {
 
 @keyframes scan-line {
   0% {
+    top: 0;
     transform: translateY(-100%);
   }
   100% {
-    transform: translateY(100vh);
+    top: 100%;
+    transform: translateY(0);
   }
 }
 

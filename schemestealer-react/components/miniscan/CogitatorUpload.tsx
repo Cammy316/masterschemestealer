@@ -126,8 +126,8 @@ export function CogitatorUpload({
                   onRevealComplete={onRevealComplete}
                   reticleData={
                     result?.detectedColors.map((c, i) => ({
-                      x: c.position?.x ?? 500,
-                      y: c.position?.y ?? 500,
+                      x: c.position?.x ?? 0.5,
+                      y: c.position?.y ?? 0.5,
                       color: c.hex,
                       name: c.family || `Color ${i + 1}`,
                     })) || []
