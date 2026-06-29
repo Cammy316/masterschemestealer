@@ -385,6 +385,15 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
           className="absolute inset-0 w-full h-full rounded-full pointer-events-none mix-blend-screen"
         />
 
+        {/* The Singularity - Absolute Center Void
+            Sits on top of the spirals and particles to swallow them before they converge,
+            creating a true "black hole" effect that fixes the messy central tendrils. */}
+        <motion.div 
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-black rounded-full shadow-[0_0_20px_5px_rgba(167,139,250,0.5),inset_0_0_10px_rgba(0,0,0,1)]"
+          animate={{ scale: [1, 1.1, 1] }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+        />
+
         {/* Layer 7: Center text - dynamic based on state (Outside filter so text isn't torn) */}
         <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
           {hasUploaded ? (
