@@ -187,8 +187,7 @@ export default function MiniscanResultsPage() {
           colors={currentScan.detectedColors.map(c => ({
             hex: c.hex,
             family: c.family,
-            percentage: c.percentage,
-            name: c.family || 'Unknown'
+            percentage: c.percentage
           }))} 
         />
 
