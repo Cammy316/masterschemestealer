@@ -21,6 +21,7 @@ export default function InspirationPage() {
   const setScanResult = useAppStore((s) => s.setScanResult);
   const apiReady = useApiReady();
   const [hasUploaded, setHasUploaded] = useState(false);
+  const [isBursting, setIsBursting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { isProcessing, error, result, scan, retry, fallbackToOffline, markCommitted } =
@@ -30,14 +31,19 @@ export default function InspirationPage() {
     setMode('inspiration');
   }, [setMode]);
 
-  // Commit and navigate once a scan completes.
+  // Commit and navigate once a scan completes. Trigger the burst transition!
   React.useEffect(() => {
-    if (result) {
+    if (result && !isBursting) {
+      setIsBursting(true);
       setScanResult(result);
       markCommitted();
-      router.push('/inspiration/results');
+      
+      // Delay navigation to let the vortex burst animation play
+      setTimeout(() => {
+        router.push('/inspiration/results');
+      }, 700);
     }
-  }, [result, setScanResult, markCommitted, router]);
+  }, [result, setScanResult, markCommitted, router, isBursting]);
 
   // Reset the portal's uploaded state when an error surfaces so it can retry.
   React.useEffect(() => {
@@ -107,7 +113,7 @@ export default function InspirationPage() {
       <motion.div
         className="max-w-2xl mx-auto pt-4 sm:pt-8 px-4 text-center relative z-20"
         initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: isProcessing ? 0 : 1, y: 0 }}
+        animate={{ opacity: (isProcessing || isBursting) ? 0 : 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
         <h1 className="text-[clamp(1.2rem,5vw,1.875rem)] text-balance font-bold gothic-text mb-2 warp-text text-shadow-lg" style={{ textShadow: '0 0 20px var(--ethereal-glow-strong)' }}>
@@ -127,10 +133,34 @@ export default function InspirationPage() {
       >
         <WarpPortal
           onActivate={handlePortalActivate}
-          isActive={isProcessing}
+          isActive={isProcessing || isBursting}
           disabled={isProcessing}
           hasUploaded={hasUploaded}
         />
+
+        {/* Portal-Centered Burst Effects */}
+        {isBursting && (
+          <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-50">
+            {/* The Singular Collapse */}
+            <motion.div
+              className="absolute w-4 h-4 rounded-full bg-white shadow-[0_0_50px_20px_rgba(255,255,255,1)]"
+              initial={{ scale: 0 }}
+              animate={{ scale: [0, 1, 0] }}
+              transition={{ duration: 0.3, ease: 'easeIn' }}
+            />
+            {/* The Burst Wave */}
+            <motion.div
+              className="absolute rounded-full"
+              style={{
+                background: 'radial-gradient(circle, rgba(236,72,153,0.9) 0%, rgba(139,92,246,0.8) 40%, rgba(20,184,166,0.4) 80%, rgba(0,0,0,0) 100%)',
+                mixBlendMode: 'screen'
+              }}
+              initial={{ width: 0, height: 0, opacity: 1 }}
+              animate={{ width: '300vw', height: '300vw', opacity: 0 }}
+              transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
+            />
+          </div>
+        )}
       </motion.div>
 
       {/* Hidden file input */}
@@ -199,7 +229,7 @@ export default function InspirationPage() {
       )}
 
       {/* Instructions - Hide during processing so focus is entirely on the portal */}
-      {!isProcessing && (
+      {(!isProcessing && !isBursting) && (
         <motion.div
           className="max-w-2xl mx-auto px-4 mt-8 relative"
           initial={{ opacity: 0 }}
@@ -242,6 +272,18 @@ export default function InspirationPage() {
       </motion.div>
       )}
 
+      {/* Vortex Burst Screen Wash */}
+      {isBursting && (
+        <div className="fixed inset-0 z-50 pointer-events-none">
+          {/* Screen wash */}
+          <motion.div 
+            className="absolute inset-0 bg-warp-purple/40 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4, delay: 0.3 }}
+          />
+        </div>
+      )}
     </div>
   );
 }

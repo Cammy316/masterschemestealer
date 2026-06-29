@@ -36,13 +36,13 @@ interface PaintRecipeCardProps {
 // recipe for it and it must not render a tab. Mirrors config.SUPPORTED_BRANDS.
 type BrandKey = 'citadel' | 'vallejo' | 'army_painter' | 'ak' | 'pro_acryl' | 'two_thin_coats';
 
-const BRANDS: { key: BrandKey; name: string; short: string }[] = [
+const BRANDS: { key: BrandKey; name: string; short: string; isPremium?: boolean }[] = [
   { key: 'citadel', name: 'Citadel', short: 'Citadel' },
   { key: 'vallejo', name: 'Vallejo', short: 'Vallejo' },
   { key: 'army_painter', name: 'Army Painter', short: 'Army P.' },
-  { key: 'ak', name: 'AK', short: 'AK' },
-  { key: 'pro_acryl', name: 'Pro Acryl', short: 'Pro Acryl' },
-  { key: 'two_thin_coats', name: 'Two Thin Coats', short: 'TTC' },
+  { key: 'ak', name: 'AK', short: 'AK', isPremium: true },
+  { key: 'pro_acryl', name: 'Pro Acryl', short: 'Pro Acryl', isPremium: true },
+  { key: 'two_thin_coats', name: 'Two Thin Coats', short: 'TTC', isPremium: true },
 ];
 
 // Brand icon component - custom SVG icons for each brand
@@ -159,6 +159,7 @@ export function PaintRecipeCard({
   coverage,
 }: PaintRecipeCardProps) {
   const [selectedBrand, setSelectedBrand] = useState<BrandKey>('citadel');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showComparison, setShowComparison] = useState(false);
   const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null);
   const [copied, setCopied] = useState(false);
@@ -259,15 +260,21 @@ export function PaintRecipeCard({
     }
   }, [handleSwipe]);
 
+  const isWarp = mode === 'inspiration';
+  const containerClass = isWarp
+    ? "rounded-2xl border overflow-hidden backdrop-blur-xl bg-void-black/40 shadow-[0_0_30px_rgba(147,51,234,0.15)]"
+    : "rounded-lg border overflow-hidden bg-gray-900/90";
+  const containerBorder = isWarp ? 'rgba(168, 85, 247, 0.3)' : primaryVar;
+
   return (
-    <div className="rounded-lg border overflow-hidden" style={{ borderColor: primaryVar }}>
+    <div className={containerClass} style={{ borderColor: containerBorder }}>
       {/* Screen Reader Announcements */}
       <div role="status" aria-live="polite" className="sr-only">
         {announcement}
       </div>
 
       {/* Header: difficulty pill + actions */}
-      <div className="flex items-center justify-between px-3 py-2 bg-gray-900/90 border-b border-gray-800 gap-2">
+      <div className={`flex items-center justify-between px-3 py-2 border-b gap-2 ${isWarp ? 'bg-void-black/30 border-purple-500/20' : 'bg-gray-900/90 border-gray-800'}`}>
         <Tooltip content={`${difficulty.label} — ${paintCount} paint${paintCount === 1 ? '' : 's'} in this recipe`}>
           <span
             className="text-[11px] font-semibold uppercase tracking-wide px-2.5 py-1 rounded-full border cursor-help whitespace-nowrap"
@@ -341,31 +348,103 @@ export function PaintRecipeCard({
         )}
       </AnimatePresence>
 
-      {/* Brand Selector Tabs — always-visible labels (no hidden swipe hint).
-          Driven by the brands present in the response (the six supported brands),
-          wrapping to a second row on narrow screens. */}
-      <div className="flex flex-wrap gap-1 p-1 bg-gray-900/80">
-        {visibleBrands.map((brand) => {
-          const active = effectiveBrand === brand.key;
-          return (
-            <button
-              key={brand.key}
-              onClick={() => handleBrandChange(brand.key)}
-              className="flex-1 min-w-[72px] min-h-[44px] rounded px-1 text-xs font-semibold transition-all flex items-center justify-center gap-1.5"
-              style={active
-                ? { background: primaryVar, color: onPrimary }
-                : { background: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--text-tertiary)' }}
-              aria-pressed={active}
+      {/* Brand Selector Dropdown */}
+      <div className={`relative p-3 border-b ${isWarp ? 'border-white/10 bg-void-black/30' : 'border-gray-800 bg-gray-900/80'}`}>
+        <button
+          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all ${
+            isWarp ? 'bg-white/5 border border-white/10 hover:bg-white/10' : 'bg-gray-800 border border-gray-700 hover:bg-gray-700'
+          }`}
+        >
+          <div className="flex items-center gap-3">
+            <BrandIcon brand={effectiveBrand} isActive={true} mode={mode} />
+            <span className="font-bold text-sm">
+              {BRANDS.find((b) => b.key === effectiveBrand)?.name}
+            </span>
+            {BRANDS.find((b) => b.key === effectiveBrand)?.isPremium && (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" strokeWidth="2">
+                <rect x="5" y="11" width="14" height="10" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+            )}
+          </div>
+          <svg
+            width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+            className={`transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`}
+          >
+            <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+
+        <AnimatePresence>
+          {isDropdownOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -10, scaleY: 0.95 }}
+              animate={{ opacity: 1, y: 0, scaleY: 1 }}
+              exit={{ opacity: 0, y: -10, scaleY: 0.95 }}
+              transition={{ duration: 0.15 }}
+              className={`absolute left-3 right-3 top-[calc(100%-4px)] z-50 rounded-lg shadow-2xl overflow-hidden border ${
+                isWarp ? 'bg-void-black/95 backdrop-blur-xl border-white/10' : 'bg-gray-900 border-gray-700'
+              }`}
+              style={{ transformOrigin: 'top' }}
             >
-              <BrandIcon brand={brand.key} isActive={active} mode={mode} />
-              <span className="truncate">{brand.short}</span>
-            </button>
-          );
-        })}
+              {visibleBrands.map((brand) => (
+                <button
+                  key={brand.key}
+                  onClick={() => {
+                    handleBrandChange(brand.key);
+                    setIsDropdownOpen(false);
+                  }}
+                  className={`w-full flex items-center justify-between px-4 py-3 text-left transition-colors border-b last:border-b-0 ${
+                    effectiveBrand === brand.key
+                      ? (isWarp ? 'bg-warp-purple/20' : 'bg-cogitator-green/10')
+                      : (isWarp ? 'hover:bg-white/5 border-white/5' : 'hover:bg-gray-800 border-gray-800')
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <BrandIcon brand={brand.key} isActive={effectiveBrand === brand.key} mode={mode} />
+                    <span className={effectiveBrand === brand.key ? 'font-bold' : ''}>
+                      {brand.name}
+                    </span>
+                  </div>
+                  {brand.isPremium && (
+                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold tracking-wider" style={{ background: 'rgba(251, 191, 36, 0.15)', color: '#fbbf24' }}>
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <rect x="5" y="11" width="14" height="10" rx="2" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                      </svg>
+                      PREMIUM
+                    </div>
+                  )}
+                </button>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Recipe Steps */}
-      <div className="p-3 bg-gray-900/50 overflow-hidden">
+      <div className={`p-3 overflow-hidden relative ${isWarp ? 'bg-void-black/20' : 'bg-gray-900/50'}`}>
+        
+        {/* Premium Gating Overlay */}
+        {BRANDS.find((b) => b.key === effectiveBrand)?.isPremium && (
+          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center backdrop-blur-md bg-void-black/60 rounded-b-xl border-t border-white/5">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" strokeWidth="1.5" className="mb-4 drop-shadow-[0_0_15px_rgba(251,191,36,0.3)]">
+              <rect x="5" y="11" width="14" height="10" rx="2" ry="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            <h4 className="text-xl font-bold mb-2 text-[#fbbf24] gothic-text tracking-wide text-shadow-sm">
+              SEALED FORMULATION
+            </h4>
+            <p className="text-sm text-gray-300 text-center px-6 mb-6 max-w-sm">
+              This advanced chromatic recipe requires Level 4 clearance. Elevate your status to unlock premium formulations.
+            </p>
+            <button className="px-6 py-3 rounded-full bg-gradient-to-r from-amber-600 to-amber-400 text-void-black font-bold text-sm tracking-widest shadow-[0_4px_15px_rgba(251,191,36,0.3)] hover:scale-105 transition-transform">
+              UNLOCK PREMIUM
+            </button>
+          </div>
+        )}
+
         <AnimatePresence mode="wait">
           <motion.div
             key={effectiveBrand}
@@ -461,14 +540,16 @@ function RecipeStepRow({
   isOwned = false,
   onToggleOwned,
 }: RecipeStepRowProps) {
+  const isWarp = theme === 'warp';
+
   // Empty slot — dashed, dimmed, greyed spine.
   if (!paint) {
     return (
-      <div className="rounded-lg overflow-hidden border border-dashed border-gray-700 opacity-60">
+      <div className={`overflow-hidden border border-dashed opacity-60 ${isWarp ? 'rounded-xl border-purple-500/20' : 'rounded-lg border-gray-700'}`}>
         <div className="flex items-stretch">
           <div className="w-[5px] flex-shrink-0" style={{ background: 'var(--charcoal)' }} />
-          <div className="flex items-center gap-3 flex-1 min-w-0 py-2.5 px-2.5 bg-gray-800/40">
-            <div className="w-[46px] h-[46px] rounded border border-dashed border-gray-600 flex items-center justify-center flex-shrink-0 text-gray-600">
+          <div className={`flex items-center gap-3 flex-1 min-w-0 py-2.5 px-2.5 ${isWarp ? 'bg-void-black/30' : 'bg-gray-800/40'}`}>
+            <div className={`w-[46px] h-[46px] flex items-center justify-center flex-shrink-0 text-gray-600 border border-dashed ${isWarp ? 'rounded-full border-purple-500/30' : 'rounded border-gray-600'}`}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14" strokeLinecap="round" /></svg>
             </div>
             <div className="flex-1 min-w-0">
@@ -484,10 +565,15 @@ function RecipeStepRow({
   const isPerfectMatch = paint.deltaE !== undefined && paint.deltaE < 3;
   const quality = deltaQuality(paint.deltaE);
 
+  const rowClass = isWarp
+    ? `rounded-xl overflow-hidden border bg-warp-purple/10 backdrop-blur-md ${isOwned ? 'ring-2 ring-purple-500/50' : ''}`
+    : `rounded-lg overflow-hidden border bg-gray-800/80 ${isOwned ? 'ring-2 ring-cogitator-green/30' : ''}`;
+  const rowBorder = isWarp ? 'rgba(168, 85, 247, 0.2)' : 'rgba(255,255,255,0.06)';
+
   return (
     <div
-      className={`rounded-lg overflow-hidden border bg-gray-800/80 ${isOwned ? 'ring-2 ring-green-500/30' : ''}`}
-      style={{ borderColor: 'rgba(255,255,255,0.06)' }}
+      className={rowClass}
+      style={{ borderColor: rowBorder }}
     >
       <div className="flex items-stretch">
         {/* Role spine */}
@@ -497,7 +583,7 @@ function RecipeStepRow({
           {/* Swatch + ΔE badge */}
           <div className="relative flex-shrink-0">
             <div
-              className="w-[46px] h-[46px] rounded border border-gray-600"
+              className={`w-[46px] h-[46px] border border-gray-600 shadow-inner ${isWarp ? 'rounded-full shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]' : 'rounded'}`}
               style={{ backgroundColor: paint.hex }}
             />
             {/* Owned tick */}

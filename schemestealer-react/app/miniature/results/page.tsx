@@ -24,6 +24,27 @@ import { useAnalytics } from '@/hooks/useAnalytics';
 import { motion } from 'framer-motion';
 import { mlLogger } from '@/lib/mlDataLogger';
 
+function DecryptionHeader({ text }: { text: string }) {
+  const [displayText, setDisplayText] = React.useState(text.replace(/[a-zA-Z]/g, '0'));
+  
+  React.useEffect(() => {
+    let iterations = 0;
+    const interval = setInterval(() => {
+      setDisplayText(text.split('').map((char, index) => {
+        if (char === ' ' || char === '◆') return char;
+        if (index < iterations) return text[index];
+        return String.fromCharCode(65 + Math.floor(Math.random() * 26));
+      }).join(''));
+      
+      if (iterations >= text.length) clearInterval(interval);
+      iterations += 1/3;
+    }, 30);
+    return () => clearInterval(interval);
+  }, [text]);
+
+  return <span>{displayText}</span>;
+}
+
 export default function MiniscanResultsPage() {
   const router = useRouter();
   const rawCurrentScan = useAppStore((s) => s.currentScan);
@@ -140,8 +161,13 @@ export default function MiniscanResultsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className="text-[clamp(1.5rem,5vw,1.875rem)] text-balance font-bold gothic-text mb-2 auspex-text">
-            ◆ SCAN COMPLETE ◆
+          <h1 className="text-[clamp(1.5rem,5vw,1.875rem)] text-balance font-bold gothic-text mb-2 auspex-text relative inline-block">
+            <DecryptionHeader text="◆ SCAN COMPLETE ◆" />
+            <motion.div 
+              className="absolute -inset-2 bg-cogitator-green/20 mix-blend-screen pointer-events-none"
+              animate={{ opacity: [0, 1, 0], scaleY: [0, 1.2, 0] }}
+              transition={{ duration: 0.5, times: [0, 0.5, 1] }}
+            />
           </h1>
           <p className="text-cogitator-green-dim tech-text">
             Auspex has identified {currentScan.detectedColors.length} colour signatures
@@ -169,8 +195,11 @@ export default function MiniscanResultsPage() {
                   {/* Color Header */}
                   <div className="flex items-center gap-4 mb-4">
                     <div
-                      className="w-16 h-16 rounded-lg border-2 border-cogitator-green auspex-glow flex-shrink-0"
-                      style={{ backgroundColor: color.hex }}
+                      className="w-16 h-16 border-2 border-cogitator-green auspex-glow flex-shrink-0"
+                      style={{ 
+                        backgroundColor: color.hex,
+                        clipPath: 'polygon(30% 0%, 100% 0, 100% 70%, 70% 100%, 0 100%, 0 30%)'
+                      }}
                     />
                     <div className="flex-1 min-w-0">
                       <h3 className="text-xl font-bold auspex-text gothic-text truncate">

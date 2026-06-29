@@ -14,31 +14,39 @@ export function GothicCathedralBackground() {
 
       {/* Floating Dust Motes & Incense Embers */}
       <div className="absolute inset-0 z-20 opacity-60">
-        {[...Array(40)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute rounded-full"
-            style={{
-              width: Math.random() * 4 + 1 + 'px',
-              height: Math.random() * 4 + 1 + 'px',
-              backgroundColor: i % 3 === 0 ? '#ffb800' : '#a38947',
-              boxShadow: i % 3 === 0 ? '0 0 10px #ffb800' : '0 0 5px #a38947',
-              left: Math.random() * 100 + '%',
-              top: Math.random() * 100 + '%',
-            }}
-            animate={{
-              y: [0, -Math.random() * 150 - 50],
-              x: [0, (Math.random() - 0.5) * 80],
-              opacity: [0, Math.random() * 0.8 + 0.2, 0],
-            }}
-            transition={{
-              duration: 8 + Math.random() * 15,
-              repeat: Infinity,
-              ease: "linear",
-              delay: Math.random() * 10,
-            }}
-          />
-        ))}
+        {[...Array(40)].map((_, i) => {
+          // Deterministic pseudo-random values based on index
+          const r1 = (i * 13) % 100 / 100; // 0.0 - 0.99
+          const r2 = (i * 29) % 100 / 100;
+          const r3 = (i * 47) % 100 / 100;
+          const r4 = (i * 71) % 100 / 100;
+          
+          return (
+            <motion.div
+              key={i}
+              className="absolute rounded-full"
+              style={{
+                width: r1 * 4 + 1 + 'px',
+                height: r1 * 4 + 1 + 'px',
+                backgroundColor: i % 3 === 0 ? '#ffb800' : '#a38947',
+                boxShadow: i % 3 === 0 ? '0 0 10px #ffb800' : '0 0 5px #a38947',
+                left: r2 * 100 + '%',
+                top: r3 * 100 + '%',
+              }}
+              animate={{
+                y: [0, -r4 * 150 - 50],
+                x: [0, (r1 - 0.5) * 80],
+                opacity: [0, r2 * 0.8 + 0.2, 0],
+              }}
+              transition={{
+                duration: 8 + r3 * 15,
+                repeat: Infinity,
+                ease: "linear",
+                delay: r4 * 10,
+              }}
+            />
+          );
+        })}
       </div>
 
       {/* SVG Architecture Layers - Increased Opacity & Brightness */}

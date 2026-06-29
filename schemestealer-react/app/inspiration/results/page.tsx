@@ -96,6 +96,16 @@ export default function InspirationResultsPage() {
     }
   }, [currentScan, showKoFiPrompt]);
 
+  // Scroll to color orbs on mount
+  React.useEffect(() => {
+    if (currentScan?.detectedColors?.length) {
+      const timer = setTimeout(() => {
+        document.getElementById('orbs-section')?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [currentScan]);
+
   if (!currentScan) {
     return (
       <div className="min-h-screen flex items-center justify-center px-6 void-bg">
@@ -134,11 +144,17 @@ export default function InspirationResultsPage() {
         {currentScan.analysisSource === 'local' && <LocalAuspexBadge />}
         {/* Header */}
         <motion.div
-          className="text-center"
+          className="text-center relative"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
         >
+          {/* Breathing void glow behind text */}
+          <motion.div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-32 bg-purple-600/20 blur-[40px] rounded-full pointer-events-none -z-10"
+            animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+          />
           <h1 className="text-[clamp(1.5rem,5vw,1.875rem)] text-balance font-bold gothic-text mb-2 warp-text text-shadow-lg">
             ◆ ESSENCE EXTRACTED ◆
           </h1>
@@ -187,10 +203,9 @@ export default function InspirationResultsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
-            <div className="warp-border rounded-2xl p-1 depth-3">
-              <div className="bg-dark-gothic rounded-xl p-6 textured">
-                <ColorPalette colors={currentScan.detectedColors} title="◆ EXTRACTED ESSENCE ◆" />
-              </div>
+            <div id="orbs-section" className="scroll-mt-6" />
+            <div className="py-2">
+              <ColorPalette colors={currentScan.detectedColors} title="◆ EXTRACTED ESSENCE ◆" />
             </div>
           </motion.div>
         )}
@@ -207,29 +222,34 @@ export default function InspirationResultsPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
             >
-              <div className="warp-border rounded-2xl p-1 depth-2">
-                <div className="bg-dark-gothic rounded-xl p-6 textured">
-                  {/* Color Header */}
-                  <div className="flex items-center gap-4 mb-4">
-                    <div
-                      className="w-12 h-12 rounded-lg flex-shrink-0"
-                      style={{
-                        backgroundColor: color.hex,
-                        boxShadow: `0 0 15px ${color.hex}40`,
-                      }}
-                    />
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-bold warp-text gothic-text truncate">
-                        {color.family || `Colour ${index + 1}`}
-                      </h3>
-                      <div className="flex flex-wrap items-center gap-2 mt-1">
-                        <HexChip hex={color.hex} theme="warp" />
-                        <span className="text-xs text-warp-purple-light/70 tech-text">
-                          {color.percentage?.toFixed(1)}% coverage
-                        </span>
-                      </div>
+              <div className="p-2 mb-4">
+                {/* Color Header */}
+                <div className="flex items-center gap-4">
+                  {/* Floating orb for individual color header */}
+                  <motion.div
+                    className="w-14 h-14 rounded-full flex-shrink-0 shadow-[inset_0_0_10px_rgba(0,0,0,0.5)] border border-white/20"
+                    style={{
+                      background: `radial-gradient(circle at 30% 30%, ${color.hex}, #000000)`,
+                      boxShadow: `0 0 20px ${color.hex}60`,
+                    }}
+                    animate={{ y: [0, -4, 0] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                  >
+                    <div className="absolute top-[10%] left-[15%] w-[30%] h-[20%] rounded-full bg-white/30 blur-[1px] rotate-[-25deg]" />
+                  </motion.div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-xl font-bold warp-text gothic-text truncate">
+                      {color.family || `Colour ${index + 1}`}
+                    </h3>
+                    <div className="flex flex-wrap items-center gap-2 mt-1">
+                      <HexChip hex={color.hex} theme="warp" />
+                      <span className="text-xs text-warp-purple-light/70 tech-text">
+                        {color.percentage?.toFixed(1)}% coverage
+                      </span>
                     </div>
                   </div>
+                </div>
+              </div>
 
                   {/* Paint Recipe Card - NEW: Per-color brand selection */}
                   {color.paintRecipe ? (
@@ -249,8 +269,6 @@ export default function InspirationResultsPage() {
                       mode="inspiration"
                     />
                   ) : null}
-                </div>
-              </div>
             </motion.div>
           );
         })}
@@ -285,75 +303,15 @@ export default function InspirationResultsPage() {
 
         {/* Actions */}
         <motion.div
-          className="space-y-3"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          className="flex flex-col gap-3 mt-8 max-w-sm mx-auto"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.5 }}
         >
-          <SlabButton theme="warp" onClick={handleScanAnother}>
-            <span className="flex items-center justify-center gap-3">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path
-                  d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <span className="cyber-text text-base">CHANNEL THE WARP AGAIN</span>
-            </span>
-          </SlabButton>
-
           <motion.button
-            onClick={() => router.push('/cart')}
-            className="w-full py-4 px-6 rounded-lg border-2 border-warp-teal bg-dark-gothic touch-target textured"
-            whileHover={{
-              boxShadow: '0 0 20px var(--warp-teal)',
-              scale: 1.02,
-            }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <div className="flex items-center justify-center gap-3">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="var(--warp-teal)"
-                strokeWidth="2"
-              >
-                <rect
-                  x="3"
-                  y="8"
-                  width="18"
-                  height="13"
-                  rx="1"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path d="M3 13h18M3 17h18" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M8 8V6a4 4 0 0 1 8 0v2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              <span className="text-warp-teal font-bold cyber-text">VIEW REQUISITIONS</span>
-            </div>
-          </motion.button>
-
-          <ShareButton mode="inspiration" onShareClick={() => setShowShareModal(true)} />
-
-          {/* Give Feedback Button */}
-          <motion.button
-            onClick={triggerFeedback}
-            className="w-full py-3 px-6 rounded-lg border border-warp-pink/50 bg-warp-pink/10 touch-target"
-            whileHover={{
-              boxShadow: '0 0 10px var(--warp-pink)',
-              scale: 1.01,
-            }}
+            onClick={handleScanAnother}
+            className="w-full py-3 px-6 rounded-full border border-white/10 bg-white/5 backdrop-blur-md shadow-[0_4px_15px_rgba(0,0,0,0.1),inset_0_0_15px_rgba(139,92,246,0.1)] touch-target group"
+            whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.1)' }}
             whileTap={{ scale: 0.98 }}
           >
             <div className="flex items-center justify-center gap-2">
@@ -362,27 +320,113 @@ export default function InspirationResultsPage() {
                 height="20"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="var(--warp-pink)"
+                stroke="var(--warp-purple-light)"
+                strokeWidth="2"
+                className="group-hover:rotate-180 transition-transform duration-500"
+              >
+                <path
+                  d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path d="M3 3v5h5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <span className="text-warp-purple-light font-bold gothic-text group-hover:text-white transition-colors">
+                CHANNEL THE WARP AGAIN
+              </span>
+            </div>
+          </motion.button>
+
+          <motion.button
+            onClick={() => router.push('/cart')}
+            className="w-full py-3 px-6 rounded-full border border-warp-teal/30 bg-warp-teal/10 backdrop-blur-md shadow-[0_4px_15px_rgba(20,184,166,0.15)] touch-target group"
+            whileHover={{ scale: 1.02, backgroundColor: 'rgba(20,184,166,0.2)' }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <div className="flex items-center justify-center gap-2">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="var(--warp-teal)"
                 strokeWidth="2"
               >
                 <path
-                  d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                  d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M15 2H9c-1.1 0-2 .9-2 2v2h10V4c0-1.1-.9-2-2-2z"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
               </svg>
-              <span className="text-warp-pink text-sm tech-text">Give Feedback</span>
+              <span className="text-warp-teal font-bold gothic-text group-hover:text-white transition-colors">
+                VIEW REQUISITIONS
+              </span>
             </div>
           </motion.button>
-        </motion.div>
 
-        {/* Ko-fi Support Banner */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.55 }}
-        >
-          <KoFiBanner source="inspiration_results" mode="inspiration" />
+          {/* Share Button */}
+          <motion.button
+            onClick={() => setShowShareModal(true)}
+            className="w-full py-3 px-6 rounded-full border border-warp-purple/40 bg-warp-purple/10 backdrop-blur-md shadow-[0_4px_15px_rgba(139,92,246,0.15)] touch-target group"
+            whileHover={{ scale: 1.02, backgroundColor: 'rgba(139,92,246,0.2)' }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <div className="flex items-center justify-center gap-2">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--warp-purple-light)" strokeWidth="2">
+                <circle cx="18" cy="5" r="3" />
+                <circle cx="6" cy="12" r="3" />
+                <circle cx="18" cy="19" r="3" />
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+              </svg>
+              <span className="text-warp-purple-light font-bold gothic-text group-hover:text-white transition-colors">
+                SHARE ESSENCE
+              </span>
+            </div>
+          </motion.button>
+
+          {/* Give Feedback Button */}
+          <motion.button
+            onClick={triggerFeedback}
+            className="w-full py-3 px-6 rounded-full border border-warp-pink/30 bg-warp-pink/10 backdrop-blur-md shadow-[0_4px_15px_rgba(236,72,153,0.15)] touch-target group"
+            whileHover={{ scale: 1.02, backgroundColor: 'rgba(236,72,153,0.2)' }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <div className="flex items-center justify-center gap-2">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--warp-pink)" strokeWidth="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <span className="text-warp-pink text-sm font-bold gothic-text group-hover:text-white transition-colors">
+                GIVE FEEDBACK
+              </span>
+            </div>
+          </motion.button>
+
+          {/* Ko-fi Support Button */}
+          <motion.button
+            onClick={() => {
+              import('@/lib/analytics').then(({ analytics }) => analytics.trackKoFiClicked('inspiration_results'));
+              window.open('https://ko-fi.com/schemestealer', '_blank', 'noopener,noreferrer');
+            }}
+            className="w-full py-3 px-6 rounded-full border border-amber-500/30 bg-amber-500/10 backdrop-blur-md shadow-[0_4px_15px_rgba(245,158,11,0.15)] touch-target group"
+            whileHover={{ scale: 1.02, backgroundColor: 'rgba(245,158,11,0.2)' }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <div className="flex items-center justify-center gap-2">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-amber-500">
+                <path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M6 1v3M10 1v3M14 1v3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <span className="text-amber-500 font-bold gothic-text group-hover:text-white transition-colors">
+                EMPOWER THE WARP
+              </span>
+            </div>
+          </motion.button>
         </motion.div>
 
         {/* Info card */}
@@ -391,84 +435,56 @@ export default function InspirationResultsPage() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.6 }}
         >
-          <div className="warp-border rounded-lg p-1 depth-2">
-            <div className="bg-cosmic-purple rounded-lg p-5 text-sm textured">
-              <div className="flex items-center justify-center gap-2 mb-3">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="var(--warp-purple-light)"
-                  strokeWidth="2"
-                  opacity="0.7"
-                >
-                  <circle cx="12" cy="12" r="3" strokeLinecap="round" strokeLinejoin="round" />
-                  <path
-                    d="M12 1v6m0 6v6M1 12h6m6 0h6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <circle
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    opacity="0.4"
-                  />
-                </svg>
-                <h3 className="font-bold text-warp-purple-light gothic-text text-center">
-                  PALETTE GUIDANCE
-                </h3>
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="var(--warp-purple-light)"
-                  strokeWidth="2"
-                  opacity="0.7"
-                >
-                  <circle cx="12" cy="12" r="3" strokeLinecap="round" strokeLinejoin="round" />
-                  <path
-                    d="M12 1v6m0 6v6M1 12h6m6 0h6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <circle
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    opacity="0.4"
-                  />
-                </svg>
+          <div className="rounded-2xl p-6 text-sm shadow-[inset_0_0_20px_rgba(255,255,255,0.05)] border border-white/10 bg-white/5 backdrop-blur-md">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="var(--warp-purple-light)"
+                strokeWidth="2"
+                opacity="0.7"
+              >
+                <circle cx="12" cy="12" r="3" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M12 1v6m0 6v6M1 12h6m6 0h6" strokeLinecap="round" strokeLinejoin="round" />
+                <circle cx="12" cy="12" r="10" strokeLinecap="round" strokeLinejoin="round" opacity="0.4" />
+              </svg>
+              <h3 className="font-bold text-warp-purple-light gothic-text text-center text-shadow-sm">
+                PALETTE GUIDANCE
+              </h3>
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="var(--warp-purple-light)"
+                strokeWidth="2"
+                opacity="0.7"
+              >
+                <circle cx="12" cy="12" r="3" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M12 1v6m0 6v6M1 12h6m6 0h6" strokeLinecap="round" strokeLinejoin="round" />
+                <circle cx="12" cy="12" r="10" strokeLinecap="round" strokeLinejoin="round" opacity="0.4" />
+              </svg>
+            </div>
+            
+            <div className="space-y-3 text-warp-purple-light/90 font-medium">
+              <div className="flex items-start gap-3">
+                <span className="text-warp-purple-light mt-1 text-[10px]">✧</span>
+                <p>These {currentScan.detectedColors.length} colours form a harmonious scheme</p>
               </div>
-              <div className="w-16 h-px bg-warp-purple-light/30 mx-auto mb-3" />
-              <ul className="space-y-2 text-white/90 tech-text text-xs leading-relaxed">
-                <li className="flex items-start gap-2">
-                  <span className="text-warp-purple-light/70 flex-shrink-0">►</span>
-                  <span>
-                    These {currentScan.detectedColors.length} colours form a harmonious scheme
-                  </span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-warp-pink/70 flex-shrink-0">►</span>
-                  <span>Each color shows BASE, SHADE, HIGHLIGHT, and WASH recommendations</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-warp-teal/70 flex-shrink-0">►</span>
-                  <span>Switch brands per color using the tabs above each recipe</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-warp-purple-light/70 flex-shrink-0">►</span>
-                  <span>
-                    Delta-E ({'\u0394'}E) shows paint accuracy (lower = closer match)
-                  </span>
-                </li>
-              </ul>
+              <div className="flex items-start gap-3">
+                <span className="text-warp-purple-light mt-1 text-[10px]">✧</span>
+                <p>Each color shows BASE, SHADE, HIGHLIGHT, and WASH recommendations</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="text-warp-purple-light mt-1 text-[10px]">✧</span>
+                <p>Switch brands per color using the dropdown above each recipe</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="text-warp-purple-light mt-1 text-[10px]">✧</span>
+                <p>Delta-E (ΔE) shows paint accuracy (lower = closer match)</p>
+              </div>
             </div>
           </div>
         </motion.div>

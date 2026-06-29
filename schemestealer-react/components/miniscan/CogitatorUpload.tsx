@@ -74,7 +74,7 @@ export function CogitatorUpload({ onFileSelect, onCameraActivate, disabled = fal
               transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
             >
               {Array.from({ length: 60 }).map((_, i) => (
-                <div key={i}>0x{Math.floor(Math.random() * 65535).toString(16).toUpperCase().padStart(4, '0')}</div>
+                <div key={i}>0x{Math.floor(((i * 997) % 65535)).toString(16).toUpperCase().padStart(4, '0')}</div>
               ))}
             </motion.div>
           </div>
@@ -85,7 +85,7 @@ export function CogitatorUpload({ onFileSelect, onCameraActivate, disabled = fal
               transition={{ duration: 70, repeat: Infinity, ease: 'linear' }}
             >
               {Array.from({ length: 60 }).map((_, i) => (
-                <div key={i}>0x{Math.floor(Math.random() * 65535).toString(16).toUpperCase().padStart(4, '0')}</div>
+                <div key={i}>0x{Math.floor(((i * 701) % 65535)).toString(16).toUpperCase().padStart(4, '0')}</div>
               ))}
             </motion.div>
           </div>

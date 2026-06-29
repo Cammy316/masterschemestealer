@@ -84,26 +84,33 @@ function ServoSkull({ className }: { className?: string }) {
       `}</style>
       
       {/* Emitting Data Particles */}
-      {[...Array(12)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-1 h-1 rounded-full"
-          style={{ backgroundColor: 'var(--cogitator-green)', boxShadow: '0 0 5px var(--cogitator-green)' }}
-          initial={{ x: 60, y: 60, opacity: 0 }}
-          animate={{ 
-            x: 60 + (Math.random() - 0.5) * 120, 
-            y: 60 + (Math.random() - 0.5) * 120, 
-            opacity: [0, 1, 0],
-            scale: [1, 2, 0]
-          }}
-          transition={{ 
-            duration: 1.5 + Math.random() * 2, 
-            repeat: Infinity, 
-            delay: Math.random() * 2,
-            ease: "easeOut"
-          }}
-        />
-      ))}
+      {[...Array(12)].map((_, i) => {
+        const r1 = (i * 17) % 100 / 100;
+        const r2 = (i * 31) % 100 / 100;
+        const r3 = (i * 43) % 100 / 100;
+        const r4 = (i * 59) % 100 / 100;
+
+        return (
+          <motion.div
+            key={i}
+            className="absolute w-1 h-1 rounded-full"
+            style={{ backgroundColor: 'var(--cogitator-green)', boxShadow: '0 0 5px var(--cogitator-green)' }}
+            initial={{ x: 60, y: 60, opacity: 0 }}
+            animate={{ 
+              x: 60 + (r1 - 0.5) * 120, 
+              y: 60 + (r2 - 0.5) * 120, 
+              opacity: [0, 1, 0],
+              scale: [1, 2, 0]
+            }}
+            transition={{ 
+              duration: 1.5 + r3 * 2, 
+              repeat: Infinity, 
+              delay: r4 * 2,
+              ease: "easeOut"
+            }}
+          />
+        );
+      })}
 
       {/* Hologram SVG */}
       <svg
