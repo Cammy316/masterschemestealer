@@ -10,6 +10,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { ReticleReveal } from '@/components/miniscan/ReticleReveal';
+import { HexPalette } from '@/components/miniscan/HexPalette';
 import { PaintList } from '@/components/PaintCard';
 import { PaintRecipeCard } from '@/components/shared/PaintRecipeCard';
 import { PaintResults } from '@/components/shared/PaintResults';
@@ -180,6 +181,16 @@ export default function MiniscanResultsPage() {
             ◆ COGITATOR STATUS: ANALYSIS COMPLETE ◆
           </motion.div>
         </motion.div>
+
+        {/* Global Extracted Colors Overview */}
+        <HexPalette 
+          colors={currentScan.detectedColors.map(c => ({
+            hex: c.hex,
+            family: c.family,
+            percentage: c.percentage,
+            name: c.family || 'Unknown'
+          }))} 
+        />
 
         {/* Detected Colors with ReticleReveal and PaintRecipeCard */}
         <div className="space-y-6">

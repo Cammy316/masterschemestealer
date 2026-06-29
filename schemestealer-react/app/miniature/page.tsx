@@ -48,14 +48,19 @@ export default function MiniscanPage() {
     if (result) setShowReveal(true);
   }, [result]);
 
+  const [localImageUrl, setLocalImageUrl] = useState<string | null>(null);
+
   const handleFileSelect = (file: File) => {
     setShowReveal(false);
+    // Create a local object URL for the initial wireframe scan animation
+    if (localImageUrl) {
+      URL.revokeObjectURL(localImageUrl);
+    }
+    setLocalImageUrl(URL.createObjectURL(file));
     scan(file);
   };
 
   const handleRevealComplete = () => {
-    // Animation complete — commit to store and navigate. The store now owns the
-    // object URL lifecycle, so release it from the hook.
     if (result) {
       setScanResult(result);
       markCommitted();
@@ -107,50 +112,10 @@ export default function MiniscanPage() {
     );
   }
 
-  // Show loading animation while processing; swap to the model-download progress
-  // screen when the one-time model is downloading.
-  if (isProcessing) {
-    return modelProgress !== null ? (
-      <ModelDownloadProgress percent={modelProgress} />
-    ) : (
-      <LoadingAnimation mode="miniature" />
-    );
-  }
+  // If we have an active scan (processing) or are showing the reveal, we still 
+  // render the main layout but pass the state down to CogitatorUpload so it can
+  // handle the integrated cinematic sequence inside its CRT screen.
 
-  // Show reveal animation after scan complete
-  if (showReveal && result && result.imageUrl) {
-    // Prepare reticle data for bloom animation
-    // Use a reference frame of 1000x1000 and distribute colors evenly
-    const centerX = 500;
-    const centerY = 500;
-    const radius = 200; // pixels from center
-
-    const reticleData = result.detectedColors.map((color, index) => {
-      // Distribute colors evenly in a circle
-      const angle = (index * (Math.PI * 2)) / result.detectedColors.length;
-      const x = centerX + Math.cos(angle) * radius;
-      const y = centerY + Math.sin(angle) * radius;
-
-      return {
-        x,
-        y,
-        color: color.hex,
-        name: color.family || `Color ${index + 1}`,
-      };
-    });
-
-    return (
-      <div className="min-h-dvh pb-24 pt-[clamp(0.75rem,3vh,2rem)] px-4 cogitator-screen" style={{ background: 'var(--void-black)' }}>
-        <div className="max-w-2xl mx-auto">
-          <ScanReveal
-            imageUrl={result.imageUrl}
-            reticleData={reticleData}
-            onComplete={handleRevealComplete}
-          />
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-dvh pb-24 pt-[clamp(0.75rem,3vh,2rem)] px-4 cogitator-screen" style={{ background: 'var(--void-black)' }}>
@@ -194,7 +159,7 @@ export default function MiniscanPage() {
         </motion.div>
       </motion.div>
 
-      {/* Upload Area */}
+      {/* Upload & Scan Area */}
       <motion.div
         className="max-w-2xl mx-auto"
         initial={{ opacity: 0, scale: 0.95 }}
@@ -204,7 +169,13 @@ export default function MiniscanPage() {
         <CogitatorUpload
           onFileSelect={handleFileSelect}
           onCameraActivate={handleCameraActivate}
-          disabled={isProcessing}
+          disabled={isProcessing || showReveal}
+          isProcessing={isProcessing}
+          showReveal={showReveal}
+          localImageUrl={localImageUrl}
+          result={result}
+          modelProgress={modelProgress}
+          onRevealComplete={handleRevealComplete}
         />
       </motion.div>
 
