@@ -247,7 +247,7 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
         }}
       >
         {/* SVG Filter Definition for Torn Reality Effect */}
-        <svg className="hidden" width="0" height="0">
+        <svg style={{ position: 'absolute', width: 0, height: 0, pointerEvents: 'none' }}>
           <filter id="warp-tear">
             <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise">
               <animate attributeName="baseFrequency" values="0.04;0.05;0.04" dur="8s" repeatCount="indefinite" />

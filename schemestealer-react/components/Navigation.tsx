@@ -167,7 +167,7 @@ function NavLink({ href, icon, label, isActive, theme }: NavLinkProps) {
   return (
     <Link href={href} className="relative touch-target">
       <motion.div
-        className="flex flex-col items-center justify-center px-3 py-2 rounded-lg relative overflow-hidden"
+        className="flex flex-col items-center justify-center px-1 sm:px-3 py-2 rounded-lg relative overflow-hidden min-w-0"
         whileTap={{ scale: 0.9 }}
         transition={{ duration: 0.2 }}
       >

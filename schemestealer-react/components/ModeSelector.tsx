@@ -55,7 +55,7 @@ export function ModeSelector() {
             <div className="flex items-center gap-3">
               <span className="text-amber-500/80 text-2xl drop-shadow-md">⚙</span>
               <h1
-                className="font-bold gothic-text text-[clamp(1.5rem,6vw,3rem)] whitespace-nowrap"
+                className="font-bold gothic-text text-[clamp(1.5rem,6vw,3rem)] text-balance"
                 style={{
                   background: 'linear-gradient(to bottom, var(--imperial-gold) 0%, var(--brass) 100%)',
                   WebkitBackgroundClip: 'text',

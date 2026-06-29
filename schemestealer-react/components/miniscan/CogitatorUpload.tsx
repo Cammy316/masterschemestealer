@@ -168,7 +168,7 @@ export function CogitatorUpload({ onFileSelect, onCameraActivate, disabled = fal
             </motion.div>
 
             {/* Title */}
-            <h2 className="auspex-text text-[clamp(1rem,4.5vw,1.25rem)] whitespace-nowrap font-bold text-center mb-2 gothic-text" style={{ textShadow: '0 0 10px var(--cogitator-green)' }}>
+            <h2 className="auspex-text text-[clamp(1rem,4.5vw,1.25rem)] text-balance font-bold text-center mb-2 gothic-text" style={{ textShadow: '0 0 10px var(--cogitator-green)' }}>
               ◆ INITIALIZE AUSPEX SCAN ◆
             </h2>
             <p className="text-cogitator-green-dim text-sm text-center mb-6 tech-text">
