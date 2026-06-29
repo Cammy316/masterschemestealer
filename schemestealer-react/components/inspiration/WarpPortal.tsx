@@ -185,20 +185,7 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
     return pathData;
   };
 
-  // Generate jagged polygon for CSS clip-path to replace expensive SVG filter
-  const jaggedClipPath = React.useMemo(() => {
-    const steps = 72;
-    const points = [];
-    for (let i = 0; i < steps; i++) {
-      const angle = (i / steps) * Math.PI * 2;
-      const noise = Math.sin(i * 13.5) * Math.cos(i * 21.3);
-      const r = 47 + noise * 3; // radius between 44% and 50%
-      const x = 50 + r * Math.cos(angle);
-      const y = 50 + r * Math.sin(angle);
-      points.push(`${x.toFixed(1)}% ${y.toFixed(1)}%`);
-    }
-    return `polygon(${points.join(', ')})`;
-  }, []);
+
 
   // Generate multiple spiral tendrils
   const spiralPaths = React.useMemo(() => {
@@ -262,90 +249,73 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
         }}
         style={{ willChange: 'transform', transform: 'translateZ(0)' }}
       >
-        {/* Layer 1: Outer glow — moved outside wrapper so the blur isn't clipped */}
+        <style>{`
+          @keyframes morph-1 {
+            0% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+            50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+            100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+          }
+          @keyframes morph-2 {
+            0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+            50% { border-radius: 70% 30% 50% 50% / 30% 40% 50% 60%; }
+            100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+          }
+          @keyframes morph-3 {
+            0% { border-radius: 50% 50% 40% 60% / 70% 30% 40% 60%; }
+            50% { border-radius: 40% 60% 50% 50% / 30% 70% 60% 40%; }
+            100% { border-radius: 50% 50% 40% 60% / 70% 30% 40% 60%; }
+          }
+          .morph-blob-1 { animation: morph-1 8s ease-in-out infinite; }
+          .morph-blob-2 { animation: morph-2 10s ease-in-out infinite alternate; }
+          .morph-blob-3 { animation: morph-3 12s ease-in-out infinite; }
+        `}</style>
+
+        {/* Layer 1: Outer glow — breathes slowly */}
         <motion.div
-          className="absolute inset-0 rounded-full bg-purple-600/20 blur-3xl"
-          animate={{ scale: [1, 1.04, 1], opacity: [0.6, 0.9, 0.6] }}
+          className="absolute inset-0 bg-purple-600/20 blur-3xl morph-blob-1"
+          animate={{ scale: [1, 1.1, 1], opacity: [0.6, 0.9, 0.6] }}
           transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
         />
 
-        {/* Torn Reality Wrapper - Applies jagged edges using CSS clip-path for 60FPS performance */}
-        <div className="absolute inset-0" style={{ clipPath: jaggedClipPath }}>
-
-        {/* Layer 2: Outer swirl ring - conic gradient */}
+        {/* Blob 1: Deep Purple Base Swirl */}
         <motion.div
-          className="absolute inset-0 rounded-full"
+          className="absolute inset-0 morph-blob-1 shadow-[inset_0_0_50px_rgba(139,92,246,0.8),0_0_20px_rgba(139,92,246,0.5)]"
           style={{
-            background: `conic-gradient(
-              from 0deg,
-              transparent 0deg,
-              rgba(139, 92, 246, 0.4) 30deg,
-              rgba(236, 72, 153, 0.3) 90deg,
-              rgba(20, 184, 166, 0.3) 150deg,
-              transparent 180deg,
-              rgba(139, 92, 246, 0.4) 210deg,
-              rgba(236, 72, 153, 0.3) 270deg,
-              rgba(20, 184, 166, 0.3) 330deg,
-              transparent 360deg
-            )`,
+            background: `conic-gradient(from 0deg, rgba(139, 92, 246, 0.4), rgba(236, 72, 153, 0.3), rgba(20, 184, 166, 0.3), rgba(139, 92, 246, 0.4))`
           }}
           animate={{ rotate: 360 }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
         />
 
-        {/* Layer 3: Middle swirl - counter rotation */}
+        {/* Blob 2: Bright Pink Counter-Swirl */}
         <motion.div
-          className="absolute inset-8 rounded-full"
+          className="absolute inset-2 morph-blob-2 mix-blend-screen opacity-80"
           style={{
-            background: `conic-gradient(
-              from 180deg,
-              rgba(139, 92, 246, 0.6) 0deg,
-              rgba(168, 85, 247, 0.5) 60deg,
-              rgba(236, 72, 153, 0.5) 120deg,
-              rgba(139, 92, 246, 0.6) 180deg,
-              rgba(168, 85, 247, 0.5) 240deg,
-              rgba(236, 72, 153, 0.5) 300deg,
-              rgba(139, 92, 246, 0.6) 360deg
-            )`,
+            background: `conic-gradient(from 180deg, rgba(236, 72, 153, 0.6), rgba(168, 85, 247, 0.5), rgba(236, 72, 153, 0.6))`
           }}
           animate={{ rotate: -360 }}
           transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
         />
 
-        {/* Layer 4: Inner swirl - faster */}
+        {/* Blob 3: Inner Fast Teal/Purple Swirl */}
         <motion.div
-          className="absolute inset-16 rounded-full"
+          className="absolute inset-6 morph-blob-3 mix-blend-overlay opacity-90 shadow-[inset_0_0_30px_rgba(0,0,0,0.8)]"
           style={{
-            background: `conic-gradient(
-              from 90deg,
-              rgba(192, 132, 252, 0.7) 0deg,
-              rgba(236, 72, 153, 0.6) 90deg,
-              rgba(192, 132, 252, 0.7) 180deg,
-              rgba(236, 72, 153, 0.6) 270deg,
-              rgba(192, 132, 252, 0.7) 360deg
-            )`,
+            background: `conic-gradient(from 90deg, rgba(192, 132, 252, 0.8), rgba(20, 184, 166, 0.6), rgba(192, 132, 252, 0.8))`
           }}
           animate={{ rotate: 360 }}
           transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
         />
 
-        {/* Layer 5: Event Horizon — dark receding void with a bright rim where
-            the light bends around the core */}
+        {/* Event Horizon (The Void Core) */}
         <div
-          className="absolute inset-24 rounded-full"
+          className="absolute inset-12 morph-blob-1"
           style={{
-            background: `radial-gradient(
-              circle,
-              #000000 0%,
-              #05000a 32%,
-              #1a0030 62%,
-              rgba(167, 139, 250, 0.75) 90%,
-              rgba(236, 72, 153, 0.55) 100%
-            )`,
+            background: `radial-gradient(circle, #000000 0%, #05000a 40%, #1a0030 70%, rgba(167, 139, 250, 0.9) 100%)`,
             boxShadow: `
-              inset 0 0 34px 12px rgba(0, 0, 0, 0.85),
-              inset 0 0 64px 22px rgba(0, 0, 0, 0.6),
-              0 0 22px 2px rgba(167, 139, 250, 0.5)
+              inset 0 0 40px 15px rgba(0, 0, 0, 0.9),
+              inset 0 0 60px 30px rgba(0, 0, 0, 0.7),
+              0 0 30px 5px rgba(167, 139, 250, 0.6)
             `,
           }}
         />
@@ -356,22 +326,15 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
             <linearGradient id="spiralGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="rgba(139, 92, 246, 0)" />
               <stop offset="30%" stopColor="rgba(139, 92, 246, 0.7)" />
-              <stop offset="70%" stopColor="rgba(236, 72, 153, 0.6)" />
-              <stop offset="100%" stopColor="rgba(20, 184, 166, 0.5)" />
+              <stop offset="70%" stopColor="rgba(236, 72, 153, 0.8)" />
+              <stop offset="100%" stopColor="rgba(20, 184, 166, 0.6)" />
             </linearGradient>
             <linearGradient id="spiralGradient2" x1="100%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stopColor="rgba(236, 72, 153, 0)" />
               <stop offset="30%" stopColor="rgba(236, 72, 153, 0.7)" />
-              <stop offset="70%" stopColor="rgba(139, 92, 246, 0.6)" />
-              <stop offset="100%" stopColor="rgba(20, 184, 166, 0.5)" />
+              <stop offset="70%" stopColor="rgba(139, 92, 246, 0.8)" />
+              <stop offset="100%" stopColor="rgba(20, 184, 166, 0.6)" />
             </linearGradient>
-            <filter id="spiralGlow">
-              <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
-              <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
           </defs>
 
           {spiralPaths.map((spiral, index) => {
@@ -387,7 +350,6 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
                 strokeWidth="2.5"
                 strokeLinecap="round"
                 opacity={spiral.opacity}
-                filter="url(#spiralGlow)"
                 strokeDasharray={pathLength}
                 animate={{
                   strokeDashoffset: [pathLength, 0],
@@ -422,7 +384,6 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
           ref={canvasRef}
           className="absolute inset-0 w-full h-full rounded-full pointer-events-none mix-blend-screen"
         />
-        </div>
 
         {/* Layer 7: Center text - dynamic based on state (Outside filter so text isn't torn) */}
         <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
