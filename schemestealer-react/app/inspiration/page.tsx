@@ -107,7 +107,7 @@ export default function InspirationPage() {
       <motion.div
         className="max-w-2xl mx-auto pt-4 sm:pt-8 px-4 text-center relative z-20"
         initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
+        animate={{ opacity: isProcessing ? 0 : 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
         <h1 className="text-[clamp(1.2rem,5vw,1.875rem)] text-balance font-bold gothic-text mb-2 warp-text text-shadow-lg" style={{ textShadow: '0 0 20px var(--ethereal-glow-strong)' }}>
