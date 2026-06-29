@@ -2,11 +2,14 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import type { Color } from '@/lib/types';
 import { HexChip } from '../shared/HexChip';
 
 interface HexPaletteProps {
-  colors: Color[];
+  colors: {
+    hex: string;
+    family?: string;
+    percentage?: number;
+  }[];
   title?: string;
 }
 
