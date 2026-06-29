@@ -8,13 +8,34 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
+import { ServoSkull } from './ServoSkull';
+import { ActiveAuspexScan } from './ActiveAuspexScan';
+import type { ScanResult } from '@/hooks/useScan';
+
 interface CogitatorUploadProps {
   onFileSelect: (file: File) => void;
   onCameraActivate: () => void;
   disabled?: boolean;
+  
+  isProcessing?: boolean;
+  showReveal?: boolean;
+  localImageUrl?: string | null;
+  result?: ScanResult | null;
+  modelProgress?: number | null;
+  onRevealComplete?: () => void;
 }
 
-export function CogitatorUpload({ onFileSelect, onCameraActivate, disabled = false }: CogitatorUploadProps) {
+export function CogitatorUpload({ 
+  onFileSelect, 
+  onCameraActivate, 
+  disabled = false,
+  isProcessing = false,
+  showReveal = false,
+  localImageUrl,
+  result,
+  modelProgress,
+  onRevealComplete
+}: CogitatorUploadProps) {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,91 +113,43 @@ export function CogitatorUpload({ onFileSelect, onCameraActivate, disabled = fal
 
           {/* Main Content Area */}
           <div className="relative z-10 sm:px-6">
-            {/* Servo-skull icon with glow */}
-            <motion.div
-              className="flex justify-center mb-6"
-              animate={{
-                filter: [
-                  'drop-shadow(0 0 10px var(--cogitator-green))',
-                  'drop-shadow(0 0 20px var(--cogitator-green))',
-                  'drop-shadow(0 0 10px var(--cogitator-green))',
-                ],
-                y: [0, -5, 0]
-              }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              {/* High-Fidelity Servo-Skull SVG */}
-              <svg width="80" height="80" viewBox="0 0 100 100" fill="none">
-                {/* Halos / Glows */}
-                <circle cx="50" cy="45" r="40" fill="var(--cogitator-green)" opacity="0.1" filter="blur(10px)" />
-                
-                {/* Cranium Base */}
-                <path d="M50 15 C30 15 20 30 20 45 C20 55 25 65 35 70 L35 80 L65 80 L65 70 C75 65 80 55 80 45 C80 30 70 15 50 15Z" fill="url(#metalGrad)" stroke="#1a1a1a" strokeWidth="2" />
-                
-                {/* Cranium Ridges */}
-                <path d="M35 25 Q50 20 65 25" stroke="#333" strokeWidth="2" fill="none" />
-                <path d="M30 35 Q50 30 70 35" stroke="#333" strokeWidth="2" fill="none" />
-                
-                {/* Left Bionic Eye */}
-                <ellipse cx="38" cy="45" rx="10" ry="12" fill="#0d0d0d" />
-                <circle cx="38" cy="45" r="7" fill="#1a1a1a" stroke="#a38947" strokeWidth="1.5" />
-                <circle cx="38" cy="45" r="4" fill="var(--cogitator-green)">
-                  <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite" />
-                </circle>
-                <circle cx="38" cy="45" r="2" fill="#fff" opacity="0.8" />
-                
-                {/* Right Bionic Eye */}
-                <ellipse cx="62" cy="45" rx="10" ry="12" fill="#0d0d0d" />
-                <circle cx="62" cy="45" r="7" fill="#1a1a1a" stroke="#a38947" strokeWidth="1.5" />
-                <circle cx="62" cy="45" r="4" fill="var(--cogitator-green)">
-                  <animate attributeName="opacity" values="0.6;1;0.6" dur="2.1s" begin="0.5s" repeatCount="indefinite" />
-                </circle>
-                <circle cx="62" cy="45" r="2" fill="#fff" opacity="0.8" />
-                
-                {/* Nose */}
-                <path d="M48 55 L50 65 L52 55 Z" fill="#0d0d0d" />
-                
-                {/* Jaw & Teeth */}
-                <path d="M35 70 L35 85 Q40 92 50 92 L65 92 Q70 92 65 85 L65 70" fill="url(#metalGradDark)" stroke="#1a1a1a" strokeWidth="2" />
-                <g fill="#0d0d0d">
-                  <rect x="40" y="75" width="4" height="8" rx="1" />
-                  <rect x="46" y="75" width="4" height="8" rx="1" />
-                  <rect x="50" y="75" width="4" height="8" rx="1" />
-                  <rect x="56" y="75" width="4" height="8" rx="1" />
-                </g>
-                
-                {/* Mechadendrites / Cables */}
-                <path d="M25 60 Q15 75 20 95" stroke="#1a1a1a" strokeWidth="4" fill="none" />
-                <path d="M25 60 Q15 75 20 95" stroke="#4a4a4a" strokeWidth="2" fill="none" strokeDasharray="2,2" />
-                
-                <path d="M75 60 Q85 75 80 95" stroke="#1a1a1a" strokeWidth="4" fill="none" />
-                <path d="M75 60 Q85 75 80 95" stroke="#a38947" strokeWidth="2" fill="none" strokeDasharray="3,3" />
-                
-                {/* Defs */}
-                <defs>
-                  <linearGradient id="metalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#808080" />
-                    <stop offset="50%" stopColor="#4a4a4a" />
-                    <stop offset="100%" stopColor="#2c2c2c" />
-                  </linearGradient>
-                  <linearGradient id="metalGradDark" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#4a4a4a" />
-                    <stop offset="100%" stopColor="#1a1a1a" />
-                  </linearGradient>
-                </defs>
-              </svg>
-            </motion.div>
+            
+            {(isProcessing || showReveal) && localImageUrl ? (
+              <div className="flex flex-col items-center">
+                <ServoSkull className="w-16 h-16 mb-4 z-20 drop-shadow-[0_0_10px_rgba(0,255,0,0.5)]" isScanning={isProcessing} />
+                <ActiveAuspexScan 
+                  localImageUrl={localImageUrl}
+                  resultImageUrl={result?.imageUrl}
+                  isProcessing={isProcessing}
+                  showReveal={showReveal}
+                  progress={modelProgress}
+                  onRevealComplete={onRevealComplete}
+                  reticleData={
+                    result?.detectedColors.map((c, i) => ({
+                      x: c.position?.x ?? 500,
+                      y: c.position?.y ?? 500,
+                      color: c.hex,
+                      name: c.family || `Color ${i + 1}`,
+                    })) || []
+                  }
+                />
+              </div>
+            ) : (
+              <>
+                <div className="flex justify-center mb-6">
+                  <ServoSkull className="w-20 h-24" isScanning={false} />
+                </div>
 
-            {/* Title */}
-            <h2 className="auspex-text text-[clamp(1rem,4.5vw,1.25rem)] text-balance font-bold text-center mb-2 gothic-text" style={{ textShadow: '0 0 10px var(--cogitator-green)' }}>
-              ◆ INITIALIZE AUSPEX SCAN ◆
-            </h2>
-            <p className="text-cogitator-green-dim text-sm text-center mb-6 tech-text">
-              Upload cogitator data or activate pict-capture servo-skull
-            </p>
+                {/* Title */}
+                <h2 className="auspex-text text-[clamp(1rem,4.5vw,1.25rem)] text-balance font-bold text-center mb-2 gothic-text" style={{ textShadow: '0 0 10px var(--cogitator-green)' }}>
+                  ◆ INITIALIZE AUSPEX SCAN ◆
+                </h2>
+                <p className="text-cogitator-green-dim text-sm text-center mb-6 tech-text">
+                  Upload cogitator data or activate pict-capture servo-skull
+                </p>
 
-            {/* Buttons */}
-            <div className="space-y-3">
+                {/* Buttons */}
+                <div className="space-y-3">
               {/* Camera button */}
               <motion.button
                 onClick={onCameraActivate}
@@ -241,6 +214,8 @@ export function CogitatorUpload({ onFileSelect, onCameraActivate, disabled = fal
             >
               [ Recommended: Clear lighting, miniature centered ]
             </motion.p>
+              </>
+            )}
           </div>
         </div>
       </div>

@@ -713,6 +713,11 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+@keyframes searchlight-swing {
+  0%, 100% { transform: translateX(-50%) rotate(-10deg) scaleY(0.6); }
+  50% { transform: translateX(-50%) rotate(10deg) scaleY(1.2); }
+}
+
 /* ========================================
    COLOR SWATCH ANIMATIONS
    ======================================== */
