@@ -10,7 +10,7 @@ import { motion } from 'framer-motion';
 
 import { ServoSkull } from './ServoSkull';
 import { ActiveAuspexScan } from './ActiveAuspexScan';
-import type { ScanResult } from '@/hooks/useScan';
+import type { ScanResult } from '@/lib/types';
 
 interface CogitatorUploadProps {
   onFileSelect: (file: File) => void;
