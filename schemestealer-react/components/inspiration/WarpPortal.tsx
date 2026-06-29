@@ -185,6 +185,21 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
     return pathData;
   };
 
+  // Generate jagged polygon for CSS clip-path to replace expensive SVG filter
+  const jaggedClipPath = React.useMemo(() => {
+    const steps = 72;
+    const points = [];
+    for (let i = 0; i < steps; i++) {
+      const angle = (i / steps) * Math.PI * 2;
+      const noise = Math.sin(i * 13.5) * Math.cos(i * 21.3);
+      const r = 47 + noise * 3; // radius between 44% and 50%
+      const x = 50 + r * Math.cos(angle);
+      const y = 50 + r * Math.sin(angle);
+      points.push(`${x.toFixed(1)}% ${y.toFixed(1)}%`);
+    }
+    return `polygon(${points.join(', ')})`;
+  }, []);
+
   // Generate multiple spiral tendrils
   const spiralPaths = React.useMemo(() => {
     return [
@@ -247,22 +262,15 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
         }}
         style={{ willChange: 'transform', transform: 'translateZ(0)' }}
       >
-        {/* SVG Filter Definition for Torn Reality Effect */}
-        <svg style={{ position: 'absolute', width: 0, height: 0, pointerEvents: 'none' }}>
-          <filter id="warp-tear">
-            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="15" xChannelSelector="R" yChannelSelector="G" />
-          </filter>
-        </svg>
-
-        {/* Torn Reality Wrapper - Applies jagged edges to all visual layers but NOT the text */}
-        <div className="absolute inset-0" style={{ filter: 'url(#warp-tear)' }}>
-          {/* Layer 1: Outer glow — slow "breathing" so the portal feels alive */}
+        {/* Layer 1: Outer glow — moved outside wrapper so the blur isn't clipped */}
         <motion.div
           className="absolute inset-0 rounded-full bg-purple-600/20 blur-3xl"
           animate={{ scale: [1, 1.04, 1], opacity: [0.6, 0.9, 0.6] }}
           transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
         />
+
+        {/* Torn Reality Wrapper - Applies jagged edges using CSS clip-path for 60FPS performance */}
+        <div className="absolute inset-0" style={{ clipPath: jaggedClipPath }}>
 
         {/* Layer 2: Outer swirl ring - conic gradient */}
         <motion.div
