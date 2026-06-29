@@ -120,8 +120,9 @@ export function ModeSelector() {
             <div className="absolute bottom-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-[#111] shadow-[0_1px_1px_rgba(255,255,255,0.2)] z-30 pointer-events-none" />
 
             {/* Hover Scanner Beam (Robust CSS Animation) */}
-            <div className="absolute inset-x-0 h-1 bg-[var(--cogitator-green)] opacity-0 group-hover:opacity-80 z-10 blur-sm pointer-events-none" style={{ top: '-10%', animation: 'scanBeam 3s linear infinite' }} />
-            <div className="absolute inset-x-0 h-1 bg-[#fff] opacity-0 group-hover:opacity-100 z-10 pointer-events-none shadow-[0_0_20px_var(--cogitator-green)]" style={{ top: '-10%', animation: 'scanBeam 3s linear infinite' }} />
+            {/* Visible on mobile by default, full opacity on desktop hover */}
+            <div className="absolute inset-x-0 h-1 bg-[var(--cogitator-green)] opacity-40 md:opacity-0 md:group-hover:opacity-80 z-10 blur-sm pointer-events-none" style={{ top: '-10%', animation: 'scanBeam 3s linear infinite' }} />
+            <div className="absolute inset-x-0 h-1 bg-[#fff] opacity-60 md:opacity-0 md:group-hover:opacity-100 z-10 pointer-events-none shadow-[0_0_20px_var(--cogitator-green)]" style={{ top: '-10%', animation: 'scanBeam 3s linear infinite' }} />
             
             <style>{`
               @keyframes scanBeam {
@@ -227,9 +228,9 @@ export function ModeSelector() {
               }}
             />
 
-            {/* Background Flash */}
+            {/* Background Flash (Desktop Hover Only) */}
             <div 
-              className="absolute inset-0 bg-[#4c1d95]/40 mix-blend-screen opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10"
+              className="absolute inset-0 bg-[#4c1d95]/40 mix-blend-screen opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10"
               style={{ animation: 'warpFlash 2s infinite' }}
             />
             
@@ -266,7 +267,7 @@ export function ModeSelector() {
               <div className="mb-4 relative flex items-center justify-center">
                 
                 {/* Warp Lightning (Anchored exactly behind the eye) */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-0">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] opacity-50 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-0">
                   <svg width="100%" height="100%" viewBox="0 0 100 100" className="w-full h-full overflow-visible">
                     {/* Main Fork 1 - Top Left */}
                     <g stroke="#c084fc" strokeWidth="1.5" fill="none" className="lightning" style={{ filter: 'drop-shadow(0 0 10px #9333ea)' }}>
