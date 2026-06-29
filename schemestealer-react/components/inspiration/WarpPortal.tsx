@@ -246,7 +246,7 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
         whileTap={{ scale: disabled ? 1 : 0.95 }}
         animate={{
           filter: isActive ? 'brightness(1.5) contrast(1.2)' : 'brightness(1) contrast(1)',
-          scale: isActive ? 1.05 : 1
+          scale: isActive ? 1.2 : 1
         }}
         style={{ 
           '--morph-speed-1': isActive ? '1.5s' : '8s',
@@ -401,8 +401,12 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
           transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
         />
 
-        {/* Layer 7: Center text - dynamic based on state (Outside filter so text isn't torn) */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+        {/* Layer 7: Center text - fades out entirely during hyper-drive to emphasize the void */}
+        <motion.div 
+          className="absolute inset-0 flex flex-col items-center justify-center z-10"
+          animate={{ opacity: isActive ? 0 : 1 }}
+          transition={{ duration: 0.5 }}
+        >
           {hasUploaded ? (
             <>
               <motion.span
@@ -439,7 +443,7 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
               </motion.span>
             </>
           )}
-        </div>
+        </motion.div>
       </motion.button>
 
     </div>
