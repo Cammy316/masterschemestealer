@@ -15,6 +15,7 @@ os.environ.setdefault(
     "TensorrtExecutionProvider,CUDAExecutionProvider,MIGraphXExecutionProvider",
 )
 
+import gc
 import io
 import json
 import base64
@@ -206,8 +207,14 @@ async def scan_miniature(request: Request, file: UploadFile = File(...)):
             image = image.convert('RGB')
         # RGBA means client already removed the background — preserve alpha channel
 
+        # Optimize memory and CPU overhead early
+        image.thumbnail((1024, 1024))
+
         logger.info(f"Processing miniature scan: {file.filename}, size: {image.size}, mode: {image.mode}")
-        result = _miniature_scanner.scan(image)
+        
+        loop = asyncio.get_running_loop()
+        result = await loop.run_in_executor(None, _miniature_scanner.scan, image)
+        
         logger.info(f"Miniature scan complete: {len(result['colors'])} colors detected")
         return JSONResponse(content=result)
 
@@ -219,6 +226,11 @@ async def scan_miniature(request: Request, file: UploadFile = File(...)):
     except Exception as e:
         logger.error(f"Miniature scan error: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail="Scan processing failed.")
+    finally:
+        # Aggressive memory cleanup
+        image = None
+        contents = None
+        gc.collect()
 
 
 @app.post("/api/scan/inspiration")
@@ -240,8 +252,14 @@ async def scan_inspiration(request: Request, file: UploadFile = File(...)):
         if image.mode != 'RGB':
             image = image.convert('RGB')
 
+        # Optimize memory and CPU overhead early
+        image.thumbnail((1024, 1024))
+
         logger.info(f"Processing inspiration scan: {file.filename}, size: {image.size}")
-        result = _inspiration_scanner.scan(image)
+        
+        loop = asyncio.get_running_loop()
+        result = await loop.run_in_executor(None, _inspiration_scanner.scan, image)
+        
         logger.info(f"Inspiration scan complete: {len(result['colors'])} colors detected")
         return JSONResponse(content=result)
 
@@ -253,6 +271,11 @@ async def scan_inspiration(request: Request, file: UploadFile = File(...)):
     except Exception as e:
         logger.error(f"Inspiration scan error: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail="Scan processing failed.")
+    finally:
+        # Aggressive memory cleanup
+        image = None
+        contents = None
+        gc.collect()
 
 
 @app.post("/api/feedback")
