@@ -141,15 +141,15 @@ class ColorAnalyzer:
 # Flat lowercase families the DB and engine recognise.
 RECOGNISED_FAMILIES = {
     'red', 'orange', 'yellow', 'green', 'cyan', 'blue', 'purple', 'pink',
-    'magenta', 'brown', 'flesh', 'bone', 'white', 'grey', 'black',
-    'gold', 'silver', 'bronze', 'copper',
+    'magenta', 'brown', 'bone', 'white', 'grey', 'black',
+    'gold', 'silver', 'bronze',
 }
 
 # When a NON-metallic paint lands on a metallic-ish family via the hue zones
-# (e.g. a dark warm brown returning "Bronze/Copper"), remap to the nearest
-# non-metallic family so matte paints never carry a metal family.
+# (e.g. a dark warm brown returning "Bronze"), remap to the nearest non-metallic
+# family so matte paints never carry a metal family.
 _NON_METALLIC_REMAP = {
-    'gold': 'yellow', 'bronze': 'brown', 'copper': 'brown', 'silver': 'grey',
+    'gold': 'yellow', 'bronze': 'brown', 'silver': 'grey',
 }
 
 
