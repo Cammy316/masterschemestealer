@@ -12787,3 +12787,796 @@
 2026-06-29 11:20:50,492 - SchemeStealer - INFO - Loaded 1312 paints from paints_groundtruth.json (1312 matchable)
 2026-06-29 11:20:50,493 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (vectorised CIEDE2000)
 2026-06-29 11:20:50,505 - SchemeStealer - INFO - Engine initialization complete - ML features enabled (4723 recipe edges)
+2026-06-29 13:12:04,333 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 13:12:04,471 - SchemeStealer - INFO - Glare detected and corrected
+2026-06-29 13:12:04,474 - SchemeStealer - INFO - Overexposure corrected
+2026-06-29 13:12:04,477 - SchemeStealer - INFO - Photo quality score: 55/100 (Fair)
+2026-06-29 13:12:04,550 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 13:12:04,582 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-29 13:12:05,587 - SchemeStealer - INFO - After shadow filtering: 13 clusters remain
+2026-06-29 13:12:05,587 - SchemeStealer - INFO - Deduplicating 5 clusters of family 'Brown'
+2026-06-29 13:12:05,587 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Yellow'
+2026-06-29 13:12:05,589 - SchemeStealer - INFO - Final: 5 major + 3 details
+2026-06-29 13:12:05,589 - SchemeStealer - INFO -   White: 75.0% (conf=0.55)
+2026-06-29 13:12:05,589 - SchemeStealer - INFO -   Brown: 12.0% (conf=0.74)
+2026-06-29 13:12:05,589 - SchemeStealer - INFO -   Yellow: 3.3% (conf=0.79)
+2026-06-29 13:12:05,589 - SchemeStealer - INFO -   Orange: 3.2% (conf=0.88)
+2026-06-29 13:12:05,589 - SchemeStealer - INFO -   Black: 3.1% (conf=0.60)
+2026-06-29 13:12:05,589 - SchemeStealer - INFO -   Bone: 2.7% (conf=0.89)
+2026-06-29 13:12:05,589 - SchemeStealer - INFO -   Grey: 0.5% (conf=0.63)
+2026-06-29 13:12:05,589 - SchemeStealer - INFO -   Cyan: 0.2% (conf=0.91)
+2026-06-29 13:12:05,695 - SchemeStealer - INFO - Metallic pool empty for Citadel/dominant, falling back to unrestricted candidates
+2026-06-29 13:12:05,697 - SchemeStealer - INFO - Metallic pool empty for Pro Acryl/dominant, falling back to unrestricted candidates
+2026-06-29 13:15:06,448 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 13:15:06,464 - SchemeStealer - INFO - Glare detected and corrected
+2026-06-29 13:15:06,466 - SchemeStealer - INFO - Overexposure corrected
+2026-06-29 13:15:06,469 - SchemeStealer - INFO - Photo quality score: 55/100 (Fair)
+2026-06-29 13:15:06,558 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 13:15:06,584 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-29 13:15:07,547 - SchemeStealer - INFO - After shadow filtering: 13 clusters remain
+2026-06-29 13:15:07,547 - SchemeStealer - INFO - Deduplicating 5 clusters of family 'Brown'
+2026-06-29 13:15:07,547 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Yellow'
+2026-06-29 13:15:07,549 - SchemeStealer - INFO - Final: 5 major + 3 details
+2026-06-29 13:15:07,549 - SchemeStealer - INFO -   White: 75.0% (conf=0.55)
+2026-06-29 13:15:07,549 - SchemeStealer - INFO -   Brown: 12.0% (conf=0.74)
+2026-06-29 13:15:07,549 - SchemeStealer - INFO -   Yellow: 3.3% (conf=0.79)
+2026-06-29 13:15:07,549 - SchemeStealer - INFO -   Orange: 3.2% (conf=0.88)
+2026-06-29 13:15:07,549 - SchemeStealer - INFO -   Black: 3.1% (conf=0.60)
+2026-06-29 13:15:07,549 - SchemeStealer - INFO -   Bone: 2.7% (conf=0.89)
+2026-06-29 13:15:07,549 - SchemeStealer - INFO -   Grey: 0.5% (conf=0.63)
+2026-06-29 13:15:07,549 - SchemeStealer - INFO -   Cyan: 0.2% (conf=0.91)
+2026-06-29 13:15:07,630 - SchemeStealer - INFO - Metallic pool empty for Citadel/dominant, falling back to unrestricted candidates
+2026-06-29 13:15:07,632 - SchemeStealer - INFO - Metallic pool empty for Pro Acryl/dominant, falling back to unrestricted candidates
+2026-06-29 13:15:52,416 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 13:15:52,430 - SchemeStealer - INFO - Glare detected and corrected
+2026-06-29 13:15:52,432 - SchemeStealer - INFO - Overexposure corrected
+2026-06-29 13:15:52,435 - SchemeStealer - INFO - Photo quality score: 55/100 (Fair)
+2026-06-29 13:15:52,507 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 13:15:52,532 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-29 13:15:53,486 - SchemeStealer - INFO - After shadow filtering: 13 clusters remain
+2026-06-29 13:15:53,486 - SchemeStealer - INFO - Deduplicating 5 clusters of family 'Brown'
+2026-06-29 13:15:53,486 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Yellow'
+2026-06-29 13:15:53,488 - SchemeStealer - INFO - Final: 5 major + 3 details
+2026-06-29 13:15:53,488 - SchemeStealer - INFO -   White: 75.0% (conf=0.55)
+2026-06-29 13:15:53,488 - SchemeStealer - INFO -   Brown: 12.0% (conf=0.74)
+2026-06-29 13:15:53,488 - SchemeStealer - INFO -   Yellow: 3.3% (conf=0.79)
+2026-06-29 13:15:53,488 - SchemeStealer - INFO -   Orange: 3.2% (conf=0.88)
+2026-06-29 13:15:53,488 - SchemeStealer - INFO -   Black: 3.1% (conf=0.60)
+2026-06-29 13:15:53,488 - SchemeStealer - INFO -   Bone: 2.7% (conf=0.89)
+2026-06-29 13:15:53,488 - SchemeStealer - INFO -   Grey: 0.5% (conf=0.63)
+2026-06-29 13:15:53,488 - SchemeStealer - INFO -   Cyan: 0.2% (conf=0.91)
+2026-06-29 13:15:53,591 - SchemeStealer - INFO - Metallic pool empty for Citadel/dominant, falling back to unrestricted candidates
+2026-06-29 13:15:53,592 - SchemeStealer - INFO - Metallic pool empty for Pro Acryl/dominant, falling back to unrestricted candidates
+2026-06-29 13:41:17,757 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 13:41:17,766 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 13:41:17,769 - SchemeStealer - WARNING - Severe color cast detected
+2026-06-29 13:41:17,769 - SchemeStealer - INFO - Photo quality score: 60/100 (Good)
+2026-06-29 13:41:17,857 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 13:41:17,883 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-29 13:41:18,870 - SchemeStealer - INFO - After shadow filtering: 14 clusters remain
+2026-06-29 13:41:18,870 - SchemeStealer - INFO - Deduplicating 6 clusters of family 'Purple'
+2026-06-29 13:41:18,870 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Magenta'
+2026-06-29 13:41:18,870 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 13:41:18,870 - SchemeStealer - INFO - Final: 6 major + 1 details
+2026-06-29 13:41:18,871 - SchemeStealer - INFO -   Purple: 57.9% (conf=0.89)
+2026-06-29 13:41:18,871 - SchemeStealer - INFO -   Magenta: 13.2% (conf=0.84)
+2026-06-29 13:41:18,871 - SchemeStealer - INFO -   Black: 11.7% (conf=0.70)
+2026-06-29 13:41:18,871 - SchemeStealer - INFO -   Pink: 6.0% (conf=0.80)
+2026-06-29 13:41:18,871 - SchemeStealer - INFO -   White: 4.6% (conf=0.67)
+2026-06-29 13:41:18,871 - SchemeStealer - INFO -   Blue: 4.5% (conf=0.73)
+2026-06-29 13:41:18,871 - SchemeStealer - INFO -   Cyan: 2.1% (conf=0.73)
+2026-06-29 15:03:23,294 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 15:03:23,323 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 15:03:23,330 - SchemeStealer - WARNING - Severe color cast detected
+2026-06-29 15:03:23,330 - SchemeStealer - INFO - Photo quality score: 60/100 (Good)
+2026-06-29 15:03:23,410 - SchemeStealer - INFO - Starting base detection v2.0 on 300x300 image
+2026-06-29 15:03:23,788 - SchemeStealer - INFO - Base detection complete: removed 10.2% as base material
+2026-06-29 15:03:23,788 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 15:03:23,802 - SchemeStealer - INFO - Initial clustering into 12 clusters...
+2026-06-29 15:03:24,315 - SchemeStealer - INFO - After shadow filtering: 12 clusters remain
+2026-06-29 15:03:24,315 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Pink'
+2026-06-29 15:03:24,315 - SchemeStealer - INFO - Deduplicating 4 clusters of family 'Purple'
+2026-06-29 15:03:24,315 - SchemeStealer - INFO - Final: 7 major + 0 details
+2026-06-29 15:03:24,315 - SchemeStealer - INFO -   Purple: 39.4% (conf=0.89)
+2026-06-29 15:03:24,315 - SchemeStealer - INFO -   Pink: 20.8% (conf=0.82)
+2026-06-29 15:03:24,315 - SchemeStealer - INFO -   Magenta: 12.1% (conf=0.89)
+2026-06-29 15:03:24,315 - SchemeStealer - INFO -   Black: 8.3% (conf=0.68)
+2026-06-29 15:03:24,315 - SchemeStealer - INFO -   White: 8.2% (conf=0.66)
+2026-06-29 15:03:24,315 - SchemeStealer - INFO -   Blue: 7.8% (conf=0.76)
+2026-06-29 15:03:24,315 - SchemeStealer - INFO -   Cyan: 3.4% (conf=0.73)
+2026-06-29 15:06:52,005 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 15:06:52,015 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 15:06:52,019 - SchemeStealer - WARNING - Severe color cast detected
+2026-06-29 15:06:52,019 - SchemeStealer - INFO - Photo quality score: 60/100 (Good)
+2026-06-29 15:06:52,109 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 15:06:52,134 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-29 15:06:53,111 - SchemeStealer - INFO - After shadow filtering: 14 clusters remain
+2026-06-29 15:06:53,111 - SchemeStealer - INFO - Deduplicating 6 clusters of family 'Purple'
+2026-06-29 15:06:53,111 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Magenta'
+2026-06-29 15:06:53,111 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 15:06:53,112 - SchemeStealer - INFO - Final: 6 major + 1 details
+2026-06-29 15:06:53,112 - SchemeStealer - INFO -   Purple: 57.9% (conf=0.89)
+2026-06-29 15:06:53,112 - SchemeStealer - INFO -   Magenta: 13.2% (conf=0.84)
+2026-06-29 15:06:53,112 - SchemeStealer - INFO -   Black: 11.7% (conf=0.70)
+2026-06-29 15:06:53,112 - SchemeStealer - INFO -   Pink: 6.0% (conf=0.80)
+2026-06-29 15:06:53,112 - SchemeStealer - INFO -   White: 4.6% (conf=0.67)
+2026-06-29 15:06:53,112 - SchemeStealer - INFO -   Blue: 4.5% (conf=0.73)
+2026-06-29 15:06:53,112 - SchemeStealer - INFO -   Cyan: 2.1% (conf=0.73)
+2026-06-29 15:45:15,072 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 15:45:15,082 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 15:45:15,085 - SchemeStealer - WARNING - Severe color cast detected
+2026-06-29 15:45:15,085 - SchemeStealer - INFO - Photo quality score: 60/100 (Good)
+2026-06-29 15:45:15,182 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 15:45:15,208 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-29 15:45:16,225 - SchemeStealer - INFO - After shadow filtering: 14 clusters remain
+2026-06-29 15:45:16,225 - SchemeStealer - INFO - Deduplicating 6 clusters of family 'Purple'
+2026-06-29 15:45:16,225 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Magenta'
+2026-06-29 15:45:16,225 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 15:45:16,227 - SchemeStealer - INFO - Final: 6 major + 1 details
+2026-06-29 15:45:16,227 - SchemeStealer - INFO -   Purple: 57.9% (conf=0.89)
+2026-06-29 15:45:16,227 - SchemeStealer - INFO -   Magenta: 13.2% (conf=0.84)
+2026-06-29 15:45:16,227 - SchemeStealer - INFO -   Black: 11.7% (conf=0.70)
+2026-06-29 15:45:16,227 - SchemeStealer - INFO -   Pink: 6.0% (conf=0.80)
+2026-06-29 15:45:16,227 - SchemeStealer - INFO -   White: 4.6% (conf=0.67)
+2026-06-29 15:45:16,227 - SchemeStealer - INFO -   Blue: 4.5% (conf=0.73)
+2026-06-29 15:45:16,227 - SchemeStealer - INFO -   Cyan: 2.1% (conf=0.73)
+2026-06-29 15:53:41,867 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 15:53:41,877 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 15:53:41,879 - SchemeStealer - WARNING - Severe color cast detected
+2026-06-29 15:53:41,879 - SchemeStealer - INFO - Photo quality score: 60/100 (Good)
+2026-06-29 15:53:41,983 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 15:53:42,012 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-29 15:53:42,996 - SchemeStealer - INFO - After shadow filtering: 14 clusters remain
+2026-06-29 15:53:42,997 - SchemeStealer - INFO - Deduplicating 6 clusters of family 'Purple'
+2026-06-29 15:53:42,997 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Magenta'
+2026-06-29 15:53:42,997 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 15:53:42,997 - SchemeStealer - INFO - Final: 6 major + 1 details
+2026-06-29 15:53:42,997 - SchemeStealer - INFO -   Purple: 57.9% (conf=0.89)
+2026-06-29 15:53:42,997 - SchemeStealer - INFO -   Magenta: 13.2% (conf=0.84)
+2026-06-29 15:53:42,997 - SchemeStealer - INFO -   Black: 11.7% (conf=0.70)
+2026-06-29 15:53:42,997 - SchemeStealer - INFO -   Pink: 6.0% (conf=0.80)
+2026-06-29 15:53:42,998 - SchemeStealer - INFO -   White: 4.6% (conf=0.67)
+2026-06-29 15:53:42,998 - SchemeStealer - INFO -   Blue: 4.5% (conf=0.73)
+2026-06-29 15:53:42,998 - SchemeStealer - INFO -   Cyan: 2.1% (conf=0.73)
+2026-06-29 15:53:57,890 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 15:53:57,906 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 15:53:57,909 - SchemeStealer - WARNING - Severe color cast detected
+2026-06-29 15:53:57,909 - SchemeStealer - INFO - Photo quality score: 60/100 (Good)
+2026-06-29 15:53:58,005 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 15:53:58,030 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-29 15:53:59,019 - SchemeStealer - INFO - After shadow filtering: 14 clusters remain
+2026-06-29 15:53:59,019 - SchemeStealer - INFO - Deduplicating 6 clusters of family 'Purple'
+2026-06-29 15:53:59,020 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Magenta'
+2026-06-29 15:53:59,020 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 15:53:59,020 - SchemeStealer - INFO - Final: 6 major + 1 details
+2026-06-29 15:53:59,020 - SchemeStealer - INFO -   Purple: 57.9% (conf=0.89)
+2026-06-29 15:53:59,021 - SchemeStealer - INFO -   Magenta: 13.2% (conf=0.84)
+2026-06-29 15:53:59,021 - SchemeStealer - INFO -   Black: 11.7% (conf=0.70)
+2026-06-29 15:53:59,021 - SchemeStealer - INFO -   Pink: 6.0% (conf=0.80)
+2026-06-29 15:53:59,021 - SchemeStealer - INFO -   White: 4.6% (conf=0.67)
+2026-06-29 15:53:59,021 - SchemeStealer - INFO -   Blue: 4.5% (conf=0.73)
+2026-06-29 15:53:59,021 - SchemeStealer - INFO -   Cyan: 2.1% (conf=0.73)
+2026-06-29 15:54:23,954 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 15:54:23,968 - SchemeStealer - INFO - Glare detected and corrected
+2026-06-29 15:54:23,969 - SchemeStealer - INFO - Overexposure corrected
+2026-06-29 15:54:23,972 - SchemeStealer - INFO - Photo quality score: 55/100 (Fair)
+2026-06-29 15:54:24,044 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 15:54:24,068 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-29 15:54:24,984 - SchemeStealer - INFO - After shadow filtering: 13 clusters remain
+2026-06-29 15:54:24,984 - SchemeStealer - INFO - Deduplicating 5 clusters of family 'Brown'
+2026-06-29 15:54:24,984 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Yellow'
+2026-06-29 15:54:24,986 - SchemeStealer - INFO - Final: 5 major + 3 details
+2026-06-29 15:54:24,986 - SchemeStealer - INFO -   White: 75.0% (conf=0.55)
+2026-06-29 15:54:24,986 - SchemeStealer - INFO -   Brown: 12.0% (conf=0.74)
+2026-06-29 15:54:24,986 - SchemeStealer - INFO -   Yellow: 3.3% (conf=0.79)
+2026-06-29 15:54:24,986 - SchemeStealer - INFO -   Orange: 3.2% (conf=0.88)
+2026-06-29 15:54:24,986 - SchemeStealer - INFO -   Black: 3.1% (conf=0.60)
+2026-06-29 15:54:24,986 - SchemeStealer - INFO -   Bone: 2.7% (conf=0.89)
+2026-06-29 15:54:24,986 - SchemeStealer - INFO -   Grey: 0.5% (conf=0.63)
+2026-06-29 15:54:24,986 - SchemeStealer - INFO -   Cyan: 0.2% (conf=0.91)
+2026-06-29 15:54:25,077 - SchemeStealer - INFO - Metallic pool empty for Citadel/dominant, falling back to unrestricted candidates
+2026-06-29 15:54:25,079 - SchemeStealer - INFO - Metallic pool empty for Pro Acryl/dominant, falling back to unrestricted candidates
+2026-06-29 15:54:40,178 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 15:54:40,181 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 15:54:40,182 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 15:54:40,214 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 15:54:40,269 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-29 15:54:41,726 - SchemeStealer - INFO - After shadow filtering: 14 clusters remain
+2026-06-29 15:54:41,726 - SchemeStealer - INFO - Deduplicating 4 clusters of family 'Grey'
+2026-06-29 15:54:41,726 - SchemeStealer - INFO - Deduplicating 4 clusters of family 'Purple'
+2026-06-29 15:54:41,726 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Green'
+2026-06-29 15:54:41,726 - SchemeStealer - INFO - Final: 6 major + 0 details
+2026-06-29 15:54:41,727 - SchemeStealer - INFO -   Grey: 43.2% (conf=0.59)
+2026-06-29 15:54:41,727 - SchemeStealer - INFO -   Purple: 23.4% (conf=0.73)
+2026-06-29 15:54:41,727 - SchemeStealer - INFO -   Green: 12.7% (conf=0.80)
+2026-06-29 15:54:41,727 - SchemeStealer - INFO -   Brown: 11.6% (conf=0.60)
+2026-06-29 15:54:41,727 - SchemeStealer - INFO -   Black: 5.0% (conf=0.67)
+2026-06-29 15:54:41,727 - SchemeStealer - INFO -   Pink: 4.2% (conf=0.64)
+2026-06-29 15:54:49,212 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 15:54:49,220 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-06-29 15:54:49,297 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 15:54:49,334 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-29 15:54:50,536 - SchemeStealer - INFO - After shadow filtering: 14 clusters remain
+2026-06-29 15:54:50,536 - SchemeStealer - INFO - Deduplicating 7 clusters of family 'Grey'
+2026-06-29 15:54:50,536 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Red'
+2026-06-29 15:54:50,536 - SchemeStealer - INFO - Deduplicating 4 clusters of family 'Brown'
+2026-06-29 15:54:50,536 - SchemeStealer - INFO - Final: 4 major + 0 details
+2026-06-29 15:54:50,536 - SchemeStealer - INFO -   Grey: 71.2% (conf=0.63)
+2026-06-29 15:54:50,536 - SchemeStealer - INFO -   Brown: 12.9% (conf=0.70)
+2026-06-29 15:54:50,536 - SchemeStealer - INFO -   Red: 8.5% (conf=0.74)
+2026-06-29 15:54:50,536 - SchemeStealer - INFO -   Blue: 7.4% (conf=0.67)
+2026-06-29 15:55:00,128 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 15:55:00,136 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-06-29 15:55:00,223 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 15:55:00,258 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-29 15:55:01,467 - SchemeStealer - INFO - After shadow filtering: 14 clusters remain
+2026-06-29 15:55:01,467 - SchemeStealer - INFO - Deduplicating 7 clusters of family 'Grey'
+2026-06-29 15:55:01,467 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Red'
+2026-06-29 15:55:01,467 - SchemeStealer - INFO - Deduplicating 4 clusters of family 'Brown'
+2026-06-29 15:55:01,467 - SchemeStealer - INFO - Final: 4 major + 0 details
+2026-06-29 15:55:01,467 - SchemeStealer - INFO -   Grey: 71.2% (conf=0.63)
+2026-06-29 15:55:01,467 - SchemeStealer - INFO -   Brown: 12.9% (conf=0.70)
+2026-06-29 15:55:01,467 - SchemeStealer - INFO -   Red: 8.5% (conf=0.74)
+2026-06-29 15:55:01,467 - SchemeStealer - INFO -   Blue: 7.4% (conf=0.67)
+2026-06-29 15:57:18,698 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 15:57:18,706 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-06-29 15:57:18,774 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 15:57:18,811 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-29 15:57:20,043 - SchemeStealer - INFO - After shadow filtering: 14 clusters remain
+2026-06-29 15:57:20,043 - SchemeStealer - INFO - Deduplicating 7 clusters of family 'Grey'
+2026-06-29 15:57:20,044 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Red'
+2026-06-29 15:57:20,044 - SchemeStealer - INFO - Deduplicating 4 clusters of family 'Brown'
+2026-06-29 15:57:20,044 - SchemeStealer - INFO - Final: 4 major + 0 details
+2026-06-29 15:57:20,044 - SchemeStealer - INFO -   Grey: 71.2% (conf=0.63)
+2026-06-29 15:57:20,044 - SchemeStealer - INFO -   Brown: 12.9% (conf=0.70)
+2026-06-29 15:57:20,044 - SchemeStealer - INFO -   Red: 8.5% (conf=0.74)
+2026-06-29 15:57:20,044 - SchemeStealer - INFO -   Blue: 7.4% (conf=0.67)
+2026-06-29 15:57:44,392 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 15:57:44,401 - SchemeStealer - INFO - Photo quality score: 100/100 (Excellent)
+2026-06-29 15:57:44,473 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 15:57:44,511 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-29 15:57:45,712 - SchemeStealer - INFO - After shadow filtering: 14 clusters remain
+2026-06-29 15:57:45,712 - SchemeStealer - INFO - Deduplicating 7 clusters of family 'Grey'
+2026-06-29 15:57:45,712 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Red'
+2026-06-29 15:57:45,712 - SchemeStealer - INFO - Deduplicating 4 clusters of family 'Brown'
+2026-06-29 15:57:45,712 - SchemeStealer - INFO - Final: 4 major + 0 details
+2026-06-29 15:57:45,712 - SchemeStealer - INFO -   Grey: 71.2% (conf=0.63)
+2026-06-29 15:57:45,712 - SchemeStealer - INFO -   Brown: 12.9% (conf=0.70)
+2026-06-29 15:57:45,712 - SchemeStealer - INFO -   Red: 8.5% (conf=0.74)
+2026-06-29 15:57:45,712 - SchemeStealer - INFO -   Blue: 7.4% (conf=0.67)
+2026-06-29 16:00:51,678 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 16:00:51,707 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 16:00:51,714 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 16:00:51,768 - SchemeStealer - INFO - Starting base detection v2.0 on 300x374 image
+2026-06-29 16:00:51,773 - SchemeStealer - INFO - Base detection complete: removed 5.7% as base material
+2026-06-29 16:00:51,774 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 16:00:51,784 - SchemeStealer - INFO - Initial clustering into 12 clusters...
+2026-06-29 16:00:52,232 - SchemeStealer - INFO - After shadow filtering: 12 clusters remain
+2026-06-29 16:00:52,232 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'White'
+2026-06-29 16:00:52,232 - SchemeStealer - INFO - Deduplicating 7 clusters of family 'Grey'
+2026-06-29 16:00:52,232 - SchemeStealer - INFO - Final: 4 major + 0 details
+2026-06-29 16:00:52,232 - SchemeStealer - INFO -   Grey: 55.3% (conf=0.61)
+2026-06-29 16:00:52,232 - SchemeStealer - INFO -   White: 29.7% (conf=0.61)
+2026-06-29 16:00:52,232 - SchemeStealer - INFO -   Yellow: 9.2% (conf=0.68)
+2026-06-29 16:00:52,232 - SchemeStealer - INFO -   Brown: 5.8% (conf=0.75)
+2026-06-29 16:02:01,572 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 16:02:01,592 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 16:02:01,598 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 16:02:01,649 - SchemeStealer - INFO - Starting base detection v2.0 on 300x400 image
+2026-06-29 16:02:01,656 - SchemeStealer - INFO - Base detection complete: removed 52.9% as base material
+2026-06-29 16:02:01,656 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 16:02:01,663 - SchemeStealer - INFO - Initial clustering into 12 clusters...
+2026-06-29 16:02:01,928 - SchemeStealer - INFO - After shadow filtering: 11 clusters remain
+2026-06-29 16:02:01,928 - SchemeStealer - INFO - Deduplicating 8 clusters of family 'Grey'
+2026-06-29 16:02:01,928 - SchemeStealer - INFO - Final: 4 major + 0 details
+2026-06-29 16:02:01,928 - SchemeStealer - INFO -   Grey: 77.4% (conf=0.65)
+2026-06-29 16:02:01,928 - SchemeStealer - INFO -   Bone: 12.6% (conf=0.69)
+2026-06-29 16:02:01,928 - SchemeStealer - INFO -   Red: 5.2% (conf=0.71)
+2026-06-29 16:02:01,928 - SchemeStealer - INFO -   White: 4.8% (conf=0.66)
+2026-06-29 16:02:30,438 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 16:02:30,449 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 16:02:30,453 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 16:02:30,470 - SchemeStealer - INFO - Starting base detection v2.0 on 300x438 image
+2026-06-29 16:02:30,476 - SchemeStealer - INFO - Base detection complete: removed -0.2% as base material
+2026-06-29 16:02:30,476 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 16:02:30,480 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-06-29 16:02:30,623 - SchemeStealer - INFO - After shadow filtering: 10 clusters remain
+2026-06-29 16:02:30,623 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Yellow'
+2026-06-29 16:02:30,624 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 16:02:30,624 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-06-29 16:02:30,624 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Cyan'
+2026-06-29 16:02:30,624 - SchemeStealer - INFO - Final: 5 major + 0 details
+2026-06-29 16:02:30,624 - SchemeStealer - INFO -   Pink: 48.9% (conf=0.67)
+2026-06-29 16:02:30,624 - SchemeStealer - INFO -   Grey: 23.1% (conf=0.62)
+2026-06-29 16:02:30,624 - SchemeStealer - INFO -   Cyan: 11.5% (conf=0.73)
+2026-06-29 16:02:30,624 - SchemeStealer - INFO -   Red: 9.6% (conf=0.70)
+2026-06-29 16:02:30,624 - SchemeStealer - INFO -   Yellow: 6.9% (conf=0.93)
+2026-06-29 16:22:49,959 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 16:22:49,982 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 16:22:49,985 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 16:22:50,005 - SchemeStealer - INFO - Starting base detection v2.0 on 300x438 image
+2026-06-29 16:22:50,010 - SchemeStealer - INFO - Base detection complete: removed -0.2% as base material
+2026-06-29 16:22:50,010 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 16:22:50,014 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-06-29 16:22:50,153 - SchemeStealer - INFO - After shadow filtering: 10 clusters remain
+2026-06-29 16:22:50,153 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Yellow'
+2026-06-29 16:22:50,153 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 16:22:50,153 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-06-29 16:22:50,153 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Cyan'
+2026-06-29 16:22:50,153 - SchemeStealer - INFO - Final: 5 major + 0 details
+2026-06-29 16:22:50,153 - SchemeStealer - INFO -   Pink: 48.9% (conf=0.67)
+2026-06-29 16:22:50,153 - SchemeStealer - INFO -   Grey: 23.1% (conf=0.62)
+2026-06-29 16:22:50,153 - SchemeStealer - INFO -   Cyan: 11.5% (conf=0.73)
+2026-06-29 16:22:50,153 - SchemeStealer - INFO -   Red: 9.6% (conf=0.70)
+2026-06-29 16:22:50,154 - SchemeStealer - INFO -   Yellow: 6.9% (conf=0.93)
+2026-06-29 16:23:18,363 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 16:23:18,374 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 16:23:18,377 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 16:23:18,402 - SchemeStealer - INFO - Starting base detection v2.0 on 300x438 image
+2026-06-29 16:23:18,407 - SchemeStealer - INFO - Base detection complete: removed -0.2% as base material
+2026-06-29 16:23:18,407 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 16:23:18,411 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-06-29 16:23:18,547 - SchemeStealer - INFO - After shadow filtering: 10 clusters remain
+2026-06-29 16:23:18,547 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Yellow'
+2026-06-29 16:23:18,547 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 16:23:18,547 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-06-29 16:23:18,547 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Cyan'
+2026-06-29 16:23:18,547 - SchemeStealer - INFO - Final: 5 major + 0 details
+2026-06-29 16:23:18,547 - SchemeStealer - INFO -   Pink: 48.9% (conf=0.67)
+2026-06-29 16:23:18,547 - SchemeStealer - INFO -   Grey: 23.1% (conf=0.62)
+2026-06-29 16:23:18,547 - SchemeStealer - INFO -   Cyan: 11.5% (conf=0.73)
+2026-06-29 16:23:18,547 - SchemeStealer - INFO -   Red: 9.6% (conf=0.70)
+2026-06-29 16:23:18,547 - SchemeStealer - INFO -   Yellow: 6.9% (conf=0.93)
+2026-06-29 16:24:08,419 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 16:24:08,429 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 16:24:08,431 - SchemeStealer - WARNING - Severe color cast detected
+2026-06-29 16:24:08,431 - SchemeStealer - INFO - Photo quality score: 60/100 (Good)
+2026-06-29 16:24:08,524 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 16:24:08,551 - SchemeStealer - INFO - Initial clustering into 15 clusters...
+2026-06-29 16:24:09,539 - SchemeStealer - INFO - After shadow filtering: 14 clusters remain
+2026-06-29 16:24:09,539 - SchemeStealer - INFO - Deduplicating 6 clusters of family 'Purple'
+2026-06-29 16:24:09,539 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Magenta'
+2026-06-29 16:24:09,539 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 16:24:09,539 - SchemeStealer - INFO - Final: 6 major + 1 details
+2026-06-29 16:24:09,539 - SchemeStealer - INFO -   Purple: 57.9% (conf=0.89)
+2026-06-29 16:24:09,540 - SchemeStealer - INFO -   Magenta: 13.2% (conf=0.84)
+2026-06-29 16:24:09,540 - SchemeStealer - INFO -   Black: 11.7% (conf=0.70)
+2026-06-29 16:24:09,540 - SchemeStealer - INFO -   Pink: 6.0% (conf=0.80)
+2026-06-29 16:24:09,540 - SchemeStealer - INFO -   White: 4.6% (conf=0.67)
+2026-06-29 16:24:09,540 - SchemeStealer - INFO -   Blue: 4.5% (conf=0.73)
+2026-06-29 16:24:09,540 - SchemeStealer - INFO -   Cyan: 2.1% (conf=0.73)
+2026-06-29 16:27:25,979 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 16:27:25,990 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 16:27:25,993 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 16:27:26,010 - SchemeStealer - INFO - Starting base detection v2.0 on 300x438 image
+2026-06-29 16:27:26,015 - SchemeStealer - INFO - Base detection complete: removed -0.2% as base material
+2026-06-29 16:27:26,015 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 16:27:26,020 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-06-29 16:27:26,154 - SchemeStealer - INFO - After shadow filtering: 10 clusters remain
+2026-06-29 16:27:26,154 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Yellow'
+2026-06-29 16:27:26,154 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 16:27:26,154 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-06-29 16:27:26,154 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Cyan'
+2026-06-29 16:27:26,154 - SchemeStealer - INFO - Final: 5 major + 0 details
+2026-06-29 16:27:26,154 - SchemeStealer - INFO -   Pink: 48.9% (conf=0.67)
+2026-06-29 16:27:26,154 - SchemeStealer - INFO -   Grey: 23.1% (conf=0.62)
+2026-06-29 16:27:26,154 - SchemeStealer - INFO -   Cyan: 11.5% (conf=0.73)
+2026-06-29 16:27:26,154 - SchemeStealer - INFO -   Red: 9.6% (conf=0.70)
+2026-06-29 16:27:26,154 - SchemeStealer - INFO -   Yellow: 6.9% (conf=0.93)
+2026-06-29 16:35:19,922 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 16:35:19,936 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 16:35:19,939 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 16:35:19,958 - SchemeStealer - INFO - Starting base detection v2.0 on 300x391 image
+2026-06-29 16:35:19,965 - SchemeStealer - INFO - Base detection complete: removed 8.0% as base material
+2026-06-29 16:35:19,965 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 16:35:19,973 - SchemeStealer - INFO - Initial clustering into 12 clusters...
+2026-06-29 16:35:20,232 - SchemeStealer - INFO - After shadow filtering: 12 clusters remain
+2026-06-29 16:35:20,232 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Green'
+2026-06-29 16:35:20,232 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 16:35:20,232 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Cyan'
+2026-06-29 16:35:20,233 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-06-29 16:35:20,233 - SchemeStealer - INFO - Final: 6 major + 0 details
+2026-06-29 16:35:20,233 - SchemeStealer - INFO -   Pink: 47.6% (conf=0.65)
+2026-06-29 16:35:20,233 - SchemeStealer - INFO -   Grey: 19.7% (conf=0.57)
+2026-06-29 16:35:20,233 - SchemeStealer - INFO -   Red: 12.2% (conf=0.66)
+2026-06-29 16:35:20,233 - SchemeStealer - INFO -   Cyan: 9.3% (conf=0.84)
+2026-06-29 16:35:20,233 - SchemeStealer - INFO -   Green: 8.1% (conf=0.84)
+2026-06-29 16:35:20,233 - SchemeStealer - INFO -   Yellow: 3.1% (conf=0.95)
+2026-06-29 16:39:14,269 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 16:39:14,298 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 16:39:14,304 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 16:39:14,356 - SchemeStealer - INFO - Starting base detection v2.0 on 300x374 image
+2026-06-29 16:39:14,360 - SchemeStealer - INFO - Base detection complete: removed 5.7% as base material
+2026-06-29 16:39:14,361 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 16:39:14,372 - SchemeStealer - INFO - Initial clustering into 12 clusters...
+2026-06-29 16:39:14,854 - SchemeStealer - INFO - After shadow filtering: 12 clusters remain
+2026-06-29 16:39:14,854 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'White'
+2026-06-29 16:39:14,854 - SchemeStealer - INFO - Deduplicating 7 clusters of family 'Grey'
+2026-06-29 16:39:14,854 - SchemeStealer - INFO - Final: 4 major + 0 details
+2026-06-29 16:39:14,854 - SchemeStealer - INFO -   Grey: 55.3% (conf=0.61)
+2026-06-29 16:39:14,854 - SchemeStealer - INFO -   White: 29.7% (conf=0.61)
+2026-06-29 16:39:14,854 - SchemeStealer - INFO -   Yellow: 9.2% (conf=0.68)
+2026-06-29 16:39:14,854 - SchemeStealer - INFO -   Brown: 5.8% (conf=0.75)
+2026-06-29 16:51:53,913 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 16:51:53,938 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 16:51:53,944 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 16:51:53,993 - SchemeStealer - INFO - Starting base detection v2.0 on 300x374 image
+2026-06-29 16:51:54,015 - SchemeStealer - INFO - Base detection complete: removed 5.7% as base material
+2026-06-29 16:51:54,015 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 16:51:54,027 - SchemeStealer - INFO - Initial clustering into 12 clusters...
+2026-06-29 16:51:54,481 - SchemeStealer - INFO - After shadow filtering: 12 clusters remain
+2026-06-29 16:51:54,481 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'White'
+2026-06-29 16:51:54,481 - SchemeStealer - INFO - Deduplicating 7 clusters of family 'Grey'
+2026-06-29 16:51:54,482 - SchemeStealer - INFO - Final: 4 major + 0 details
+2026-06-29 16:51:54,482 - SchemeStealer - INFO -   Grey: 55.3% (conf=0.61)
+2026-06-29 16:51:54,482 - SchemeStealer - INFO -   White: 29.7% (conf=0.61)
+2026-06-29 16:51:54,482 - SchemeStealer - INFO -   Yellow: 9.2% (conf=0.68)
+2026-06-29 16:51:54,482 - SchemeStealer - INFO -   Brown: 5.8% (conf=0.75)
+2026-06-29 16:56:10,647 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 16:56:10,675 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 16:56:10,682 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 16:56:10,731 - SchemeStealer - INFO - Starting base detection v2.0 on 300x374 image
+2026-06-29 16:56:10,736 - SchemeStealer - INFO - Base detection complete: removed 5.7% as base material
+2026-06-29 16:56:10,736 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 16:56:10,747 - SchemeStealer - INFO - Initial clustering into 12 clusters...
+2026-06-29 16:56:11,208 - SchemeStealer - INFO - After shadow filtering: 12 clusters remain
+2026-06-29 16:56:11,209 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'White'
+2026-06-29 16:56:11,209 - SchemeStealer - INFO - Deduplicating 7 clusters of family 'Grey'
+2026-06-29 16:56:11,209 - SchemeStealer - INFO - Final: 4 major + 0 details
+2026-06-29 16:56:11,209 - SchemeStealer - INFO -   Grey: 55.3% (conf=0.61)
+2026-06-29 16:56:11,209 - SchemeStealer - INFO -   White: 29.7% (conf=0.61)
+2026-06-29 16:56:11,209 - SchemeStealer - INFO -   Yellow: 9.2% (conf=0.68)
+2026-06-29 16:56:11,209 - SchemeStealer - INFO -   Brown: 5.8% (conf=0.75)
+2026-06-29 16:56:46,201 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 16:56:46,235 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 16:56:46,242 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 16:56:46,299 - SchemeStealer - INFO - Starting base detection v2.0 on 300x374 image
+2026-06-29 16:56:46,304 - SchemeStealer - INFO - Base detection complete: removed 5.7% as base material
+2026-06-29 16:56:46,304 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 16:56:46,315 - SchemeStealer - INFO - Initial clustering into 12 clusters...
+2026-06-29 16:56:46,762 - SchemeStealer - INFO - After shadow filtering: 12 clusters remain
+2026-06-29 16:56:46,762 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'White'
+2026-06-29 16:56:46,762 - SchemeStealer - INFO - Deduplicating 7 clusters of family 'Grey'
+2026-06-29 16:56:46,763 - SchemeStealer - INFO - Final: 4 major + 0 details
+2026-06-29 16:56:46,763 - SchemeStealer - INFO -   Grey: 55.3% (conf=0.61)
+2026-06-29 16:56:46,763 - SchemeStealer - INFO -   White: 29.7% (conf=0.61)
+2026-06-29 16:56:46,763 - SchemeStealer - INFO -   Yellow: 9.2% (conf=0.68)
+2026-06-29 16:56:46,763 - SchemeStealer - INFO -   Brown: 5.8% (conf=0.75)
+2026-06-29 16:57:08,853 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 16:57:08,879 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 16:57:08,886 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 16:57:08,941 - SchemeStealer - INFO - Starting base detection v2.0 on 300x374 image
+2026-06-29 16:57:08,946 - SchemeStealer - INFO - Base detection complete: removed 5.7% as base material
+2026-06-29 16:57:08,946 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 16:57:08,957 - SchemeStealer - INFO - Initial clustering into 12 clusters...
+2026-06-29 16:57:09,404 - SchemeStealer - INFO - After shadow filtering: 12 clusters remain
+2026-06-29 16:57:09,404 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'White'
+2026-06-29 16:57:09,404 - SchemeStealer - INFO - Deduplicating 7 clusters of family 'Grey'
+2026-06-29 16:57:09,404 - SchemeStealer - INFO - Final: 4 major + 0 details
+2026-06-29 16:57:09,404 - SchemeStealer - INFO -   Grey: 55.3% (conf=0.61)
+2026-06-29 16:57:09,404 - SchemeStealer - INFO -   White: 29.7% (conf=0.61)
+2026-06-29 16:57:09,404 - SchemeStealer - INFO -   Yellow: 9.2% (conf=0.68)
+2026-06-29 16:57:09,404 - SchemeStealer - INFO -   Brown: 5.8% (conf=0.75)
+2026-06-29 17:12:41,619 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 17:12:41,631 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 17:12:41,634 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 17:12:41,653 - SchemeStealer - INFO - Starting base detection v2.0 on 300x438 image
+2026-06-29 17:12:41,658 - SchemeStealer - INFO - Base detection complete: removed -0.2% as base material
+2026-06-29 17:12:41,658 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 17:12:41,662 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-06-29 17:12:41,798 - SchemeStealer - INFO - After shadow filtering: 10 clusters remain
+2026-06-29 17:12:41,798 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Yellow'
+2026-06-29 17:12:41,798 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 17:12:41,798 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-06-29 17:12:41,798 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Cyan'
+2026-06-29 17:12:41,798 - SchemeStealer - INFO - Final: 5 major + 0 details
+2026-06-29 17:12:41,798 - SchemeStealer - INFO -   Pink: 48.9% (conf=0.67)
+2026-06-29 17:12:41,798 - SchemeStealer - INFO -   Grey: 23.1% (conf=0.62)
+2026-06-29 17:12:41,798 - SchemeStealer - INFO -   Cyan: 11.5% (conf=0.73)
+2026-06-29 17:12:41,799 - SchemeStealer - INFO -   Red: 9.6% (conf=0.70)
+2026-06-29 17:12:41,799 - SchemeStealer - INFO -   Yellow: 6.9% (conf=0.93)
+2026-06-29 17:14:22,316 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 17:14:22,329 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 17:14:22,332 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 17:14:22,353 - SchemeStealer - INFO - Starting base detection v2.0 on 300x438 image
+2026-06-29 17:14:22,358 - SchemeStealer - INFO - Base detection complete: removed -0.2% as base material
+2026-06-29 17:14:22,358 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 17:14:22,363 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-06-29 17:14:22,498 - SchemeStealer - INFO - After shadow filtering: 10 clusters remain
+2026-06-29 17:14:22,498 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Yellow'
+2026-06-29 17:14:22,498 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 17:14:22,498 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-06-29 17:14:22,498 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Cyan'
+2026-06-29 17:14:22,498 - SchemeStealer - INFO - Final: 5 major + 0 details
+2026-06-29 17:14:22,498 - SchemeStealer - INFO -   Pink: 48.9% (conf=0.67)
+2026-06-29 17:14:22,498 - SchemeStealer - INFO -   Grey: 23.1% (conf=0.62)
+2026-06-29 17:14:22,498 - SchemeStealer - INFO -   Cyan: 11.5% (conf=0.73)
+2026-06-29 17:14:22,498 - SchemeStealer - INFO -   Red: 9.6% (conf=0.70)
+2026-06-29 17:14:22,498 - SchemeStealer - INFO -   Yellow: 6.9% (conf=0.93)
+2026-06-29 17:26:00,609 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 17:26:00,621 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 17:26:00,624 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 17:26:00,641 - SchemeStealer - INFO - Starting base detection v2.0 on 300x438 image
+2026-06-29 17:26:00,648 - SchemeStealer - INFO - Base detection complete: removed -0.2% as base material
+2026-06-29 17:26:00,648 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 17:26:00,654 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-06-29 17:26:00,791 - SchemeStealer - INFO - After shadow filtering: 10 clusters remain
+2026-06-29 17:26:00,791 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Yellow'
+2026-06-29 17:26:00,791 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 17:26:00,791 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-06-29 17:26:00,791 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Cyan'
+2026-06-29 17:26:00,791 - SchemeStealer - INFO - Final: 5 major + 0 details
+2026-06-29 17:26:00,791 - SchemeStealer - INFO -   Pink: 48.9% (conf=0.67)
+2026-06-29 17:26:00,791 - SchemeStealer - INFO -   Grey: 23.1% (conf=0.62)
+2026-06-29 17:26:00,791 - SchemeStealer - INFO -   Cyan: 11.5% (conf=0.73)
+2026-06-29 17:26:00,791 - SchemeStealer - INFO -   Red: 9.6% (conf=0.70)
+2026-06-29 17:26:00,791 - SchemeStealer - INFO -   Yellow: 6.9% (conf=0.93)
+2026-06-29 20:38:11,327 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-29 20:38:11,339 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-06-29 20:38:11,339 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-29 20:38:11,357 - SchemeStealer - INFO - Loaded 1312 paints from paints_groundtruth.json (1312 matchable)
+2026-06-29 20:38:11,360 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (vectorised CIEDE2000)
+2026-06-29 20:38:11,379 - SchemeStealer - INFO - Engine initialization complete - ML features enabled (4723 recipe edges)
+2026-06-29 20:38:11,384 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-29 20:38:11,384 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-06-29 20:38:11,384 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-29 20:38:11,396 - SchemeStealer - INFO - Loaded 1312 paints from paints_groundtruth.json (1312 matchable)
+2026-06-29 20:38:11,397 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (vectorised CIEDE2000)
+2026-06-29 20:38:11,409 - SchemeStealer - INFO - Engine initialization complete - ML features enabled (4723 recipe edges)
+2026-06-29 20:41:31,325 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 20:41:31,360 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 20:41:31,447 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 20:41:31,469 - SchemeStealer - INFO - Starting base detection v2.0 on 300x438 image
+2026-06-29 20:41:31,477 - SchemeStealer - INFO - Base detection complete: removed -0.2% as base material
+2026-06-29 20:41:31,477 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 20:41:31,485 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-06-29 20:41:31,684 - SchemeStealer - INFO - After shadow filtering: 10 clusters remain
+2026-06-29 20:41:31,684 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Yellow'
+2026-06-29 20:41:31,684 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 20:41:31,684 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-06-29 20:41:31,684 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Cyan'
+2026-06-29 20:41:31,685 - SchemeStealer - INFO - Final: 5 major + 0 details
+2026-06-29 20:41:31,685 - SchemeStealer - INFO -   Pink: 48.9% (conf=0.67)
+2026-06-29 20:41:31,685 - SchemeStealer - INFO -   Grey: 23.1% (conf=0.62)
+2026-06-29 20:41:31,685 - SchemeStealer - INFO -   Cyan: 11.5% (conf=0.73)
+2026-06-29 20:41:31,685 - SchemeStealer - INFO -   Red: 9.6% (conf=0.70)
+2026-06-29 20:41:31,685 - SchemeStealer - INFO -   Yellow: 6.9% (conf=0.93)
+2026-06-29 20:42:11,109 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 20:42:11,122 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 20:42:11,125 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 20:42:11,143 - SchemeStealer - INFO - Starting base detection v2.0 on 300x438 image
+2026-06-29 20:42:11,148 - SchemeStealer - INFO - Base detection complete: removed -0.2% as base material
+2026-06-29 20:42:11,148 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 20:42:11,153 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-06-29 20:42:11,284 - SchemeStealer - INFO - After shadow filtering: 10 clusters remain
+2026-06-29 20:42:11,284 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Yellow'
+2026-06-29 20:42:11,284 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 20:42:11,284 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-06-29 20:42:11,284 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Cyan'
+2026-06-29 20:42:11,284 - SchemeStealer - INFO - Final: 5 major + 0 details
+2026-06-29 20:42:11,284 - SchemeStealer - INFO -   Pink: 48.9% (conf=0.67)
+2026-06-29 20:42:11,284 - SchemeStealer - INFO -   Grey: 23.1% (conf=0.62)
+2026-06-29 20:42:11,284 - SchemeStealer - INFO -   Cyan: 11.5% (conf=0.73)
+2026-06-29 20:42:11,284 - SchemeStealer - INFO -   Red: 9.6% (conf=0.70)
+2026-06-29 20:42:11,284 - SchemeStealer - INFO -   Yellow: 6.9% (conf=0.93)
+2026-06-29 20:42:44,801 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 20:42:44,814 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 20:42:44,817 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 20:42:44,835 - SchemeStealer - INFO - Starting base detection v2.0 on 300x438 image
+2026-06-29 20:42:44,840 - SchemeStealer - INFO - Base detection complete: removed -0.2% as base material
+2026-06-29 20:42:44,840 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 20:42:44,844 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-06-29 20:42:44,977 - SchemeStealer - INFO - After shadow filtering: 10 clusters remain
+2026-06-29 20:42:44,977 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Yellow'
+2026-06-29 20:42:44,977 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 20:42:44,977 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-06-29 20:42:44,977 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Cyan'
+2026-06-29 20:42:44,977 - SchemeStealer - INFO - Final: 5 major + 0 details
+2026-06-29 20:42:44,977 - SchemeStealer - INFO -   Pink: 48.9% (conf=0.67)
+2026-06-29 20:42:44,977 - SchemeStealer - INFO -   Grey: 23.1% (conf=0.62)
+2026-06-29 20:42:44,977 - SchemeStealer - INFO -   Cyan: 11.5% (conf=0.73)
+2026-06-29 20:42:44,977 - SchemeStealer - INFO -   Red: 9.6% (conf=0.70)
+2026-06-29 20:42:44,977 - SchemeStealer - INFO -   Yellow: 6.9% (conf=0.93)
+2026-06-29 20:53:30,237 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 20:53:30,248 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 20:53:30,251 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 20:53:30,272 - SchemeStealer - INFO - Starting base detection v2.0 on 300x438 image
+2026-06-29 20:53:30,277 - SchemeStealer - INFO - Base detection complete: removed -0.2% as base material
+2026-06-29 20:53:30,277 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 20:53:30,281 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-06-29 20:53:30,413 - SchemeStealer - INFO - After shadow filtering: 10 clusters remain
+2026-06-29 20:53:30,413 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Yellow'
+2026-06-29 20:53:30,413 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 20:53:30,413 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-06-29 20:53:30,413 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Cyan'
+2026-06-29 20:53:30,413 - SchemeStealer - INFO - Final: 5 major + 0 details
+2026-06-29 20:53:30,413 - SchemeStealer - INFO -   Pink: 48.9% (conf=0.67)
+2026-06-29 20:53:30,413 - SchemeStealer - INFO -   Grey: 23.1% (conf=0.62)
+2026-06-29 20:53:30,413 - SchemeStealer - INFO -   Cyan: 11.5% (conf=0.73)
+2026-06-29 20:53:30,413 - SchemeStealer - INFO -   Red: 9.6% (conf=0.70)
+2026-06-29 20:53:30,413 - SchemeStealer - INFO -   Yellow: 6.9% (conf=0.93)
+2026-06-29 20:54:05,934 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 20:54:05,945 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 20:54:05,949 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 20:54:05,968 - SchemeStealer - INFO - Starting base detection v2.0 on 300x438 image
+2026-06-29 20:54:05,973 - SchemeStealer - INFO - Base detection complete: removed -0.2% as base material
+2026-06-29 20:54:05,973 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 20:54:05,977 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-06-29 20:54:06,108 - SchemeStealer - INFO - After shadow filtering: 10 clusters remain
+2026-06-29 20:54:06,108 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Yellow'
+2026-06-29 20:54:06,108 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 20:54:06,108 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-06-29 20:54:06,108 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Cyan'
+2026-06-29 20:54:06,108 - SchemeStealer - INFO - Final: 5 major + 0 details
+2026-06-29 20:54:06,108 - SchemeStealer - INFO -   Pink: 48.9% (conf=0.67)
+2026-06-29 20:54:06,108 - SchemeStealer - INFO -   Grey: 23.1% (conf=0.62)
+2026-06-29 20:54:06,108 - SchemeStealer - INFO -   Cyan: 11.5% (conf=0.73)
+2026-06-29 20:54:06,108 - SchemeStealer - INFO -   Red: 9.6% (conf=0.70)
+2026-06-29 20:54:06,108 - SchemeStealer - INFO -   Yellow: 6.9% (conf=0.93)
+2026-06-29 20:54:45,580 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 20:54:45,592 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 20:54:45,595 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 20:54:45,611 - SchemeStealer - INFO - Starting base detection v2.0 on 300x438 image
+2026-06-29 20:54:45,616 - SchemeStealer - INFO - Base detection complete: removed -0.2% as base material
+2026-06-29 20:54:45,616 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 20:54:45,621 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-06-29 20:54:45,754 - SchemeStealer - INFO - After shadow filtering: 10 clusters remain
+2026-06-29 20:54:45,754 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Yellow'
+2026-06-29 20:54:45,754 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 20:54:45,754 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-06-29 20:54:45,754 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Cyan'
+2026-06-29 20:54:45,755 - SchemeStealer - INFO - Final: 5 major + 0 details
+2026-06-29 20:54:45,755 - SchemeStealer - INFO -   Pink: 48.9% (conf=0.67)
+2026-06-29 20:54:45,755 - SchemeStealer - INFO -   Grey: 23.1% (conf=0.62)
+2026-06-29 20:54:45,755 - SchemeStealer - INFO -   Cyan: 11.5% (conf=0.73)
+2026-06-29 20:54:45,755 - SchemeStealer - INFO -   Red: 9.6% (conf=0.70)
+2026-06-29 20:54:45,755 - SchemeStealer - INFO -   Yellow: 6.9% (conf=0.93)
+2026-06-29 20:55:07,194 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 20:55:07,207 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 20:55:07,211 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 20:55:07,227 - SchemeStealer - INFO - Starting base detection v2.0 on 300x438 image
+2026-06-29 20:55:07,232 - SchemeStealer - INFO - Base detection complete: removed -0.2% as base material
+2026-06-29 20:55:07,232 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 20:55:07,236 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-06-29 20:55:07,369 - SchemeStealer - INFO - After shadow filtering: 10 clusters remain
+2026-06-29 20:55:07,369 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Yellow'
+2026-06-29 20:55:07,369 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 20:55:07,369 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-06-29 20:55:07,369 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Cyan'
+2026-06-29 20:55:07,369 - SchemeStealer - INFO - Final: 5 major + 0 details
+2026-06-29 20:55:07,369 - SchemeStealer - INFO -   Pink: 48.9% (conf=0.67)
+2026-06-29 20:55:07,369 - SchemeStealer - INFO -   Grey: 23.1% (conf=0.62)
+2026-06-29 20:55:07,369 - SchemeStealer - INFO -   Cyan: 11.5% (conf=0.73)
+2026-06-29 20:55:07,369 - SchemeStealer - INFO -   Red: 9.6% (conf=0.70)
+2026-06-29 20:55:07,369 - SchemeStealer - INFO -   Yellow: 6.9% (conf=0.93)
+2026-06-29 20:55:31,367 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 20:55:31,380 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 20:55:31,383 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 20:55:31,400 - SchemeStealer - INFO - Starting base detection v2.0 on 300x438 image
+2026-06-29 20:55:31,405 - SchemeStealer - INFO - Base detection complete: removed -0.2% as base material
+2026-06-29 20:55:31,405 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 20:55:31,409 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-06-29 20:55:31,538 - SchemeStealer - INFO - After shadow filtering: 10 clusters remain
+2026-06-29 20:55:31,538 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Yellow'
+2026-06-29 20:55:31,539 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 20:55:31,539 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-06-29 20:55:31,539 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Cyan'
+2026-06-29 20:55:31,539 - SchemeStealer - INFO - Final: 5 major + 0 details
+2026-06-29 20:55:31,539 - SchemeStealer - INFO -   Pink: 48.9% (conf=0.67)
+2026-06-29 20:55:31,539 - SchemeStealer - INFO -   Grey: 23.1% (conf=0.62)
+2026-06-29 20:55:31,539 - SchemeStealer - INFO -   Cyan: 11.5% (conf=0.73)
+2026-06-29 20:55:31,539 - SchemeStealer - INFO -   Red: 9.6% (conf=0.70)
+2026-06-29 20:55:31,539 - SchemeStealer - INFO -   Yellow: 6.9% (conf=0.93)
+2026-06-29 20:57:58,943 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 20:57:58,954 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 20:57:58,957 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 20:57:58,973 - SchemeStealer - INFO - Starting base detection v2.0 on 300x438 image
+2026-06-29 20:57:58,978 - SchemeStealer - INFO - Base detection complete: removed -0.2% as base material
+2026-06-29 20:57:58,978 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 20:57:58,982 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-06-29 20:57:59,121 - SchemeStealer - INFO - After shadow filtering: 10 clusters remain
+2026-06-29 20:57:59,121 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Yellow'
+2026-06-29 20:57:59,122 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 20:57:59,122 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-06-29 20:57:59,122 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Cyan'
+2026-06-29 20:57:59,122 - SchemeStealer - INFO - Final: 5 major + 0 details
+2026-06-29 20:57:59,122 - SchemeStealer - INFO -   Pink: 48.9% (conf=0.67)
+2026-06-29 20:57:59,122 - SchemeStealer - INFO -   Grey: 23.1% (conf=0.62)
+2026-06-29 20:57:59,122 - SchemeStealer - INFO -   Cyan: 11.5% (conf=0.73)
+2026-06-29 20:57:59,122 - SchemeStealer - INFO -   Red: 9.6% (conf=0.70)
+2026-06-29 20:57:59,122 - SchemeStealer - INFO -   Yellow: 6.9% (conf=0.93)
+2026-06-29 20:58:59,020 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 20:58:59,038 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 20:58:59,041 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 20:58:59,060 - SchemeStealer - INFO - Starting base detection v2.0 on 300x438 image
+2026-06-29 20:58:59,065 - SchemeStealer - INFO - Base detection complete: removed -0.2% as base material
+2026-06-29 20:58:59,065 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 20:58:59,069 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-06-29 20:58:59,201 - SchemeStealer - INFO - After shadow filtering: 10 clusters remain
+2026-06-29 20:58:59,201 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Yellow'
+2026-06-29 20:58:59,202 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 20:58:59,202 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-06-29 20:58:59,202 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Cyan'
+2026-06-29 20:58:59,202 - SchemeStealer - INFO - Final: 5 major + 0 details
+2026-06-29 20:58:59,202 - SchemeStealer - INFO -   Pink: 48.9% (conf=0.67)
+2026-06-29 20:58:59,202 - SchemeStealer - INFO -   Grey: 23.1% (conf=0.62)
+2026-06-29 20:58:59,202 - SchemeStealer - INFO -   Cyan: 11.5% (conf=0.73)
+2026-06-29 20:58:59,202 - SchemeStealer - INFO -   Red: 9.6% (conf=0.70)
+2026-06-29 20:58:59,202 - SchemeStealer - INFO -   Yellow: 6.9% (conf=0.93)
+2026-06-29 21:02:04,989 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 21:02:05,003 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 21:02:05,006 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 21:02:05,024 - SchemeStealer - INFO - Starting base detection v2.0 on 300x438 image
+2026-06-29 21:02:05,029 - SchemeStealer - INFO - Base detection complete: removed -0.2% as base material
+2026-06-29 21:02:05,029 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 21:02:05,034 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-06-29 21:02:05,170 - SchemeStealer - INFO - After shadow filtering: 10 clusters remain
+2026-06-29 21:02:05,170 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Yellow'
+2026-06-29 21:02:05,170 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 21:02:05,170 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-06-29 21:02:05,170 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Cyan'
+2026-06-29 21:02:05,170 - SchemeStealer - INFO - Final: 5 major + 0 details
+2026-06-29 21:02:05,170 - SchemeStealer - INFO -   Pink: 48.9% (conf=0.67)
+2026-06-29 21:02:05,170 - SchemeStealer - INFO -   Grey: 23.1% (conf=0.62)
+2026-06-29 21:02:05,170 - SchemeStealer - INFO -   Cyan: 11.5% (conf=0.73)
+2026-06-29 21:02:05,170 - SchemeStealer - INFO -   Red: 9.6% (conf=0.70)
+2026-06-29 21:02:05,170 - SchemeStealer - INFO -   Yellow: 6.9% (conf=0.93)
+2026-06-29 21:02:42,715 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 21:02:42,727 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 21:02:42,730 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 21:02:42,747 - SchemeStealer - INFO - Starting base detection v2.0 on 300x438 image
+2026-06-29 21:02:42,752 - SchemeStealer - INFO - Base detection complete: removed -0.2% as base material
+2026-06-29 21:02:42,752 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 21:02:42,757 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-06-29 21:02:42,897 - SchemeStealer - INFO - After shadow filtering: 10 clusters remain
+2026-06-29 21:02:42,898 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Yellow'
+2026-06-29 21:02:42,898 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 21:02:42,898 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-06-29 21:02:42,898 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Cyan'
+2026-06-29 21:02:42,898 - SchemeStealer - INFO - Final: 5 major + 0 details
+2026-06-29 21:02:42,898 - SchemeStealer - INFO -   Pink: 48.9% (conf=0.67)
+2026-06-29 21:02:42,898 - SchemeStealer - INFO -   Grey: 23.1% (conf=0.62)
+2026-06-29 21:02:42,898 - SchemeStealer - INFO -   Cyan: 11.5% (conf=0.73)
+2026-06-29 21:02:42,898 - SchemeStealer - INFO -   Red: 9.6% (conf=0.70)
+2026-06-29 21:02:42,898 - SchemeStealer - INFO -   Yellow: 6.9% (conf=0.93)
+2026-06-29 21:06:58,640 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 21:06:58,653 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 21:06:58,656 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 21:06:58,675 - SchemeStealer - INFO - Starting base detection v2.0 on 300x438 image
+2026-06-29 21:06:58,680 - SchemeStealer - INFO - Base detection complete: removed -0.2% as base material
+2026-06-29 21:06:58,680 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 21:06:58,685 - SchemeStealer - INFO - Initial clustering into 10 clusters...
+2026-06-29 21:06:58,818 - SchemeStealer - INFO - After shadow filtering: 10 clusters remain
+2026-06-29 21:06:58,818 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Yellow'
+2026-06-29 21:06:58,818 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 21:06:58,818 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-06-29 21:06:58,818 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Cyan'
+2026-06-29 21:06:58,818 - SchemeStealer - INFO - Final: 5 major + 0 details
+2026-06-29 21:06:58,818 - SchemeStealer - INFO -   Pink: 48.9% (conf=0.67)
+2026-06-29 21:06:58,818 - SchemeStealer - INFO -   Grey: 23.1% (conf=0.62)
+2026-06-29 21:06:58,818 - SchemeStealer - INFO -   Cyan: 11.5% (conf=0.73)
+2026-06-29 21:06:58,818 - SchemeStealer - INFO -   Red: 9.6% (conf=0.70)
+2026-06-29 21:06:58,818 - SchemeStealer - INFO -   Yellow: 6.9% (conf=0.93)
+2026-06-29 21:09:48,125 - SchemeStealer - INFO - Starting photo quality assessment
+2026-06-29 21:09:48,140 - SchemeStealer - INFO - Underexposure corrected
+2026-06-29 21:09:48,143 - SchemeStealer - INFO - Photo quality score: 75/100 (Good)
+2026-06-29 21:09:48,166 - SchemeStealer - INFO - Starting base detection v2.0 on 300x391 image
+2026-06-29 21:09:48,548 - SchemeStealer - INFO - Base detection complete: removed 8.0% as base material
+2026-06-29 21:09:48,548 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-06-29 21:09:48,557 - SchemeStealer - INFO - Initial clustering into 12 clusters...
+2026-06-29 21:09:48,815 - SchemeStealer - INFO - After shadow filtering: 12 clusters remain
+2026-06-29 21:09:48,815 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Green'
+2026-06-29 21:09:48,815 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Pink'
+2026-06-29 21:09:48,815 - SchemeStealer - INFO - Deduplicating 2 clusters of family 'Cyan'
+2026-06-29 21:09:48,816 - SchemeStealer - INFO - Deduplicating 3 clusters of family 'Grey'
+2026-06-29 21:09:48,816 - SchemeStealer - INFO - Final: 6 major + 0 details
+2026-06-29 21:09:48,816 - SchemeStealer - INFO -   Pink: 47.6% (conf=0.65)
+2026-06-29 21:09:48,816 - SchemeStealer - INFO -   Grey: 19.7% (conf=0.57)
+2026-06-29 21:09:48,816 - SchemeStealer - INFO -   Red: 12.2% (conf=0.66)
+2026-06-29 21:09:48,816 - SchemeStealer - INFO -   Cyan: 9.3% (conf=0.84)
+2026-06-29 21:09:48,816 - SchemeStealer - INFO -   Green: 8.1% (conf=0.84)
+2026-06-29 21:09:48,816 - SchemeStealer - INFO -   Yellow: 3.1% (conf=0.95)
+2026-06-30 16:51:44,291 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-30 16:51:44,302 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (vectorised CIEDE2000)
+2026-06-30 19:46:08,238 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-06-30 19:46:08,260 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (vectorised CIEDE2000)
