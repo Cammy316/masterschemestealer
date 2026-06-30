@@ -39,5 +39,11 @@ node_modules/
 *.pem
 api.log
 
-# Scraper cache (regenerated on demand)
+# Scraper cache (regenerated on demand). The live scrapers write .source_cache/;
+# .scrape_cache/ is kept for any legacy local dirs.
 .scrape_cache/
+.source_cache/
+
+# Local ML/analytics capture (contains session ids, user-agents and free-text
+# feedback incl. emails — must never be committed). Production uses Supabase.
+python-api/data/

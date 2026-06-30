@@ -16,20 +16,16 @@ APP_ICON = "🧬"
 # ============================================================================
 
 class ColorDetection:
-    """Color extraction thresholds"""
-    MIN_MAJOR_COVERAGE = 5.0        # Minimum % for major colors
-    MIN_DETAIL_COVERAGE = 0.5       # Minimum % for accent colors
-    MAX_DETAIL_COVERAGE = 5.0       # Maximum % for accent colors
-    N_CLUSTERS = 5                  # K-means cluster count
-    DETAIL_SATURATION_MIN = 0.4     # Lowered to catch golds
-    
-    # Metallic detection
-    METALLIC_BRIGHTNESS_STD = 50    # Brightness variation threshold
-    METALLIC_SATURATION_MAX = 0.3   # Max saturation for metallics
-    
-    # Image processing
-    RESIZE_WIDTH = 300              # Analysis resolution (performance)
-    SATURATION_BOOST = 1.3          # Visualization boost factor
+    """Color extraction settings.
+
+    NOTE: the cluster count, detail-coverage and metallic thresholds are owned by
+    the algorithms themselves (smart_color_system._determine_optimal_k / its
+    adaptive detail logic, and color_engine.is_metallic_surface). The unused
+    constants that used to live here were removed (M-4/M-5) because they did not
+    drive behaviour and were misleading. Only values actually consumed remain.
+    """
+    # Image processing — analysis resolution (used by schemestealer_engine).
+    RESIZE_WIDTH = 300
 
 
 # ============================================================================
@@ -71,7 +67,6 @@ class PhotoQuality:
 class BaseDetection:
     """Base removal configuration"""
     ALPHA_THRESHOLD = 50            # Background removal threshold
-    BOTTOM_ZONE_START = 0.70        # Start looking for base at 70% height
     MIN_REGULARITY = 0.3            # Geometric regularity of base shape
     BASE_EXPANSION = 20             # Pixels to expand base detection upward
     EXCLUSION_ZONE_TOP = 0.6        # Don't consider base colors above 60%
@@ -236,8 +231,6 @@ class WashMapping:
         'grey':    ['dark'],
         'black':   ['dark'],
         'white':   ['dark'],
-        # Skin (inspiration may emit it) -> flesh wash
-        'flesh':   ['flesh', 'sepia'],
     }
 
     # archetype -> brand's ACTUAL wash name in paints_groundtruth.json.

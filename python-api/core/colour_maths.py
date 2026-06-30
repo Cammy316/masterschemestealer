@@ -3,7 +3,8 @@ Shared colour-science helpers used across the matching and analysis pipeline.
 """
 
 import numpy as np
-from skimage.color import deltaE_ciede2000
+from typing import List
+from skimage.color import deltaE_ciede2000, rgb2lab
 
 
 def ciede2000_single(lab1, lab2) -> float:
@@ -15,6 +16,14 @@ def ciede2000_single(lab1, lab2) -> float:
     a = np.asarray(lab1, dtype=float).reshape(1, 1, 3)
     b = np.asarray(lab2, dtype=float).reshape(1, 1, 3)
     return float(deltaE_ciede2000(a, b)[0, 0])
+
+
+def rgb_to_lab(rgb) -> List[float]:
+    """sRGB (a 0-255 r,g,b triple) → CIELAB (D65) via skimage. The single home for
+    this conversion so the scanners and recipe builder can't drift (M-7)."""
+    rgb_norm = np.asarray(rgb, dtype=float) / 255.0
+    lab = rgb2lab(np.array([[rgb_norm]]))[0][0]
+    return [float(lab[0]), float(lab[1]), float(lab[2])]
 
 
 def circular_mean_hue(hues_01: np.ndarray) -> float:

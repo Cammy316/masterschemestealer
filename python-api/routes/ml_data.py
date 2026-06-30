@@ -14,11 +14,19 @@ import uuid
 from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Any, Optional
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request, Depends
 from pydantic import BaseModel, Field
 import logging
 
 from utils.supabase_client import get_supabase, supabase_enabled
+from utils.limiter import limiter
+from utils.auth import require_admin_key
+
+# Ingest endpoints are client-facing (the browser logs scans/feedback), so a
+# secret can't protect them — a per-IP rate limit is the practical guard against
+# flooding / training-data poisoning (C-2). The aggregate-stats reads are admin
+# only and gated by require_admin_key.
+_INGEST_LIMIT = "60/minute"
 
 logger = logging.getLogger(__name__)
 
@@ -529,7 +537,8 @@ router = APIRouter(prefix="/api/ml", tags=["ML Data Collection"])
 
 
 @router.post("/log-scan")
-async def log_scan(data: MLLogBatch):
+@limiter.limit(_INGEST_LIMIT)
+async def log_scan(request: Request, data: MLLogBatch):
     try:
         save_scan(data.scan, data.colours)
         if data.behaviour:
@@ -541,21 +550,23 @@ async def log_scan(data: MLLogBatch):
         }
     except Exception as e:
         logger.error(f"Error logging scan: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to log scan: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to log scan")
 
 
 @router.post("/log-feedback")
-async def log_feedback(feedback: FeedbackData):
+@limiter.limit(_INGEST_LIMIT)
+async def log_feedback(request: Request, feedback: FeedbackData):
     try:
         save_feedback(feedback)
         return {"status": "success", "scan_id": feedback.scan_id, "feedback_type": feedback.feedback_type}
     except Exception as e:
         logger.error(f"Error logging feedback: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to log feedback: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to log feedback")
 
 
 @router.post("/log-complete-feedback")
-async def log_complete_feedback(feedback: CompleteFeedback):
+@limiter.limit(_INGEST_LIMIT)
+async def log_complete_feedback(request: Request, feedback: CompleteFeedback):
     try:
         save_complete_feedback(feedback)
         corrections_count = sum(
@@ -571,25 +582,27 @@ async def log_complete_feedback(feedback: CompleteFeedback):
         }
     except Exception as e:
         logger.error(f"Error logging complete feedback: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to log feedback: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to log feedback")
 
 
 @router.post("/log-behavior")
-async def log_behaviour(behaviour: BehaviouralSignals):
+@limiter.limit(_INGEST_LIMIT)
+async def log_behaviour(request: Request, behaviour: BehaviouralSignals):
     try:
         save_behaviour(behaviour)
         return {"status": "success", "scan_id": behaviour.scan_id}
     except Exception as e:
         logger.error(f"Error logging behaviour: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to log behaviour: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to log behaviour")
 
 
 @router.post("/batch-log")
-async def batch_log(request: BatchLogRequest):
+@limiter.limit(_INGEST_LIMIT)
+async def batch_log(request: Request, payload: BatchLogRequest):
     try:
         results = {"scans_logged": 0, "colours_logged": 0, "behaviours_logged": 0, "feedbacks_logged": 0}
 
-        for scan_batch in (request.scans or []):
+        for scan_batch in (payload.scans or []):
             save_scan(scan_batch.scan, scan_batch.colours)
             results["scans_logged"] += 1
             results["colours_logged"] += len(scan_batch.colours)
@@ -597,11 +610,11 @@ async def batch_log(request: BatchLogRequest):
                 save_behaviour(scan_batch.behaviour)
                 results["behaviours_logged"] += 1
 
-        for behaviour in (request.behaviours or []):
+        for behaviour in (payload.behaviours or []):
             save_behaviour(behaviour)
             results["behaviours_logged"] += 1
 
-        for feedback in (request.feedbacks or []):
+        for feedback in (payload.feedbacks or []):
             save_feedback(feedback)
             results["feedbacks_logged"] += 1
 
@@ -609,25 +622,25 @@ async def batch_log(request: BatchLogRequest):
         return {"status": "success", **results}
     except Exception as e:
         logger.error(f"Error in batch log: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to batch log: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to batch log")
 
 
-@router.get("/stats", response_model=MLStats)
+@router.get("/stats", response_model=MLStats, dependencies=[Depends(require_admin_key)])
 async def get_ml_stats():
     try:
         return get_stats()
     except Exception as e:
         logger.error(f"Error getting stats: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to get stats: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to get stats")
 
 
-@router.get("/feedback-stats", response_model=FeedbackStats)
+@router.get("/feedback-stats", response_model=FeedbackStats, dependencies=[Depends(require_admin_key)])
 async def get_ml_feedback_stats():
     try:
         return get_feedback_stats()
     except Exception as e:
         logger.error(f"Error getting feedback stats: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to get feedback stats: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to get feedback stats")
 
 
 @router.get("/health")
