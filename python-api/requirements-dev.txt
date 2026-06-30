@@ -1,0 +1,4 @@
+# Test-only dependencies (NOT installed on Render — keep out of requirements.txt).
+# Pinned to the versions already present in the dev venv.
+pytest==9.1.0
+httpx==0.28.1

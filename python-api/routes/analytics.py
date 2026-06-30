@@ -13,11 +13,13 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List, Dict, Any
 from collections import defaultdict
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request, Depends
 from pydantic import BaseModel
 import logging
 
 from utils.supabase_client import get_supabase, supabase_enabled
+from utils.limiter import limiter
+from utils.auth import require_admin_key
 
 logger = logging.getLogger(__name__)
 
@@ -248,7 +250,8 @@ router = APIRouter(prefix="/api/analytics", tags=["Analytics"])
 
 
 @router.post("/events")
-async def log_events(batch: EventsBatch):
+@limiter.limit("120/minute")
+async def log_events(request: Request, batch: EventsBatch):
     try:
         if not batch.events:
             return {"status": "success", "events_logged": 0}
@@ -256,16 +259,16 @@ async def log_events(batch: EventsBatch):
         return {"status": "success", "events_logged": len(batch.events)}
     except Exception as e:
         logger.error(f"Error logging analytics events: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to log events: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to log events")
 
 
-@router.get("/summary", response_model=AnalyticsSummary)
+@router.get("/summary", response_model=AnalyticsSummary, dependencies=[Depends(require_admin_key)])
 async def get_summary(days: int = 30):
     try:
         return _calculate_summary(days)
     except Exception as e:
         logger.error(f"Error getting analytics summary: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to get summary: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to get summary")
 
 
 @router.get("/health")

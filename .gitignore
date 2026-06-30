@@ -41,3 +41,7 @@ api.log
 
 # Scraper cache (regenerated on demand)
 .scrape_cache/
+
+# Local ML/analytics capture (contains session ids, user-agents and free-text
+# feedback incl. emails — must never be committed). Production uses Supabase.
+python-api/data/
