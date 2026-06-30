@@ -1,5 +1,6 @@
 /**
  * ShoppingCart component - displays cart items with quantity controls
+ * Upgraded to Dataslate styling (Void-Black/Brass)
  */
 
 'use client';
@@ -15,31 +16,30 @@ export function ShoppingCart() {
 
   if (cart.length === 0) {
     return (
-      <div className="text-center py-12 textured">
-        <div className="flex justify-center mb-4">
-          {/* Munitorum crate icon */}
-          <svg width="96" height="96" viewBox="0 0 64 64" fill="none">
-            <rect x="8" y="16" width="48" height="40" rx="2" fill="#2a2010" stroke="#8B7355" strokeWidth="2" />
-            <line x1="8" y1="28" x2="56" y2="28" stroke="#8B7355" strokeWidth="1" />
-            <line x1="8" y1="40" x2="56" y2="40" stroke="#8B7355" strokeWidth="1" />
-            <circle cx="32" cy="36" r="8" fill="#1a1508" stroke="#8B7355" strokeWidth="1" />
-            <text x="32" y="40" textAnchor="middle" fill="#8B7355" fontSize="10">☠</text>
-            <circle cx="12" cy="20" r="2" fill="#8B7355" />
-            <circle cx="52" cy="20" r="2" fill="#8B7355" />
-            <circle cx="12" cy="52" r="2" fill="#8B7355" />
-            <circle cx="52" cy="52" r="2" fill="#8B7355" />
-            <path d="M24 12 L24 16 M40 12 L40 16" stroke="#8B7355" strokeWidth="2" />
-            <path d="M24 12 Q32 8 40 12" stroke="#8B7355" strokeWidth="2" fill="none" />
+      <div className="text-center py-12 border border-gray-800 bg-charcoal/20 rounded-lg mt-8">
+        <div className="flex justify-center mb-6">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" className="opacity-50">
+            <rect x="8" y="16" width="48" height="40" rx="2" fill="var(--charcoal)" stroke="var(--brass)" strokeWidth="2" />
+            <line x1="8" y1="28" x2="56" y2="28" stroke="var(--brass)" strokeWidth="1" />
+            <line x1="8" y1="40" x2="56" y2="40" stroke="var(--brass)" strokeWidth="1" />
+            <circle cx="32" cy="36" r="8" fill="var(--void-black)" stroke="var(--brass)" strokeWidth="1" />
+            <text x="32" y="40" textAnchor="middle" fill="var(--brass)" fontSize="10">☠</text>
+            <circle cx="12" cy="20" r="2" fill="var(--brass)" />
+            <circle cx="52" cy="20" r="2" fill="var(--brass)" />
+            <circle cx="12" cy="52" r="2" fill="var(--brass)" />
+            <circle cx="52" cy="52" r="2" fill="var(--brass)" />
+            <path d="M24 12 L24 16 M40 12 L40 16" stroke="var(--brass)" strokeWidth="2" />
+            <path d="M24 12 Q32 8 40 12" stroke="var(--brass)" strokeWidth="2" fill="none" />
           </svg>
         </div>
-        <h3 className="responsive-section-title font-semibold text-amber-500 mb-2 gothic-text text-shadow">
-          SUPPLY REQUISITION EMPTY
+        <h3 className="text-xl font-bold text-brass mb-3 gothic-text tracking-widest text-shadow">
+          REQUISITION EMPTY
         </h3>
-        <p className="text-gray-500 tech-text responsive-label">
-          No items awaiting requisition
+        <p className="text-gray-400 tech-text text-sm">
+          No items awaiting requisition.
         </p>
-        <p className="text-gray-500 mt-2 responsive-label">
-          Scan a miniature or channel the warp to add paints
+        <p className="text-gray-500 mt-2 text-xs uppercase tracking-widest">
+          Scan a miniature to discover paints.
         </p>
       </div>
     );
@@ -64,14 +64,14 @@ export function ShoppingCart() {
       <CostSummary cart={cart} totalItems={totalItems} />
 
       {/* Approval stamp area */}
-      <div className="mt-6 p-4 border-2 border-dashed border-amber-900/30 rounded text-center">
-        <div className="text-amber-500/40 responsive-label tracking-wider mb-2">
+      <div className="mt-8 p-4 border border-dashed border-gray-700 bg-charcoal/20 rounded text-center">
+        <div className="text-gray-500 tech-text text-[10px] uppercase tracking-wider mb-2">
           ADMINISTRATUM USE ONLY
         </div>
-        <div className="text-amber-600 font-bold tracking-[0.2em] responsive-section-title">
+        <div className="text-imperial-gold font-bold tracking-[0.2em] text-lg gothic-text">
           PENDING REQUISITION
         </div>
-        <div className="text-amber-500/50 responsive-label mt-2">
+        <div className="text-gray-400 text-xs tech-text mt-2 uppercase tracking-widest">
           {totalItems} ITEM{totalItems !== 1 ? 'S' : ''} TOTAL
         </div>
       </div>
@@ -80,7 +80,7 @@ export function ShoppingCart() {
       {cart.length > 0 && (
         <button
           onClick={clearCart}
-          className="w-full py-3 px-4 border border-red-500/30 bg-red-950/20 rounded responsive-label text-red-500/80 hover:bg-red-950/40 hover:border-red-500/50 transition-colors"
+          className="w-full mt-4 py-4 px-4 border border-red-900/30 bg-red-950/20 rounded text-xs tech-text uppercase tracking-widest text-red-500 hover:bg-red-950/40 hover:border-red-500/50 transition-colors"
         >
           ✕ CLEAR REQUISITION
         </button>
@@ -121,24 +121,24 @@ function CartItem({ item, index, onRemove, onUpdateQuantity }: CartItemProps) {
   };
 
   return (
-    <div className="flex items-center gap-3 p-3 border border-amber-900/20 bg-black/30 rounded">
+    <div className="flex items-center gap-3 p-3 border border-gray-800 bg-charcoal/60 rounded hover:bg-charcoal transition-colors">
       {/* Manifest number */}
-      <div className="text-amber-500/50 font-mono responsive-label">
+      <div className="text-gray-600 font-mono text-[10px]">
         [{String(index + 1).padStart(2, '0')}]
       </div>
 
       {/* Color swatch */}
       <div
-        className="w-8 h-8 rounded border border-amber-900/30 flex-shrink-0"
+        className="w-10 h-10 rounded border border-gray-700 flex-shrink-0 shadow-inner"
         style={{ backgroundColor: item.paint.hex }}
       />
 
       {/* Paint info */}
-      <div className="flex-1 min-w-0">
-        <div className="text-amber-100 font-semibold responsive-label truncate">
+      <div className="flex-1 min-w-0 ml-2">
+        <div className="text-white font-bold text-sm sm:text-base truncate">
           {item.paint.name}
         </div>
-        <div className="text-amber-500/60 responsive-label">
+        <div className="text-gray-400 text-[10px] sm:text-xs uppercase tracking-widest">
           {item.paint.brand} {item.addedFrom && `• ${modeIcons[item.addedFrom]}`}
         </div>
       </div>
@@ -148,27 +148,27 @@ function CartItem({ item, index, onRemove, onUpdateQuantity }: CartItemProps) {
         <button
           onClick={handleDecrement}
           disabled={item.quantity <= 1}
-          className="w-7 h-7 rounded bg-amber-900/20 hover:bg-amber-900/40 active:bg-amber-900/60 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-colors border border-amber-900/30"
+          className="w-8 h-8 rounded bg-void-black hover:bg-gray-800 active:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-colors border border-gray-700"
         >
-          <span className="text-amber-500 font-semibold">−</span>
+          <span className="text-brass font-bold">−</span>
         </button>
 
-        <span className="w-6 text-center font-semibold text-amber-500 responsive-label">
+        <span className="w-6 text-center font-bold text-white text-sm">
           {item.quantity}
         </span>
 
         <button
           onClick={handleIncrement}
-          className="w-7 h-7 rounded bg-amber-900/20 hover:bg-amber-900/40 active:bg-amber-900/60 flex items-center justify-center transition-colors border border-amber-900/30"
+          className="w-8 h-8 rounded bg-void-black hover:bg-gray-800 active:bg-gray-700 flex items-center justify-center transition-colors border border-gray-700"
         >
-          <span className="text-amber-500 font-semibold">+</span>
+          <span className="text-brass font-bold">+</span>
         </button>
       </div>
 
       {/* Remove button */}
       <button
         onClick={onRemove}
-        className="flex-shrink-0 text-red-500/70 hover:text-red-500 p-2"
+        className="flex-shrink-0 text-red-900 hover:text-red-500 px-3 py-2 transition-colors"
         aria-label="Remove item"
       >
         ✕
@@ -177,9 +177,6 @@ function CartItem({ item, index, onRemove, onUpdateQuantity }: CartItemProps) {
   );
 }
 
-/**
- * Cost Summary - shows estimated paint costs by brand
- */
 interface CostSummaryProps {
   cart: Array<{
     paint: { name: string; brand: string; hex: string };
@@ -204,19 +201,19 @@ function CostSummary({ cart }: CostSummaryProps) {
   const totalCost = Object.values(brandTotals).reduce((sum, b) => sum + b.cost, 0);
 
   return (
-    <div className="mt-4 p-4 border border-amber-900/30 bg-amber-950/10 rounded-lg">
-      <h4 className="text-sm font-bold text-amber-500 gothic-text text-center mb-3">
-        ◆ ESTIMATED COSTS ◆
+    <div className="mt-6 p-5 border border-gray-800 bg-charcoal/40 rounded-lg">
+      <h4 className="text-sm font-bold text-brass gothic-text text-center mb-4 tracking-widest">
+        ESTIMATED COSTS
       </h4>
 
       {/* Brand breakdown */}
-      <div className="space-y-2 mb-4">
+      <div className="space-y-3 mb-4">
         {Object.entries(brandTotals).map(([brand, data]) => (
-          <div key={brand} className="flex justify-between text-sm">
-            <span className="text-amber-400/80">
-              {brand} <span className="text-amber-500/50">×{data.count}</span>
+          <div key={brand} className="flex justify-between text-sm items-center">
+            <span className="text-gray-300 font-bold">
+              {brand} <span className="text-gray-500 font-normal ml-1">×{data.count}</span>
             </span>
-            <span className="text-amber-300 font-mono">
+            <span className="text-imperial-gold font-mono tracking-wider">
               {formatCurrency(data.cost)}
             </span>
           </div>
@@ -224,20 +221,20 @@ function CostSummary({ cart }: CostSummaryProps) {
       </div>
 
       {/* Divider */}
-      <div className="border-t border-amber-900/30 mb-3" />
+      <div className="border-t border-gray-800 my-4" />
 
       {/* Total */}
       <div className="flex justify-between items-center">
-        <span className="text-amber-500 font-semibold">
-          ESTIMATED TOTAL
+        <span className="text-brass font-bold tracking-widest uppercase text-sm">
+          Estimated Total
         </span>
-        <span className="text-amber-300 font-bold text-lg font-mono">
+        <span className="text-imperial-gold font-bold text-xl font-mono tracking-wider">
           {formatCurrency(totalCost)}
         </span>
       </div>
 
       {/* Disclaimer */}
-      <p className="text-xs text-amber-500/50 mt-3 text-center tech-text">
+      <p className="text-[10px] text-gray-500 mt-4 text-center tech-text uppercase tracking-widest">
         Based on average retail prices. Actual costs may vary by retailer.
       </p>
     </div>
@@ -251,7 +248,7 @@ export function CartBadge() {
   if (totalItems === 0) return null;
 
   return (
-    <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+    <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
       {totalItems > 9 ? '9+' : totalItems}
     </span>
   );

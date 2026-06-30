@@ -37,6 +37,7 @@ export const useAppStore = create<AppStore>()(
       currentScan: null,
       scanHistory: [],
       cart: [],
+      inventory: [],
       isScanning: false,
       isLoading: false,
       error: null,
@@ -164,6 +165,20 @@ export const useAppStore = create<AppStore>()(
 
       clearCart: () => set({ cart: [] }),
 
+      // Inventory actions
+      addToInventory: (paint: Paint) => 
+        set((state) => {
+          const paintId = `${paint.brand}-${paint.name}`;
+          const exists = state.inventory.some((p) => `${p.brand}-${p.name}` === paintId);
+          if (exists) return { inventory: state.inventory };
+          return { inventory: [...state.inventory, paint] };
+        }),
+        
+      removeFromInventory: (paintId: string) =>
+        set((state) => ({
+          inventory: state.inventory.filter((p) => `${p.brand}-${p.name}` !== paintId)
+        })),
+
       // UI actions
       setLoading: (loading: boolean) => set({ isLoading: loading }),
 
@@ -187,6 +202,7 @@ export const useAppStore = create<AppStore>()(
         // survive a refresh), offline mode, and brand preferences. The current
         // scan is stripped of its image + reticles so it stays small.
         cart: state.cart,
+        inventory: state.inventory,
         scanHistory: state.scanHistory,
         currentScan: state.currentScan ? toPersistableScan(state.currentScan) : null,
         preferredBrands: state.preferredBrands,

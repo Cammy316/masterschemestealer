@@ -338,7 +338,7 @@ export default function InspirationResultsPage() {
           </motion.button>
 
           <motion.button
-            onClick={() => router.push('/cart')}
+            onClick={() => router.push('/forge')}
             className="w-full py-3 px-6 rounded-full border border-warp-teal/30 bg-warp-teal/10 backdrop-blur-md shadow-[0_4px_15px_rgba(20,184,166,0.15)] touch-target group"
             whileHover={{ scale: 1.02, backgroundColor: 'rgba(20,184,166,0.2)' }}
             whileTap={{ scale: 0.98 }}
