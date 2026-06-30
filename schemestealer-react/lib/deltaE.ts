@@ -137,36 +137,6 @@ export function deltaE2000(lab1: LAB, lab2: LAB): number {
 }
 
 /**
- * Find closest color from a palette
- * Returns the closest color and its delta-E distance
- */
-export function findClosestColor<T extends { lab: LAB }>(
-  targetLab: LAB,
-  palette: T[],
-  useCIE2000: boolean = true
-): { color: T; deltaE: number } | null {
-  if (palette.length === 0) return null;
-
-  let closestColor = palette[0];
-  let minDeltaE = useCIE2000
-    ? deltaE2000(targetLab, palette[0].lab)
-    : deltaE76(targetLab, palette[0].lab);
-
-  for (let i = 1; i < palette.length; i++) {
-    const deltaE = useCIE2000
-      ? deltaE2000(targetLab, palette[i].lab)
-      : deltaE76(targetLab, palette[i].lab);
-
-    if (deltaE < minDeltaE) {
-      minDeltaE = deltaE;
-      closestColor = palette[i];
-    }
-  }
-
-  return { color: closestColor, deltaE: minDeltaE };
-}
-
-/**
  * Find N closest colors from a palette
  */
 export function findNClosestColors<T extends { lab: LAB }>(
@@ -185,45 +155,4 @@ export function findNClosestColors<T extends { lab: LAB }>(
 
   // Sort by delta-E and return top N
   return results.sort((a, b) => a.deltaE - b.deltaE).slice(0, n);
-}
-
-/**
- * Check if two colors are perceptually similar
- */
-export function areSimilar(lab1: LAB, lab2: LAB, threshold: number = 2.0): boolean {
-  return deltaE2000(lab1, lab2) < threshold;
-}
-
-/**
- * Group colors by similarity
- * Returns clusters of similar colors
- */
-export function groupBySimilarity<T extends { lab: LAB }>(
-  colors: T[],
-  threshold: number = 5.0
-): T[][] {
-  if (colors.length === 0) return [];
-
-  const clusters: T[][] = [];
-  const used = new Set<number>();
-
-  for (let i = 0; i < colors.length; i++) {
-    if (used.has(i)) continue;
-
-    const cluster = [colors[i]];
-    used.add(i);
-
-    for (let j = i + 1; j < colors.length; j++) {
-      if (used.has(j)) continue;
-
-      if (deltaE2000(colors[i].lab, colors[j].lab) < threshold) {
-        cluster.push(colors[j]);
-        used.add(j);
-      }
-    }
-
-    clusters.push(cluster);
-  }
-
-  return clusters;
 }

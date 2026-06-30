@@ -34,9 +34,25 @@ backend `pytest` **577 passed / 1 skipped** (`USE_REAL_CV2=1`), frontend `vitest
 | MED-A | Removed the unreachable `flesh`/`copper` family vocabulary after confirming **0 of 1312** DB paints use them (`RECOGNISED_FAMILIES`, `_NON_METALLIC_REMAP`, `FAMILY_ADJACENCY`, `WASH_BY_FAMILY`); kept `flesh` as a valid wash *archetype* | ✅ |
 | MED-B | Unified the wash mapping to a single backend source: `scripts/build_wash_mapping.py` pre-resolves the backend wash ladder into the generated `lib/washMapping.ts`; the offline matcher now reads it (deleted the hand-coded map + fuzzy DB lookup) | ✅ |
 
-**Remaining / deferred:** LOW items (L1–L8) and the small cleanups (the C-1 backend "deltaE76"
-labels, dead imports, etc.) remain open per scope. DB-side RLS + anon-key for C-2 and a
-data-retention purge are ops/Supabase tasks outside this repo.
+**Code-health cleanups (done):** corrected the backend `deltaE76`→`ciede2000` labels
+(`color_engine` docstring, `color_anchors.json`, `build_color_anchors.py`); removed dead
+imports (`main.py` slowapi/typing; `color_engine` KMeans/ndimage/circular_mean_hue), the unused
+`ColorAnalyzer.analyze_color_temperature`, and the unused `deltaE.ts` exports; dropped the
+f-string-without-placeholder error details in the routes; fixed **L1** (`.source_cache/` now in
+`.gitignore`) and **L2** (stale `rembg` docs in `README.md` + `miniature_scanner` docstring).
+
+**⏸ TEMPORARILY HIDDEN — premium brands (remember this!).** AK, Pro Acryl and Two Thin Coats
+are marked `isPremium` and filtered out of the PaintRecipeCard brand selector (`visibleBrands`
+in `components/shared/PaintRecipeCard.tsx`) because the premium subscription isn't set up yet —
+we don't surface paints the user can't unlock. **They are NOT removed from the DB** and the
+backend still returns recipes for them; only the selector hides them. **Re-enable** by dropping
+the `!b.isPremium` filter in `visibleBrands` once the premium flow ships (the premium-gating
+overlay in the same file then becomes reachable again).
+
+**Remaining / deferred:** LOW items L3 (EXIF strip), L4 (broad CORS), L5 (security headers),
+L7 (a couple of avoidable inline styles), L8 (cold-start skip button), and the numeric tuning
+(K-means k-steps, specular-filter floor) remain open per scope. DB-side RLS + anon-key for C-2
+and a data-retention purge are ops/Supabase tasks outside this repo.
 
 ---
 

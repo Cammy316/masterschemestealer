@@ -22,7 +22,8 @@ logger = logging.getLogger(__name__)
 class MiniatureScannerService:
     """
     Service for scanning painted miniatures
-    - Removes background using rembg
+    - Expects a client-removed background (a transparent RGBA PNG); there is no
+      server-side rembg — removal happens in-browser before upload
     - Detects 3-5 dominant colors on the miniature
     - Returns paint recommendations with full recipe structure
     """
