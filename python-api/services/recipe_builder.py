@@ -11,10 +11,7 @@ to the family-based WashMapping lookup.
 import logging
 from typing import Dict, List, Optional
 
-import numpy as np
-from skimage import color as sk_color
-
-from core.colour_maths import ciede2000_single
+from core.colour_maths import ciede2000_single, rgb_to_lab
 from config import WashMapping
 
 logger = logging.getLogger(__name__)
@@ -36,12 +33,6 @@ WASH_CATEGORIES = ('wash', 'shade', 'ink')
 def hex_to_rgb(hex_color: str) -> List[int]:
     hex_color = hex_color.lstrip('#')
     return [int(hex_color[i:i + 2], 16) for i in (0, 2, 4)]
-
-
-def rgb_to_lab(rgb: List[int]) -> List[float]:
-    rgb_norm = np.array(rgb) / 255.0
-    lab = sk_color.rgb2lab(np.array([[rgb_norm]]))[0][0]
-    return [float(lab[0]), float(lab[1]), float(lab[2])]
 
 
 def format_paint_match(match: Optional[Dict], color_lab: List[float] = None) -> Optional[Dict]:

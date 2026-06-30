@@ -30,7 +30,6 @@ export interface Color {
     citadel: Paint[];
     vallejo: Paint[];
     armyPainter: Paint[];
-    scale75: Paint[];
   };
 }
 

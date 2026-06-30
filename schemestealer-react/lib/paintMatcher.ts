@@ -12,7 +12,6 @@ export interface MultiBrandMatches {
   citadel: Paint[];
   vallejo: Paint[];
   armyPainter: Paint[];
-  scale75: Paint[];
 }
 
 // Wash mapping by color family - mirrors backend WashMapping
@@ -74,25 +73,6 @@ const WASH_MAPPING: Record<string, Record<string, string>> = {
     bronze: 'Strong Tone',
     default: 'Dark Tone',
   },
-  scale75: {
-    red: 'Burgundy Ink',
-    orange: 'Sepia Ink',
-    yellow: 'Yellow Ink',
-    brown: 'Sepia Ink',
-    green: 'Green Ink',
-    cyan: 'Green Ink',
-    blue: 'Blue Ink',
-    purple: 'Burgundy Ink',
-    pink: 'Burgundy Ink',
-    flesh: 'Sepia Ink',
-    black: 'Black Ink',
-    grey: 'Smoky Ink',
-    white: 'Black Ink',
-    gold: 'Sepia Ink',
-    silver: 'Smoky Ink',
-    bronze: 'Sepia Ink',
-    default: 'Black Ink',
-  },
 };
 
 // DB type strings that belong to each offline role
@@ -123,21 +103,16 @@ export function getMultiBrandMatches(
   const armyPainterPaints = paintDatabase.filter(
     (p) => p.brand.toLowerCase() === 'army painter' && _DOMINANT_TYPES.has(p.type.toLowerCase())
   );
-  const scale75Paints = paintDatabase.filter(
-    (p) => p.brand.toLowerCase() === 'scale75' && _DOMINANT_TYPES.has(p.type.toLowerCase())
-  );
 
   // Find top matches for each brand with transparency penalty
   const citadelMatches = findTopMatches(colorLab, citadelPaints, matchesPerBrand, true);
   const vallejoMatches = findTopMatches(colorLab, vallejoPaints, matchesPerBrand, true);
   const armyPainterMatches = findTopMatches(colorLab, armyPainterPaints, matchesPerBrand, true);
-  const scale75Matches = findTopMatches(colorLab, scale75Paints, matchesPerBrand, true);
 
   return {
     citadel: citadelMatches,
     vallejo: vallejoMatches,
     armyPainter: armyPainterMatches,
-    scale75: scale75Matches,
   };
 }
 
@@ -196,7 +171,7 @@ function adjustLightness(
  */
 function getWashForFamily(
   family: string,
-  brand: 'citadel' | 'vallejo' | 'army-painter' | 'scale75'
+  brand: 'citadel' | 'vallejo' | 'army-painter'
 ): string {
   const brandMap = WASH_MAPPING[brand] || WASH_MAPPING.citadel;
   const familyLower = family.toLowerCase();
@@ -249,7 +224,7 @@ function findWashPaint(washName: string, brand: string): PaintMatch | null {
 export function getRecipeForColor(
   colorLab: [number, number, number],
   colorFamily: string,
-  brand: 'citadel' | 'vallejo' | 'army-painter' | 'scale75'
+  brand: 'citadel' | 'vallejo' | 'army-painter'
 ): BrandRecipe {
   const paintDatabase = getPaintDatabase();
   const brandName = brand.replace('-', ' ');
@@ -271,11 +246,16 @@ export function getRecipeForColor(
   // fallback) is authoritative for recipes. This client-side generator is a
   // simple lightness-shift fallback only and is not on a primary path. Deltas
   // are aligned to the backend's ideal dL* (±12) so the two don't diverge.
+  // Monotonicity guard (mirrors backend recipe_geometry.derive_partner): a
+  // highlight must be strictly lighter than the base colour, a shade strictly
+  // darker. If no paint satisfies it we return null (honest empty) rather than a
+  // wrong-direction match.
+  const baseL = colorLab[0];
   const highlightLab = adjustLightness(colorLab, 12);
-  const highlightMatch = findClosestPaint(highlightLab, basePaints);
+  const highlightMatch = findClosestPaint(highlightLab, basePaints, (p) => p.lab.l > baseL);
 
   const shadeLab = adjustLightness(colorLab, -12);
-  const shadeMatch = findClosestPaint(shadeLab, basePaints);
+  const shadeMatch = findClosestPaint(shadeLab, basePaints, (p) => p.lab.l < baseL);
 
   // Get wash based on color family
   const washName = getWashForFamily(colorFamily, brand);
@@ -294,14 +274,16 @@ export function getRecipeForColor(
  */
 function findClosestPaint(
   colorLab: [number, number, number],
-  paints: PaintData[]
+  paints: PaintData[],
+  filter?: (p: PaintData) => boolean
 ): PaintMatch | null {
-  if (paints.length === 0) return null;
+  const pool = filter ? paints.filter(filter) : paints;
+  if (pool.length === 0) return null;
 
   let bestMatch: PaintData | null = null;
   let bestDeltaE = Infinity;
 
-  for (const paint of paints) {
+  for (const paint of pool) {
     const dE = deltaE2000({ l: colorLab[0], a: colorLab[1], b: colorLab[2] }, paint.lab);
 
     if (dE < bestDeltaE) {

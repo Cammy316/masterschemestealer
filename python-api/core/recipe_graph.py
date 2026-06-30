@@ -21,8 +21,10 @@ OFFICIAL_SOURCES = {"citadel_official", "manual", "tutorial"}
 
 _DEFAULT_RECIPES = os.path.join(os.path.dirname(os.path.dirname(__file__)), "recipes.json")
 
-# Ideal lightness deltas used only as a final tie-breaker for edge selection.
-_IDEAL_DL = {"highlight": 12.0, "shade": -12.0}
+# Ideal lightness deltas — single source of truth lives in recipe_geometry so the
+# two modules can never drift (M-6). Used only as a final edge-selection tie-break.
+from core.recipe_geometry import IDEAL_DL_HIGHLIGHT, IDEAL_DL_SHADE
+_IDEAL_DL = {"highlight": IDEAL_DL_HIGHLIGHT, "shade": IDEAL_DL_SHADE}
 
 
 @dataclass
