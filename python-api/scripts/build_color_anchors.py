@@ -125,7 +125,7 @@ def main():
 
     out = {
         "version": 1,
-        "metric": "deltaE76",
+        "metric": "ciede2000",
         "thresholds": THRESHOLDS,
         "neutrals": NEUTRALS,      # which family names are achromatic
         "metallic_fallback": METALLIC_FALLBACK,  # vivid families a coloured metallic may take

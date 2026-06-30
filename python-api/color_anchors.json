@@ -1,6 +1,6 @@
 {
  "version": 1,
- "metric": "deltaE76",
+ "metric": "ciede2000",
  "thresholds": {
   "black_l": 10.0,
   "achromatic_c": 6.0

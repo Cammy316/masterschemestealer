@@ -14,16 +14,13 @@ import numpy as np
 import colorsys
 import json
 import os
-from sklearn.cluster import KMeans
 from skimage import color
 from skimage.color import deltaE_ciede2000
 from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass, field
-from scipy import ndimage
 
 from config import ColorDetection, Visualization, ShadeRules
 from utils.logging_config import logger
-from core.colour_maths import circular_mean_hue
 from core.recipe_geometry import allowed_families
 
 
@@ -95,22 +92,6 @@ class Paint:
 
 class ColorAnalyzer:
     """Color classification and metallic detection - FINAL VERSION"""
-    
-    @staticmethod
-    def analyze_color_temperature(lab: np.ndarray) -> str:
-        """
-        Determine if color is warm, cool, or neutral
-        """
-        L, a, b = lab
-        
-        warmth_score = b * 0.7 + a * 0.3
-        
-        if warmth_score > 15:
-            return 'warm'
-        elif warmth_score < -15:
-            return 'cool'
-        else:
-            return 'neutral'
     
     @staticmethod
     def classify_surface_type(brightness_std: float, edge_density: float = None) -> str:
@@ -227,7 +208,7 @@ def classify_family(lab, chroma: float = None, is_metallic: bool = False) -> str
       1. metallic flag → nearest of the gold/silver/bronze metallic anchors.
       2. hard black floor: L < black_l → black (very dark colours carry no
          reliable hue). This is the ONLY explicit threshold.
-      3. otherwise → nearest exemplar by ΔE76 over ALL families, neutrals
+      3. otherwise → nearest exemplar by CIEDE2000 over ALL families, neutrals
          included (grey/white/black are anchors too) — so a faint tint resolves
          to its hue and a true neutral resolves to grey, by distance not by
          boundary. You tune by moving / adding a clear exemplar in

@@ -27,13 +27,12 @@ from pathlib import Path
 from fastapi import FastAPI, File, UploadFile, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
+from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from PIL import Image, UnidentifiedImageError
 Image.MAX_IMAGE_PIXELS = 25_000_000  # Prevent Decompression Bomb OOM crashes (max ~25 megapixels)
 import numpy as np
-from typing import List, Dict, Any, Optional
+from typing import Optional
 from pydantic import BaseModel, Field
 import logging
 

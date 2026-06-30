@@ -550,7 +550,7 @@ async def log_scan(request: Request, data: MLLogBatch):
         }
     except Exception as e:
         logger.error(f"Error logging scan: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to log scan")
+        raise HTTPException(status_code=500, detail="Failed to log scan")
 
 
 @router.post("/log-feedback")
@@ -561,7 +561,7 @@ async def log_feedback(request: Request, feedback: FeedbackData):
         return {"status": "success", "scan_id": feedback.scan_id, "feedback_type": feedback.feedback_type}
     except Exception as e:
         logger.error(f"Error logging feedback: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to log feedback")
+        raise HTTPException(status_code=500, detail="Failed to log feedback")
 
 
 @router.post("/log-complete-feedback")
@@ -582,7 +582,7 @@ async def log_complete_feedback(request: Request, feedback: CompleteFeedback):
         }
     except Exception as e:
         logger.error(f"Error logging complete feedback: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to log feedback")
+        raise HTTPException(status_code=500, detail="Failed to log feedback")
 
 
 @router.post("/log-behavior")
@@ -593,7 +593,7 @@ async def log_behaviour(request: Request, behaviour: BehaviouralSignals):
         return {"status": "success", "scan_id": behaviour.scan_id}
     except Exception as e:
         logger.error(f"Error logging behaviour: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to log behaviour")
+        raise HTTPException(status_code=500, detail="Failed to log behaviour")
 
 
 @router.post("/batch-log")
@@ -622,7 +622,7 @@ async def batch_log(request: Request, payload: BatchLogRequest):
         return {"status": "success", **results}
     except Exception as e:
         logger.error(f"Error in batch log: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to batch log")
+        raise HTTPException(status_code=500, detail="Failed to batch log")
 
 
 @router.get("/stats", response_model=MLStats, dependencies=[Depends(require_admin_key)])
@@ -631,7 +631,7 @@ async def get_ml_stats():
         return get_stats()
     except Exception as e:
         logger.error(f"Error getting stats: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to get stats")
+        raise HTTPException(status_code=500, detail="Failed to get stats")
 
 
 @router.get("/feedback-stats", response_model=FeedbackStats, dependencies=[Depends(require_admin_key)])
@@ -640,7 +640,7 @@ async def get_ml_feedback_stats():
         return get_feedback_stats()
     except Exception as e:
         logger.error(f"Error getting feedback stats: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to get feedback stats")
+        raise HTTPException(status_code=500, detail="Failed to get feedback stats")
 
 
 @router.get("/health")

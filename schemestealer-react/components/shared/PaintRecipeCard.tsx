@@ -175,10 +175,19 @@ export function PaintRecipeCard({
 
   // Only show tabs for brands the backend actually returned. Scale75 (and any
   // other unsupported brand) is absent from the response, so it never renders.
-  // Falls back to the full supported list if a response omits the key entirely.
+  // Falls back to the supported list if a response omits the key entirely.
+  //
+  // PREMIUM BRANDS HIDDEN (temporary): AK / Pro Acryl / Two Thin Coats are
+  // marked isPremium and filtered out here because the premium subscription
+  // isn't set up yet — we don't want to surface paints the user can't unlock.
+  // They remain in the DB and the backend still returns recipes for them; we
+  // only omit them from the selector. To re-enable once premium ships, drop the
+  // `!b.isPremium` filter below (the premium-gating overlay further down then
+  // becomes reachable again).
   const visibleBrands = useMemo(() => {
-    const present = BRANDS.filter((b) => paintRecipe[b.key]);
-    return present.length ? present : BRANDS;
+    const selectable = BRANDS.filter((b) => !b.isPremium);
+    const present = selectable.filter((b) => paintRecipe[b.key]);
+    return present.length ? present : selectable;
   }, [paintRecipe]);
 
   // Derive the effective brand: the user's choice if it's present in this scan's

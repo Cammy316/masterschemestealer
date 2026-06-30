@@ -259,7 +259,7 @@ async def log_events(request: Request, batch: EventsBatch):
         return {"status": "success", "events_logged": len(batch.events)}
     except Exception as e:
         logger.error(f"Error logging analytics events: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to log events")
+        raise HTTPException(status_code=500, detail="Failed to log events")
 
 
 @router.get("/summary", response_model=AnalyticsSummary, dependencies=[Depends(require_admin_key)])
@@ -268,7 +268,7 @@ async def get_summary(days: int = 30):
         return _calculate_summary(days)
     except Exception as e:
         logger.error(f"Error getting analytics summary: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Failed to get summary")
+        raise HTTPException(status_code=500, detail="Failed to get summary")
 
 
 @router.get("/health")
