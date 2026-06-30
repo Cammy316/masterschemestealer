@@ -231,8 +231,6 @@ class WashMapping:
         'grey':    ['dark'],
         'black':   ['dark'],
         'white':   ['dark'],
-        # Skin (inspiration may emit it) -> flesh wash
-        'flesh':   ['flesh', 'sepia'],
     }
 
     # archetype -> brand's ACTUAL wash name in paints_groundtruth.json.

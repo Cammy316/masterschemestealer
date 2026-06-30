@@ -31,11 +31,12 @@ backend `pytest` **577 passed / 1 skipped** (`USE_REAL_CV2=1`), frontend `vitest
 | M-8 | Removed the dropped `scale75` brand from the offline matcher + types | ✅ |
 | M-9 | Concurrent scans bounded by a semaphore (`MAX_CONCURRENT_SCANS`, default 1) | ✅ |
 
-**Deferred (deliberately):** the two fuzzier MEDIUMs — *unreachable `flesh`/`copper` families* and the
-*frontend↔backend `WASH_MAPPING` duplication* — were left out: removing recognised families or
-unifying the wash maps is a behavioural/design change that needs its own validation pass, not a
-surgical fix. LOW items (L1–L8) remain open per scope. DB-side RLS + anon-key for C-2 is an ops/Supabase
-task outside this repo.
+| MED-A | Removed the unreachable `flesh`/`copper` family vocabulary after confirming **0 of 1312** DB paints use them (`RECOGNISED_FAMILIES`, `_NON_METALLIC_REMAP`, `FAMILY_ADJACENCY`, `WASH_BY_FAMILY`); kept `flesh` as a valid wash *archetype* | ✅ |
+| MED-B | Unified the wash mapping to a single backend source: `scripts/build_wash_mapping.py` pre-resolves the backend wash ladder into the generated `lib/washMapping.ts`; the offline matcher now reads it (deleted the hand-coded map + fuzzy DB lookup) | ✅ |
+
+**Remaining / deferred:** LOW items (L1–L8) and the small cleanups (the C-1 backend "deltaE76"
+labels, dead imports, etc.) remain open per scope. DB-side RLS + anon-key for C-2 and a
+data-retention purge are ops/Supabase tasks outside this repo.
 
 ---
 
