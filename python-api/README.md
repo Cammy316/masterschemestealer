@@ -98,7 +98,7 @@ POST /api/scan/miniature
 Scan a painted miniature with background removal.
 
 **Features:**
-- ✅ Background removal using rembg
+- ✅ Background already removed **client-side** (upload a transparent RGBA PNG) — no server-side rembg
 - ✅ Detects 3-5 dominant colors on the miniature
 - ✅ Returns paint recommendations with Delta-E scores
 
@@ -132,7 +132,7 @@ The backend uses sophisticated color detection from the original Streamlit app:
 1. **Dual Color Space Analysis**: HSV and LAB with ensemble voting
 2. **Hue-Range Exceptions**: Handles desaturated colors correctly
 3. **Achromatic Detection**: Prevents grey/black/white misclassifications
-4. **Background Removal**: rembg for miniature isolation (Miniscan only)
+4. **Background Removal**: done client-side before upload (Miniscan sends a transparent RGBA PNG); no server-side rembg
 5. **Dominant Color Extraction**: K-means clustering with coverage ranking
 6. **Paint Matching**: Delta-E distance in LAB color space
 
@@ -146,7 +146,7 @@ The backend uses sophisticated color detection from the original Streamlit app:
 
 | Feature | Miniscan | Inspiration |
 |---------|----------|-------------|
-| **Background Removal** | ✅ YES (rembg) | ❌ NO (full image) |
+| **Background Removal** | ✅ client-side (RGBA PNG) | ❌ NO (full image) |
 | **Color Count** | 3-5 colors | 5-8 colors |
 | **Use Case** | "What paints are on this mini?" | "I want these colors!" |
 | **Processing** | isolate → detect → match | extract → match |
@@ -164,7 +164,6 @@ python-multipart==0.0.16      # File upload support
 opencv-python==4.10.0.84      # Image processing
 numpy==1.26.4                 # Numerical operations
 Pillow==11.0.0                # Image manipulation
-rembg==2.0.59                 # Background removal
 scikit-learn==1.5.2           # K-means clustering
 scikit-image==0.24.0          # Color space conversions
 scipy==1.14.1                 # Delta-E calculations
@@ -188,7 +187,7 @@ This backend has been **completely refactored** from the original Streamlit app:
 - ✅ Dual color space analysis (HSV + LAB)
 - ✅ Hue-range exceptions
 - ✅ Paint matching with Delta-E
-- ✅ Background removal with rembg
+- ✅ Background removal (now client-side, pre-upload)
 
 ### What Was Added:
 - ✅ FastAPI REST API endpoints

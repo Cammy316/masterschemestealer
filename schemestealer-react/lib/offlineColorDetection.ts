@@ -7,7 +7,7 @@
 import type { ScanResult, Color, Paint, ScanMode } from './types';
 import { extractDominantColors } from './colorClustering';
 import { rgbToHex, rgbToLab, type LAB } from './colorConversion';
-import { findNClosestColors } from './deltaE';
+import { findNClosestColors, deltaE2000 } from './deltaE';
 import { COLOR_ANCHORS } from './colorAnchors';
 
 /**
@@ -15,9 +15,11 @@ import { COLOR_ANCHORS } from './colorAnchors';
  * `color_engine.classify_family`, reading the SAME exemplar set
  * (`color_anchors.json`, compiled into ./colorAnchors). There are NO hue-band
  * thresholds: a colour's family is the family of its nearest LAB exemplar by
- * ΔE76. Backend and frontend cannot diverge because they share the anchors and
- * run the same tiny algorithm — change anchors in python-api and re-run
- * scripts/build_color_anchors.py to regenerate ./colorAnchors.
+ * CIEDE2000 — the SAME metric the backend `_nearest_family` uses, so the two
+ * cannot diverge. (They previously drifted: the backend used CIEDE2000 while this
+ * port used Euclidean ΔE76, which flipped ~23 brown↔yellow boundary colours.)
+ * Change anchors in python-api and re-run scripts/build_color_anchors.py to
+ * regenerate ./colorAnchors.
  */
 type AnchorSet = { pts: number[][]; fams: string[] };
 
@@ -41,12 +43,13 @@ const _METAL = _stack([
 ]);
 
 function nearestFamily(set: AnchorSet, L: number, a: number, b: number): string {
+  // CIEDE2000 to mirror the backend `_nearest_family` exactly (NOT raw Euclidean).
+  const target = { l: L, a, b };
   let best = 0;
   let bestD = Infinity;
   for (let i = 0; i < set.pts.length; i++) {
     const p = set.pts[i];
-    const dL = p[0] - L, da = p[1] - a, db = p[2] - b;
-    const d = dL * dL + da * da + db * db;
+    const d = deltaE2000(target, { l: p[0], a: p[1], b: p[2] });
     if (d < bestD) { bestD = d; best = i; }
   }
   return set.fams[best];

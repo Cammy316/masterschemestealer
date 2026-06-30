@@ -4,6 +4,12 @@ services:
     runtime: python
     rootDir: python-api
     buildCommand: pip install -r requirements.txt
+    # H-1: --forwarded-allow-ips="*" is required so uvicorn derives the real client
+    # IP from Render's proxy (per-IP rate limiting needs it; removing it would key
+    # every request on the proxy IP and throttle all users as one). The trade-off is
+    # that X-Forwarded-For is client-spoofable, so the per-IP scan limit is
+    # best-effort. Tighten to Render's egress CIDR if/when it is published, and rely
+    # on the per-endpoint limits + memory monitoring (M-9) as the real backstop.
     startCommand: gunicorn main:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --forwarded-allow-ips="*" --bind 0.0.0.0:$PORT --timeout 300
     healthCheckPath: /
     envVars:

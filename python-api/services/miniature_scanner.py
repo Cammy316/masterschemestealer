@@ -22,7 +22,8 @@ logger = logging.getLogger(__name__)
 class MiniatureScannerService:
     """
     Service for scanning painted miniatures
-    - Removes background using rembg
+    - Expects a client-removed background (a transparent RGBA PNG); there is no
+      server-side rembg — removal happens in-browser before upload
     - Detects 3-5 dominant colors on the miniature
     - Returns paint recommendations with full recipe structure
     """
@@ -245,8 +246,6 @@ class MiniatureScannerService:
         return [int(hex_color[i:i+2], 16) for i in (0, 2, 4)]
 
     def _rgb_to_lab(self, rgb: List[int]) -> List[float]:
-        """Convert RGB to LAB (simplified)"""
-        from skimage import color as sk_color
-        rgb_norm = np.array(rgb) / 255.0
-        lab = sk_color.rgb2lab(np.array([[rgb_norm]]))[0][0]
-        return [float(lab[0]), float(lab[1]), float(lab[2])]
+        """Convert RGB to LAB — delegates to the single shared helper (M-7)."""
+        from core.colour_maths import rgb_to_lab
+        return rgb_to_lab(rgb)

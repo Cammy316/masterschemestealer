@@ -27,13 +27,13 @@ from pathlib import Path
 from fastapi import FastAPI, File, UploadFile, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
+from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from PIL import Image, UnidentifiedImageError
 Image.MAX_IMAGE_PIXELS = 25_000_000  # Prevent Decompression Bomb OOM crashes (max ~25 megapixels)
 import numpy as np
-from typing import List, Dict, Any
+from typing import Optional
+from pydantic import BaseModel, Field
 import logging
 
 # Ensure CWD is the directory containing main.py so relative paths work
@@ -59,6 +59,12 @@ logger = logging.getLogger(__name__)
 _miniature_scanner = None
 _inspiration_scanner = None
 _scanner_ready = threading.Event()
+
+# Bound concurrent CPU-bound scans so simultaneous uploads can't stack large image
+# buffers and OOM the single ~512 MB Render worker (M-9). Default 1; override with
+# MAX_CONCURRENT_SCANS if the instance has more headroom.
+_MAX_CONCURRENT_SCANS = int(os.environ.get("MAX_CONCURRENT_SCANS", "1"))
+_scan_semaphore = asyncio.Semaphore(_MAX_CONCURRENT_SCANS)
 
 
 def _prewarm():
@@ -102,7 +108,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-limiter = Limiter(key_func=get_remote_address)
+from utils.limiter import limiter  # shared instance — routers throttle on the same one
 
 app = FastAPI(
     title="SchemeStealer API",
@@ -181,7 +187,15 @@ async def get_paints():
 _MAX_UPLOAD_BYTES = 10 * 1024 * 1024  # 10 MB
 
 
-def _validate_upload(file: UploadFile, contents: bytes):
+def _reject_oversize(request: Request) -> None:
+    """Reject an over-limit upload from the Content-Length header BEFORE the body
+    is buffered into memory — guards the single Render worker against OOM (H-2)."""
+    cl = request.headers.get("content-length")
+    if cl is not None and cl.isdigit() and int(cl) > _MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail="Image exceeds 10 MB limit.")
+
+
+def _validate_upload(file: UploadFile, contents: bytes) -> None:
     if not (file.content_type or "").startswith("image/"):
         raise HTTPException(status_code=400, detail="Only image files are accepted.")
     if len(contents) > _MAX_UPLOAD_BYTES:
@@ -193,35 +207,47 @@ def _validate_upload(file: UploadFile, contents: bytes):
 async def scan_miniature(request: Request, file: UploadFile = File(...)):
     """
     Scan a painted miniature to detect colors.
-    Removes background using rembg, detects 3-5 dominant colors.
+    Background removal is done client-side, so the upload must be a transparent
+    (RGBA) PNG; detects 3-5 dominant colors.
     """
     await _await_scanner_ready()
 
     if _miniature_scanner is None:
         raise HTTPException(status_code=503, detail="Scanner failed to initialise. Please try again.")
 
+    image = None
+    contents = None
     try:
+        _reject_oversize(request)
         contents = await file.read()
         _validate_upload(file, contents)
-        image = Image.open(io.BytesIO(contents))
-        if image.mode not in ('RGB', 'RGBA'):
-            image = image.convert('RGB')
-        # RGBA means client already removed the background — preserve alpha channel
 
-        # Optimize memory and CPU overhead early
-        image.thumbnail((1024, 1024))
+        try:
+            image = Image.open(io.BytesIO(contents))
+            # The engine requires a client-removed background (alpha channel). A
+            # plain RGB image would crash downstream, so reject it cleanly (C-3).
+            if image.mode != 'RGBA':
+                raise HTTPException(
+                    status_code=400,
+                    detail="Miniature image must have its background removed (upload a transparent PNG).",
+                )
+            image.thumbnail((1024, 1024))  # optimise memory/CPU early
+        except HTTPException:
+            raise
+        except (UnidentifiedImageError, OSError, Image.DecompressionBombError):
+            # Any PIL decode failure is a bad upload, not a server fault (H-4).
+            logger.warning(f"Invalid image file uploaded: {file.filename}")
+            raise HTTPException(status_code=400, detail="Invalid image file format.")
 
         logger.info(f"Processing miniature scan: {file.filename}, size: {image.size}, mode: {image.mode}")
-        
+
         loop = asyncio.get_running_loop()
-        result = await loop.run_in_executor(None, _miniature_scanner.scan, image)
-        
+        async with _scan_semaphore:
+            result = await loop.run_in_executor(None, _miniature_scanner.scan, image)
+
         logger.info(f"Miniature scan complete: {len(result['colors'])} colors detected")
         return JSONResponse(content=result)
 
-    except UnidentifiedImageError:
-        logger.warning(f"Invalid image file uploaded: {file.filename}")
-        raise HTTPException(status_code=400, detail="Invalid image file format.")
     except HTTPException:
         raise
     except Exception as e:
@@ -246,27 +272,32 @@ async def scan_inspiration(request: Request, file: UploadFile = File(...)):
     if _inspiration_scanner is None:
         raise HTTPException(status_code=503, detail="Scanner failed to initialise. Please try again.")
 
+    image = None
+    contents = None
     try:
+        _reject_oversize(request)
         contents = await file.read()
         _validate_upload(file, contents)
-        image = Image.open(io.BytesIO(contents))
-        if image.mode != 'RGB':
-            image = image.convert('RGB')
 
-        # Optimize memory and CPU overhead early
-        image.thumbnail((1024, 1024))
+        try:
+            image = Image.open(io.BytesIO(contents))
+            if image.mode != 'RGB':
+                image = image.convert('RGB')
+            image.thumbnail((1024, 1024))  # optimise memory/CPU early
+        except (UnidentifiedImageError, OSError, Image.DecompressionBombError):
+            # Any PIL decode failure is a bad upload, not a server fault (H-4).
+            logger.warning(f"Invalid image file uploaded: {file.filename}")
+            raise HTTPException(status_code=400, detail="Invalid image file format.")
 
         logger.info(f"Processing inspiration scan: {file.filename}, size: {image.size}")
-        
+
         loop = asyncio.get_running_loop()
-        result = await loop.run_in_executor(None, _inspiration_scanner.scan, image)
-        
+        async with _scan_semaphore:
+            result = await loop.run_in_executor(None, _inspiration_scanner.scan, image)
+
         logger.info(f"Inspiration scan complete: {len(result['colors'])} colors detected")
         return JSONResponse(content=result)
 
-    except UnidentifiedImageError:
-        logger.warning(f"Invalid image file uploaded: {file.filename}")
-        raise HTTPException(status_code=400, detail="Invalid image file format.")
     except HTTPException:
         raise
     except Exception as e:
@@ -279,14 +310,19 @@ async def scan_inspiration(request: Request, file: UploadFile = File(...)):
         gc.collect()
 
 
+class SimpleFeedback(BaseModel):
+    scanId: str
+    rating: Optional[int] = Field(default=None, ge=1, le=5)
+    comment: Optional[str] = Field(default=None, max_length=2000)
+
+
 @app.post("/api/feedback")
-async def submit_feedback(feedback: Dict[str, Any]):
-    try:
-        logger.info(f"Feedback received: {feedback}")
-        return {"status": "success", "message": "Feedback recorded"}
-    except Exception as e:
-        logger.error(f"Feedback error: {str(e)}")
-        raise HTTPException(status_code=500, detail="Failed to record feedback")
+@limiter.limit("20/minute")
+async def submit_feedback(request: Request, feedback: SimpleFeedback):
+    # Validated payload + rate limited. Do NOT log the free-text comment (PII) —
+    # record only that feedback arrived (M-2).
+    logger.info(f"Feedback received for scan {feedback.scanId} (rating={feedback.rating})")
+    return {"status": "success", "message": "Feedback recorded"}
 
 
 if __name__ == "__main__":
