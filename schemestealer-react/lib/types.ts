@@ -107,8 +107,9 @@ export interface AppState {
   currentScan: ScanResult | null;
   scanHistory: ScanResult[];
 
-  // Cart state
+  // Cart & Inventory state
   cart: CartItem[];
+  inventory: Paint[]; // Full paint objects to render the Armoury grid
 
   // UI state
   isScanning: boolean;
@@ -125,11 +126,14 @@ export interface AppActions {
   setScanResult: (result: ScanResult) => void;
   clearCurrentScan: () => void;
 
-  // Cart actions
+  // Cart & Inventory actions
   addToCart: (paint: Paint, mode?: ScanMode, scanId?: string) => void;
   removeFromCart: (paintId: string) => void;
   updateQuantity: (paintId: string, quantity: number) => void;
   clearCart: () => void;
+  
+  addToInventory: (paint: Paint) => void;
+  removeFromInventory: (paintId: string) => void;
 
   // UI actions
   setLoading: (loading: boolean) => void;

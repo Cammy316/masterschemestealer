@@ -89,17 +89,17 @@ export function Navigation() {
             theme="warp"
           />
 
-          {/* Cart - Brass/neutral theme with crate icon */}
+          {/* Armoury - Brass/neutral theme with shield icon */}
           <NavLink
-            href="/cart"
+            href="/forge"
             icon={
               <div className="relative">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  {/* Supply crate shape */}
-                  <rect x="3" y="8" width="18" height="13" rx="1" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M3 13h18M3 17h18" strokeLinecap="round" strokeLinejoin="round" />
-                  {/* Handle */}
-                  <path d="M8 8V6a4 4 0 0 1 8 0v2" strokeLinecap="round" strokeLinejoin="round" />
+                  {/* Shield shape */}
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" strokeLinecap="round" strokeLinejoin="round" />
+                  {/* Inner cross */}
+                  <path d="M12 8v8" strokeLinecap="round" strokeLinejoin="round" opacity="0.4" />
+                  <path d="M9 12h6" strokeLinecap="round" strokeLinejoin="round" opacity="0.4" />
                 </svg>
                 {cartCount > 0 && (
                   <motion.div
@@ -118,8 +118,8 @@ export function Navigation() {
                 )}
               </div>
             }
-            label="Cart"
-            isActive={isActive('/cart')}
+            label="The Forge"
+            isActive={isActive('/forge')}
             theme="brass"
           />
         </div>

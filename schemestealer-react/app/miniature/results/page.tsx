@@ -326,7 +326,7 @@ export default function MiniscanResultsPage() {
           </motion.button>
 
           <motion.button
-            onClick={() => router.push('/cart')}
+            onClick={() => router.push('/forge')}
             className="w-full py-4 px-6 rounded-lg border-2 border-brass bg-dark-gothic touch-target textured"
             whileHover={{
               boxShadow: '0 0 15px var(--brass)',
@@ -355,7 +355,7 @@ export default function MiniscanResultsPage() {
                 <path d="M3 13h18M3 17h18" strokeLinecap="round" strokeLinejoin="round" />
                 <path d="M8 8V6a4 4 0 0 1 8 0v2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-              <span className="text-brass font-bold cyber-text">VIEW SUPPLY REQUISITION</span>
+              <span className="text-brass font-bold cyber-text">THE FORGE</span>
             </div>
           </motion.button>
 
