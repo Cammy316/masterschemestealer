@@ -155,7 +155,7 @@ export default function AddPaintModal({ isOpen, onClose }: AddPaintModalProps) {
           >
             {/* Header */}
             <div className="p-4 border-b border-gray-800 flex justify-between items-center bg-void-black">
-              <h3 className="text-brass gothic-text tracking-widest text-lg text-shadow">ACQUISITION LOG</h3>
+              <h3 className="text-lg text-imperial-gold/80 cyber-text tracking-[0.2em] drop-shadow-[0_0_8px_rgba(255,215,0,0.4)] uppercase">ACQUISITION LOG</h3>
               <button onClick={onClose} className="text-gray-500 hover:text-white transition-colors">✕</button>
             </div>
 
@@ -297,7 +297,7 @@ export default function AddPaintModal({ isOpen, onClose }: AddPaintModalProps) {
                   ) : (
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <h4 className="text-brass tech-text text-sm tracking-widest">TOP DETECTED MATCHES</h4>
+                        <h4 className="text-sm text-imperial-gold/80 cyber-text tracking-[0.2em] drop-shadow-[0_0_8px_rgba(255,215,0,0.4)] uppercase">TOP DETECTED MATCHES</h4>
                         <button 
                           onClick={() => setScanMatches(null)}
                           className="text-xs text-gray-500 hover:text-white uppercase tech-text"
