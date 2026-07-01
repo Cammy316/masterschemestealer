@@ -10,6 +10,7 @@ interface InventoryHexGridProps {
   inventory: Paint[];
   onAddPaint: () => void;
   onRemovePaint?: (paintId: string) => void;
+  lastAddedId?: string | null;
 }
 
 // Convert ground truth format to internal
@@ -64,7 +65,7 @@ function generateHexSpiral(count: number) {
   return results;
 }
 
-export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint }: InventoryHexGridProps) {
+export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAddedId }: InventoryHexGridProps) {
   const [selectedPaintId, setSelectedPaintId] = useState<string | null>(null);
 
   // 1. Sort owned paints by Hue
@@ -151,14 +152,22 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint }: Inven
             
             const paintId = node.paint.id || node.paint.name.toLowerCase().replace(/\s+/g, '-');
             const isSelected = selectedPaintId === paintId;
+            const isNew = lastAddedId === paintId;
 
             return (
               <motion.div
                 key={node.isOwned ? paintId : `ghost-${paintId}`}
                 initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: isSelected ? 1.2 : 1, zIndex: isSelected ? 50 : 10 }}
+                animate={{ 
+                  opacity: 1, 
+                  scale: isNew ? [1, 1.3, 1] : isSelected ? 1.2 : 1, 
+                  zIndex: isSelected || isNew ? 50 : 10 
+                }}
                 exit={{ opacity: 0, scale: 0.5 }}
-                transition={{ type: "spring", stiffness: 300, damping: 25, delay: i * 0.01 }}
+                transition={{ 
+                  type: "spring", stiffness: 300, damping: 25, delay: i * 0.01,
+                  ...(isNew && { duration: 1, ease: "easeOut", repeat: 2, repeatType: "reverse" })
+                }}
                 className="absolute flex items-center justify-center cursor-pointer group"
                 style={{ 
                   left: x, 
@@ -181,6 +190,15 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint }: Inven
                   }}
                 >
                   <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none mix-blend-overlay" />
+                  
+                  {/* Subtle shockwave pulse for new paints */}
+                  {isNew && (
+                    <motion.div 
+                      className="absolute inset-0 bg-white mix-blend-overlay pointer-events-none"
+                      animate={{ opacity: [0, 0.8, 0] }}
+                      transition={{ duration: 1, repeat: 2 }}
+                    />
+                  )}
                   
                   {/* Subtle unowned icon */}
                   {!node.isOwned && (
