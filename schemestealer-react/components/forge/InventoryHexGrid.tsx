@@ -147,6 +147,19 @@ function StatsOverlay({ count, isAnimating }: { count: number, isAnimating: bool
 export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAddedId, pendingAnimationIds = [] }: InventoryHexGridProps) {
   const [selectedPaintId, setSelectedPaintId] = useState<string | null>(null);
 
+  // Global click handler to deselect paints when clicking anywhere outside the nodes
+  useEffect(() => {
+    const handleGlobalClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('[data-paint-node="true"]')) {
+        setSelectedPaintId(null);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleGlobalClick);
+    return () => document.removeEventListener('mousedown', handleGlobalClick);
+  }, []);
+
   // 1. Sort owned paints by Hue
   const ownedSorted = useMemo(() => {
     return [...inventory].sort((a, b) => hexToHue(a.hex) - hexToHue(b.hex));
@@ -243,6 +256,7 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
 
             return (
               <motion.div
+                data-paint-node="true"
                 key={node.isOwned ? paintId : `ghost-${paintId}`}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ 
