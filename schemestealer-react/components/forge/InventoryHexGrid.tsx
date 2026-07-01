@@ -385,14 +385,23 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
       )}
 
       {/* Floating Add Paint Button (Forge Theme) */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20">
-        <button 
-          onClick={onAddPaint}
-          className="py-2.5 px-8 bg-void-black/90 border border-brass/50 hover:bg-brass/20 hover:border-brass text-imperial-gold hover:text-white rounded text-xs uppercase tracking-widest tech-text transition-all shadow-[0_0_15px_rgba(184,134,11,0.2)] backdrop-blur-sm"
-        >
-          + ADD PAINT
-        </button>
-      </div>
+      <AnimatePresence>
+        {selectedPaintId === null && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20"
+          >
+            <button 
+              onClick={onAddPaint}
+              className="py-2.5 px-8 bg-void-black/90 border border-brass/50 hover:bg-brass/20 hover:border-brass text-imperial-gold hover:text-white rounded text-xs uppercase tracking-widest tech-text transition-all shadow-[0_0_15px_rgba(184,134,11,0.2)] backdrop-blur-sm"
+            >
+              + ADD PAINT
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
