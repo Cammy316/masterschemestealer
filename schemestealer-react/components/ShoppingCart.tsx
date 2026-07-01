@@ -107,7 +107,7 @@ export function ShoppingCart({ manifestId }: { manifestId?: string }) {
       {cart.length > 0 && (
         <button
           onClick={clearCart}
-          className="w-full mt-4 py-4 px-4 border-2 border-red-900 bg-red-950/40 rounded-sm text-sm font-bold uppercase tracking-widest text-red-500 hover:bg-red-900 hover:text-white hover:border-red-500 hover:shadow-[0_0_20px_rgba(220,38,38,0.4)] transition-all shadow-inner relative overflow-hidden group"
+          className="w-full mt-4 py-4 px-4 border-2 border-red-900 bg-red-950/40 rounded-sm text-sm font-bold uppercase tracking-widest text-red-500 hover:bg-red-900 hover:text-white hover:border-red-500 hover:shadow-[0_0_20px_rgba(220,38,38,0.4)] transition-all shadow-inner relative overflow-hidden group active:scale-[0.98]"
         >
           <div className="absolute inset-0 opacity-20 group-hover:opacity-10 transition-opacity" style={{ backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, #000 10px, #000 20px)' }} />
           <span className="relative z-10 flex items-center justify-center gap-2">
@@ -179,7 +179,7 @@ function CartItem({ item, index, onRemove, onUpdateQuantity }: CartItemProps) {
         <button
           onClick={handleDecrement}
           disabled={item.quantity <= 1}
-          className="w-8 h-8 rounded-sm bg-black/80 hover:bg-charcoal active:bg-gray-800 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all border-y-2 border-x border-b-gray-900 border-t-gray-600 border-x-gray-800 shadow-inner"
+          className="w-8 h-8 rounded-sm bg-black/80 hover:bg-charcoal active:bg-gray-800 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all border-y-2 border-x border-b-gray-900 border-t-gray-600 border-x-gray-800 shadow-inner active:scale-95"
         >
           <span className="text-imperial-gold font-bold drop-shadow-[0_0_2px_rgba(184,134,11,0.5)]">−</span>
         </button>
@@ -190,7 +190,7 @@ function CartItem({ item, index, onRemove, onUpdateQuantity }: CartItemProps) {
 
         <button
           onClick={handleIncrement}
-          className="w-8 h-8 rounded-sm bg-black/80 hover:bg-charcoal active:bg-gray-800 flex items-center justify-center transition-all border-y-2 border-x border-b-gray-900 border-t-gray-600 border-x-gray-800 shadow-inner"
+          className="w-8 h-8 rounded-sm bg-black/80 hover:bg-charcoal active:bg-gray-800 flex items-center justify-center transition-all border-y-2 border-x border-b-gray-900 border-t-gray-600 border-x-gray-800 shadow-inner active:scale-95"
         >
           <span className="text-imperial-gold font-bold drop-shadow-[0_0_2px_rgba(184,134,11,0.5)]">+</span>
         </button>
@@ -199,7 +199,7 @@ function CartItem({ item, index, onRemove, onUpdateQuantity }: CartItemProps) {
       {/* Remove button */}
       <button
         onClick={onRemove}
-        className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-sm bg-red-950/20 text-red-900 hover:bg-red-950/60 hover:text-red-500 border border-transparent hover:border-red-900/50 transition-all ml-1"
+        className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-sm bg-red-950/20 text-red-900 hover:bg-red-950/60 hover:text-red-500 border border-transparent hover:border-red-900/50 transition-all ml-1 active:scale-95"
         aria-label="Remove item"
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>

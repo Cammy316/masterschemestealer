@@ -29,7 +29,7 @@ export function CustomDropdown({ value, options, onChange, formatOption = (v) =>
     <div ref={containerRef} className="relative z-30">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center justify-between min-w-[120px] bg-charcoal border text-[10px] rounded px-3 py-1.5 uppercase tracking-widest outline-none transition-colors ${isOpen ? 'border-brass text-imperial-gold shadow-[0_0_8px_rgba(184,134,11,0.3)]' : 'border-gray-700 text-gray-400 hover:border-gray-500 hover:text-gray-300'}`}
+        className={`flex items-center justify-between min-w-[120px] bg-charcoal border text-[10px] rounded px-3 py-1.5 uppercase tracking-widest outline-none transition-all active:scale-95 ${isOpen ? 'border-brass text-imperial-gold shadow-[0_0_8px_rgba(184,134,11,0.3)]' : 'border-gray-700 text-gray-400 hover:border-gray-500 hover:text-gray-300'}`}
       >
         <span className="truncate mr-2">{formatOption(value)}</span>
         <svg 
@@ -47,7 +47,7 @@ export function CustomDropdown({ value, options, onChange, formatOption = (v) =>
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -5 }}
             transition={{ duration: 0.15 }}
-            className="absolute top-full left-0 mt-1 w-full max-h-48 overflow-y-auto bg-[#0a0a0a] border border-gray-700 rounded shadow-[0_4px_20px_rgba(0,0,0,0.8)] backdrop-blur-md custom-scrollbar"
+            className="absolute top-full left-0 mt-1 w-full max-h-48 overflow-y-auto bg-[#0a0a0a] border border-gray-700 rounded shadow-[0_4px_20px_rgba(0,0,0,0.8)] backdrop-blur-md scrollbar-hide"
           >
             {options.map((opt) => (
               <button

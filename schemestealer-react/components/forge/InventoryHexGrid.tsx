@@ -14,6 +14,13 @@ interface InventoryHexGridProps {
   pendingAnimationIds?: string[];
 }
 
+interface HexNode {
+  coord: { q: number, r: number, s?: number };
+  paint: Paint;
+  isOwned: boolean;
+  ghostOpacity?: number;
+}
+
 // Convert ground truth format to internal
 const allPaints: Paint[] = (paintsData as any[]).map(p => ({
   id: p.paint_id,
@@ -215,7 +222,7 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
         minScale={0.2}
         maxScale={2.5}
         centerOnInit={true}
-        wheel={{ step: 0.5, smoothStep: 0.005, disabled: inventory.length === 0 }}
+        wheel={{ step: 0.5, disabled: inventory.length === 0 }}
         panning={{ disabled: inventory.length === 0 }}
         pinch={{ disabled: inventory.length === 0 }}
         doubleClick={{ disabled: inventory.length === 0 }}
@@ -369,9 +376,9 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
             
             {/* Zoom Controls Overlay */}
             <div className="absolute bottom-4 right-4 flex flex-col gap-2 z-20">
-              <button onClick={() => zoomIn()} className="w-8 h-8 bg-black/80 border border-brass/50 hover:bg-brass/20 hover:border-brass text-imperial-gold rounded-sm flex items-center justify-center backdrop-blur-sm transition-all shadow-[0_0_10px_rgba(184,134,11,0.1)] hover:shadow-[0_0_15px_rgba(184,134,11,0.3)]">+</button>
-              <button onClick={() => zoomOut()} className="w-8 h-8 bg-black/80 border border-brass/50 hover:bg-brass/20 hover:border-brass text-imperial-gold rounded-sm flex items-center justify-center backdrop-blur-sm transition-all shadow-[0_0_10px_rgba(184,134,11,0.1)] hover:shadow-[0_0_15px_rgba(184,134,11,0.3)]">-</button>
-              <button onClick={() => resetTransform()} className="w-8 h-8 bg-black/80 border border-brass/50 hover:bg-brass/20 hover:border-brass text-imperial-gold rounded-sm flex items-center justify-center backdrop-blur-sm transition-all shadow-[0_0_10px_rgba(184,134,11,0.1)] hover:shadow-[0_0_15px_rgba(184,134,11,0.3)]">
+              <button onClick={() => zoomIn()} className="w-8 h-8 bg-black/80 border border-brass/50 hover:bg-brass/20 hover:border-brass text-imperial-gold rounded-sm flex items-center justify-center backdrop-blur-sm transition-all shadow-[0_0_10px_rgba(184,134,11,0.1)] hover:shadow-[0_0_15px_rgba(184,134,11,0.3)] active:scale-95">+</button>
+              <button onClick={() => zoomOut()} className="w-8 h-8 bg-black/80 border border-brass/50 hover:bg-brass/20 hover:border-brass text-imperial-gold rounded-sm flex items-center justify-center backdrop-blur-sm transition-all shadow-[0_0_10px_rgba(184,134,11,0.1)] hover:shadow-[0_0_15px_rgba(184,134,11,0.3)] active:scale-95">-</button>
+              <button onClick={() => resetTransform()} className="w-8 h-8 bg-black/80 border border-brass/50 hover:bg-brass/20 hover:border-brass text-imperial-gold rounded-sm flex items-center justify-center backdrop-blur-sm transition-all shadow-[0_0_10px_rgba(184,134,11,0.1)] hover:shadow-[0_0_15px_rgba(184,134,11,0.3)] active:scale-95">
                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
               </button>
             </div>
@@ -395,7 +402,7 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
           >
             <button 
               onClick={onAddPaint}
-              className="py-2.5 px-8 bg-void-black/90 border border-brass/50 hover:bg-brass/20 hover:border-brass text-imperial-gold hover:text-white rounded text-xs uppercase tracking-widest tech-text transition-all shadow-[0_0_15px_rgba(184,134,11,0.2)] backdrop-blur-sm"
+              className="py-2.5 px-8 bg-void-black/90 border border-brass/50 hover:bg-brass/20 hover:border-brass text-imperial-gold hover:text-white rounded text-xs uppercase tracking-widest tech-text transition-all shadow-[0_0_15px_rgba(184,134,11,0.2)] backdrop-blur-sm active:scale-95"
             >
               + ADD PAINT
             </button>
