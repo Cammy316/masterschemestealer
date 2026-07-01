@@ -248,20 +248,6 @@ export default function ForgePage() {
           {activeTab === 'inventory' && (
              <motion.div key="inventory" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="mt-8 space-y-6">
                 
-                {/* Inventory Header & Add Button */}
-                <div className="flex flex-col sm:flex-row justify-between items-center bg-charcoal/50 border border-gray-800 p-4 rounded-lg backdrop-blur-sm">
-                  <div>
-                    <h3 className="text-xl text-imperial-gold gothic-text tracking-widest text-shadow">
-                      {inventory.length} {inventory.length === 1 ? 'PIGMENT' : 'PIGMENTS'} ACQUIRED
-                    </h3>
-                  </div>
-                  <button 
-                    onClick={() => setIsAddModalOpen(true)}
-                    className="mt-4 sm:mt-0 py-2 px-6 bg-void-black border border-brass/50 text-brass hover:bg-brass/20 hover:border-brass rounded text-xs uppercase tracking-widest tech-text transition-all shadow-[0_0_10px_rgba(184,134,11,0.1)]"
-                  >
-                    + ADD PAINT
-                  </button>
-                </div>
 
                 {/* Filters */}
                 {inventory.length > 0 && (

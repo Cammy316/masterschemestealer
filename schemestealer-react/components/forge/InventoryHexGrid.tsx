@@ -66,6 +66,41 @@ function generateHexSpiral(count: number) {
   return results;
 }
 
+function ScrambleString({ text }: { text: string }) {
+  const [displayText, setDisplayText] = useState(text);
+  const [isScrambling, setIsScrambling] = useState(true);
+
+  useEffect(() => {
+    setIsScrambling(true);
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+    let iteration = 0;
+    const maxIterations = 6; // Fast scramble (300ms total)
+    
+    const interval = setInterval(() => {
+      let result = "";
+      for (let i = 0; i < text.length; i++) {
+        if (text[i] === " ") {
+          result += " ";
+        } else {
+          result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+      }
+      setDisplayText(result);
+      iteration++;
+      
+      if (iteration >= maxIterations) {
+        clearInterval(interval);
+        setDisplayText(text);
+        setIsScrambling(false);
+      }
+    }, 50);
+    
+    return () => clearInterval(interval);
+  }, [text]);
+
+  return <span className={isScrambling ? 'font-mono tracking-tighter' : ''}>{displayText}</span>;
+}
+
 function StatsOverlay({ count, isAnimating }: { count: number, isAnimating: boolean }) {
   const [displayText, setDisplayText] = useState(`${count} PIGMENTS`);
 
@@ -167,7 +202,10 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
         minScale={0.2}
         maxScale={2.5}
         centerOnInit={true}
-        wheel={{ step: 0.04 }}
+        wheel={{ step: 0.5, smoothStep: 0.005, disabled: inventory.length === 0 }}
+        panning={{ disabled: inventory.length === 0 }}
+        pinch={{ disabled: inventory.length === 0 }}
+        doubleClick={{ disabled: inventory.length === 0 }}
       >
         {({ zoomIn, zoomOut, resetTransform }) => (
           <>
@@ -276,17 +314,17 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
                       initial={{ opacity: 0, y: 10, scale: 0.9 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.9 }}
-                      className="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-charcoal/95 border border-gray-700 p-2 rounded shadow-xl whitespace-nowrap z-50 flex flex-col items-center pointer-events-auto"
+                      className="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-black/90 border border-green-900/50 p-3 rounded shadow-[0_0_15px_rgba(34,197,94,0.15)] whitespace-nowrap z-50 flex flex-col items-center pointer-events-auto backdrop-blur-sm min-w-[120px]"
                     >
-                      <div className="font-bold text-white text-xs uppercase tracking-wider">{node.paint.name}</div>
-                      <div className="text-[9px] text-brass uppercase tracking-widest">{node.paint.brand}</div>
+                      <div className="font-bold text-green-400 text-xs uppercase tracking-wider drop-shadow-[0_0_8px_rgba(74,222,128,0.8)]"><ScrambleString text={node.paint.name} /></div>
+                      <div className="text-[10px] text-green-600 uppercase tracking-widest mt-0.5"><ScrambleString text={node.paint.brand} /></div>
                       
                       {onRemovePaint && (
                         <button 
                           onClick={(e) => { e.stopPropagation(); onRemovePaint(`${node.paint.brand}-${node.paint.name}`); }}
-                          className="mt-2 text-[9px] text-red-500 hover:text-red-400 uppercase tracking-widest border-t border-gray-800 w-full pt-1"
+                          className="mt-3 bg-red-950/40 border border-red-900/50 hover:bg-red-900/60 hover:border-red-500 text-[10px] text-red-500 hover:text-red-400 uppercase tracking-widest w-full py-1.5 px-4 rounded transition-colors shadow-[0_0_10px_rgba(220,38,38,0.1)]"
                         >
-                          Remove
+                          REMOVE
                         </button>
                       )}
                     </motion.div>
@@ -300,10 +338,10 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
                        initial={{ opacity: 0, y: 10, scale: 0.9 }}
                        animate={{ opacity: 1, y: 0, scale: 1 }}
                        exit={{ opacity: 0, scale: 0.9 }}
-                       className="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-charcoal/95 border border-gray-700 p-2 rounded shadow-xl whitespace-nowrap z-50 flex flex-col items-center pointer-events-none"
+                       className="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-black/90 border border-green-900/50 p-2 rounded shadow-[0_0_15px_rgba(34,197,94,0.15)] whitespace-nowrap z-50 flex flex-col items-center pointer-events-none backdrop-blur-sm"
                      >
-                       <div className="font-bold text-gray-400 text-xs uppercase tracking-wider">Unowned Pattern</div>
-                       <div className="text-[9px] text-imperial-gold/70 uppercase tracking-widest">Tap to Scan/Add</div>
+                       <div className="font-bold text-green-400/70 text-[10px] uppercase tracking-wider"><ScrambleString text="UNOWNED PATTERN" /></div>
+                       <div className="text-[9px] text-green-600 uppercase tracking-widest mt-1"><ScrambleString text="TAP TO SCAN" /></div>
                      </motion.div>
                   )}
                 </AnimatePresence>
@@ -331,6 +369,16 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
       {inventory.length > 0 && (
         <StatsOverlay count={inventory.length} isAnimating={pendingAnimationIds.length > 0} />
       )}
+
+      {/* Floating Add Paint Button (Forge Theme) */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20">
+        <button 
+          onClick={onAddPaint}
+          className="py-2.5 px-8 bg-void-black/90 border border-brass/50 hover:bg-brass/20 hover:border-brass text-imperial-gold hover:text-white rounded text-xs uppercase tracking-widest tech-text transition-all shadow-[0_0_15px_rgba(184,134,11,0.2)] backdrop-blur-sm"
+        >
+          + ADD PAINT
+        </button>
+      </div>
     </div>
   );
 }
