@@ -126,7 +126,10 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
         {({ zoomIn, zoomOut, resetTransform }) => (
           <>
             <TransformComponent wrapperStyle={{ width: "100%", height: "100%", cursor: "grab" }}>
-              <div style={{ width: 3000, height: 3000, position: 'relative' }}>
+              <div 
+                style={{ width: 3000, height: 3000, position: 'relative' }}
+                onClick={() => setSelectedPaintId(null)}
+              >
                 
                 {inventory.length === 0 && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center z-10 p-6 text-center backdrop-blur-sm bg-black/40">
@@ -176,16 +179,22 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
                   height: hexSize * 2,
                   transform: 'translate(-50%, -50%)' // center on coordinate
                 }}
-                onClick={() => node.isOwned ? setSelectedPaintId(isSelected ? null : paintId) : onAddPaint()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  node.isOwned ? setSelectedPaintId(isSelected ? null : paintId) : onAddPaint();
+                }}
               >
                 {/* The Hexagon */}
                 <div 
-                  className={`w-[92%] h-[92%] relative transition-all duration-300 ${node.isOwned ? 'hover:scale-105' : 'hover:opacity-50 border border-dashed border-gray-500'}`}
+                  className={`w-[92%] h-[92%] relative transition-all duration-300 ${
+                    node.isOwned 
+                      ? isSelected ? 'brightness-125 scale-105' : 'brightness-100 hover:brightness-[1.5] hover:scale-110' 
+                      : 'grayscale hover:opacity-50 border border-dashed border-gray-500'
+                  }`}
                   style={{ 
                     clipPath: hexClipPath, 
                     backgroundColor: node.paint.hex,
                     boxShadow: node.isOwned ? 'inset 0 4px 10px rgba(255,255,255,0.3), inset 0 -4px 10px rgba(0,0,0,0.6)' : 'none',
-                    filter: node.isOwned ? (isSelected ? 'brightness(1.2)' : 'brightness(1)') : 'grayscale(100%)',
                     opacity: node.isOwned ? 1 : node.ghostOpacity
                   }}
                 >

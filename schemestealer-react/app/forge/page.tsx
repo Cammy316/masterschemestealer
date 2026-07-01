@@ -88,6 +88,7 @@ export default function ForgePage() {
   const [filterBrand, setFilterBrand] = useState('ALL');
   const [filterColor, setFilterColor] = useState('ALL');
   const [lastAddedId, setLastAddedId] = useState<string | null>(null);
+  const [newlyAddedQueue, setNewlyAddedQueue] = useState<string[]>([]);
   
   const cart = useAppStore((state) => state.cart);
   const inventory = useAppStore((state) => state.inventory);
@@ -180,14 +181,26 @@ export default function ForgePage() {
 
 
 
+  const getPaintId = (p: Paint) => p.id || p.name.toLowerCase().replace(/\s+/g, '-');
+
   const handleAddPaint = (paint: Paint) => {
     addToInventory(paint);
-    setLastAddedId(getPaintId(paint));
-    setIsAddModalOpen(false);
-    
-    // Clear the flash effect after 1 second
-    setTimeout(() => setLastAddedId(null), 1000);
+    setNewlyAddedQueue(prev => [...prev, getPaintId(paint)]);
   };
+
+  React.useEffect(() => {
+    if (!isAddModalOpen && newlyAddedQueue.length > 0) {
+      let delay = 0;
+      newlyAddedQueue.forEach((id) => {
+        setTimeout(() => {
+          setLastAddedId(id);
+          setTimeout(() => setLastAddedId(null), 800);
+        }, delay);
+        delay += 600;
+      });
+      setNewlyAddedQueue([]);
+    }
+  }, [isAddModalOpen, newlyAddedQueue]);
 
   return (
     <div className="min-h-screen bg-void-black text-white pb-24 pt-8 px-4 relative overflow-hidden">
@@ -609,7 +622,8 @@ export default function ForgePage() {
       {/* MANUAL ADD MODAL */}
       <AddPaintModal 
         isOpen={isAddModalOpen} 
-        onClose={() => setIsAddModalOpen(false)} 
+        onClose={() => setIsAddModalOpen(false)}
+        onAddPaint={handleAddPaint}
       />
     </div>
   );
