@@ -6,6 +6,7 @@ import { ShoppingCart } from '@/components/ShoppingCart';
 import { BrandSelector, type PaintBrand } from '@/components/BrandSelector';
 import { RegionSelector, type Region } from '@/components/RegionSelector';
 import { ForgeBackground } from '@/components/ForgeBackground';
+import AddPaintModal from '@/components/forge/AddPaintModal';
 import { useAppStore } from '@/lib/store';
 import type { Paint } from '@/lib/types';
 import { getPaintId } from '@/lib/utils';
@@ -282,11 +283,12 @@ export default function ForgePage() {
                   <motion.div 
                     className="absolute top-[-50%] bottom-[-50%] w-[50%] bg-gradient-to-r from-transparent via-white/5 to-transparent -rotate-45 pointer-events-none z-30"
                     animate={{ 
-                      left: ['-150%', '300%'],
+                      x: ['-300%', '600%'],
                       opacity: [0, 1, 1, 0] 
                     }}
                     transition={{ 
                       duration: 3, 
+                      delay: 15,
                       repeat: Infinity, 
                       repeatDelay: 60, 
                       ease: "linear",
@@ -727,67 +729,10 @@ export default function ForgePage() {
       </div>
 
       {/* MANUAL ADD MODAL */}
-      <AnimatePresence>
-        {isAddModalOpen && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0, transition: { duration: 0.1 } }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-void-black/80 backdrop-blur-sm"
-          >
-            <motion.div 
-              initial={{ scale: 0.95, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: 20, transition: { duration: 0.1 } }}
-              className="w-full max-w-md bg-charcoal border border-brass rounded-lg overflow-hidden shadow-[0_0_30px_rgba(184,134,11,0.15)]"
-            >
-              <div className="p-4 border-b border-gray-800 flex justify-between items-center bg-void-black">
-                <h3 className="text-brass gothic-text tracking-widest">LOG NEW PAINT</h3>
-                <button onClick={() => setIsAddModalOpen(false)} className="text-gray-500 hover:text-white">✕</button>
-              </div>
-              
-              <div className="p-4 max-h-[60vh] overflow-y-auto space-y-2">
-                {DEV_TEST_PAINTS.map((paint) => {
-                  const id = getPaintId(paint);
-                  const isOwned = inventory.some(p => getPaintId(p) === id);
-                  return (
-                    <button
-                      key={id}
-                      disabled={isOwned}
-                      onClick={() => handleAddPaint(paint)}
-                      className={`w-full flex items-center p-3 rounded border transition-all ${
-                        isOwned 
-                          ? 'border-gray-800 bg-void-black opacity-50 cursor-not-allowed' 
-                          : 'border-gray-700 bg-void-black/50 hover:border-brass hover:bg-charcoal group'
-                      }`}
-                    >
-                      <div 
-                        className="w-8 h-8 rounded-full border border-gray-600 mr-4 flex-shrink-0"
-                        style={{ backgroundColor: paint.hex }}
-                      />
-                      <div className="text-left flex-1 min-w-0">
-                        <div className={`font-bold truncate ${isOwned ? 'text-gray-500' : 'text-white group-hover:text-brass'}`}>
-                          {paint.name}
-                        </div>
-                        <div className="text-[10px] text-gray-500 uppercase tracking-widest tech-text truncate">
-                          {paint.brand}
-                        </div>
-                      </div>
-                      <div>
-                        {isOwned ? (
-                           <span className="text-xs text-gray-600 font-bold uppercase tracking-widest">Owned</span>
-                        ) : (
-                           <span className="text-xs text-gray-400 group-hover:text-brass">ADD +</span>
-                        )}
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <AddPaintModal 
+        isOpen={isAddModalOpen} 
+        onClose={() => setIsAddModalOpen(false)} 
+      />
     </div>
   );
 }
