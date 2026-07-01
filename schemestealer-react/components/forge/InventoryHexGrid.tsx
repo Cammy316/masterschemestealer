@@ -136,8 +136,8 @@ function StatsOverlay({ count, isAnimating }: { count: number, isAnimating: bool
   }, [isAnimating, count]);
 
   return (
-    <div className="absolute top-4 left-4 bg-black/80 border border-green-900/50 backdrop-blur-sm px-4 py-2 rounded flex flex-col z-20 pointer-events-none min-w-[140px] items-start shadow-[0_0_15px_rgba(34,197,94,0.15)]">
-      <span className={`text-sm tracking-widest uppercase transition-colors duration-200 text-green-400 drop-shadow-[0_0_8px_rgba(74,222,128,0.8)] ${isAnimating ? 'font-mono font-bold' : 'cyber-text'}`}>
+    <div className="absolute top-4 left-4 bg-charcoal/80 border border-brass/50 backdrop-blur-sm px-4 py-2 rounded-sm flex flex-col z-20 pointer-events-none min-w-[140px] items-start shadow-[0_0_15px_rgba(184,134,11,0.15)]">
+      <span className={`text-sm tracking-widest uppercase transition-colors duration-200 text-imperial-gold drop-shadow-[0_0_8px_rgba(184,134,11,0.6)] ${isAnimating ? 'font-mono font-bold' : 'cyber-text'}`}>
         {displayText}
       </span>
     </div>
@@ -204,7 +204,7 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
   const hexClipPath = "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)";
 
   return (
-    <div className="relative w-full bg-[#0a0a0a] rounded-lg border border-gray-800/60 overflow-hidden shadow-inner mt-4" style={{ height: containerHeight }}>
+    <div className="relative w-full bg-[#050505] border-[6px] border-charcoal/90 outline outline-1 outline-brass/40 rounded-sm overflow-hidden shadow-[inset_0_0_80px_rgba(0,0,0,0.95)] mt-4 ring-1 ring-inset ring-brass/20" style={{ height: containerHeight }}>
       {/* Ad-Mech / Tech Background Overlay */}
       <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(184, 134, 11, 0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(184, 134, 11, 0.15) 1px, transparent 1px)', backgroundSize: '38px 38px', backgroundPosition: '50% 50%' }} />
       {/* CRT Scanlines */}
@@ -328,10 +328,10 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
                       initial={{ opacity: 0, y: 10, scale: 0.9 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.9 }}
-                      className="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-black/90 border border-green-900/50 p-3 rounded shadow-[0_0_15px_rgba(34,197,94,0.15)] whitespace-nowrap z-50 flex flex-col items-center pointer-events-auto backdrop-blur-sm min-w-[120px]"
+                      className="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-charcoal/95 border border-brass/50 p-3 rounded-sm shadow-[0_0_15px_rgba(184,134,11,0.15)] whitespace-nowrap z-50 flex flex-col items-center pointer-events-auto backdrop-blur-sm min-w-[120px]"
                     >
-                      <div className="font-bold text-green-400 text-xs uppercase tracking-wider drop-shadow-[0_0_8px_rgba(74,222,128,0.8)]"><ScrambleString text={node.paint.name} /></div>
-                      <div className="text-[10px] text-green-600 uppercase tracking-widest mt-0.5"><ScrambleString text={node.paint.brand} /></div>
+                      <div className="font-bold text-imperial-gold text-xs uppercase tracking-wider drop-shadow-[0_0_8px_rgba(184,134,11,0.6)]"><ScrambleString text={node.paint.name} /></div>
+                      <div className="text-[10px] text-brass uppercase tracking-widest mt-0.5"><ScrambleString text={node.paint.brand} /></div>
                       
                       {onRemovePaint && (
                         <button 
@@ -352,10 +352,10 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
                        initial={{ opacity: 0, y: 10, scale: 0.9 }}
                        animate={{ opacity: 1, y: 0, scale: 1 }}
                        exit={{ opacity: 0, scale: 0.9 }}
-                       className="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-black/90 border border-green-900/50 p-2 rounded shadow-[0_0_15px_rgba(34,197,94,0.15)] whitespace-nowrap z-50 flex flex-col items-center pointer-events-none backdrop-blur-sm"
+                       className="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-charcoal/95 border border-gray-700/80 p-2 rounded-sm shadow-[0_0_15px_rgba(0,0,0,0.5)] whitespace-nowrap z-50 flex flex-col items-center pointer-events-none backdrop-blur-sm"
                      >
-                       <div className="font-bold text-green-400/70 text-[10px] uppercase tracking-wider"><ScrambleString text="UNOWNED PATTERN" /></div>
-                       <div className="text-[9px] text-green-600 uppercase tracking-widest mt-1"><ScrambleString text="TAP TO SCAN" /></div>
+                       <div className="font-bold text-gray-400 text-[10px] uppercase tracking-wider"><ScrambleString text="UNOWNED PATTERN" /></div>
+                       <div className="text-[9px] text-brass/70 uppercase tracking-widest mt-1"><ScrambleString text="TAP TO SCAN" /></div>
                      </motion.div>
                   )}
                 </AnimatePresence>
