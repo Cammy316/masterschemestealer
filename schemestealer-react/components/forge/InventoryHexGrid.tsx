@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Paint } from '@/lib/types';
 import paintsData from '@/lib/data/paints_groundtruth.json';
@@ -64,6 +64,35 @@ function generateHexSpiral(count: number) {
     radius++;
   }
   return results;
+}
+
+function StatsOverlay({ count, isAnimating }: { count: number, isAnimating: boolean }) {
+  const [displayText, setDisplayText] = useState(`${count} PIGMENTS`);
+
+  useEffect(() => {
+    if (isAnimating) {
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+      const interval = setInterval(() => {
+        let result = "";
+        const len = 8 + Math.floor(Math.random() * 6);
+        for (let i = 0; i < len; i++) {
+          result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        setDisplayText(result);
+      }, 50);
+      return () => clearInterval(interval);
+    } else {
+      setDisplayText(`${count} PIGMENTS`);
+    }
+  }, [isAnimating, count]);
+
+  return (
+    <div className="absolute top-4 left-4 bg-black/60 border border-gray-800/50 backdrop-blur-sm px-3 py-1.5 rounded flex flex-col z-20 pointer-events-none min-w-[140px] items-start">
+      <span className={`text-sm tracking-widest uppercase transition-colors duration-200 ${isAnimating ? 'text-gray-400 font-mono' : 'text-imperial-gold cyber-text'}`}>
+        {displayText}
+      </span>
+    </div>
+  );
 }
 
 export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAddedId, pendingAnimationIds = [] }: InventoryHexGridProps) {
@@ -187,20 +216,28 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
                   node.isOwned ? setSelectedPaintId(isSelected ? null : paintId) : onAddPaint();
                 }}
               >
-                {/* The Hexagon */}
+                {/* The Hexagon Base (Acts as border for unowned) */}
                 <div 
                   className={`w-[92%] h-[92%] relative transition-all duration-300 ${
                     node.isOwned 
                       ? isSelected ? 'brightness-125 scale-105' : 'brightness-100 hover:brightness-[1.5] hover:scale-110' 
-                      : 'grayscale'
+                      : 'bg-gray-800/50 hover:bg-imperial-gold group-hover:drop-shadow-[0_0_8px_rgba(255,215,0,0.8)]'
                   }`}
                   style={{ 
                     clipPath: hexClipPath, 
-                    backgroundColor: node.paint.hex,
+                    backgroundColor: node.isOwned ? node.paint.hex : undefined,
                     boxShadow: node.isOwned ? 'inset 0 4px 10px rgba(255,255,255,0.3), inset 0 -4px 10px rgba(0,0,0,0.6)' : 'none',
                     opacity: node.isOwned ? 1 : node.ghostOpacity
                   }}
                 >
+                  {/* Inner Unowned Hexagon (Hides the center, revealing the outer div as a perfectly clipped border) */}
+                  {!node.isOwned && (
+                    <div 
+                      className="absolute inset-[1.5px] bg-[#0a0a0a] transition-all duration-300"
+                      style={{ clipPath: hexClipPath }}
+                    />
+                  )}
+
                   <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none mix-blend-overlay" />
                   
                   {/* Subtle shockwave pulse for new paints */}
@@ -210,24 +247,6 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
                       animate={{ opacity: [0, 0.8, 0] }}
                       transition={{ duration: 1, repeat: 2 }}
                     />
-                  )}
-                  
-                  {/* Glowing SVG border effect for unowned ghost hexes */}
-                  {!node.isOwned && (
-                    <svg 
-                      className="absolute inset-0 w-full h-full pointer-events-none transition-all duration-300 opacity-30 group-hover:opacity-100 group-hover:drop-shadow-[0_0_8px_rgba(255,215,0,0.8)]" 
-                      viewBox="0 0 100 100" 
-                      preserveAspectRatio="none"
-                    >
-                      <polygon 
-                        points="50,1 99,25 99,75 50,99 1,75 1,25" 
-                        fill="none" 
-                        stroke="currentColor" 
-                        className="text-gray-500 group-hover:text-imperial-gold transition-colors duration-300" 
-                        strokeWidth="2" 
-                        strokeDasharray="4 4" 
-                      />
-                    </svg>
                   )}
                   
                   {/* Subtle unowned icon */}
@@ -296,10 +315,7 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
 
       {/* Stats overlay */}
       {inventory.length > 0 && (
-        <div className="absolute top-4 left-4 bg-black/60 border border-gray-800/50 backdrop-blur-sm px-3 py-1.5 rounded flex flex-col z-20 pointer-events-none">
-          <span className="text-[10px] text-gray-500 uppercase tracking-widest">Hive Capacity</span>
-          <span className="text-sm text-imperial-gold cyber-text">{inventory.length} DATANODES</span>
-        </div>
+        <StatsOverlay count={inventory.length} isAnimating={pendingAnimationIds.length > 0} />
       )}
     </div>
   );
