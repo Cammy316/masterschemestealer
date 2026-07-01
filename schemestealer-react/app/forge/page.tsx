@@ -356,7 +356,7 @@ export default function ForgePage() {
                           </div>
                           
                           <div className="bg-black/60 w-[110%] px-1 py-0.5 mt-1 border-y border-gray-800/50 relative z-10">
-                            <div className="text-[9px] sm:text-[10px] font-bold text-center leading-tight truncate w-full uppercase tech-text text-white drop-shadow-md">
+                            <div className="text-[9px] sm:text-[10px] font-bold text-center leading-tight truncate w-full uppercase text-white drop-shadow-md">
                               {paint.name}
                             </div>
                             <div className="text-[7px] text-brass/90 truncate w-full text-center mt-0.5 drop-shadow-md">
@@ -532,7 +532,7 @@ export default function ForgePage() {
                 {/* 2. The Recipe Board */}
                 <div className="space-y-2">
                   <div className="flex justify-between items-end mb-2 px-1">
-                    <h3 className="text-sm text-brass gothic-text tracking-widest">ACTIVE INGREDIENTS</h3>
+                    <h3 className="text-sm text-imperial-gold/80 cyber-text tracking-[0.2em] drop-shadow-[0_0_8px_rgba(255,215,0,0.4)] uppercase">ACTIVE INGREDIENTS</h3>
                     {recipe.length > 0 && (
                       <button 
                         onClick={() => setRecipe([])} 
@@ -564,8 +564,8 @@ export default function ForgePage() {
                                 <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent pointer-events-none" />
                               </div>
                               <div className="truncate">
-                                <div className="text-[10px] font-bold text-white tech-text uppercase truncate">{ingredient.paint.name}</div>
-                                <div className="text-[8px] text-brass tech-text uppercase tracking-widest truncate">{ingredient.paint.brand}</div>
+                                <div className="text-[10px] font-bold text-white uppercase truncate">{ingredient.paint.name}</div>
+                                <div className="text-[8px] text-brass uppercase tracking-widest truncate">{ingredient.paint.brand}</div>
                               </div>
                             </div>
                             
@@ -614,7 +614,7 @@ export default function ForgePage() {
                 {/* 4. Top Brand Alternatives */}
                 {topMatches.length > 0 && (
                   <div className="pt-2">
-                    <h3 className="text-xs text-gray-500 tech-text tracking-widest uppercase mb-2 px-1">TOP BRAND ALTERNATIVES</h3>
+                    <h3 className="text-sm text-imperial-gold/80 cyber-text tracking-[0.2em] drop-shadow-[0_0_8px_rgba(255,215,0,0.4)] uppercase mb-2 px-1">TOP BRAND ALTERNATIVES</h3>
                     <div className="space-y-1.5">
                       {topMatches.map((match, idx) => (
                         <div key={idx} className="flex items-center gap-3 justify-between bg-[#111] p-1.5 rounded border border-gray-800/80 shadow-inner">
@@ -623,8 +623,8 @@ export default function ForgePage() {
                               <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent pointer-events-none" />
                             </div>
                             <div className="text-left truncate">
-                              <div className="text-[9px] font-bold text-white uppercase tech-text truncate">{match.name}</div>
-                              <div className="text-[8px] text-brass uppercase tracking-widest tech-text">{match.brand}</div>
+                              <div className="text-[9px] font-bold text-white uppercase truncate">{match.name}</div>
+                              <div className="text-[8px] text-brass uppercase tracking-widest">{match.brand}</div>
                             </div>
                           </div>
                           <div className="flex items-center gap-3 flex-shrink-0">
@@ -647,7 +647,7 @@ export default function ForgePage() {
                 {/* 3. The Injector (Inventory Selector) */}
                 <div className="pt-4 border-t border-gray-800/50">
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 px-1 gap-2">
-                    <h3 className="text-xs text-gray-500 tech-text tracking-widest uppercase">INJECT FROM INVENTORY</h3>
+                    <h3 className="text-sm text-imperial-gold/80 cyber-text tracking-[0.2em] drop-shadow-[0_0_8px_rgba(255,215,0,0.4)] uppercase">INVENTORY</h3>
                     
                     {filterableMixInventory.length > 0 && (
                       <div className="flex gap-2">
@@ -702,7 +702,7 @@ export default function ForgePage() {
                               )}
                             </div>
                             <div className="text-left max-w-[80px] sm:max-w-[100px]">
-                              <div className="text-[9px] font-bold text-white tech-text uppercase truncate">{paint.name}</div>
+                              <div className="text-[9px] font-bold text-white uppercase truncate">{paint.name}</div>
                             </div>
                           </button>
                         );
