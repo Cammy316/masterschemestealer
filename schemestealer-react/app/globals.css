@@ -914,3 +914,16 @@ h1, h2, h3, h4, h5, h6 {
 .shimmer-animation {
   animation: shimmer-slide 3s ease-in-out infinite;
 }
+
+/* ========================================
+   SCROLLBAR HIDE
+   ======================================== */
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}

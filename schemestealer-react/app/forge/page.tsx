@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart } from '@/components/ShoppingCart';
 import { BrandSelector, type PaintBrand } from '@/components/BrandSelector';
@@ -9,6 +9,7 @@ import { ForgeBackground } from '@/components/ForgeBackground';
 import AddPaintModal from '@/components/forge/AddPaintModal';
 import { InventoryHexGrid } from '@/components/forge/InventoryHexGrid';
 import { CustomDropdown } from '@/components/shared/CustomDropdown';
+import { InfoTooltip } from '@/components/shared/InfoTooltip';
 import { useAppStore } from '@/lib/store';
 import type { Paint } from '@/lib/types';
 import { getPaintId } from '@/lib/utils';
@@ -132,6 +133,29 @@ export default function ForgePage() {
   const [customName, setCustomName] = useState('');
   const [showPrimerToggle, setShowPrimerToggle] = useState(false);
   const [showSaveInput, setShowSaveInput] = useState(false);
+
+  const primerButtonRef = useRef<HTMLButtonElement>(null);
+  const primerPopoverRef = useRef<HTMLDivElement>(null);
+  const saveButtonRef = useRef<HTMLButtonElement>(null);
+  const savePopoverRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (showPrimerToggle && 
+          primerButtonRef.current && !primerButtonRef.current.contains(target) &&
+          primerPopoverRef.current && !primerPopoverRef.current.contains(target)) {
+        setShowPrimerToggle(false);
+      }
+      if (showSaveInput && 
+          saveButtonRef.current && !saveButtonRef.current.contains(target) &&
+          savePopoverRef.current && !savePopoverRef.current.contains(target)) {
+        setShowSaveInput(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showPrimerToggle, showSaveInput]);
   
   const [mixFilterBrand, setMixFilterBrand] = useState('ALL');
   const [mixFilterColor, setMixFilterColor] = useState('ALL');
@@ -250,22 +274,36 @@ export default function ForgePage() {
              <motion.div key="inventory" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="mt-8 space-y-6">
                 
 
-                {/* Filters */}
-                {inventory.length > 0 && (
-                  <div className="flex gap-2 relative z-50">
-                    <CustomDropdown 
-                      value={filterBrand}
-                      options={dynamicBrandFilters}
-                      onChange={setFilterBrand}
-                    />
-                    <CustomDropdown 
-                      value={filterColor}
-                      options={dynamicColorFilters}
-                      onChange={setFilterColor}
-                      formatOption={(val) => val === 'ALL' ? 'ALL COLORS' : val}
-                    />
-                  </div>
-                )}
+                {/* Filters and Tooltip */}
+                <div className="flex justify-between items-center relative z-50">
+                  {inventory.length > 0 ? (
+                    <div className="flex gap-2">
+                      <CustomDropdown 
+                        value={filterBrand}
+                        options={dynamicBrandFilters}
+                        onChange={setFilterBrand}
+                      />
+                      <CustomDropdown 
+                        value={filterColor}
+                        options={dynamicColorFilters}
+                        onChange={setFilterColor}
+                        formatOption={(val) => val === 'ALL' ? 'ALL COLORS' : val}
+                      />
+                    </div>
+                  ) : <div />}
+                  <InfoTooltip 
+                    position="left"
+                    text={
+                      <div className="space-y-1.5">
+                        <strong className="text-imperial-gold block mb-1">COLLECTION BENEFITS:</strong>
+                        <ul className="list-disc pl-3 space-y-0.5 text-gray-400">
+                          <li><span className="text-gray-300">Miniscan</span> prioritises matches to colours you own.</li>
+                          <li><span className="text-gray-300">Forge Mix</span> unlocks custom mixing from your library.</li>
+                        </ul>
+                      </div>
+                    } 
+                  />
+                </div>
 
                 {/* Gamified Silhouette Grid */}
                 <div className="relative overflow-hidden p-1 -m-1">
@@ -289,17 +327,35 @@ export default function ForgePage() {
                   <div className="absolute inset-0 opacity-40 mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, #000 2px, #000 4px)' }} />
                   
                   {/* Action Icons (Floating left and right) */}
+                  <div className="absolute bottom-4 right-4 z-20 pointer-events-auto">
+                    <InfoTooltip 
+                      position="left"
+                      text={
+                        <div className="space-y-1.5">
+                          <strong className="text-imperial-gold block mb-1">HOW TO MIX:</strong>
+                          <ul className="list-disc pl-3 space-y-0.5 text-gray-400">
+                            <li><span className="text-gray-300">Select paints</span> from your Inventory below.</li>
+                            <li><span className="text-gray-300">Adjust ratios</span> and toggle basecoats.</li>
+                            <li><span className="text-gray-300">Preview</span> the final colour before using real paint.</li>
+                          </ul>
+                        </div>
+                      } 
+                    />
+                  </div>
+
                   {recipe.length > 0 && (
                     <>
                       <button 
+                        ref={primerButtonRef}
                         onClick={() => { setShowPrimerToggle(!showPrimerToggle); setShowSaveInput(false); }}
-                        className={`absolute top-6 left-6 w-10 h-10 rounded-full flex items-center justify-center transition-all z-20 ${showPrimerToggle ? 'bg-brass text-void-black' : 'bg-charcoal border border-gray-700 text-gray-400 hover:text-white'}`}
+                        className={`absolute top-4 left-4 w-10 h-10 rounded-sm flex items-center justify-center transition-all z-20 border-y-2 border-x border-b-gray-900 border-t-gray-600 border-x-gray-800 shadow-[inset_0_0_10px_rgba(0,0,0,0.8)] active:scale-95 ${showPrimerToggle ? 'bg-brass/20 border-brass/50 text-imperial-gold drop-shadow-[0_0_4px_rgba(184,134,11,0.5)]' : 'bg-black/80 text-gray-500 hover:text-imperial-gold hover:bg-charcoal'}`}
                       >
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
                       </button>
                       <button 
+                        ref={saveButtonRef}
                         onClick={() => { setShowSaveInput(!showSaveInput); setShowPrimerToggle(false); }}
-                        className={`absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center transition-all z-20 ${showSaveInput ? 'bg-brass text-void-black' : 'bg-charcoal border border-gray-700 text-gray-400 hover:text-white'}`}
+                        className={`absolute top-4 right-4 w-10 h-10 rounded-sm flex items-center justify-center transition-all z-20 border-y-2 border-x border-b-gray-900 border-t-gray-600 border-x-gray-800 shadow-[inset_0_0_10px_rgba(0,0,0,0.8)] active:scale-95 ${showSaveInput ? 'bg-brass/20 border-brass/50 text-imperial-gold drop-shadow-[0_0_4px_rgba(184,134,11,0.5)]' : 'bg-black/80 text-gray-500 hover:text-imperial-gold hover:bg-charcoal'}`}
                       >
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                       </button>
@@ -310,6 +366,7 @@ export default function ForgePage() {
                   <AnimatePresence>
                     {showPrimerToggle && recipe.length > 0 && (
                       <motion.div 
+                        ref={primerPopoverRef}
                         initial={{ opacity: 0, scale: 0.9, y: -10 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.9, y: -10 }}
@@ -327,7 +384,7 @@ export default function ForgePage() {
                             <button
                               key={p.id}
                               onClick={() => setPrimer(p.id as any)}
-                              className={`flex flex-col items-center gap-1 opacity-80 hover:opacity-100 transition-opacity ${primer === p.id ? 'opacity-100' : ''}`}
+                              className={`flex flex-col items-center gap-1 opacity-80 hover:opacity-100 active:scale-95 transition-all ${primer === p.id ? 'opacity-100' : ''}`}
                             >
                               <div className={`w-6 h-6 rounded-full border ${primer === p.id ? 'border-brass scale-110' : 'border-gray-600'} transition-transform`} style={{ backgroundColor: p.color, ...(p.id === 'none' && { backgroundImage: 'repeating-linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333), repeating-linear-gradient(45deg, #333 25%, #222 25%, #222 75%, #333 75%, #333)', backgroundPosition: '0 0, 4px 4px', backgroundSize: '8px 8px' }) }} />
                               <span className={`text-[8px] uppercase tracking-widest ${primer === p.id ? 'text-brass' : 'text-gray-500'}`}>{p.label}</span>
@@ -339,6 +396,7 @@ export default function ForgePage() {
 
                     {showSaveInput && recipe.length > 0 && (
                       <motion.div 
+                        ref={savePopoverRef}
                         initial={{ opacity: 0, scale: 0.9, y: -10 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.9, y: -10 }}
@@ -350,7 +408,7 @@ export default function ForgePage() {
                             value={customName}
                             onChange={(e) => setCustomName(e.target.value)}
                             placeholder="Name your mix..."
-                            className="flex-1 bg-charcoal border border-gray-700 rounded px-2 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brass transition-colors min-w-0"
+                            className="flex-1 bg-[#050505] border border-gray-800 rounded-sm px-2 py-1.5 text-xs text-imperial-gold placeholder-gray-600 focus:outline-none focus:border-brass/50 transition-colors min-w-0 shadow-inner"
                           />
                           <button
                             disabled={!customName.trim()}
@@ -362,7 +420,7 @@ export default function ForgePage() {
                               setLastAddedId(newId);
                               setTimeout(() => setLastAddedId(null), 1000);
                             }}
-                            className="px-3 bg-brass text-void-black text-[10px] font-bold tracking-widest uppercase rounded hover:bg-imperial-gold disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            className="px-4 bg-[#050505] text-imperial-gold text-[10px] font-bold tracking-widest uppercase rounded-sm border border-brass/30 hover:bg-brass/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-[inset_0_0_10px_rgba(0,0,0,0.8)] flex-shrink-0 active:scale-95"
                           >
                             SAVE
                           </button>
@@ -379,7 +437,7 @@ export default function ForgePage() {
                         className="absolute inset-[-15%] w-[130%] h-[130%] pointer-events-none opacity-50 drop-shadow-[0_0_4px_rgba(184,134,11,0.5)]"
                         viewBox="0 0 100 100"
                         animate={{ rotate: 360 }}
-                        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                        transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
                       >
                         <circle cx="50" cy="50" r="48" fill="none" stroke="var(--imperial-gold)" strokeWidth="1" strokeDasharray="4 8" />
                         <circle cx="50" cy="50" r="44" fill="none" stroke="var(--brass)" strokeWidth="0.5" strokeDasharray="10 5 2 5" />
