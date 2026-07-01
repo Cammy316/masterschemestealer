@@ -11,6 +11,7 @@ interface InventoryHexGridProps {
   onAddPaint: () => void;
   onRemovePaint?: (paintId: string) => void;
   lastAddedId?: string | null;
+  pendingAnimationIds?: string[];
 }
 
 // Convert ground truth format to internal
@@ -65,7 +66,7 @@ function generateHexSpiral(count: number) {
   return results;
 }
 
-export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAddedId }: InventoryHexGridProps) {
+export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAddedId, pendingAnimationIds = [] }: InventoryHexGridProps) {
   const [selectedPaintId, setSelectedPaintId] = useState<string | null>(null);
 
   // 1. Sort owned paints by Hue
@@ -89,11 +90,13 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
 
   // Map paints to coordinates
   const renderNodes = useMemo(() => {
-    const nodes = [];
-    // Place owned paints in center
-    for (let i = 0; i < ownedSorted.length; i++) {
-      nodes.push({ paint: ownedSorted[i], coord: coords[i], isOwned: true });
-    }
+    // 2. Map to coords
+    const nodes: HexNode[] = [];
+    ownedSorted.forEach((paint, i) => {
+      const paintId = paint.id || paint.name.toLowerCase().replace(/\s+/g, '-');
+      const isPending = pendingAnimationIds.includes(paintId);
+      nodes.push({ coord: coords[i], paint, isOwned: !isPending, ghostOpacity: isPending ? 0.3 : undefined });
+    });
     // Place ghost paints on the rim
     for (let i = 0; i < ghostPaints.length; i++) {
       // Fade out as they get further away from the center
@@ -101,7 +104,7 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
       nodes.push({ paint: ghostPaints[i], coord: coords[ownedSorted.length + i], isOwned: false, ghostOpacity });
     }
     return nodes;
-  }, [ownedSorted, ghostPaints, coords]);
+  }, [ownedSorted, ghostPaints, coords, pendingAnimationIds]);
 
   // Fixed container height for the "Radar Window" view
   const containerHeight = 450;

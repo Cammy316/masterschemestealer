@@ -89,6 +89,7 @@ export default function ForgePage() {
   const [filterColor, setFilterColor] = useState('ALL');
   const [lastAddedId, setLastAddedId] = useState<string | null>(null);
   const [newlyAddedQueue, setNewlyAddedQueue] = useState<string[]>([]);
+  const [pendingAnimationIds, setPendingAnimationIds] = useState<string[]>([]);
   
   const cart = useAppStore((state) => state.cart);
   const inventory = useAppStore((state) => state.inventory);
@@ -185,20 +186,26 @@ export default function ForgePage() {
 
   const handleAddPaint = (paint: Paint) => {
     addToInventory(paint);
-    setNewlyAddedQueue(prev => [...prev, getPaintId(paint)]);
+    const pid = getPaintId(paint);
+    setNewlyAddedQueue(prev => [...prev, pid]);
+    setPendingAnimationIds(prev => [...prev, pid]);
   };
 
   React.useEffect(() => {
     if (!isAddModalOpen && newlyAddedQueue.length > 0) {
+      const idsToAnimate = [...newlyAddedQueue];
+      setNewlyAddedQueue([]); // Clear immediately so effect doesn't re-run
+
       let delay = 0;
-      newlyAddedQueue.forEach((id) => {
+      idsToAnimate.forEach((id) => {
         setTimeout(() => {
+          // Un-ghost the node just before animating
+          setPendingAnimationIds(prev => prev.filter(p => p !== id));
           setLastAddedId(id);
           setTimeout(() => setLastAddedId(null), 800);
         }, delay);
         delay += 600;
       });
-      setNewlyAddedQueue([]);
     }
   }, [isAddModalOpen, newlyAddedQueue]);
 
@@ -283,6 +290,7 @@ export default function ForgePage() {
                     onAddPaint={() => setIsAddModalOpen(true)}
                     onRemovePaint={removeFromInventory}
                     lastAddedId={lastAddedId}
+                    pendingAnimationIds={pendingAnimationIds}
                   />
                 </div>
 
