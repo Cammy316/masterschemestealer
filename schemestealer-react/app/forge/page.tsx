@@ -7,6 +7,7 @@ import { BrandSelector, type PaintBrand } from '@/components/BrandSelector';
 import { RegionSelector, type Region } from '@/components/RegionSelector';
 import { ForgeBackground } from '@/components/ForgeBackground';
 import AddPaintModal from '@/components/forge/AddPaintModal';
+import { InventoryHexGrid } from '@/components/forge/InventoryHexGrid';
 import { useAppStore } from '@/lib/store';
 import type { Paint } from '@/lib/types';
 import { getPaintId } from '@/lib/utils';
@@ -166,36 +167,7 @@ export default function ForgePage() {
     return simulateBasecoat(mixedHex, primer);
   }, [mixedHex, primer, recipe.length]);
 
-  const totalSlots = 60;
-  const lockedSlotsCount = Math.max(0, totalSlots - filteredInventory.length);
-  
-  // Pre-generate random properties for locked slots so they don't change on re-render
-  // We use a look-back strategy to prevent duplicate icons horizontally and vertically 
-  // across all responsive grid column sizes (4, 5, 6, and 8).
-  const [lockedSlots] = useState(() => {
-    const slots: { iconIndex: number; bgPosition: string }[] = [];
-    for (let i = 0; i < totalSlots; i++) {
-      let iconIndex = 0;
-      let isValid = false;
-      
-      while (!isValid) {
-        iconIndex = Math.floor(Math.random() * WIREFRAME_ICONS.length);
-        isValid = true;
-        
-        if (i > 0 && slots[i - 1].iconIndex === iconIndex) isValid = false;
-        if (i >= 4 && slots[i - 4].iconIndex === iconIndex) isValid = false;
-        if (i >= 5 && slots[i - 5].iconIndex === iconIndex) isValid = false;
-        if (i >= 6 && slots[i - 6].iconIndex === iconIndex) isValid = false;
-        if (i >= 8 && slots[i - 8].iconIndex === iconIndex) isValid = false;
-      }
-      
-      slots.push({
-        iconIndex,
-        bgPosition: `${Math.floor(Math.random() * 100)}% ${Math.floor(Math.random() * 100)}%`,
-      });
-    }
-    return slots;
-  });
+
 
   const handleAddPaint = (paint: Paint) => {
     addToInventory(paint);
@@ -279,120 +251,11 @@ export default function ForgePage() {
 
                 {/* Gamified Silhouette Grid */}
                 <div className="relative overflow-hidden p-1 -m-1">
-                  {/* Shimmer Sweep Animation */}
-                  <motion.div 
-                    className="absolute top-[-50%] bottom-[-50%] w-[50%] bg-gradient-to-r from-transparent via-white/5 to-transparent -rotate-45 pointer-events-none z-30"
-                    animate={{ 
-                      x: ['-300%', '600%'],
-                      opacity: [0, 1, 1, 0] 
-                    }}
-                    transition={{ 
-                      duration: 3, 
-                      delay: 15,
-                      repeat: Infinity, 
-                      repeatDelay: 60, 
-                      ease: "linear",
-                      times: [0, 0.1, 0.9, 1]
-                    }}
+                  <InventoryHexGrid 
+                    inventory={filteredInventory}
+                    onAddPaint={() => setIsAddModalOpen(true)}
+                    onRemovePaint={removeFromInventory}
                   />
-
-                  <motion.div 
-                    className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-3 relative"
-                    animate={lastAddedId ? { y: [0, 8, -6, 4, -2, 0] } : { y: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <AnimatePresence>
-                    {/* UNLOCKED PAINTS */}
-                    {filteredInventory.map((paint) => {
-                      const id = getPaintId(paint);
-                      const isNew = lastAddedId === id;
-                      
-                      return (
-                        <motion.div 
-                          key={id}
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: isNew ? [1.4, 0.9, 1.05, 1] : 1 }}
-                          transition={{ duration: isNew ? 0.5 : 0.3, ease: isNew ? "easeOut" : "easeInOut" }}
-                          exit={{ opacity: 0, scale: 0.8 }}
-                          className="aspect-square rounded-lg border-2 border-brass bg-charcoal/90 flex flex-col items-center justify-center p-2 relative overflow-hidden group shadow-[0_4px_15px_rgba(0,0,0,0.5)]"
-                        >
-                          {/* ✕ Remove Button */}
-                          <button 
-                            onClick={(e) => { e.stopPropagation(); removeFromInventory(id); }}
-                            className="absolute top-1 right-1 w-5 h-5 bg-red-900/80 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-[10px] z-20 hover:bg-red-600"
-                          >
-                            ✕
-                          </button>
-
-                          {/* Flash overlay and shockwave for newly added paint */}
-                          {isNew && (
-                            <>
-                              <motion.div 
-                                className="absolute inset-0 z-10 mix-blend-screen"
-                                style={{ backgroundColor: paint.hex }}
-                                animate={{ opacity: [1, 0] }}
-                                transition={{ duration: 0.8, ease: "easeOut" }}
-                              />
-                              <motion.div 
-                                className="absolute inset-0 z-0 rounded-lg border-4"
-                                style={{ borderColor: paint.hex }}
-                                animate={{ scale: [1, 1.8], opacity: [1, 0] }}
-                                transition={{ duration: 0.5, ease: "easeOut" }}
-                              />
-                            </>
-                          )}
-
-                          {/* 3D Hexagon Paint Swatch */}
-                          <div 
-                            className="w-10 h-11 mb-2 relative z-10 flex items-center justify-center drop-shadow-md"
-                            style={{
-                              clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
-                              backgroundColor: paint.hex,
-                              boxShadow: 'inset 0 4px 6px rgba(255,255,255,0.3), inset 0 -4px 6px rgba(0,0,0,0.4)'
-                            }}
-                          >
-                             {/* Glossy highlight */}
-                             <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent" />
-                          </div>
-                          
-                          <div className="bg-black/60 w-[110%] px-1 py-0.5 mt-1 border-y border-gray-800/50 relative z-10">
-                            <div className="text-[9px] sm:text-[10px] font-bold text-center leading-tight truncate w-full uppercase text-white drop-shadow-md">
-                              {paint.name}
-                            </div>
-                            <div className="text-[7px] text-brass/90 truncate w-full text-center mt-0.5 drop-shadow-md">
-                              {paint.brand}
-                            </div>
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-
-                    {/* LOCKED MYSTERY SLOTS (Vaults) */}
-                    {Array.from({ length: lockedSlotsCount }).map((_, index) => {
-                      const vault = lockedSlots[index % lockedSlots.length];
-                      return (
-                        <motion.div 
-                          key={`locked-${index}`}
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          className="aspect-square rounded-lg border border-gray-900 bg-[#0a0a0a] flex items-center justify-center relative overflow-hidden shadow-[inset_0_4px_10px_rgba(0,0,0,0.8)]"
-                        >
-                          {/* Procedurally Offset Inner hex texture for vault */}
-                          <div className="absolute inset-0 opacity-20 mix-blend-overlay" style={{
-                            backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='34.64101615137754' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 8.660254037844386l-10 5.773502691896258L0 8.660254037844386V-2.886751345948129l10-5.773502691896258 10 5.773502691896258V8.660254037844386zm0 23.09401076758503l-10 5.773502691896258-10-5.773502691896258V20.2072594216369l10-5.773502691896258 10 5.773502691896258v11.547005383792516z' fill='%23ffffff' fill-rule='evenodd'/%3E%3C/svg%3E")`,
-                            backgroundSize: '15px',
-                            backgroundPosition: vault.bgPosition
-                          }} />
-                          
-                          {/* Matrix Icon */}
-                          <div className="relative z-10 text-gray-500 drop-shadow-md">
-                            {WIREFRAME_ICONS[vault.iconIndex]}
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </AnimatePresence>
-                  </motion.div>
                 </div>
 
              </motion.div>
