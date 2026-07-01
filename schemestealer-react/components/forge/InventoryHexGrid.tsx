@@ -124,7 +124,7 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
         minScale={0.2}
         maxScale={2.5}
         centerOnInit={true}
-        wheel={{ step: 0.1 }}
+        wheel={{ step: 0.04 }}
       >
         {({ zoomIn, zoomOut, resetTransform }) => (
           <>
@@ -192,7 +192,7 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
                   className={`w-[92%] h-[92%] relative transition-all duration-300 ${
                     node.isOwned 
                       ? isSelected ? 'brightness-125 scale-105' : 'brightness-100 hover:brightness-[1.5] hover:scale-110' 
-                      : 'grayscale hover:opacity-50 border border-dashed border-gray-500'
+                      : 'grayscale'
                   }`}
                   style={{ 
                     clipPath: hexClipPath, 
@@ -212,9 +212,27 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
                     />
                   )}
                   
+                  {/* Glowing SVG border effect for unowned ghost hexes */}
+                  {!node.isOwned && (
+                    <svg 
+                      className="absolute inset-0 w-full h-full pointer-events-none transition-all duration-300 opacity-30 group-hover:opacity-100 group-hover:drop-shadow-[0_0_8px_rgba(255,215,0,0.8)]" 
+                      viewBox="0 0 100 100" 
+                      preserveAspectRatio="none"
+                    >
+                      <polygon 
+                        points="50,1 99,25 99,75 50,99 1,75 1,25" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        className="text-gray-500 group-hover:text-imperial-gold transition-colors duration-300" 
+                        strokeWidth="2" 
+                        strokeDasharray="4 4" 
+                      />
+                    </svg>
+                  )}
+                  
                   {/* Subtle unowned icon */}
                   {!node.isOwned && (
-                    <div className="absolute inset-0 flex items-center justify-center text-white/50 font-bold text-lg pointer-events-none">+</div>
+                    <div className="absolute inset-0 flex items-center justify-center text-white/50 font-bold text-lg pointer-events-none transition-colors duration-300 group-hover:text-imperial-gold">+</div>
                   )}
                 </div>
 
