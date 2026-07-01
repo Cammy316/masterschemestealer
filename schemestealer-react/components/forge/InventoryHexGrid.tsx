@@ -101,8 +101,8 @@ function StatsOverlay({ count, isAnimating }: { count: number, isAnimating: bool
   }, [isAnimating, count]);
 
   return (
-    <div className="absolute top-4 left-4 bg-black/60 border border-gray-800/50 backdrop-blur-sm px-3 py-1.5 rounded flex flex-col z-20 pointer-events-none min-w-[140px] items-start">
-      <span className={`text-sm tracking-widest uppercase transition-colors duration-200 ${isAnimating ? 'text-gray-400 font-mono' : 'text-imperial-gold cyber-text'}`}>
+    <div className="absolute top-4 left-4 bg-black/80 border border-green-900/50 backdrop-blur-sm px-4 py-2 rounded flex flex-col z-20 pointer-events-none min-w-[140px] items-start shadow-[0_0_15px_rgba(34,197,94,0.15)]">
+      <span className={`text-sm tracking-widest uppercase transition-colors duration-200 text-green-400 drop-shadow-[0_0_8px_rgba(74,222,128,0.8)] ${isAnimating ? 'font-mono font-bold' : 'cyber-text'}`}>
         {displayText}
       </span>
     </div>
