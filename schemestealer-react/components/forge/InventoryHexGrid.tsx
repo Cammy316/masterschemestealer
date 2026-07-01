@@ -75,8 +75,8 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint }: Inven
   const ghostPaints = useMemo(() => {
     const ownedIds = new Set(inventory.map(p => p.id || p.name.toLowerCase().replace(/\s+/g, '-')));
     const unowned = allPaints.filter(p => !ownedIds.has(p.id!));
-    // Just pick a static subset of unowned paints so it doesn't flicker
-    return unowned.slice(0, Math.min(18, unowned.length));
+    // Generate a larger rim of ghost paints (approx 2 full rings)
+    return unowned.slice(0, Math.min(42, unowned.length));
   }, [inventory]);
 
   // Total nodes needed
@@ -94,22 +94,39 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint }: Inven
     }
     // Place ghost paints on the rim
     for (let i = 0; i < ghostPaints.length; i++) {
-      nodes.push({ paint: ghostPaints[i], coord: coords[ownedSorted.length + i], isOwned: false });
+      // Fade out as they get further away from the center
+      const ghostOpacity = Math.max(0.02, 0.25 - (i / ghostPaints.length) * 0.23);
+      nodes.push({ paint: ghostPaints[i], coord: coords[ownedSorted.length + i], isOwned: false, ghostOpacity });
     }
     return nodes;
   }, [ownedSorted, ghostPaints, coords]);
 
-  // Calculate container bounds
-  const maxRadius = Math.ceil(Math.sqrt(totalNodes)); // rough estimate
-  const containerHeight = Math.max(400, maxRadius * 2 * hexSize * 1.5 + 100);
+  // Calculate container bounds dynamically so it tightly hugs the hive
+  const bounds = useMemo(() => {
+    let minY = 0;
+    let maxY = 0;
+    renderNodes.forEach(node => {
+      const y = hexSize * 3 / 2 * node.coord.r;
+      if (y < minY) minY = y;
+      if (y > maxY) maxY = y;
+    });
+    return { minY, maxY };
+  }, [renderNodes]);
+
+  const containerHeight = Math.max(250, (bounds.maxY - bounds.minY) + hexSize * 2 + 100);
+  const topOffset = Math.abs(bounds.minY) + hexSize + 60; // Push origin down just enough so top hexes aren't clipped
 
   // SVG clip path for the hexagon
   const hexClipPath = "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)";
 
   return (
     <div className="relative w-full bg-[#0a0a0a] rounded-lg border border-gray-800/60 overflow-hidden shadow-inner mt-4" style={{ height: containerHeight }}>
-      {/* Background Grid Pattern */}
-      <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0)', backgroundSize: '24px 24px' }} />
+      {/* Ad-Mech / Tech Background Overlay */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(184, 134, 11, 0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(184, 134, 11, 0.15) 1px, transparent 1px)', backgroundSize: '38px 38px', backgroundPosition: '50% 50%' }} />
+      {/* CRT Scanlines */}
+      <div className="absolute inset-0 opacity-20 mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, #000 2px, #000 4px)' }} />
+      {/* Subtle Radial Glow */}
+      <div className="absolute inset-0 opacity-30 pointer-events-none" style={{ background: 'radial-gradient(circle at 50% 0%, rgba(184,134,11,0.15) 0%, transparent 80%)' }} />
       
       {inventory.length === 0 && (
         <div className="absolute inset-0 flex flex-col items-center justify-center z-10 p-6 text-center backdrop-blur-sm bg-black/40">
@@ -125,7 +142,7 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint }: Inven
       )}
 
       {/* The Hive Map */}
-      <div className="absolute top-1/2 left-1/2 w-0 h-0">
+      <div className="absolute left-1/2 w-0 h-0" style={{ top: topOffset }}>
         <AnimatePresence>
           {renderNodes.map((node, i) => {
             const { q, r } = node.coord;
@@ -155,12 +172,13 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint }: Inven
               >
                 {/* The Hexagon */}
                 <div 
-                  className={`w-[92%] h-[92%] relative transition-all duration-300 ${node.isOwned ? 'hover:scale-105' : 'opacity-10 hover:opacity-50 border border-dashed border-gray-500'}`}
+                  className={`w-[92%] h-[92%] relative transition-all duration-300 ${node.isOwned ? 'hover:scale-105' : 'hover:opacity-50 border border-dashed border-gray-500'}`}
                   style={{ 
                     clipPath: hexClipPath, 
                     backgroundColor: node.paint.hex,
                     boxShadow: node.isOwned ? 'inset 0 4px 10px rgba(255,255,255,0.3), inset 0 -4px 10px rgba(0,0,0,0.6)' : 'none',
-                    filter: node.isOwned ? (isSelected ? 'brightness(1.2)' : 'brightness(1)') : 'grayscale(100%)'
+                    filter: node.isOwned ? (isSelected ? 'brightness(1.2)' : 'brightness(1)') : 'grayscale(100%)',
+                    opacity: node.isOwned ? 1 : node.ghostOpacity
                   }}
                 >
                   <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none mix-blend-overlay" />
