@@ -168,8 +168,8 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
                 }}
                 exit={{ opacity: 0, scale: 0.5 }}
                 transition={{ 
-                  type: "spring", stiffness: 300, damping: 25, delay: i * 0.01,
-                  ...(isNew && { duration: 1, ease: "easeOut", repeat: 2, repeatType: "reverse" })
+                  type: isNew ? "tween" : "spring",
+                  ...(isNew ? { duration: 0.8, ease: "easeInOut" } : { stiffness: 300, damping: 25, delay: i * 0.01 })
                 }}
                 className="absolute flex items-center justify-center cursor-pointer group"
                 style={{ 
