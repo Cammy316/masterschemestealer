@@ -206,7 +206,9 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
   return (
     <div className="relative w-full bg-[#050505] border-[6px] border-charcoal/90 outline outline-1 outline-brass/40 rounded-sm overflow-hidden shadow-[inset_0_0_80px_rgba(0,0,0,0.95)] mt-4 ring-1 ring-inset ring-brass/20" style={{ height: containerHeight }}>
       {/* Ad-Mech / Tech Background Overlay */}
-      <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(184, 134, 11, 0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(184, 134, 11, 0.15) 1px, transparent 1px)', backgroundSize: '38px 38px', backgroundPosition: '50% 50%' }} />
+      <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(184, 134, 11, 0.25) 1px, transparent 1px), linear-gradient(90deg, rgba(184, 134, 11, 0.25) 1px, transparent 1px)', backgroundSize: '38px 38px', backgroundPosition: '50% 50%', filter: 'drop-shadow(0 0 2px rgba(184,134,11,0.5))' }} />
+      {/* Ambient Center Glow */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(184,134,11,0.12)_0%,transparent_70%)] pointer-events-none mix-blend-screen" />
       {/* CRT Scanlines */}
       <div className="absolute inset-0 opacity-20 mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, #000 2px, #000 4px)' }} />
       {/* Zoom / Pan Wrapper */}
@@ -369,9 +371,9 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
             
             {/* Zoom Controls Overlay */}
             <div className="absolute bottom-4 right-4 flex flex-col gap-2 z-20">
-              <button onClick={() => zoomIn()} className="w-8 h-8 bg-black/60 border border-gray-700 hover:border-brass text-white rounded flex items-center justify-center backdrop-blur-sm transition-colors">+</button>
-              <button onClick={() => zoomOut()} className="w-8 h-8 bg-black/60 border border-gray-700 hover:border-brass text-white rounded flex items-center justify-center backdrop-blur-sm transition-colors">-</button>
-              <button onClick={() => resetTransform()} className="w-8 h-8 bg-black/60 border border-gray-700 hover:border-brass text-white rounded flex items-center justify-center backdrop-blur-sm transition-colors">
+              <button onClick={() => zoomIn()} className="w-8 h-8 bg-black/80 border border-brass/50 hover:bg-brass/20 hover:border-brass text-imperial-gold rounded-sm flex items-center justify-center backdrop-blur-sm transition-all shadow-[0_0_10px_rgba(184,134,11,0.1)] hover:shadow-[0_0_15px_rgba(184,134,11,0.3)]">+</button>
+              <button onClick={() => zoomOut()} className="w-8 h-8 bg-black/80 border border-brass/50 hover:bg-brass/20 hover:border-brass text-imperial-gold rounded-sm flex items-center justify-center backdrop-blur-sm transition-all shadow-[0_0_10px_rgba(184,134,11,0.1)] hover:shadow-[0_0_15px_rgba(184,134,11,0.3)]">-</button>
+              <button onClick={() => resetTransform()} className="w-8 h-8 bg-black/80 border border-brass/50 hover:bg-brass/20 hover:border-brass text-imperial-gold rounded-sm flex items-center justify-center backdrop-blur-sm transition-all shadow-[0_0_10px_rgba(184,134,11,0.1)] hover:shadow-[0_0_15px_rgba(184,134,11,0.3)]">
                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
               </button>
             </div>
