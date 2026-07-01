@@ -89,7 +89,7 @@ export function findClosestPaint(targetHex: string) {
   let bestMatch = null;
   let minDeltaE = Infinity;
 
-  const paints = paintsData as PaintGroundTruth[];
+  const paints = paintsData as unknown as PaintGroundTruth[];
 
   for (const paint of paints) {
     if (!paint.lab) continue;
@@ -108,6 +108,7 @@ export function findClosestPaint(targetHex: string) {
   // Map to the format expected by the frontend (with band)
   return {
     ...bestMatch,
+    type: (bestMatch as any).category || 'Base',
     delta_e: minDeltaE.toFixed(1),
     band: getDeltaEBand(minDeltaE)
   };
@@ -129,7 +130,7 @@ export function findTopAlternativeMatches(targetHex: string) {
   const targetLab = toLab(targetHex);
   if (!targetLab) return [];
 
-  const paints = paintsData as PaintGroundTruth[];
+  const paints = paintsData as unknown as PaintGroundTruth[];
   const allowedBrands = ['Citadel', 'Vallejo', 'Army Painter'];
 
   // Score all allowed paints
@@ -161,6 +162,7 @@ export function findTopAlternativeMatches(targetHex: string) {
 
   return results.map(match => ({
     ...match,
+    type: (match as any).category || 'Base',
     delta_e: match.deltaE.toFixed(1),
     band: getDeltaEBand(match.deltaE)
   }));
