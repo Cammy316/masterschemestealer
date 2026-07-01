@@ -8,6 +8,7 @@ import { RegionSelector, type Region } from '@/components/RegionSelector';
 import { ForgeBackground } from '@/components/ForgeBackground';
 import AddPaintModal from '@/components/forge/AddPaintModal';
 import { InventoryHexGrid } from '@/components/forge/InventoryHexGrid';
+import { CustomDropdown } from '@/components/shared/CustomDropdown';
 import { useAppStore } from '@/lib/store';
 import type { Paint } from '@/lib/types';
 import { getPaintId } from '@/lib/utils';
@@ -251,21 +252,18 @@ export default function ForgePage() {
 
                 {/* Filters */}
                 {inventory.length > 0 && (
-                  <div className="flex gap-2">
-                    <select 
+                  <div className="flex gap-2 relative z-50">
+                    <CustomDropdown 
                       value={filterBrand}
-                      onChange={(e) => setFilterBrand(e.target.value)}
-                      className="bg-charcoal border border-gray-700 text-gray-400 text-[10px] rounded px-2 py-1 uppercase tracking-widest outline-none focus:border-brass cursor-pointer"
-                    >
-                      {dynamicBrandFilters.map(b => <option key={b} value={b}>{b}</option>)}
-                    </select>
-                    <select 
+                      options={dynamicBrandFilters}
+                      onChange={setFilterBrand}
+                    />
+                    <CustomDropdown 
                       value={filterColor}
-                      onChange={(e) => setFilterColor(e.target.value)}
-                      className="bg-charcoal border border-gray-700 text-gray-400 text-[10px] rounded px-2 py-1 uppercase tracking-widest outline-none focus:border-brass cursor-pointer"
-                    >
-                      {dynamicColorFilters.map(c => <option key={c} value={c}>{c === 'ALL' ? 'ALL COLORS' : c}</option>)}
-                    </select>
+                      options={dynamicColorFilters}
+                      onChange={setFilterColor}
+                      formatOption={(val) => val === 'ALL' ? 'ALL COLORS' : val}
+                    />
                   </div>
                 )}
 
@@ -286,8 +284,9 @@ export default function ForgePage() {
           {activeTab === 'forgemix' && (
              <motion.div key="forgemix" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="mt-8 space-y-6">
                 {/* 1. The Canvas (Output Swatch & Wet Palette Gradient) */}
-                <div className="bg-[#111] border border-gray-800 rounded-xl p-6 relative overflow-hidden shadow-2xl flex flex-col items-center">
-                  <div className="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')] pointer-events-none mix-blend-overlay"></div>
+                <div className="bg-[#050505] border-[6px] border-charcoal/90 outline outline-1 outline-brass/40 rounded-sm p-6 relative overflow-hidden shadow-[inset_0_0_80px_rgba(0,0,0,0.95)] ring-1 ring-inset ring-brass/20 flex flex-col items-center">
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(184,134,11,0.15)_0%,transparent_70%)] pointer-events-none mix-blend-screen" />
+                  <div className="absolute inset-0 opacity-40 mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, #000 2px, #000 4px)' }} />
                   
                   {/* Action Icons (Floating left and right) */}
                   {recipe.length > 0 && (
@@ -374,6 +373,19 @@ export default function ForgePage() {
                   
                   {/* The Containment Field (Swatch) */}
                   <div className="relative w-32 h-32 flex items-center justify-center mt-2 mb-4 z-10">
+                    {/* Centrifuge Ring */}
+                    {recipe.length > 0 && (
+                      <motion.svg 
+                        className="absolute inset-[-15%] w-[130%] h-[130%] pointer-events-none opacity-50 drop-shadow-[0_0_4px_rgba(184,134,11,0.5)]"
+                        viewBox="0 0 100 100"
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                      >
+                        <circle cx="50" cy="50" r="48" fill="none" stroke="var(--imperial-gold)" strokeWidth="1" strokeDasharray="4 8" />
+                        <circle cx="50" cy="50" r="44" fill="none" stroke="var(--brass)" strokeWidth="0.5" strokeDasharray="10 5 2 5" />
+                      </motion.svg>
+                    )}
+
                     <motion.div 
                       className="absolute inset-0 rounded-full"
                       style={{
@@ -415,8 +427,8 @@ export default function ForgePage() {
                 </div>
 
                 {/* 2. The Recipe Board */}
-                <div className="space-y-2">
-                  <div className="flex justify-between items-end mb-2 px-1">
+                <div className="space-y-2 mt-6">
+                  <div className="flex justify-between items-end mb-3 px-1">
                     <h3 className="text-sm text-imperial-gold/80 cyber-text tracking-[0.2em] drop-shadow-[0_0_8px_rgba(255,215,0,0.4)] uppercase">ACTIVE INGREDIENTS</h3>
                     {recipe.length > 0 && (
                       <button 
@@ -535,21 +547,18 @@ export default function ForgePage() {
                     <h3 className="text-sm text-imperial-gold/80 cyber-text tracking-[0.2em] drop-shadow-[0_0_8px_rgba(255,215,0,0.4)] uppercase">INVENTORY</h3>
                     
                     {filterableMixInventory.length > 0 && (
-                      <div className="flex gap-2">
-                        <select 
+                      <div className="flex gap-2 relative z-50">
+                        <CustomDropdown 
                           value={mixFilterBrand}
-                          onChange={(e) => setMixFilterBrand(e.target.value)}
-                          className="bg-charcoal border border-gray-700 text-gray-400 text-[10px] rounded px-2 py-1 uppercase tracking-widest outline-none focus:border-brass"
-                        >
-                          {mixInventoryBrands.map(b => <option key={b} value={b}>{b}</option>)}
-                        </select>
-                        <select 
+                          options={mixInventoryBrands}
+                          onChange={setMixFilterBrand}
+                        />
+                        <CustomDropdown 
                           value={mixFilterColor}
-                          onChange={(e) => setMixFilterColor(e.target.value)}
-                          className="bg-charcoal border border-gray-700 text-gray-400 text-[10px] rounded px-2 py-1 uppercase tracking-widest outline-none focus:border-brass"
-                        >
-                          {mixInventoryColors.map(c => <option key={c} value={c}>{c === 'ALL' ? 'ALL COLORS' : c}</option>)}
-                        </select>
+                          options={mixInventoryColors}
+                          onChange={setMixFilterColor}
+                          formatOption={(val) => val === 'ALL' ? 'ALL COLORS' : val}
+                        />
                       </div>
                     )}
                   </div>
@@ -600,14 +609,7 @@ export default function ForgePage() {
 
           {activeTab === 'requisition' && (
              <motion.div key="requisition" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6 mt-8">
-                {/* Same Requisition content as before */}
-                {cart.length > 0 && (
-                  <div className="border border-brass/30 bg-brass/5 p-3 rounded flex justify-between text-brass text-sm font-mono tech-text backdrop-blur-sm">
-                    <span suppressHydrationWarning>MANIFEST #{manifestId}</span>
-                    <span>ITEMS: {cart.length}</span>
-                  </div>
-                )}
-                <ShoppingCart />
+                <ShoppingCart manifestId={manifestId} />
              </motion.div>
           )}
         </AnimatePresence>
