@@ -252,7 +252,7 @@ export default function ForgePage() {
                 <div className="flex flex-col sm:flex-row justify-between items-center bg-charcoal/50 border border-gray-800 p-4 rounded-lg backdrop-blur-sm">
                   <div>
                     <h3 className="text-xl text-imperial-gold gothic-text tracking-widest text-shadow">
-                      {inventory.length} {inventory.length === 1 ? 'PAINT' : 'PAINTS'} UNLOCKED
+                      {inventory.length} {inventory.length === 1 ? 'PIGMENT' : 'PIGMENTS'} ACQUIRED
                     </h3>
                   </div>
                   <button 
