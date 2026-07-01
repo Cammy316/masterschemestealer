@@ -4,6 +4,7 @@ import React, { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Paint } from '@/lib/types';
 import paintsData from '@/lib/data/paints_groundtruth.json';
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 interface InventoryHexGridProps {
   inventory: Paint[];
@@ -101,20 +102,8 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint }: Inven
     return nodes;
   }, [ownedSorted, ghostPaints, coords]);
 
-  // Calculate container bounds dynamically so it tightly hugs the hive
-  const bounds = useMemo(() => {
-    let minY = 0;
-    let maxY = 0;
-    renderNodes.forEach(node => {
-      const y = hexSize * 3 / 2 * node.coord.r;
-      if (y < minY) minY = y;
-      if (y > maxY) maxY = y;
-    });
-    return { minY, maxY };
-  }, [renderNodes]);
-
-  const containerHeight = Math.max(250, (bounds.maxY - bounds.minY) + hexSize * 2 + 100);
-  const topOffset = Math.abs(bounds.minY) + hexSize + 60; // Push origin down just enough so top hexes aren't clipped
+  // Fixed container height for the "Radar Window" view
+  const containerHeight = 450;
 
   // SVG clip path for the hexagon
   const hexClipPath = "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)";
@@ -125,25 +114,35 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint }: Inven
       <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(184, 134, 11, 0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(184, 134, 11, 0.15) 1px, transparent 1px)', backgroundSize: '38px 38px', backgroundPosition: '50% 50%' }} />
       {/* CRT Scanlines */}
       <div className="absolute inset-0 opacity-20 mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, #000 2px, #000 4px)' }} />
-      {/* Subtle Radial Glow */}
-      <div className="absolute inset-0 opacity-30 pointer-events-none" style={{ background: 'radial-gradient(circle at 50% 0%, rgba(184,134,11,0.15) 0%, transparent 80%)' }} />
-      
-      {inventory.length === 0 && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center z-10 p-6 text-center backdrop-blur-sm bg-black/40">
-          <h3 className="text-xl cyber-text text-imperial-gold/80 mb-2 drop-shadow-[0_0_8px_rgba(255,215,0,0.4)]">EMPTY DATABANKS</h3>
-          <p className="text-gray-400 text-sm mb-6 max-w-sm">Your organic hive is empty. Add paints to see your collection grow.</p>
-          <button 
-            onClick={onAddPaint}
-            className="py-2 px-8 bg-void-black border border-brass text-brass hover:bg-brass/20 rounded shadow-[0_0_15px_rgba(184,134,11,0.2)] transition-all font-bold tracking-widest text-xs uppercase"
-          >
-            + ADD FIRST PAINT
-          </button>
-        </div>
-      )}
+      {/* Zoom / Pan Wrapper */}
+      <TransformWrapper
+        initialScale={1}
+        minScale={0.2}
+        maxScale={2.5}
+        centerOnInit={true}
+        wheel={{ step: 0.1 }}
+      >
+        {({ zoomIn, zoomOut, resetTransform }) => (
+          <>
+            <TransformComponent wrapperStyle={{ width: "100%", height: "100%", cursor: "grab" }}>
+              <div style={{ width: 3000, height: 3000, position: 'relative' }}>
+                
+                {inventory.length === 0 && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center z-10 p-6 text-center backdrop-blur-sm bg-black/40">
+                    <h3 className="text-xl cyber-text text-imperial-gold/80 mb-2 drop-shadow-[0_0_8px_rgba(255,215,0,0.4)]">EMPTY DATABANKS</h3>
+                    <p className="text-gray-400 text-sm mb-6 max-w-sm">Your organic hive is empty. Add paints to see your collection grow.</p>
+                    <button 
+                      onClick={onAddPaint}
+                      className="py-2 px-8 bg-void-black border border-brass text-brass hover:bg-brass/20 rounded shadow-[0_0_15px_rgba(184,134,11,0.2)] transition-all font-bold tracking-widest text-xs uppercase cursor-pointer pointer-events-auto"
+                    >
+                      + ADD FIRST PAINT
+                    </button>
+                  </div>
+                )}
 
-      {/* The Hive Map */}
-      <div className="absolute left-1/2 w-0 h-0" style={{ top: topOffset }}>
-        <AnimatePresence>
+                {/* The Hive Map (centered perfectly in the 3000x3000 canvas) */}
+                <div className="absolute left-1/2 top-1/2 w-0 h-0">
+                  <AnimatePresence>
           {renderNodes.map((node, i) => {
             const { q, r } = node.coord;
             // Pointy-top hex math
@@ -230,8 +229,22 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint }: Inven
               </motion.div>
             );
           })}
-        </AnimatePresence>
-      </div>
+                  </AnimatePresence>
+                </div>
+              </div>
+            </TransformComponent>
+            
+            {/* Zoom Controls Overlay */}
+            <div className="absolute bottom-4 right-4 flex flex-col gap-2 z-20">
+              <button onClick={() => zoomIn()} className="w-8 h-8 bg-black/60 border border-gray-700 hover:border-brass text-white rounded flex items-center justify-center backdrop-blur-sm transition-colors">+</button>
+              <button onClick={() => zoomOut()} className="w-8 h-8 bg-black/60 border border-gray-700 hover:border-brass text-white rounded flex items-center justify-center backdrop-blur-sm transition-colors">-</button>
+              <button onClick={() => resetTransform()} className="w-8 h-8 bg-black/60 border border-gray-700 hover:border-brass text-white rounded flex items-center justify-center backdrop-blur-sm transition-colors">
+                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              </button>
+            </div>
+          </>
+        )}
+      </TransformWrapper>
 
       {/* Stats overlay */}
       {inventory.length > 0 && (
