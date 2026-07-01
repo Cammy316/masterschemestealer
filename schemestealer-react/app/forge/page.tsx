@@ -86,6 +86,7 @@ export default function ForgePage() {
   const [activeTab, setActiveTab] = useState<'inventory' | 'forgemix' | 'requisition'>('inventory');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [filterBrand, setFilterBrand] = useState('ALL');
+  const [filterColor, setFilterColor] = useState('ALL');
   const [lastAddedId, setLastAddedId] = useState<string | null>(null);
   
   const cart = useAppStore((state) => state.cart);
@@ -101,16 +102,26 @@ export default function ForgePage() {
 
   const merchants = AFFILIATE_MERCHANTS[preferredRegion] || AFFILIATE_MERCHANTS.global;
 
-  const filteredInventory = filterBrand === 'ALL' 
-    ? inventory 
-    : inventory.filter(p => p.brand.toUpperCase() === filterBrand);
+  const filteredInventory = React.useMemo(() => {
+    return inventory.filter(p => {
+      if (filterBrand !== 'ALL' && p.brand.toUpperCase() !== filterBrand) return false;
+      if (filterColor !== 'ALL' && (p.colorFamily || 'UNKNOWN').toUpperCase() !== filterColor) return false;
+      return true;
+    });
+  }, [inventory, filterBrand, filterColor]);
 
   const dynamicBrandFilters = React.useMemo(() => {
     const brands = new Set(['ALL']);
-    inventory.forEach(p => {
-      brands.add(p.brand.toUpperCase());
-    });
+    inventory.forEach(p => brands.add(p.brand.toUpperCase()));
     return Array.from(brands);
+  }, [inventory]);
+
+  const dynamicColorFilters = React.useMemo(() => {
+    const colors = new Set(['ALL']);
+    inventory.forEach(p => {
+      if (p.colorFamily) colors.add(p.colorFamily.toUpperCase());
+    });
+    return Array.from(colors);
   }, [inventory]);
 
   const [recipe, setRecipe] = useState<{paint: Paint, parts: number}[]>([]);
@@ -232,22 +243,25 @@ export default function ForgePage() {
                   </button>
                 </div>
 
-                {/* Brand Filter Pills */}
-                <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-                  {dynamicBrandFilters.map(brand => (
-                    <button
-                      key={brand}
-                      onClick={() => setFilterBrand(brand)}
-                      className={`whitespace-nowrap px-4 py-1.5 rounded-full text-[10px] sm:text-xs font-bold tracking-widest uppercase transition-all ${
-                        filterBrand === brand 
-                        ? 'bg-brass text-void-black shadow-[0_0_10px_rgba(184,134,11,0.5)]' 
-                        : 'bg-void-black/50 border border-gray-800 text-gray-500 hover:text-brass hover:border-gray-600'
-                      }`}
+                {/* Filters */}
+                {inventory.length > 0 && (
+                  <div className="flex gap-2">
+                    <select 
+                      value={filterBrand}
+                      onChange={(e) => setFilterBrand(e.target.value)}
+                      className="bg-charcoal border border-gray-700 text-gray-400 text-[10px] rounded px-2 py-1 uppercase tracking-widest outline-none focus:border-brass cursor-pointer"
                     >
-                      {brand}
-                    </button>
-                  ))}
-                </div>
+                      {dynamicBrandFilters.map(b => <option key={b} value={b}>{b}</option>)}
+                    </select>
+                    <select 
+                      value={filterColor}
+                      onChange={(e) => setFilterColor(e.target.value)}
+                      className="bg-charcoal border border-gray-700 text-gray-400 text-[10px] rounded px-2 py-1 uppercase tracking-widest outline-none focus:border-brass cursor-pointer"
+                    >
+                      {dynamicColorFilters.map(c => <option key={c} value={c}>{c === 'ALL' ? 'ALL COLORS' : c}</option>)}
+                    </select>
+                  </div>
+                )}
 
                 {/* Gamified Silhouette Grid */}
                 <div className="relative overflow-hidden p-1 -m-1">
@@ -255,6 +269,7 @@ export default function ForgePage() {
                     inventory={filteredInventory}
                     onAddPaint={() => setIsAddModalOpen(true)}
                     onRemovePaint={removeFromInventory}
+                    lastAddedId={lastAddedId}
                   />
                 </div>
 
