@@ -229,7 +229,7 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
                       
                       {onRemovePaint && (
                         <button 
-                          onClick={(e) => { e.stopPropagation(); onRemovePaint(paintId); }}
+                          onClick={(e) => { e.stopPropagation(); onRemovePaint(`${node.paint.brand}-${node.paint.name}`); }}
                           className="mt-2 text-[9px] text-red-500 hover:text-red-400 uppercase tracking-widest border-t border-gray-800 w-full pt-1"
                         >
                           Remove
