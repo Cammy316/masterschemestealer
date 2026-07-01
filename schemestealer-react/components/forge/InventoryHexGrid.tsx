@@ -71,14 +71,28 @@ function StatsOverlay({ count, isAnimating }: { count: number, isAnimating: bool
 
   useEffect(() => {
     if (isAnimating) {
-      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+      const words = ["ANALYZING", "COGITATING", "ASSESSING", "COMPILING", "SYNTHESIZING", "EXTRACTING", "INDEXING", "CALCULATING", "PROCESSING"];
+      const chars = "0123456789!@#$%^&*";
+      let frame = 0;
+      let currentWord = words[0];
+
       const interval = setInterval(() => {
-        let result = "";
-        const len = 8 + Math.floor(Math.random() * 6);
-        for (let i = 0; i < len; i++) {
-          result += chars.charAt(Math.floor(Math.random() * chars.length));
+        if (frame % 6 === 0) {
+          // Change word every 6 frames (~300ms)
+          currentWord = words[Math.floor(Math.random() * words.length)];
         }
-        setDisplayText(result);
+        frame++;
+
+        let scrambled = "";
+        for (let i = 0; i < currentWord.length; i++) {
+          // 25% chance to replace a character with a random symbol
+          if (Math.random() > 0.75) {
+            scrambled += chars.charAt(Math.floor(Math.random() * chars.length));
+          } else {
+            scrambled += currentWord[i];
+          }
+        }
+        setDisplayText(scrambled);
       }, 50);
       return () => clearInterval(interval);
     } else {
