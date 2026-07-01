@@ -10,6 +10,7 @@ import { findTopAlternativeMatches } from '@/lib/colorMath';
 interface AddPaintModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onAddPaint: (paint: Paint) => void;
 }
 
 // Convert ground truth format to Paint type internally
@@ -22,8 +23,8 @@ const allPaints: Paint[] = (paintsData as any[]).map(p => ({
   colorFamily: p.color_family
 }));
 
-export default function AddPaintModal({ isOpen, onClose }: AddPaintModalProps) {
-  const { inventory, addToInventory } = useAppStore();
+export default function AddPaintModal({ isOpen, onClose, onAddPaint }: AddPaintModalProps) {
+  const { inventory } = useAppStore();
   const [activeTab, setActiveTab] = useState<'search' | 'scan'>('search');
   
   // Search State
@@ -133,7 +134,7 @@ export default function AddPaintModal({ isOpen, onClose }: AddPaintModalProps) {
   };
 
   const handleAddPaint = (paint: Paint) => {
-    addToInventory(paint);
+    onAddPaint(paint);
   };
 
   const getPaintId = (p: Paint) => p.id || p.name.toLowerCase().replace(/\s+/g, '-');
