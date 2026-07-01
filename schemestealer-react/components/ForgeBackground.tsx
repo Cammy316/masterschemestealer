@@ -7,6 +7,7 @@ export function ForgeBackground() {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const [mounted, setMounted] = useState(false);
+  const [flareActive, setFlareActive] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -23,7 +24,31 @@ export function ForgeBackground() {
     };
 
     window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    
+    // Flare logic
+    let flareStartTimeout: NodeJS.Timeout;
+    let flareEndTimeout: NodeJS.Timeout;
+
+    const endFlare = () => {
+      setFlareActive(false);
+      // Schedule next flare 60-90 seconds from now
+      flareStartTimeout = setTimeout(startFlare, 60000 + Math.random() * 30000);
+    };
+
+    const startFlare = () => {
+      setFlareActive(true);
+      // End flare after 8 seconds
+      flareEndTimeout = setTimeout(endFlare, 8000);
+    };
+    
+    // Start the first flare shortly after load so the user can see it
+    flareStartTimeout = setTimeout(startFlare, 3000 + Math.random() * 2000);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      clearTimeout(flareStartTimeout);
+      clearTimeout(flareEndTimeout);
+    };
   }, [mouseX, mouseY]);
 
   // Create the dynamic background style for the spotlight
@@ -40,25 +65,107 @@ export function ForgeBackground() {
       
       {/* 1. Fluid Orbs (Morphing Heat) */}
       <motion.div 
-        className="absolute top-[10%] left-[20%] w-[60vw] h-[60vw] sm:w-[40vw] sm:h-[40vw] rounded-full blur-[100px] opacity-30 mix-blend-screen"
-        style={{ background: 'radial-gradient(circle, rgba(139,0,0,0.8), transparent 70%)' }}
+        className="absolute top-[10%] left-[20%] w-[60vw] h-[60vw] sm:w-[40vw] sm:h-[40vw] rounded-full blur-[100px] mix-blend-screen"
+        style={{ background: 'radial-gradient(circle, rgba(220,50,0,0.8), transparent 70%)' }}
         animate={{
           x: ['0%', '20%', '-10%', '0%'],
           y: ['0%', '-20%', '10%', '0%'],
           scale: [1, 1.2, 0.9, 1],
+          opacity: [0.2, 0.6, 0.2]
         }}
-        transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
+        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div 
-        className="absolute bottom-[10%] right-[10%] w-[70vw] h-[70vw] sm:w-[50vw] sm:h-[50vw] rounded-full blur-[120px] opacity-20 mix-blend-screen"
-        style={{ background: 'radial-gradient(circle, rgba(184,134,11,0.6), transparent 70%)' }}
+        className="absolute bottom-[10%] right-[10%] w-[70vw] h-[70vw] sm:w-[50vw] sm:h-[50vw] rounded-full blur-[120px] mix-blend-screen"
+        style={{ background: 'radial-gradient(circle, rgba(200,100,0,0.6), transparent 70%)' }}
         animate={{
           x: ['0%', '-20%', '10%', '0%'],
           y: ['0%', '20%', '-10%', '0%'],
           scale: [1, 1.1, 0.8, 1],
+          opacity: [0.2, 0.5, 0.2]
         }}
-        transition={{ duration: 25, repeat: Infinity, ease: 'easeInOut' }}
+        transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
       />
+
+      {/* 1.2 Bottom Forge Glow */}
+      {mounted && (
+        <motion.div 
+          className="absolute bottom-[-10%] left-[-10%] right-[-10%] h-[40vh] pointer-events-none mix-blend-screen z-10 origin-bottom"
+          style={{
+            background: 'radial-gradient(ellipse at bottom center, rgba(255, 120, 0, 0.8) 0%, rgba(220, 60, 0, 0.4) 40%, transparent 70%)'
+          }}
+          animate={{ 
+            scaleY: flareActive ? 1.1 : 0.6,
+            scaleX: flareActive ? 1.05 : 1.0,
+            opacity: flareActive ? 0.7 : 0.25
+          }}
+          transition={{ duration: 4, ease: 'easeInOut' }}
+        />
+      )}
+
+      {/* 1.5 Rising Embers */}
+      {mounted && (
+        <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
+          {Array.from({ length: 25 }).map((_, i) => {
+            const left = Math.random() * 100;
+            const delay = Math.random() * 10;
+            const duration = 15 + Math.random() * 15; // Slowed down from 6 to 15+
+            const size = 2 + Math.random() * 4;
+            return (
+              <motion.div
+                key={`ember-${i}`}
+                className="absolute bottom-[-5%] rounded-full bg-amber-400 mix-blend-screen"
+                style={{ 
+                  width: size, 
+                  height: size, 
+                  left: `${left}%`,
+                  boxShadow: '0 0 8px 2px rgba(245, 158, 11, 0.8)'
+                }}
+                animate={{
+                  y: ['0vh', '-105vh'],
+                  x: ['0px', '30px', '-30px', '20px', '0px'],
+                  opacity: [0, 0.8, 0],
+                }}
+                transition={{
+                  y: { duration, repeat: Infinity, ease: 'linear', delay },
+                  x: { duration: duration * 0.8, repeat: Infinity, ease: 'easeInOut', delay },
+                  opacity: { duration, repeat: Infinity, ease: 'easeInOut', delay },
+                }}
+              />
+            );
+          })}
+          
+          {/* Flare Burst Embers */}
+          {flareActive && Array.from({ length: 30 }).map((_, i) => {
+            const left = Math.random() * 100;
+            const delay = Math.random() * 3; // Fast spawn
+            const duration = 8 + Math.random() * 8; // Faster rise
+            const size = 3 + Math.random() * 5; // Slightly larger
+            return (
+              <motion.div
+                key={`flare-ember-${i}`}
+                className="absolute bottom-[-5%] rounded-full bg-amber-300 mix-blend-screen"
+                style={{ 
+                  width: size, 
+                  height: size, 
+                  left: `${left}%`,
+                  boxShadow: '0 0 12px 3px rgba(251, 191, 36, 0.9)'
+                }}
+                animate={{
+                  y: ['0vh', '-105vh'],
+                  x: ['0px', '40px', '-40px', '30px', '0px'],
+                  opacity: [0, 1, 0],
+                }}
+                transition={{
+                  y: { duration, ease: 'easeOut', delay },
+                  x: { duration: duration * 0.8, ease: 'easeInOut', delay },
+                  opacity: { duration, ease: 'easeInOut', delay },
+                }}
+              />
+            );
+          })}
+        </div>
+      )}
 
       {/* 2. Mouse-Tracking Spotlight */}
       {mounted && (
