@@ -205,12 +205,10 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
 
   return (
     <div className="relative w-full bg-[#050505] border-[6px] border-charcoal/90 outline outline-1 outline-brass/40 rounded-sm overflow-hidden shadow-[inset_0_0_80px_rgba(0,0,0,0.95)] mt-4 ring-1 ring-inset ring-brass/20" style={{ height: containerHeight }}>
-      {/* Ad-Mech / Tech Background Overlay */}
-      <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(184, 134, 11, 0.25) 1px, transparent 1px), linear-gradient(90deg, rgba(184, 134, 11, 0.25) 1px, transparent 1px)', backgroundSize: '38px 38px', backgroundPosition: '50% 50%', filter: 'drop-shadow(0 0 2px rgba(184,134,11,0.5))' }} />
       {/* Ambient Center Glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(184,134,11,0.12)_0%,transparent_70%)] pointer-events-none mix-blend-screen" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(184,134,11,0.15)_0%,transparent_70%)] pointer-events-none mix-blend-screen" />
       {/* CRT Scanlines */}
-      <div className="absolute inset-0 opacity-20 mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, #000 2px, #000 4px)' }} />
+      <div className="absolute inset-0 opacity-40 mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, #000 2px, #000 4px)' }} />
       {/* Zoom / Pan Wrapper */}
       <TransformWrapper
         initialScale={1}
