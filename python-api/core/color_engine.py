@@ -497,8 +497,8 @@ class PaintMatcher:
                 if metallic_mask.any():
                     mask = metallic_mask
                 else:
-                    logger.info(f"Metallic pool empty for {brand}/{role}, "
-                                "falling back to unrestricted candidates")
+                    logger.debug(f"Metallic pool empty for {brand}/{role}, "
+                                 "falling back to unrestricted candidates")
             elif metallic_score == 0.0:
                 mask = mask & ~self.metallic_arr
         elif role not in ('shade', 'wash'):

@@ -103,6 +103,18 @@ def _coverage_by_family(recipes) -> dict:
     return cov
 
 
+def _assert_no_family_fragmentation(recipes):
+    """One painted surface must be ONE card: no family may appear three or
+    more times (the prod failure showed Grey x3 / Blue x3, crowding real
+    colours out of the five visible slots)."""
+    counts = {}
+    for r in recipes:
+        fam = (r.get("family") or "").lower()
+        counts[fam] = counts.get(fam, 0) + 1
+    tripled = {f: n for f, n in counts.items() if n >= 3}
+    assert not tripled, f"family fragmentation: {tripled} in {counts}"
+
+
 def test_pink_figure_dominant_is_pink_not_bronze(engine):
     """The production failure: this photo's dominant colour came back
     'Bronze 56.8%'. The dominant CHROMATIC family must be the pink body and
@@ -125,6 +137,38 @@ def test_pink_figure_dominant_is_pink_not_bronze(engine):
     metal_total = sum(v for f, v in cov.items() if f in METAL_FAMILIES)
     assert metal_total < 15.0, (
         f"metal families at {metal_total:.1f}% on a matte pink figure: {cov}")
+
+
+def test_ultramarine_is_one_blue_card(engine):
+    """One paint (blue armour + its shading) must be ONE Blue card — the
+    prod failure returned three separate Blues. The ramp-aware dedup merges
+    a surface's lightness bands; the gun/metals stay their own card."""
+    recipes = _scan(engine, "ultra")
+    _assert_no_family_fragmentation(recipes)
+
+    blues = [r for r in recipes if (r.get("family") or "").lower() == "blue"]
+    assert len(blues) == 1, (
+        f"expected exactly one Blue card, got {len(blues)}: "
+        f"{[(r['family'], round(r.get('dominance', 0), 1)) for r in recipes]}")
+    assert blues[0].get("dominance", 0) >= 45.0, (
+        f"blue armour under-detected: {blues[0].get('dominance'):.1f}%")
+
+
+def test_pink_figure_is_not_fragmented(engine):
+    """No family may fragment into 3+ cards on the pink figure."""
+    recipes = _scan(engine, "capturepink")
+    _assert_no_family_fragmentation(recipes)
+
+
+def test_complex_red_cloak_survives_the_top_five(engine):
+    """The chaplain's red cloak was detected (conf 0.94) but crowded out of
+    the five visible slots by three Grey cards. With ramp consolidation the
+    red must sit inside the top five majors."""
+    recipes = _scan(engine, "complex")
+    _assert_no_family_fragmentation(recipes)
+
+    top5 = [(r.get("family") or "").lower() for r in recipes[:5]]
+    assert "red" in top5, f"red cloak missing from the top five: {top5}"
 
 
 def test_complex_figure_is_not_a_silver_blob(engine):
