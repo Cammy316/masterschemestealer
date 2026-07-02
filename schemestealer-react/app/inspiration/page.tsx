@@ -64,41 +64,21 @@ export default function InspirationPage() {
     if (file) handleFileSelect(file);
   };
 
-  // Show warm-up screen while backend scanner is initialising
-  if (!apiReady) {
-    return (
-      <div className="min-h-dvh flex items-center justify-center void-bg">
-        <CosmicBackground />
-        <div className="text-center px-8 relative z-10">
-          <motion.div
-            className="text-5xl mb-6"
-            animate={{ scale: [1, 1.3, 1], opacity: [0.6, 1, 0.6] }}
-            transition={{ duration: 3, repeat: Infinity }}
-          >
-            ◆
-          </motion.div>
-          <h2 className="text-xl font-bold gothic-text warp-text mb-2">
-            WARP CONDUIT STABILISING
-          </h2>
-          <p className="text-warp-purple-light gothic-text text-sm mb-6">
-            Communing with the Immaterium... please wait
-          </p>
-          <motion.div
-            className="flex gap-2 justify-center"
-            animate={{ opacity: [0.3, 1, 0.3] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="w-2 h-2 rounded-full bg-purple-500" />
-            ))}
-          </motion.div>
-          <p className="text-warp-purple-light/40 gothic-text text-xs mt-6">
-            First activation after dormancy takes ~60 seconds
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // Display a subtle warm-up banner instead of gating the entire UI
+  const apiWarmupBanner = !apiReady && !isProcessing && (
+    <motion.div 
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-black/80 border border-purple-500/50 rounded-full px-4 py-2 flex items-center gap-3 shadow-[0_0_10px_rgba(139,92,246,0.3)] backdrop-blur-sm"
+    >
+      <motion.div animate={{ rotate: 360 }} transition={{ duration: 3, repeat: Infinity, ease: 'linear' }} className="text-purple-500 text-sm">
+        ◆
+      </motion.div>
+      <span className="text-xs text-purple-400 gothic-text uppercase tracking-widest">
+        Warp Conduit Stabilising (~60s)
+      </span>
+    </motion.div>
+  );
 
   // We no longer return the LoadingAnimation early here.
   // Instead, the WarpPortal component stays mounted and uses the isActive={isProcessing}
@@ -106,6 +86,7 @@ export default function InspirationPage() {
 
   return (
     <div className="min-h-dvh pb-24 void-bg overflow-x-hidden">
+      {apiWarmupBanner}
       {/* Full-page fixed starfield */}
       <CosmicBackground />
 

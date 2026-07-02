@@ -23,12 +23,13 @@ export function SlabButton({ theme, children, className = '', style, ...rest }: 
     <motion.button
       whileTap={{ scale: 0.98 }}
       whileHover={{ borderColor: c.primaryLight }}
-      className={`w-full rounded-lg py-4 px-6 touch-target font-bold gothic-text tracking-wider ${className}`}
+      className={`w-full rounded-lg py-4 px-6 touch-target font-bold gothic-text tracking-wider focus-visible:outline-2 focus-visible:outline-offset-2 ${className}`}
       style={{
         background: c.surfaceDeep,
         border: `1px solid ${c.primary}`,
         color: c.primaryLight,
         textShadow: `0 0 8px ${c.glow}, 0 0 18px ${c.glow}`,
+        outlineColor: c.primary,
         ...style,
       }}
       {...rest}

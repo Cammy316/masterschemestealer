@@ -9,6 +9,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import type { Color, ScanMode } from '@/lib/types';
 
 // ============================================================================
@@ -317,22 +318,30 @@ function SkullRating({
   mode: ScanMode;
 }) {
   return (
-    <div className="flex justify-center gap-2">
+    <div className="flex justify-center gap-2" role="radiogroup" aria-label="Rating">
       {[1, 2, 3, 4, 5].map((rating) => (
-        <motion.button
-          key={rating}
-          onClick={() => onChange(rating)}
-          className="p-1 rounded-lg transition-all"
-          whileHover={{ scale: 1.15 }}
-          whileTap={{ scale: 0.95 }}
-          type="button"
-        >
-          <RatingIcon
-            rating={rating}
-            isSelected={rating <= value}
-            mode={mode}
+        <label key={rating} className="cursor-pointer relative rounded-lg has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-brass">
+          <input
+            type="radio"
+            name="rating"
+            value={rating}
+            checked={value === rating}
+            onChange={() => onChange(rating)}
+            className="sr-only"
+            aria-label={`${rating} out of 5`}
           />
-        </motion.button>
+          <motion.div
+            className="p-1 rounded-lg transition-all"
+            whileHover={{ scale: 1.15 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <RatingIcon
+              rating={rating}
+              isSelected={rating <= value}
+              mode={mode}
+            />
+          </motion.div>
+        </label>
       ))}
     </div>
   );
@@ -413,10 +422,11 @@ function ColourCorrectionRow({ colour, correction, onChange, mode }: ColourCorre
             className={`mt-3 space-y-2 border-t ${theme.checkboxBorder} pt-3`}
           >
             <div>
-              <label className={`text-xs ${theme.accentColorDim} block mb-1`}>
+              <label htmlFor={`family-select-${index}`} className={`text-xs ${theme.accentColorDim} block mb-1`}>
                 Correct colour family:
               </label>
               <select
+                id={`family-select-${index}`}
                 value={correction.correctedFamily || ''}
                 onChange={(e) => onChange({ ...correction, correctedFamily: e.target.value })}
                 className={`w-full ${theme.inputBg} border ${theme.inputBorder} rounded px-3 py-2 ${theme.accentColor} ${theme.inputFocus} outline-none`}
@@ -429,10 +439,11 @@ function ColourCorrectionRow({ colour, correction, onChange, mode }: ColourCorre
             </div>
 
             <div>
-              <label className={`text-xs ${theme.accentColorDim} block mb-1`}>
+              <label htmlFor={`paint-input-${index}`} className={`text-xs ${theme.accentColorDim} block mb-1`}>
                 Actual paint used (optional):
               </label>
               <input
+                id={`paint-input-${index}`}
                 type="text"
                 value={correction.actualPaintUsed || ''}
                 onChange={(e) => onChange({ ...correction, actualPaintUsed: e.target.value })}
@@ -545,38 +556,46 @@ export function FeedbackModal({
     onClose();
   };
 
-  if (!isOpen) return null;
-
   return (
     <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-void-black/90 z-50 flex items-center justify-center p-4"
-        onClick={handleClose}
-      >
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.9, y: 20 }}
-          className={`rounded-lg p-1 w-full max-w-lg max-h-[90vh] overflow-hidden border-2 ${theme.frameBorder}`}
-          style={{ background: theme.frameSurface, boxShadow: `0 0 24px ${theme.frameGlow}` }}
-          onClick={(e) => e.stopPropagation()}
+      {isOpen && (
+        <Dialog
+          static
+          open={isOpen}
+          onClose={handleClose}
+          className="relative z-50"
         >
-          <div className={`${theme.modalBg} rounded-lg overflow-hidden textured`}>
-            {/* Header */}
-            <div className={`p-4 border-b ${theme.headerBorder} text-center ${theme.headerBg}`}>
-              <h2 className={`text-xl font-bold gothic-text ${theme.headerText}`}>
-                {theme.title}
-              </h2>
-              <p className={`text-sm ${theme.headerTextDim} mt-1 tech-text`}>
-                {theme.subtitle}
-              </p>
-            </div>
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-void-black/90"
+            aria-hidden="true"
+          />
 
-            {/* Content */}
-            <div className="p-4 max-h-[60vh] overflow-y-auto space-y-4">
+          <div className="fixed inset-0 flex items-center justify-center p-4">
+            <DialogPanel
+              as={motion.div}
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className={`rounded-lg p-1 w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden border-2 ${theme.frameBorder}`}
+              style={{ background: theme.frameSurface, boxShadow: `0 0 24px ${theme.frameGlow}` }}
+            >
+              <div className={`${theme.modalBg} rounded-lg overflow-hidden textured flex flex-col max-h-[90vh]`}>
+                {/* Header */}
+                <div className={`p-4 border-b ${theme.headerBorder} text-center ${theme.headerBg} shrink-0`}>
+                  <DialogTitle className={`text-xl font-bold gothic-text ${theme.headerText}`}>
+                    {theme.title}
+                  </DialogTitle>
+                  <p className={`text-sm ${theme.headerTextDim} mt-1 tech-text`}>
+                    {theme.subtitle}
+                  </p>
+                </div>
+
+                {/* Content */}
+                <div className="p-4 overflow-y-auto space-y-4">
               {showThankYou ? (
                 /* Thank You State */
                 <motion.div
@@ -661,18 +680,22 @@ export function FeedbackModal({
                           </div>
                           <div className="flex flex-wrap gap-2">
                             {ISSUE_CATEGORIES.map((category) => (
-                              <button
+                              <label
                                 key={category.id}
-                                onClick={() => toggleIssueCategory(category.id)}
-                                className={`px-3 py-1 rounded text-xs font-medium transition-all ${
+                                className={`px-3 py-1 rounded text-xs font-medium transition-all cursor-pointer has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-brass inline-block ${
                                   issueCategories.includes(category.id)
                                     ? `${theme.buttonBg} ${theme.buttonText}`
                                     : `border ${theme.checkboxBorder} ${theme.accentColorDim} hover:border-current`
                                 }`}
-                                type="button"
                               >
+                                <input
+                                  type="checkbox"
+                                  checked={issueCategories.includes(category.id)}
+                                  onChange={() => toggleIssueCategory(category.id)}
+                                  className="sr-only"
+                                />
                                 {category.label}
-                              </button>
+                              </label>
                             ))}
                           </div>
                         </div>
@@ -688,18 +711,24 @@ export function FeedbackModal({
                       </div>
                       <div className="flex gap-2">
                         {(['beginner', 'intermediate', 'advanced'] as const).map((level) => (
-                          <button
+                          <label
                             key={level}
-                            onClick={() => setExperienceLevel(level)}
-                            className={`flex-1 px-3 py-2 rounded text-sm font-medium transition-all ${
+                            className={`flex-1 px-3 py-2 text-center rounded text-sm font-medium transition-all cursor-pointer has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-brass ${
                               experienceLevel === level
                                 ? `${theme.ratingActive} bg-current/20`
                                 : `border ${theme.checkboxBorder} ${theme.accentColorDim} hover:border-current`
                             }`}
-                            type="button"
                           >
+                            <input
+                              type="radio"
+                              name="experience"
+                              value={level}
+                              checked={experienceLevel === level}
+                              onChange={() => setExperienceLevel(level)}
+                              className="sr-only"
+                            />
                             {level.charAt(0).toUpperCase() + level.slice(1)}
-                          </button>
+                          </label>
                         ))}
                       </div>
                     </div>
@@ -709,10 +738,11 @@ export function FeedbackModal({
                   {rating > 0 && (
                     <div className={`space-y-3 border-t ${theme.checkboxBorder} pt-4`}>
                       <div>
-                        <label className={`text-sm ${theme.accentColorDim} block mb-1`}>
+                        <label htmlFor="comments-input" className={`text-sm ${theme.accentColorDim} block mb-1`}>
                           Additional comments (optional):
                         </label>
                         <textarea
+                          id="comments-input"
                           value={comment}
                           onChange={(e) => setComment(e.target.value)}
                           placeholder="Any other feedback..."
@@ -722,10 +752,11 @@ export function FeedbackModal({
                       </div>
 
                       <div>
-                        <label className={`text-sm ${theme.accentColorDim} block mb-1`}>
+                        <label htmlFor="email-input" className={`text-sm ${theme.accentColorDim} block mb-1`}>
                           Email for follow-up (optional):
                         </label>
                         <input
+                          id="email-input"
                           type="email"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
@@ -771,8 +802,10 @@ export function FeedbackModal({
               )}
             </div>
           </div>
-        </motion.div>
-      </motion.div>
+        </DialogPanel>
+      </div>
+    </Dialog>
+      )}
     </AnimatePresence>
   );
 }

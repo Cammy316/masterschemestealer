@@ -55,14 +55,7 @@ export function ModeSelector() {
             <div className="flex items-center gap-3">
               <span className="text-amber-500/80 text-2xl drop-shadow-md">⚙</span>
               <h1
-                className="font-bold gothic-text text-[clamp(1.5rem,6vw,3rem)] text-balance"
-                style={{
-                  background: 'linear-gradient(to bottom, var(--imperial-gold) 0%, var(--brass) 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.9))',
-                  letterSpacing: '0.15em'
-                }}
+                className="font-bold gothic-text text-[clamp(1.5rem,6vw,3rem)] text-balance bg-[linear-gradient(to_bottom,var(--imperial-gold)_0%,var(--brass)_100%)] text-transparent bg-clip-text drop-shadow-[0_4px_6px_rgba(0,0,0,0.9)] tracking-[0.15em]"
               >
                 SCHEMESTEALER
               </h1>
@@ -82,8 +75,7 @@ export function ModeSelector() {
 
         {/* Mission Select Cards - Stack on mobile, side-by-side on desktop */}
         <motion.div
-          className="w-full max-w-4xl flex flex-col md:flex-row gap-6 mb-4 overflow-visible px-4 md:px-0"
-          style={{ minHeight: '60vh' }}
+          className="w-full max-w-4xl flex flex-col md:flex-row gap-6 mb-4 overflow-visible px-4 md:px-0 min-h-[60vh]"
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.4, duration: 0.5 }}
@@ -91,27 +83,16 @@ export function ModeSelector() {
           {/* Miniscan Card - Left (The Dataslate) */}
           <motion.button
             onClick={() => handleModeSelect('miniature')}
-            className="group relative rounded-xl overflow-hidden flex-1 touch-target outline-none"
-            style={{
-              backgroundColor: '#051005',
-              backgroundImage: 'linear-gradient(rgba(0,255,65,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,65,0.03) 1px, transparent 1px)',
-              backgroundSize: '20px 20px',
-              border: '4px solid',
-              borderTopColor: '#3a4a3a',
-              borderLeftColor: '#2a3a2a',
-              borderRightColor: '#1a2a1a',
-              borderBottomColor: '#0a1a0a',
-              boxShadow: 'inset 0 0 20px rgba(0,0,0,0.8), 0 10px 20px rgba(0,0,0,0.5)',
-            }}
+            className="group relative rounded-xl overflow-hidden flex-1 touch-target outline-none bg-[#051005] bg-[linear-gradient(rgba(0,255,65,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,65,0.03)_1px,transparent_1px)] bg-[size:20px_20px] border-4 border-t-[#3a4a3a] border-l-[#2a3a2a] border-r-[#1a2a1a] border-b-[#0a1a0a] shadow-[inset_0_0_20px_rgba(0,0,0,0.8),0_10px_20px_rgba(0,0,0,0.5)]"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           >
             {/* Corner Hazard Stripes */}
-            <div className="absolute top-0 left-0 w-8 h-8 opacity-70 pointer-events-none z-20" style={{ background: 'repeating-linear-gradient(45deg, #000 0, #000 4px, #ffb800 4px, #ffb800 8px)', clipPath: 'polygon(0 0, 100% 0, 0 100%)' }} />
-            <div className="absolute top-0 right-0 w-8 h-8 opacity-70 pointer-events-none z-20" style={{ background: 'repeating-linear-gradient(-45deg, #000 0, #000 4px, #ffb800 4px, #ffb800 8px)', clipPath: 'polygon(0 0, 100% 0, 100% 100%)' }} />
-            <div className="absolute bottom-0 left-0 w-8 h-8 opacity-70 pointer-events-none z-20" style={{ background: 'repeating-linear-gradient(-45deg, #000 0, #000 4px, #ffb800 4px, #ffb800 8px)', clipPath: 'polygon(0 0, 0 100%, 100% 100%)' }} />
-            <div className="absolute bottom-0 right-0 w-8 h-8 opacity-70 pointer-events-none z-20" style={{ background: 'repeating-linear-gradient(45deg, #000 0, #000 4px, #ffb800 4px, #ffb800 8px)', clipPath: 'polygon(100% 0, 100% 100%, 0 100%)' }} />
+            <div className="absolute top-0 left-0 w-8 h-8 opacity-70 pointer-events-none z-20 bg-[repeating-linear-gradient(45deg,#000_0,#000_4px,#ffb800_4px,#ffb800_8px)] [clip-path:polygon(0_0,100%_0,0_100%)]" />
+            <div className="absolute top-0 right-0 w-8 h-8 opacity-70 pointer-events-none z-20 bg-[repeating-linear-gradient(-45deg,#000_0,#000_4px,#ffb800_4px,#ffb800_8px)] [clip-path:polygon(0_0,100%_0,100%_100%)]" />
+            <div className="absolute bottom-0 left-0 w-8 h-8 opacity-70 pointer-events-none z-20 bg-[repeating-linear-gradient(-45deg,#000_0,#000_4px,#ffb800_4px,#ffb800_8px)] [clip-path:polygon(0_0,0_100%,100%_100%)]" />
+            <div className="absolute bottom-0 right-0 w-8 h-8 opacity-70 pointer-events-none z-20 bg-[repeating-linear-gradient(45deg,#000_0,#000_4px,#ffb800_4px,#ffb800_8px)] [clip-path:polygon(100%_0,100%_100%,0_100%)]" />
 
             {/* Rivets */}
             <div className="absolute top-1.5 left-1.5 w-1.5 h-1.5 rounded-full bg-[#111] shadow-[0_1px_1px_rgba(255,255,255,0.2)] z-30 pointer-events-none" />
@@ -205,27 +186,14 @@ export function ModeSelector() {
           {/* Inspiration Card - Right (The Reliquary) */}
           <motion.button
             onClick={() => handleModeSelect('inspiration')}
-            className="group relative rounded-xl overflow-hidden flex-1 touch-target outline-none"
-            style={{
-              backgroundColor: '#0a001a',
-              background: 'radial-gradient(circle at center, #1a0033 0%, #050011 100%)',
-              border: '4px solid',
-              borderTopColor: '#cda85f',
-              borderLeftColor: '#8b6d36',
-              borderRightColor: '#6a5020',
-              borderBottomColor: '#4a3a1d',
-              boxShadow: 'inset 0 0 40px rgba(0,0,0,0.9), 0 10px 20px rgba(0,0,0,0.5)',
-            }}
+            className="group relative rounded-xl overflow-hidden flex-1 touch-target outline-none bg-[#0a001a] bg-[radial-gradient(circle_at_center,#1a0033_0%,#050011_100%)] border-4 border-t-[#cda85f] border-l-[#8b6d36] border-r-[#6a5020] border-b-[#4a3a1d] shadow-[inset_0_0_40px_rgba(0,0,0,0.9),0_10px_20px_rgba(0,0,0,0.5)]"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             transition={{ type: 'spring', stiffness: 400, damping: 25 }}
           >
             {/* Space / Portal Background */}
             <div 
-              className="absolute inset-0 z-0 pointer-events-none opacity-60"
-              style={{
-                background: 'radial-gradient(circle at 50% 30%, #6b21a8 0%, #2e1065 40%, #050011 80%)',
-              }}
+              className="absolute inset-0 z-0 pointer-events-none opacity-60 bg-[radial-gradient(circle_at_50%_30%,#6b21a8_0%,#2e1065_40%,#050011_80%)]"
             />
 
             {/* Background Flash (Desktop Hover Only) */}

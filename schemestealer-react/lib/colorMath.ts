@@ -1,5 +1,5 @@
 import spectral from 'spectral.js';
-import { differenceCiede2000, converter, formatHex } from 'culori';
+import { differenceCiede2000, converter, formatHex, type Lab65 } from 'culori';
 import paintsData from './data/paints_groundtruth.json';
 
 export interface RGB {
@@ -39,7 +39,7 @@ const PAINTS_BY_ID = new Map(PAINTS.map(p => [p.paint_id, p]));
 /** The paint's measured applied colour as a hex (falls back to chart hex). */
 function measuredHex(p: PaintGroundTruth): string {
   if (!p.lab) return p.hex;
-  const rgb = toRgb({ mode: 'lab65', l: p.lab[0], a: p.lab[1], b: p.lab[2] } as any);
+  const rgb = toRgb({ mode: 'lab65', l: p.lab[0], a: p.lab[1], b: p.lab[2] } as Lab65);
   return rgb ? formatHex(rgb).toUpperCase() : p.hex;
 }
 
@@ -106,7 +106,6 @@ export function mixColorsWeighted(ingredients: Ingredient[]): string | null {
   });
 
   // Call spectral.mix with the spread arguments
-  // @ts-ignore - spectral.js types are not well defined
   const mixedColor = spectral.mix(...spectralArgs);
 
   // The result is a Color object with sRGB array [r, g, b]
@@ -161,8 +160,8 @@ export function findClosestPaint(targetHex: string) {
   for (const paint of PAINTS) {
     if (!paint.lab || paint.metallic) continue;
 
-    const paintLab = { mode: 'lab65', l: paint.lab[0], a: paint.lab[1], b: paint.lab[2] };
-    const deltaE = differenceCiede2000()(targetLab, paintLab as any);
+    const paintLab: Lab65 = { mode: 'lab65', l: paint.lab[0], a: paint.lab[1], b: paint.lab[2] };
+    const deltaE = differenceCiede2000()(targetLab, paintLab);
 
     if (deltaE < minDeltaE) {
       minDeltaE = deltaE;
@@ -175,7 +174,7 @@ export function findClosestPaint(targetHex: string) {
   // Map to the format expected by the frontend (with band)
   return {
     ...bestMatch,
-    type: (bestMatch as any).category || 'Base',
+    type: (bestMatch as PaintGroundTruth & { category?: string }).category || 'Base',
     delta_e: minDeltaE.toFixed(1),
     band: getDeltaEBand(minDeltaE)
   };
@@ -209,8 +208,8 @@ export function findTopAlternativeMatches(
     .filter(p => allowedBrands.includes(p.brand) && p.lab
       && (opts.includeMetallics || !p.metallic))
     .map(p => {
-      const pLab = { mode: 'lab65', l: p.lab[0], a: p.lab[1], b: p.lab[2] };
-      const deltaE = differenceCiede2000()(targetLab, pLab as any);
+      const pLab: Lab65 = { mode: 'lab65', l: p.lab[0], a: p.lab[1], b: p.lab[2] };
+      const deltaE = differenceCiede2000()(targetLab, pLab);
       return { ...p, deltaE };
     })
     .sort((a, b) => a.deltaE - b.deltaE);
@@ -234,7 +233,7 @@ export function findTopAlternativeMatches(
 
   return results.map(match => ({
     ...match,
-    type: (match as any).category || 'Base',
+    type: (match as PaintGroundTruth & { category?: string }).category || 'Base',
     delta_e: match.deltaE.toFixed(1),
     band: getDeltaEBand(match.deltaE)
   }));
@@ -253,7 +252,6 @@ export function simulateBasecoat(
   coverage: number = 0.85,
 ): string {
   const c = Math.max(0.05, Math.min(0.98, coverage));
-  // @ts-ignore - spectral.js API
   const simulated = spectral.mix(
     [new spectral.Color(paintHex), c],
     [new spectral.Color(primerHex), 1 - c]

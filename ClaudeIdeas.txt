@@ -1,0 +1,99 @@
+# SchemeStealer — 12–18 Month Product Roadmap
+
+*Strategic brainstorm across Feature Expansion, Monetisation, and Community/UGC. Solo-dev, Next.js 15 + FastAPI. All effort/impact ratings are relative to a single developer's bandwidth.*
+
+---
+
+## Guiding principle
+
+The single biggest untapped asset is not a feature — it is the **1,200-swatch CIEDE2000 ground-truth database** itself. Most ideas below are about *monetising or distributing data already owned* rather than building new compute. The lever is flagged where it applies.
+
+---
+
+## 1. Feature Expansion (The Utility Loop)
+
+Photo-to-recipe is an **acquisition** moment, not a **retention** one. A painter uses it once per scheme, then paints for hours with the app closed. The goal of this section is to pull the app onto the desk *during* those hours.
+
+### Inventory-aware recipes — Effort: Med · Impact: Very High
+The keystone. Once a user logs the paints they own, recipes re-rank to prefer owned paints, and affiliate links only fire for genuinely missing ones. Makes the Pro inventory feature *do* something, and makes affiliate injection feel like help rather than spam (lifting conversion). Technically a re-rank pass over the existing ΔE candidate set, filtered by an owned-set — no new computer vision. **Build first; it is the spine of the whole loop.**
+
+### Barcode / paint-pot scanning — Effort: Med · Impact: High
+Logging 60 pots by hand kills onboarding. Use the native `BarcodeDetector` API (built into mobile Chrome, no heavy dependency) to scan pots straight into inventory. The work is the barcode→paint_id mapping table, not the scanning. Gaps can be crowd-sourced from users (ties into UGC). Without this, inventory adoption stays near zero.
+
+### Custom mixing maths ("I don't own this — what can I mix?") — Effort: Med-High · Impact: Very High
+The most defensible feature. Run the engine in reverse: given the target LAB and the owned set, solve for a 2–3 paint blend + ratio landing within a ΔE threshold. Start cheap with weighted LAB interpolation; refine later. Painters already think in ratios ("2:1 Mephiston:Khorne"), so they forgive approximation. Leans entirely on existing maths and is very hard to copy without the ground-truth DB.
+
+### Interactive recipe runner with dry-time timers — Effort: Low-Med · Impact: Med-High
+Turn the static 4-step recipe into a checklist worked *through* at the desk: tick Base → start a dry-time timer → unlock Shade. Service-worker notifications fire even when tabbed away. The most direct "keep the app open while painting" mechanic, and mostly frontend state. Pairs with batch tracking ("12 of 20 marines basecoated").
+
+### Swatch logger / reverse recipe save — Effort: Med · Impact: High (compounding)
+Let users photograph their own finished test swatch, name it, and save it as a personal recipe. Does three jobs at once: personal library (retention), seeds the community library, and feeds labelled ground-truth into the ML pipeline. One feature, three flywheels.
+
+**Deprioritise:** generic project timers with no recipe link; AR "paint preview on the model" (high effort, novelty value, does not deepen the loop).
+
+---
+
+## 2. Monetisation Evolution
+
+Ko-fi tipping is already live, which signals comfort with goodwill-based revenue. Build on that rather than betting everything on the subscription.
+
+### "Auspex Scans" token model — yes, but position it honestly — Effort: Med · Impact: Med-High
+Worth doing, with one caveat: a scan's actual marginal cost is tiny — it is CPU-bound LAB maths, not GPU inference. The real cost is the Render/Vercel baseline, not per-scan compute. So do **not** justify tokens as "covering compute"; a savvy user will smell it. Position them as a **low-commitment entry point**: free tier gets N full recipes/month; casual users top up with a low-cost scan pack rather than committing to a monthly sub. A conversion funnel and a fatigue-free option for the once-a-month painter. **Trap to avoid:** never gate the free base match behind tokens — that kills the acquisition hook.
+
+### B2B: license the conversion data, don't sell custom projects — Effort: Med (productised) / High (bespoke) · Impact: High
+The real money, but shape matters. Bespoke "map our new range against competitors" consulting will eat a solo dev alive. Productise instead:
+- **Cross-brand conversion charts** — gold for smaller brands (Pro Acryl, Two Thin Coats, AK) who *want* to be discovered as the cheaper/better alternative. Offer an embeddable, co-branded conversion widget on a recurring licence — near-zero per-customer effort once built.
+- **Anonymised demand intelligence** — scans and family corrections are already logged. Aggregate "most-searched colours this quarter" into a market-trend report manufacturers would pay for. Monetises a free byproduct.
+
+Approach **small** brands first — most to gain from conversion charts, least bureaucracy. GW will never call back; AK or TTC might.
+
+### Lifetime licence — viable, but ring-fence it — Effort: Low · Impact: High (short-term cash)
+At current scale, marginal per-user cost is near zero, so a lifetime tier is mostly upside *now*. Two guardrails:
+1. Cap it as a **limited Founders' offer** (e.g. first 500 users) — raises a cash lump for the lean monetisation phase and creates evangelists, without saddling you with infinite-cost users forever.
+2. Word it as "lifetime access to **current** Pro features," explicitly **not** future ML-inference features that carry real per-call cost. That sentence protects you the day XGBoost inference ships.
+
+Build is trivial (one Stripe one-time SKU); the risk is entirely in the wording.
+
+### Affiliate evolution: bundle the recipe — Effort: Low-Med · Impact: Med-High
+Once inventory-aware recipes exist, offer a **"buy the missing paints as a kit"** one-tap basket. Higher basket value, better conversion, surfaces only what the user genuinely lacks. The cheapest revenue lift on the list — the affiliate plumbing already exists; you are just making it smarter.
+
+---
+
+## 3. Community & User-Generated Content (UGC)
+
+For a solo dev, leverage compounds through **programmatic SEO**, not social features. Don't build a social network — build a content engine that Google indexes.
+
+### Programmatic SEO from data you already own — do this before any "community" — Effort: Med · Impact: Very High
+The highest-ROI item in the entire roadmap, and it needs **zero users** to start. Auto-generate thousands of indexable pages from the existing database, today:
+- A page per paint: `/paints/citadel/mephiston-red`
+- A page per cross-brand conversion: `/convert/citadel-mephiston-red-to-vallejo`
+
+Painters Google "Citadel X Vallejo equivalent" constantly. You have the ΔE data to answer definitively where blog posts cannot. Next 15's app router with SSG/ISR is purpose-built for this. **Ship early — it is the marketing channel, not a side feature.** Compute conversions once with the existing engine (reuse `PaintMatcher` + `ciede2000_single`), emit a static `conversions.json`, and statically generate all pages with zero backend calls. Label honestly by ΔE band so the pages out-trust blog posts.
+
+### Community recipe library — Effort: Med-High · Impact: Very High (but second)
+Built on the swatch logger: users publish saved recipes to public, SEO-indexed pages (`/recipes/blood-angels-red`). Each published recipe is another indexable page plus social proof. Closes the loop with the ML plan — instead of *scraping* tutorial sites for labelled data, users *generate* it natively and consensually.
+
+### Moderation is the real constraint — design around it
+Open image-upload UGC is a moderation burden a solo dev cannot staff. Mitigations: launch **text-recipe-first** (paint IDs + ratios, very low abuse surface); make finished-mini photo galleries a later, gated addition; ship report-button + auto-hide-on-N-reports from day one; consider invite-only seeding for the first cohort so the initial library is high-quality and self-policing.
+
+### Discord, not in-app social — Effort: Low · Impact: Med
+The community already lives on Discord. Build a **share-to-Discord** export for recipes and, later, a lightweight match bot. Meet users where they are rather than competing with where they are.
+
+---
+
+## Sequenced priority (the actual 12–18 month map)
+
+| Phase | Build | Effort | Impact | Why here |
+|---|---|---|---|---|
+| Wave 3a (now) | Programmatic SEO pages (paints + conversions) | Med | Very High | Free traffic, zero users needed, pure leverage |
+| Wave 3b | Stripe + Lifetime Founders' offer (capped) | Low | High | Cash injection to fund the lean period |
+| Wave 3c | Inventory + barcode scanning | Med | Very High | Keystone for the whole utility loop |
+| Wave 4a | Inventory-aware recipes + affiliate kit bundles | Med | Very High | Activates inventory; lifts affiliate revenue |
+| Wave 4b | Recipe runner + dry-time timers | Low-Med | Med-High | The "open at the desk" mechanic |
+| Wave 4c | Swatch logger | Med | High | Feeds personal library, community, and ML |
+| Wave 5a | Custom mixing maths | Med-High | Very High | Most defensible feature |
+| Wave 5b | Community recipe library (text-first) | Med-High | Very High | UGC SEO flywheel |
+| Opportunistic | B2B conversion-chart licensing (small brands) | Med | High | Pursue when a brand reaches out / bandwidth allows |
+| Token packs | Casual-user entry point | Med | Med-High | Slot in once metering exists |
+
+**Throughline:** SEO pages and inventory come first — they are the marketing channel and the retention spine respectively, and both monetise the database already paid for in swatch photography. The sexier work (mixing maths, community) is higher-impact but only pays off once those two foundations exist.

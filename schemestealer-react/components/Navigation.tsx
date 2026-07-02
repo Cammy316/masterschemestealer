@@ -165,7 +165,11 @@ function NavLink({ href, icon, label, isActive, theme }: NavLinkProps) {
   const colors = themeColors[theme];
 
   return (
-    <Link href={href} className="relative touch-target">
+    <Link 
+      href={href} 
+      aria-current={isActive ? "page" : undefined}
+      className="relative touch-target rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--cogitator-green)]"
+    >
       <motion.div
         className="flex flex-col items-center justify-center px-1 sm:px-3 py-2 rounded-lg relative overflow-hidden min-w-0"
         whileTap={{ scale: 0.9 }}
@@ -187,17 +191,12 @@ function NavLink({ href, icon, label, isActive, theme }: NavLinkProps) {
         {/* Active glow effect */}
         {isActive && (
           <motion.div
-            className="absolute inset-0 rounded-lg"
+            className="absolute inset-0 rounded-lg pointer-events-none"
             style={{
-              boxShadow: `0 0 15px ${colors.glow}, inset 0 0 10px ${colors.glow}`,
+              boxShadow: `0 0 20px ${colors.glow}, inset 0 0 10px ${colors.glow}`,
             }}
-            animate={{
-              boxShadow: [
-                `0 0 10px ${colors.glow}`,
-                `0 0 20px ${colors.glow}`,
-                `0 0 10px ${colors.glow}`,
-              ],
-            }}
+            initial={{ opacity: 0.5 }}
+            animate={{ opacity: [0.5, 1, 0.5] }}
             transition={{
               duration: 2,
               repeat: Infinity,
@@ -214,6 +213,7 @@ function NavLink({ href, icon, label, isActive, theme }: NavLinkProps) {
             scale: isActive ? 1.1 : 1,
           }}
           transition={{ duration: 0.2 }}
+          aria-hidden="true"
         >
           {icon}
         </motion.div>

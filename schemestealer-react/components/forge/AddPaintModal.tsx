@@ -2,30 +2,35 @@
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { useAppStore } from '@/lib/store';
 import { Paint } from '@/lib/types';
-import paintsData from '@/lib/data/paints_groundtruth.json';
-import { findTopAlternativeMatches } from '@/lib/colorMath';
-
 interface AddPaintModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAddPaint: (paint: Paint) => void;
 }
 
-// Convert ground truth format to Paint type internally
-const allPaints: Paint[] = (paintsData as any[]).map(p => ({
-  id: p.paint_id,
-  name: p.name,
-  brand: p.brand,
-  hex: p.hex,
-  type: p.category || 'Base',
-  colorFamily: p.color_family
-}));
-
 export default function AddPaintModal({ isOpen, onClose, onAddPaint }: AddPaintModalProps) {
   const { inventory } = useAppStore();
   const [activeTab, setActiveTab] = useState<'search' | 'scan'>('search');
+  const [allPaints, setAllPaints] = useState<Paint[]>([]);
+
+  useEffect(() => {
+    if (isOpen && allPaints.length === 0) {
+      import('@/lib/data/paints_groundtruth.json').then((module) => {
+        const data = module.default;
+        setAllPaints((data as any[]).map(p => ({
+          id: p.paint_id,
+          name: p.name,
+          brand: p.brand,
+          hex: p.hex,
+          type: p.category || 'Base',
+          colorFamily: p.color_family
+        })));
+      });
+    }
+  }, [isOpen, allPaints.length]);
   
   // Search State
   const [searchQuery, setSearchQuery] = useState('');
@@ -143,21 +148,25 @@ export default function AddPaintModal({ isOpen, onClose, onAddPaint }: AddPaintM
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { duration: 0.1 } }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-void-black/80 backdrop-blur-sm"
-        >
+        <Dialog static open={isOpen} onClose={onClose} className="relative z-50">
           <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: { duration: 0.1 } }}
+            className="fixed inset-0 bg-void-black/80 backdrop-blur-sm"
+            aria-hidden="true"
+          />
+          <div className="fixed inset-0 flex items-center justify-center p-4">
+          <DialogPanel
+            as={motion.div}
             initial={{ scale: 0.95, y: 20 }}
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.95, y: 20, transition: { duration: 0.1 } }}
             className="w-full max-w-lg bg-charcoal border border-brass rounded-lg overflow-hidden shadow-[0_0_40px_rgba(184,134,11,0.2)] flex flex-col max-h-[85vh]"
           >
             {/* Header */}
-            <div className="p-4 border-b border-gray-800 flex justify-between items-center bg-void-black">
-              <h3 className="text-lg text-imperial-gold/80 cyber-text tracking-[0.2em] drop-shadow-[0_0_8px_rgba(255,215,0,0.4)] uppercase">ACQUISITION LOG</h3>
+            <div className="p-4 border-b border-gray-800 flex justify-between items-center bg-void-black shrink-0">
+              <DialogTitle className="text-lg text-imperial-gold/80 cyber-text tracking-[0.2em] drop-shadow-[0_0_8px_rgba(255,215,0,0.4)] uppercase">ACQUISITION LOG</DialogTitle>
               <button onClick={onClose} className="text-gray-500 hover:text-white transition-colors">✕</button>
             </div>
 
@@ -361,8 +370,9 @@ export default function AddPaintModal({ isOpen, onClose, onAddPaint }: AddPaintM
                 </div>
               )}
             </div>
-          </motion.div>
-        </motion.div>
+          </DialogPanel>
+          </div>
+        </Dialog>
       )}
     </AnimatePresence>
   );

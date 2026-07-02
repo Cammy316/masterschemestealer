@@ -46,6 +46,23 @@ const MAX_QUEUE_SIZE = 100;
 const MAX_RETRIES = 3;
 
 // ============================================================================
+// Consent Management
+// ============================================================================
+
+export function getConsentState(): 'granted' | 'denied' | 'pending' {
+  if (typeof window === 'undefined') return 'pending';
+  const val = localStorage.getItem('schemestealer-analytics-consent');
+  if (val === 'granted') return 'granted';
+  if (val === 'denied') return 'denied';
+  return 'pending';
+}
+
+export function setConsent(granted: boolean): void {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem('schemestealer-analytics-consent', granted ? 'granted' : 'denied');
+}
+
+// ============================================================================
 // Session Management
 // ============================================================================
 
@@ -149,6 +166,7 @@ class AnalyticsService {
    */
   track(eventName: AnalyticsEventName, properties: Record<string, string | number | boolean | null> = {}): void {
     if (typeof window === 'undefined') return;
+    if (getConsentState() !== 'granted') return;
 
     const event: AnalyticsEvent = {
       event_name: eventName,

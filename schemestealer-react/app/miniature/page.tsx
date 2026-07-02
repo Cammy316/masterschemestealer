@@ -77,40 +77,21 @@ export default function MiniscanPage() {
     if (file) handleFileSelect(file);
   };
 
-  // Show warm-up screen while backend scanner is initialising
-  if (!apiReady) {
-    return (
-      <div className="min-h-dvh flex items-center justify-center cogitator-screen" style={{ background: 'var(--void-black)' }}>
-        <div className="text-center px-8">
-          <motion.div
-            className="text-5xl mb-6"
-            animate={{ rotate: 360 }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
-          >
-            ⚙
-          </motion.div>
-          <h2 className="text-xl font-bold gothic-text auspex-text mb-2">
-            MACHINE SPIRIT AWAKENING
-          </h2>
-          <p className="text-cogitator-green-dim tech-text text-sm mb-6">
-            Initialising Cogitator arrays... please wait
-          </p>
-          <motion.div
-            className="flex gap-2 justify-center"
-            animate={{ opacity: [0.3, 1, 0.3] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          >
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="w-2 h-2 rounded-full bg-green-500" />
-            ))}
-          </motion.div>
-          <p className="text-cogitator-green-dim/50 tech-text text-xs mt-6">
-            First activation after dormancy takes ~60 seconds
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // Display a subtle warm-up banner instead of gating the entire UI
+  const apiWarmupBanner = !apiReady && !isProcessing && (
+    <motion.div 
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-black/80 border border-green-500/50 rounded-full px-4 py-2 flex items-center gap-3 shadow-[0_0_10px_rgba(0,255,65,0.2)] backdrop-blur-sm"
+    >
+      <motion.div animate={{ rotate: 360 }} transition={{ duration: 2, repeat: Infinity, ease: 'linear' }} className="text-green-500">
+        ⚙
+      </motion.div>
+      <span className="text-xs text-green-500 tech-text uppercase tracking-widest">
+        Machine Spirit Waking (~60s)
+      </span>
+    </motion.div>
+  );
 
   // If we have an active scan (processing) or are showing the reveal, we still 
   // render the main layout but pass the state down to CogitatorUpload so it can
@@ -119,6 +100,7 @@ export default function MiniscanPage() {
 
   return (
     <div className="min-h-dvh pb-24 pt-[clamp(0.75rem,3vh,2rem)] px-4 cogitator-screen" style={{ background: 'var(--void-black)' }}>
+      {apiWarmupBanner}
       {/* Targeting brackets - corner overlays */}
       <div className="fixed inset-4 pointer-events-none z-20">
         {/* Top Left */}

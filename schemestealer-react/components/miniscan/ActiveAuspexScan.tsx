@@ -33,6 +33,13 @@ export function ActiveAuspexScan({
   const wipeControls = useAnimation();
   const [crosshairs, setCrosshairs] = useState<ColorPoint[]>([]);
 
+  // Stable random sequences to satisfy React purity
+  const dataSeq = React.useMemo(() => Math.random().toString(16).substring(2, 6).toUpperCase(), []);
+  const loadSeqs = React.useMemo(() => [...Array(4)].map(() => Math.random().toString(36).substring(2, 8).toUpperCase()), []);
+  const reticleSeqs = React.useMemo(() => 
+    reticleData.map(() => Math.floor(Math.random()*65535).toString(16).toUpperCase().padStart(4, '0')), 
+  [reticleData.length]);
+
   // Calculate actual normalized positions based on image aspect ratio
   const imgRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -137,7 +144,7 @@ export function ActiveAuspexScan({
                 ) : (
                   <div className="animate-pulse">
                     EXTRACTING CHROMATIC DATA...<br/>
-                    <span className="opacity-70">0x{Math.random().toString(16).substring(2, 6).toUpperCase()}</span>
+                    <span className="opacity-70">0x{dataSeq}</span>
                   </div>
                 )}
               </div>
@@ -150,8 +157,8 @@ export function ActiveAuspexScan({
             {/* Bottom Bar */}
             <div className="flex justify-between items-end text-[9px] text-cogitator-green-dim font-mono">
               <div className="flex flex-col gap-0.5">
-                {[...Array(4)].map((_, i) => (
-                  <div key={i} className="opacity-50">SEQ_{i}: {Math.random().toString(36).substring(2, 8).toUpperCase()}</div>
+                {loadSeqs.map((seq, i) => (
+                  <div key={i} className="opacity-50">SEQ_{i}: {seq}</div>
                 ))}
               </div>
               <div className="text-right">
@@ -242,7 +249,7 @@ export function ActiveAuspexScan({
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <div className="text-[10px] text-cogitator-green-dim font-mono mb-[2px]">0x{Math.floor(Math.random()*65535).toString(16).toUpperCase().padStart(4, '0')} {'->'}</div>
+              <div className="text-[10px] text-cogitator-green-dim font-mono mb-[2px]">0x{reticleSeqs[index] || 'A1B2'} {'->'}</div>
               <div className="text-xs text-cogitator-green font-bold font-mono tracking-widest">{reticle.name.toUpperCase()}</div>
             </motion.div>
           </motion.div>

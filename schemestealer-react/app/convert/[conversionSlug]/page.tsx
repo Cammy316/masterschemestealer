@@ -11,6 +11,16 @@ type Props = {
   params: Promise<{ conversionSlug: string }>;
 };
 
+let cachedConversions: any = null;
+
+function getConversions() {
+  if (cachedConversions) return cachedConversions;
+  const filePath = path.join(process.cwd(), 'lib', 'data', 'conversions.json');
+  const fileData = fs.readFileSync(filePath, 'utf8');
+  cachedConversions = JSON.parse(fileData);
+  return cachedConversions;
+}
+
 export async function generateStaticParams() {
   const filePath = path.join(process.cwd(), 'lib', 'data', 'conversion_paths.json');
   const fileData = fs.readFileSync(filePath, 'utf8');
@@ -28,9 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!match) return { title: 'Not Found' };
   const [, fromSlug, toBrand] = match;
 
-  const filePath = path.join(process.cwd(), 'lib', 'data', 'conversions.json');
-  const fileData = fs.readFileSync(filePath, 'utf8');
-  const data = JSON.parse(fileData);
+  const data = getConversions();
   
   const paintData = data.paints[fromSlug];
   if (!paintData) return { title: 'Not Found' };
@@ -42,12 +50,36 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   
   const displayName = source.old_name ? `${source.name} (formerly ${source.old_name})` : source.name;
 
+  const pageTitle = `${targetBrandName} Equivalent to ${source.brand} ${displayName} | SchemeStealer`;
+  const pageDescription = `Find the closest ${targetBrandName} alternative for ${source.brand} ${source.name}. Compare paint swatches and view color accuracy (\u0394E) to find the perfect drop-in substitute.`;
+
   return {
-    title: `${targetBrandName} Equivalent to ${source.brand} ${displayName} | SchemeStealer`,
-    description: `Find the closest ${targetBrandName} alternative for ${source.brand} ${source.name}. Compare paint swatches and view color accuracy (\u0394E) to find the perfect drop-in substitute.`,
+    title: pageTitle,
+    description: pageDescription,
     alternates: {
       canonical: `https://schemestealer.com/convert/${resolvedParams.conversionSlug}`,
-    }
+    },
+    openGraph: {
+      title: pageTitle,
+      description: pageDescription,
+      url: `https://schemestealer.com/convert/${resolvedParams.conversionSlug}`,
+      siteName: 'SchemeStealer',
+      images: [
+        {
+          url: `/convert/${resolvedParams.conversionSlug}/opengraph-image`,
+          width: 1200,
+          height: 630,
+        },
+      ],
+      locale: 'en_US',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: pageTitle,
+      description: pageDescription,
+      images: [`/convert/${resolvedParams.conversionSlug}/opengraph-image`],
+    },
   };
 }
 
@@ -58,9 +90,7 @@ export default async function ConversionPage({ params }: Props) {
   if (!match) notFound();
   const [, fromSlug, toBrand] = match;
 
-  const filePath = path.join(process.cwd(), 'lib', 'data', 'conversions.json');
-  const fileData = fs.readFileSync(filePath, 'utf8');
-  const data = JSON.parse(fileData);
+  const data = getConversions();
   
   const paintData = data.paints[fromSlug];
   if (!paintData) notFound();

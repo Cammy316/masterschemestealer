@@ -51,12 +51,7 @@ export function CogitatorUpload({
     <div className="relative max-w-2xl mx-auto w-full">
       {/* Brass Casing */}
       <div 
-        className="rounded-xl p-2 md:p-3 shadow-2xl relative"
-        style={{
-          background: 'linear-gradient(135deg, #1a1510 0%, #4a3e20 20%, #8b7337 50%, #4a3e20 80%, #1a1510 100%)',
-          boxShadow: 'inset 0 0 10px rgba(0,0,0,0.8), 0 10px 40px rgba(0,0,0,0.8)',
-          border: '1px solid #a38947'
-        }}
+        className="rounded-xl p-2 md:p-3 shadow-[inset_0_0_10px_rgba(0,0,0,0.8),0_10px_40px_rgba(0,0,0,0.8)] relative bg-[linear-gradient(135deg,#1a1510_0%,#4a3e20_20%,#8b7337_50%,#4a3e20_80%,#1a1510_100%)] border border-[#a38947]"
       >
         {/* Rivets */}
         {[
@@ -68,20 +63,11 @@ export function CogitatorUpload({
 
         {/* CRT Screen Frame */}
         <div 
-          className="rounded-lg p-4 md:p-8 relative overflow-hidden flex flex-col"
-          style={{
-            backgroundColor: '#031005',
-            boxShadow: 'inset 0 0 60px rgba(0,0,0,0.9), inset 0 0 20px rgba(0,255,0,0.15)',
-            border: '2px solid #0a0a0a',
-          }}
+          className="rounded-lg p-4 md:p-8 relative overflow-hidden flex flex-col bg-[#031005] shadow-[inset_0_0_60px_rgba(0,0,0,0.9),inset_0_0_20px_rgba(0,255,0,0.15)] border-2 border-[#0a0a0a]"
         >
           {/* Active Auspex Grid */}
           <div 
-            className="absolute inset-0 opacity-15 pointer-events-none"
-            style={{
-              backgroundImage: 'linear-gradient(to right, rgba(0,255,0,0.4) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,255,0,0.4) 1px, transparent 1px)',
-              backgroundSize: '24px 24px'
-            }}
+            className="absolute inset-0 opacity-15 pointer-events-none bg-[linear-gradient(to_right,rgba(0,255,0,0.4)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,255,0,0.4)_1px,transparent_1px)] bg-[size:24px_24px]"
           />
 
           {/* CRT Scanline overlay */}
@@ -140,8 +126,7 @@ export function CogitatorUpload({
                   <ServoSkull className="w-20 h-24" isScanning={false} />
                 </div>
 
-                {/* Title */}
-                <h2 className="auspex-text text-[clamp(1rem,4.5vw,1.25rem)] text-balance font-bold text-center mb-2 gothic-text" style={{ textShadow: '0 0 10px var(--cogitator-green)' }}>
+                <h2 className="auspex-text text-[clamp(1rem,4.5vw,1.25rem)] text-balance font-bold text-center mb-2 gothic-text [text-shadow:0_0_10px_var(--cogitator-green)]">
                   ◆ INITIALIZE AUSPEX SCAN ◆
                 </h2>
                 <p className="text-cogitator-green-dim text-sm text-center mb-6 tech-text">
@@ -154,8 +139,7 @@ export function CogitatorUpload({
               <motion.button
                 onClick={onCameraActivate}
                 disabled={disabled}
-                className="w-full py-4 px-6 rounded-lg border border-cogitator-green bg-black/60 hover:bg-cogitator-green/10 touch-target disabled:opacity-50"
-                style={{ boxShadow: 'inset 0 0 15px rgba(0,255,0,0.05)' }}
+                className="w-full py-4 px-6 rounded-lg border border-cogitator-green bg-black/60 hover:bg-cogitator-green/10 touch-target disabled:opacity-50 shadow-[inset_0_0_15px_rgba(0,255,0,0.05)]"
                 whileHover={disabled ? {} : {
                   boxShadow: 'inset 0 0 20px rgba(0,255,0,0.15), 0 0 15px var(--cogitator-green-glow)',
                   scale: 1.01,
@@ -185,8 +169,7 @@ export function CogitatorUpload({
               <motion.button
                 onClick={handleUploadClick}
                 disabled={disabled}
-                className="w-full py-4 px-6 rounded-lg border border-brass bg-black/60 hover:bg-brass/10 cursor-pointer touch-target disabled:opacity-50"
-                style={{ boxShadow: 'inset 0 0 15px rgba(163,137,71,0.05)' }}
+                className="w-full py-4 px-6 rounded-lg border border-brass bg-black/60 hover:bg-brass/10 cursor-pointer touch-target disabled:opacity-50 shadow-[inset_0_0_15px_rgba(163,137,71,0.05)]"
                 whileHover={disabled ? {} : {
                   boxShadow: 'inset 0 0 20px rgba(163,137,71,0.15), 0 0 15px rgba(163,137,71,0.5)',
                   scale: 1.01,
