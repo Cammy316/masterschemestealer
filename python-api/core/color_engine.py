@@ -138,16 +138,25 @@ def is_metallic_surface(brightness_std: float, median_sat: float,
                         median_val: float) -> bool:
     """The single metallic-SURFACE test (specular variance).
 
-    Metallic paint scatters light unevenly, so a cluster's per-pixel brightness
-    has high variance (specular highlights); a dark, desaturated surface with
-    moderate variance reads as gunmetal/iron. This is the up-to-date detector
-    that replaces the old `_is_gold_in_lab` hue hack — it is shared by
-    `ColorAnalyzer.detect_metallic` (from a pixel array) and the live scan (from
-    a cluster's stats) so there is exactly ONE metallic decision.
+    Metallic paint scatters light unevenly, so its brightness has high
+    variance; a dark, desaturated surface with moderate variance reads as
+    gunmetal/iron. `brightness_std` must be a LOCAL variance statistic (the
+    scan passes the within-superpixel brightness std): metallic sparkle is
+    high-frequency, whereas a matte cluster spanning lit-to-shadow has a huge
+    cluster-WIDE std but is smooth locally — feeding the cluster-wide value
+    here is what turned pink bodies "Bronze" and black armour "Silver" in
+    production. There is exactly ONE metallic decision, shared by every
+    caller.
     """
     if brightness_std > 25:
         return True
     return brightness_std > 18 and median_val < 0.65 and median_sat < 0.25
+
+
+def black_floor_l() -> float:
+    """The classifier's black floor (L* below which no reliable hue exists) —
+    exposed for scan-side guards so the threshold has one home."""
+    return float(_load_anchors()['thresholds']['black_l'])
 
 
 _ANCHORS_PATH = os.path.join(os.path.dirname(__file__), '..', 'color_anchors.json')
