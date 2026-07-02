@@ -278,16 +278,15 @@ class SmartColorExtractor:
             logger.warning(f"SLIC failed ({e}) — falling back to per-pixel clustering")
             return np.arange(len(surviving_indices))
     
-    # Same-family clusters farther than this (OKLab Euclidean) from the
-    # family group's coverage-weighted centre are NOT merged — merging, say,
-    # seven scattered "Silver" clusters spanning L* 10–80 produces one blob
-    # with a meaningless average colour and a reveal mask covering half the
-    # model (the prod scattered-targeting failure).
-    _DEDUP_SPREAD_OK = 0.12
-
     def _deduplicate_by_family(self, clusters: List[Dict]) -> List[Dict]:
-        """Merge clusters that share the exact same family name — but only
-        those that are also perceptually close; outliers stay separate."""
+        """Consolidate clusters that share a family name — ramp-aware.
+
+        Within a family the hue is already agreed, so members are grouped by
+        the ramp metric at its generous threshold: a full lit-to-shadow ramp
+        of one painted surface becomes ONE card with one coherent reveal
+        mask (the isotropic guard split one blue armour into three Blue
+        cards), while genuinely different same-family paints — beyond the
+        ΔL cap or with distinct tints — stay separate."""
         if not clusters: return []
 
         groups = {}
@@ -304,26 +303,24 @@ class SmartColorExtractor:
                 final_clusters.append(group[0])
                 continue
 
-            # Coverage-weighted family centre in OKLab; members beyond the
-            # spread radius are kept as their own clusters.
-            oks = lab_to_oklab(np.array([c['median_lab'] for c in group]))
-            weights = np.array([c['coverage'] for c in group], dtype=float)
-            centre = np.average(oks, axis=0, weights=weights)
-            dists = np.linalg.norm(oks - centre, axis=1)
+            sub_labels = self._ramp_groups(group, self._RAMP_FAMILY_THRESHOLD)
+            subs: Dict[int, List[Dict]] = {}
+            for cluster, s in zip(group, sub_labels):
+                subs.setdefault(int(s), []).append(cluster)
 
-            core = [c for c, d in zip(group, dists) if d <= self._DEDUP_SPREAD_OK]
-            outliers = [c for c, d in zip(group, dists) if d > self._DEDUP_SPREAD_OK]
-
-            if len(core) > 1:
-                logger.info(f"Deduplicating {len(core)} clusters of family '{fam}'"
-                            + (f" ({len(outliers)} kept separate)" if outliers else ""))
-                combined = self._combine_clusters(core)
-                combined['family'] = fam
-                combined['confidence'] = np.mean([c.get('confidence', 1.0) for c in core])
-                final_clusters.append(combined)
-            else:
-                final_clusters.extend(core)
-            final_clusters.extend(outliers)
+            merged_n = sum(1 for members in subs.values() if len(members) > 1)
+            if merged_n:
+                logger.info(f"Deduplicating family '{fam}': {len(group)} clusters "
+                            f"-> {len(subs)} card(s)")
+            for members in subs.values():
+                if len(members) == 1:
+                    final_clusters.append(members[0])
+                else:
+                    combined = self._combine_clusters(members)
+                    combined['family'] = fam
+                    combined['confidence'] = np.mean(
+                        [c.get('confidence', 1.0) for c in members])
+                    final_clusters.append(combined)
 
         final_clusters.sort(key=lambda x: x['coverage'], reverse=True)
         return final_clusters
@@ -349,30 +346,58 @@ class SmartColorExtractor:
 
         return (small_hi(c1) and large_lo(c2)) or (small_hi(c2) and large_lo(c1))
 
-    # Complete-linkage merge threshold in OKLab Euclidean distance —
-    # calibrated to the old CIEDE2000-6 merge distance (median equivalence
-    # ≈ 0.053). Fixed, not data-dependent: the old min(6, mean/2) rule shrank
-    # on monochrome scenes and under-merged them.
-    _MERGE_THRESHOLD_OK = 0.055
+    # --- Ramp-aware grouping (paint-surface identity) -----------------------
+    # A painted surface is a base coat + shade + highlight: a LIGHTNESS RAMP
+    # at roughly constant hue/chroma. Grouping therefore measures distance
+    # with lightness discounted — paint identity lives in the OKLab (a, b)
+    # plane, shading lives in L:
+    #     d_ramp = sqrt(wL·ΔL² + Δa² + Δb²)
+    # An isotropic metric split one blue armour into three Blue cards (its
+    # shading bands are ΔL ≈ 0.25 apart) while any threshold loose enough to
+    # span a ramp would merge blue into purple. The ΔL-span cap keeps
+    # opposite ends of the lightness axis (black armour vs white heraldry)
+    # from collapsing into one card even at Δa=Δb=0.
+    _RAMP_L_WEIGHT = 0.1
+    # Tight threshold for the pre-classification merge: joins adjacent
+    # shading bands (including across a family boundary, e.g. pink body →
+    # magenta shadow) without ever bridging distinct hues.
+    _RAMP_MERGE_THRESHOLD = 0.06
+    # Generous threshold for same-family dedup: within a family the hue is
+    # already agreed, so full lit-to-shadow ramps consolidate into one card.
+    _RAMP_FAMILY_THRESHOLD = 0.16
+    _RAMP_MAX_L_SPAN = 0.5
+
+    def _ramp_groups(self, clusters: List[Dict], threshold: float) -> np.ndarray:
+        """Group labels from capped complete-linkage over the ramp metric.
+
+        Complete linkage keeps the grouping order-independent and, combined
+        with the pairwise ΔL cap (blocked pairs get an effectively infinite
+        distance), bounds every group's lightness span.
+        """
+        from scipy.cluster.hierarchy import fcluster, linkage
+        from scipy.spatial.distance import squareform
+
+        oks = lab_to_oklab(np.array([c['median_lab'] for c in clusters]))
+        diff = oks[:, None, :] - oks[None, :, :]
+        d = np.sqrt(self._RAMP_L_WEIGHT * diff[..., 0] ** 2
+                    + diff[..., 1] ** 2 + diff[..., 2] ** 2)
+        d[np.abs(diff[..., 0]) > self._RAMP_MAX_L_SPAN] = 1e6
+        condensed = squareform(d, checks=False)
+        return fcluster(linkage(condensed, method='complete'),
+                        t=threshold, criterion='distance')
 
     def _merge_perceptually_similar(self, clusters: List[Dict], pixels_lab: np.ndarray) -> List[Dict]:
         """Merge perceptually similar clusters — order-independent.
 
-        Complete-linkage agglomerative grouping in OKLab: two clusters end up
+        Capped complete-linkage over the ramp metric: two clusters end up
         together only if EVERY pair in the group is within the threshold, so
         there is no greedy chaining and the result cannot depend on K-means
-        label numbering (the old single-pass loop absorbed neighbours in
-        visit order — audit F7).
+        label numbering (audit F7).
         """
         if len(clusters) <= 1:
             return clusters
 
-        from scipy.cluster.hierarchy import fcluster, linkage
-        from scipy.spatial.distance import pdist
-
-        medians_ok = lab_to_oklab(np.array([c['median_lab'] for c in clusters]))
-        groups = fcluster(linkage(pdist(medians_ok), method='complete'),
-                          t=self._MERGE_THRESHOLD_OK, criterion='distance')
+        groups = self._ramp_groups(clusters, self._RAMP_MERGE_THRESHOLD)
 
         by_group: Dict[int, List[Dict]] = {}
         for cluster, g in zip(clusters, groups):

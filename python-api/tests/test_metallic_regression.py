@@ -135,10 +135,12 @@ def test_near_black_cluster_is_never_a_scan_metal(extractor):
     assert cluster["is_metallic"] is False
 
 
-def test_family_dedup_keeps_distant_clusters_separate(extractor):
-    """Seven scattered 'Silver' clusters merging into one 71.5% blob with a
-    meaningless average colour was the scattered-reveal-mask failure. Same-
-    family clusters merge only when perceptually close."""
+def test_family_dedup_merges_ramps_but_respects_the_lightness_cap(extractor):
+    """Ramp-aware dedup: a painted surface's lightness bands (mid greys of
+    one armour) consolidate into ONE card, but the ΔL-span cap keeps the
+    opposite ends of the lightness axis apart — near-black armour and
+    near-white trim must never collapse into one blob (the scattered-
+    reveal-mask failure)."""
     def cl(lab, rgb, cov, idx):
         return {
             "family": "Grey", "confidence": 0.9,
@@ -151,12 +153,13 @@ def test_family_dedup_keeps_distant_clusters_separate(extractor):
             "pixel_indices": np.arange(idx, idx + 10),
         }
 
-    near_a = cl((45.0, 0.5, 0.5), (107, 107, 107), 20.0, 0)
-    near_b = cl((50.0, -0.5, 0.0), (119, 119, 119), 15.0, 100)   # close to near_a
-    far = cl((85.0, 0.0, 1.0), (214, 214, 214), 10.0, 200)       # very light grey
+    shadow = cl((30.0, 0.5, 0.5), (72, 72, 72), 20.0, 0)      # armour shadow
+    lit = cl((48.0, -0.5, 0.0), (114, 114, 114), 15.0, 100)   # armour lit band
+    near_white = cl((92.0, 0.0, 1.0), (232, 232, 232), 10.0, 200)
 
-    result = extractor._deduplicate_by_family([near_a, near_b, far])
+    result = extractor._deduplicate_by_family([shadow, lit, near_white])
     assert len(result) == 2, (
-        f"expected close pair merged + far kept separate, got {len(result)}")
+        f"expected armour ramp merged + near-white separate, got "
+        f"{[(round(c['coverage'], 1), round(c['median_lab'][0], 1)) for c in result]}")
     coverages = sorted(round(c["coverage"], 1) for c in result)
     assert coverages == [10.0, 35.0]

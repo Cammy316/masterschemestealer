@@ -157,6 +157,49 @@ def test_merge_is_order_independent(extractor):
 
 
 # ---------------------------------------------------------------------------
+# Ramp-aware grouping: one painted surface = one cluster
+# ---------------------------------------------------------------------------
+
+def test_shaded_ramp_of_one_hue_is_one_cluster(extractor):
+    """A painted surface is a lightness ramp at ~constant hue (base coat,
+    shade, highlight). It must come back as ONE cluster — an isotropic
+    metric split one blue armour into three Blue cards in production."""
+    rng = np.random.default_rng(5)
+    H, W = 160, 240
+    # Blue armour ramp: same hue, lightness sweeping shadow -> highlight.
+    ramp = np.linspace(0.45, 1.35, W).reshape(1, -1, 1)
+    img = np.clip(np.array([70, 90, 165]) * ramp
+                  + rng.normal(0, 3, (H, W, 3)), 0, 255).astype(np.uint8)
+    mask = np.ones((H, W), dtype=bool)
+
+    clusters = extractor.extract_colors(img, mask)
+    majors = [c for c in clusters if not c.get("is_detail")]
+    blues = [c for c in majors if c["family"].lower() in {"blue", "cyan"}]
+    assert len(blues) == 1, (
+        f"one shaded blue surface fragmented into "
+        f"{[(c['family'], round(c['coverage'], 1)) for c in clusters]}")
+    assert blues[0]["coverage"] > 80.0
+
+
+def test_two_distinct_hues_at_equal_lightness_stay_separate(extractor):
+    """The lightness discount must never bridge distinct hues: equal-L blue
+    and purple are different paints, not a ramp."""
+    rng = np.random.default_rng(6)
+    H, W = 120, 240
+    img = np.zeros((H, W, 3), dtype=float)
+    img[:, :W // 2] = (60, 90, 170)     # blue
+    img[:, W // 2:] = (125, 60, 165)    # purple, similar lightness
+    img = np.clip(img + rng.normal(0, 3, img.shape), 0, 255).astype(np.uint8)
+    mask = np.ones((H, W), dtype=bool)
+
+    clusters = extractor.extract_colors(img, mask)
+    families = {c["family"].lower() for c in clusters}
+    assert len(families) >= 2, (
+        f"blue and purple collapsed together: "
+        f"{[(c['family'], round(c['coverage'], 1)) for c in clusters]}")
+
+
+# ---------------------------------------------------------------------------
 # End-to-end extraction sanity (must survive Phases 1 & 5)
 # ---------------------------------------------------------------------------
 
