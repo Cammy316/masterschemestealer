@@ -469,9 +469,13 @@ class MLDataLogger {
         r: colour.rgb[0],
         g: colour.rgb[1],
         b: colour.rgb[2],
-        h: hsv.h,
-        s: hsv.s,
-        v: hsv.v,
+        // Backend ColourFeatures contract: h/s/v are 0-1 fractions. rgbToHsv
+        // returns degrees/percent (detectColourHarmony needs degrees) —
+        // sending those raw failed validation (422) on every scan batch, so
+        // colour features were never logged in production.
+        h: hsv.h / 360,
+        s: hsv.s / 100,
+        v: hsv.v / 100,
         l: colour.lab[0],
         a: colour.lab[1],
         b_lab: colour.lab[2],

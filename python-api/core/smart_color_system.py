@@ -106,16 +106,28 @@ class SmartColorExtractor:
         kmeans = KMeans(n_clusters=n_initial_clusters, n_init=10, random_state=42)
         kmeans.fit(sp_means, sample_weight=counts)
         labels = kmeans.labels_[inv]
-        
+
+        # Per-superpixel brightness std — the LOCAL variance signal for the
+        # metallic detector. Metallic flake sparkles WITHIN a superpixel-sized
+        # patch; matte shading is smooth locally even when a cluster spans the
+        # full lit-to-shadow range. Cluster-wide brightness_std stops being a
+        # metallic signal once superpixels blend thin details into their
+        # patches (the prod bronze/silver misfire), so it is kept only as a
+        # texture feature.
+        brightness_all = pixels_rgb.mean(axis=1)
+        seg_mean = np.bincount(inv, weights=brightness_all) / counts
+        seg_meansq = np.bincount(inv, weights=brightness_all ** 2) / counts
+        seg_std = np.sqrt(np.maximum(seg_meansq - seg_mean ** 2, 0.0))
+
         initial_clusters = []
         for i in range(n_initial_clusters):
             cluster_mask = labels == i
             size = np.sum(cluster_mask)
             coverage = (size / n_pixels) * 100
-            
+
             if size < 10:
                 continue
-            
+
             cluster_pixels_rgb = pixels_rgb[cluster_mask]
             cluster_pixels_lab = pixels_lab[cluster_mask]
 
@@ -131,7 +143,13 @@ class SmartColorExtractor:
             brightness_std = np.std(brightness)
             chroma = np.sqrt(median_lab[1]**2 + median_lab[2]**2)
             median_hsv = np.array(colorsys.rgb_to_hsv(*(median_rgb / 255.0)))
-            
+
+            # Clusters are unions of whole superpixels, so the cluster's local
+            # variance is the size-weighted mean of its superpixels' stds.
+            seg_in_cluster = kmeans.labels_ == i
+            local_brightness_std = float(np.average(
+                seg_std[seg_in_cluster], weights=counts[seg_in_cluster]))
+
             # Remap local (post-filter) indices back to original pixel positions
             # so that spatial-mask reconstruction in the engine works correctly.
             local_indices = np.where(cluster_mask)[0]
@@ -146,6 +164,7 @@ class SmartColorExtractor:
                 'std_lab': std_lab,
                 'chroma': chroma,
                 'brightness_std': brightness_std,
+                'local_brightness_std': local_brightness_std,
                 'median_hsv': median_hsv,
                 'pixel_indices': original_indices,
             })
@@ -244,7 +263,12 @@ class SmartColorExtractor:
         from skimage.segmentation import slic
 
         n_masked = int(mask.sum())
-        n_segments = int(np.clip(n_masked // 80, 64, 1600))
+        # ~40 px per superpixel (≈6×6 patches at analysis scale): fine enough
+        # that painted detail (stripes, trim, panel lines) is not blended into
+        # its surroundings — at //80 a small figure got ~9×9 patches that
+        # mixed lit/shadow/detail pixels and corrupted every per-cluster
+        # statistic downstream.
+        n_segments = int(np.clip(n_masked // 40, 128, 1600))
         try:
             seg2d = slic(img_rgb, n_segments=min(n_segments, max(n_masked // 4, 1)),
                          compactness=10.0, mask=mask, start_label=1,
@@ -254,29 +278,53 @@ class SmartColorExtractor:
             logger.warning(f"SLIC failed ({e}) — falling back to per-pixel clustering")
             return np.arange(len(surviving_indices))
     
+    # Same-family clusters farther than this (OKLab Euclidean) from the
+    # family group's coverage-weighted centre are NOT merged — merging, say,
+    # seven scattered "Silver" clusters spanning L* 10–80 produces one blob
+    # with a meaningless average colour and a reveal mask covering half the
+    # model (the prod scattered-targeting failure).
+    _DEDUP_SPREAD_OK = 0.12
+
     def _deduplicate_by_family(self, clusters: List[Dict]) -> List[Dict]:
-        """Merge clusters that share the exact same family name"""
+        """Merge clusters that share the exact same family name — but only
+        those that are also perceptually close; outliers stay separate."""
         if not clusters: return []
-        
+
         groups = {}
         for c in clusters:
             fam = c['family']
             if fam not in groups:
                 groups[fam] = []
             groups[fam].append(c)
-        
+
         final_clusters = []
-        
+
         for fam, group in groups.items():
             if len(group) == 1:
                 final_clusters.append(group[0])
-            else:
-                logger.info(f"Deduplicating {len(group)} clusters of family '{fam}'")
-                combined = self._combine_clusters(group)
+                continue
+
+            # Coverage-weighted family centre in OKLab; members beyond the
+            # spread radius are kept as their own clusters.
+            oks = lab_to_oklab(np.array([c['median_lab'] for c in group]))
+            weights = np.array([c['coverage'] for c in group], dtype=float)
+            centre = np.average(oks, axis=0, weights=weights)
+            dists = np.linalg.norm(oks - centre, axis=1)
+
+            core = [c for c, d in zip(group, dists) if d <= self._DEDUP_SPREAD_OK]
+            outliers = [c for c, d in zip(group, dists) if d > self._DEDUP_SPREAD_OK]
+
+            if len(core) > 1:
+                logger.info(f"Deduplicating {len(core)} clusters of family '{fam}'"
+                            + (f" ({len(outliers)} kept separate)" if outliers else ""))
+                combined = self._combine_clusters(core)
                 combined['family'] = fam
-                combined['confidence'] = np.mean([c.get('confidence', 1.0) for c in group])
+                combined['confidence'] = np.mean([c.get('confidence', 1.0) for c in core])
                 final_clusters.append(combined)
-        
+            else:
+                final_clusters.extend(core)
+            final_clusters.extend(outliers)
+
         final_clusters.sort(key=lambda x: x['coverage'], reverse=True)
         return final_clusters
 
@@ -367,15 +415,25 @@ class SmartColorExtractor:
         chroma = float(np.hypot(median_lab[1], median_lab[2]))
         all_indices = np.concatenate([c['pixel_indices'] for c in clusters])
 
-        return {
+        combined = {
             'coverage': total_coverage,
             'median_rgb': median_rgb,
             'median_lab': median_lab,
             'chroma': chroma,
             'brightness_std': np.mean([c['brightness_std'] for c in clusters]),
+            'local_brightness_std': float(sum(
+                c.get('local_brightness_std', c['brightness_std']) * w
+                for c, w in zip(clusters, weights))),
             'median_hsv': np.array(colorsys.rgb_to_hsv(*(median_rgb / 255.0))),
             'pixel_indices': all_indices
         }
+        # Preserve the metallic decision through merges (coverage-weighted
+        # majority) — previously the flag was silently dropped, so merged
+        # clusters always read as non-metallic downstream.
+        if all('is_metallic' in c for c in clusters):
+            combined['is_metallic'] = bool(sum(
+                w for c, w in zip(clusters, weights) if c['is_metallic']) >= 0.5)
+        return combined
     
     def _is_unique_from_majors(self, detail: Dict, majors: List[Dict]) -> Tuple[bool, Optional[Dict]]:
         """Chroma-aware uniqueness checking. Returns (is_unique, conflicting_major)"""
@@ -447,15 +505,30 @@ class SmartColorExtractor:
         exact SAME function as the DB family, so they cannot diverge. The metallic
         decision is stored on the cluster for the matcher's metallic gate.
         """
-        from core.color_engine import classify_family_margin, is_metallic_surface
+        from core.color_engine import (black_floor_l, classify_family_margin,
+                                       is_metallic_surface)
 
         lab = cluster['median_lab']
         hsv = cluster.get('median_hsv', [0.0, 0.0, 0.0])
         median_sat = hsv[1] if len(hsv) > 1 else 0.0
         median_val = hsv[2] if len(hsv) > 2 else 0.0
 
-        is_metallic = is_metallic_surface(cluster.get('brightness_std', 0.0),
+        # The metallic detector reads the LOCAL (within-superpixel) brightness
+        # variance: metallic sparkle is high-frequency, matte shading is
+        # locally smooth. Cluster-wide std spans lit-to-shadow and fires on
+        # any 3D form (the prod bronze/silver misfire).
+        variance_signal = cluster.get('local_brightness_std',
+                                      cluster.get('brightness_std', 0.0))
+        is_metallic = is_metallic_surface(variance_signal,
                                           median_sat, median_val)
+
+        # A scan-INFERRED metallic flag on a near-black cluster is
+        # unfalsifiable (at that lightness "silver" and "black" look the
+        # same) and routes classification to the metals-only anchors — black
+        # armour must never come back as Silver. The DB path is untouched:
+        # a curated dark-gunmetal paint keeps its metallic flag.
+        if is_metallic and float(lab[0]) < black_floor_l():
+            is_metallic = False
         cluster['is_metallic'] = is_metallic
 
         chroma = float(cluster.get('chroma') or 0.0)
