@@ -65,19 +65,13 @@ export class ErrorBoundary extends Component<Props, State> {
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-void-black">
           {/* Flickering scanline overlay */}
           <div
-            className="absolute inset-0 pointer-events-none opacity-10"
-            style={{
-              background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,0,0,0.03) 2px, rgba(255,0,0,0.03) 4px)',
-            }}
+            className="absolute inset-0 pointer-events-none opacity-10 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(255,0,0,0.03)_2px,rgba(255,0,0,0.03)_4px)]"
           />
 
           <div className="relative w-full max-w-lg mx-4 p-8">
             {/* Error container with gothic frame */}
             <div
-              className="relative rounded-lg p-1 depth-2"
-              style={{
-                background: 'linear-gradient(135deg, #8B0000, #4a0000)',
-              }}
+              className="relative rounded-lg p-1 depth-2 bg-[linear-gradient(135deg,#8B0000,#4a0000)]"
             >
               <div className="bg-void-black rounded-lg p-8 textured">
                 {/* Skull icon */}
@@ -89,10 +83,7 @@ export class ErrorBoundary extends Component<Props, State> {
                     fill="none"
                     stroke="#DC2626"
                     strokeWidth="1.5"
-                    className="animate-pulse"
-                    style={{
-                      filter: 'drop-shadow(0 0 20px rgba(220, 38, 38, 0.5))',
-                    }}
+                    className="animate-pulse drop-shadow-[0_0_20px_rgba(220,38,38,0.5)]"
                   >
                     <path d="M12 2C8 2 5 5 5 9c0 2.5 1 4 2 5v3h10v-3c1-1 2-2.5 2-5 0-4-3-7-7-7z" strokeLinecap="round" strokeLinejoin="round" />
                     <circle cx="9" cy="10" r="1.5" fill="#DC2626" />
@@ -106,11 +97,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
                 {/* Error title */}
                 <h1
-                  className="text-2xl font-bold text-center mb-4 gothic-text"
-                  style={{
-                    color: '#DC2626',
-                    textShadow: '0 0 20px rgba(220, 38, 38, 0.5)',
-                  }}
+                  className="text-2xl font-bold text-center mb-4 gothic-text text-[#DC2626] [text-shadow:0_0_20px_rgba(220,38,38,0.5)]"
                 >
                   MACHINE SPIRIT MALFUNCTION
                 </h1>
@@ -124,11 +111,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
                 {/* Error message */}
                 <div
-                  className="rounded-lg p-4 mb-6"
-                  style={{
-                    background: 'rgba(220, 38, 38, 0.1)',
-                    border: '1px solid rgba(220, 38, 38, 0.3)',
-                  }}
+                  className="rounded-lg p-4 mb-6 bg-[rgba(220,38,38,0.1)] border border-[rgba(220,38,38,0.3)]"
                 >
                   <p className="text-red-300 text-sm font-mono break-words">
                     {this.state.error?.message || 'An unknown error has occurred'}
@@ -145,19 +128,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                   <button
                     onClick={this.handleReload}
-                    className="px-6 py-3 rounded-lg font-bold text-white transition-all duration-300 gothic-text"
-                    style={{
-                      background: 'linear-gradient(135deg, #DC2626, #991B1B)',
-                      boxShadow: '0 0 20px rgba(220, 38, 38, 0.3)',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.boxShadow = '0 0 30px rgba(220, 38, 38, 0.5)';
-                      e.currentTarget.style.transform = 'scale(1.02)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.boxShadow = '0 0 20px rgba(220, 38, 38, 0.3)';
-                      e.currentTarget.style.transform = 'scale(1)';
-                    }}
+                    className="px-6 py-3 rounded-lg font-bold text-white transition-all duration-300 gothic-text bg-[linear-gradient(135deg,#DC2626,#991B1B)] shadow-[0_0_15px_rgba(220,38,38,0.4),inset_0_2px_5px_rgba(255,255,255,0.2)] [text-shadow:0_2px_4px_rgba(0,0,0,0.5)] hover:scale-[1.02] hover:shadow-[0_0_25px_rgba(220,38,38,0.6),inset_0_2px_5px_rgba(255,255,255,0.3)] active:scale-95"
                   >
                     PERFORM RITES OF REACTIVATION
                   </button>

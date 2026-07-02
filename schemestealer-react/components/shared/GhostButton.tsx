@@ -37,11 +37,12 @@ export function GhostButton({
       onPointerDown={() => setPressed(true)}
       onPointerUp={() => setPressed(false)}
       onPointerLeave={() => setPressed(false)}
-      className={`rounded touch-target text-xs font-semibold transition-colors ${className}`}
+      className={`rounded touch-target text-xs font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 ${className}`}
       style={{
         background: filled ? c.primary : 'rgba(255, 255, 255, 0.05)',
         border: `1px solid ${c.primary}`,
         color: filled ? c.onPrimary : c.primary,
+        outlineColor: c.primary,
         ...style,
       }}
       {...rest}

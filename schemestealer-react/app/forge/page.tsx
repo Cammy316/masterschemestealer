@@ -1,94 +1,20 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart } from '@/components/ShoppingCart';
-import { BrandSelector, type PaintBrand } from '@/components/BrandSelector';
-import { RegionSelector, type Region } from '@/components/RegionSelector';
+import dynamic from 'next/dynamic';
 import { ForgeBackground } from '@/components/ForgeBackground';
-import AddPaintModal from '@/components/forge/AddPaintModal';
-import { InventoryHexGrid } from '@/components/forge/InventoryHexGrid';
-import { CustomDropdown } from '@/components/shared/CustomDropdown';
-import { InfoTooltip } from '@/components/shared/InfoTooltip';
 import { useAppStore } from '@/lib/store';
 import type { Paint } from '@/lib/types';
-import { getPaintId } from '@/lib/utils';
-import { mixColorsWeighted, findTopAlternativeMatches, simulateBasecoat, effectiveCoverage } from '@/lib/colorMath';
-import { PAINT_DATABASE } from '@/lib/paintDatabase';
 
-const AFFILIATE_MERCHANTS: Record<Region, { name: string; searchUrl: (query: string) => string }[]> = {
-  uk: [{ name: 'Element Games', searchUrl: (q) => `https://elementgames.co.uk/search?q=${encodeURIComponent(q)}` }],
-  us: [{ name: 'Miniature Market', searchUrl: (q) => `https://miniaturemarket.com/search?q=${encodeURIComponent(q)}` }],
-  eu: [{ name: 'Games Workshop EU', searchUrl: (q) => `https://warhammer.com/search?q=${encodeURIComponent(q)}` }],
-  au: [{ name: 'Games Workshop AU', searchUrl: (q) => `https://warhammer.com/search?q=${encodeURIComponent(q)}` }],
-  global: [{ name: 'Amazon', searchUrl: (q) => `https://amazon.com/s?k=${encodeURIComponent(q)}` }],
-};
-
-
-const TEST_PAINT_NAMES = [
-  'Mephiston Red',
-  'Abaddon Black',
-  'Retributor Armour',
-  'Nuln Oil',
-  'Macragge Blue',
-  'Leadbelcher',
-  'Ultramarine', 
-  'Greenskin',
-];
-
-const DEV_TEST_PAINTS: Paint[] = PAINT_DATABASE
-  .filter(pd => TEST_PAINT_NAMES.includes(pd.name))
-  .map(pd => ({
-    id: pd.paint_id,
-    name: pd.name,
-    brand: pd.brand,
-    hex: pd.hex,
-    type: pd.type,
-    colorFamily: pd.colorFamily,
-    rgb: [pd.rgb.r, pd.rgb.g, pd.rgb.b],
-    lab: [pd.lab.l, pd.lab.a, pd.lab.b],
-  }));
-
-const WIREFRAME_ICONS = [
-  // 1. Vial/Cylinder
-  <svg key="vial" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="w-8 h-8 text-amber-500/30 drop-shadow-[0_0_8px_rgba(245,158,11,0.6)]"><ellipse cx="12" cy="5" rx="6" ry="2" /><ellipse cx="12" cy="19" rx="6" ry="2" /><line x1="6" y1="5" x2="6" y2="19" /><line x1="18" y1="5" x2="18" y2="19" /><path d="M6 12c0 1.1 2.7 2 6 2s6-.9 6-2" /></svg>,
-  // 2. Crystal (Octahedron)
-  <svg key="crystal" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="w-8 h-8 text-amber-500/30 drop-shadow-[0_0_8px_rgba(245,158,11,0.6)]"><polygon points="12,2 20,12 12,22 4,12" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="12" y1="2" x2="12" y2="22" /><line x1="12" y1="2" x2="15" y2="12" /><line x1="12" y1="2" x2="9" y2="12" /><line x1="12" y1="22" x2="15" y2="12" /><line x1="12" y1="22" x2="9" y2="12" /></svg>,
-  // 3. Pyramid
-  <svg key="pyramid" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="w-8 h-8 text-amber-500/30 drop-shadow-[0_0_8px_rgba(245,158,11,0.6)]"><polygon points="12,3 21,18 3,18" /><line x1="12" y1="3" x2="16" y2="18" /><line x1="12" y1="3" x2="8" y2="18" /><line x1="3" y1="18" x2="12" y2="15" /><line x1="21" y1="18" x2="12" y2="15" /><line x1="12" y1="3" x2="12" y2="15" /></svg>,
-  // 4. Wireframe Sphere
-  <svg key="sphere" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="w-8 h-8 text-amber-500/30 drop-shadow-[0_0_8px_rgba(245,158,11,0.6)]"><circle cx="12" cy="12" r="10" /><ellipse cx="12" cy="12" rx="10" ry="4" /><ellipse cx="12" cy="12" rx="4" ry="10" /><line x1="2" y1="12" x2="22" y2="12" /><line x1="12" y1="2" x2="12" y2="22" /></svg>,
-  // 5. Data Node Hex Array
-  <svg key="node" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="w-8 h-8 text-amber-500/30 drop-shadow-[0_0_8px_rgba(245,158,11,0.6)]"><polygon points="12,2 21,7 21,17 12,22 3,17 3,7" /><circle cx="12" cy="12" r="4" /><line x1="12" y1="2" x2="12" y2="8" /><line x1="12" y1="22" x2="12" y2="16" /><line x1="3" y1="7" x2="8" y2="10" /><line x1="21" y1="17" x2="15" y2="14" /><line x1="21" y1="7" x2="15" y2="10" /><line x1="3" y1="17" x2="8" y2="14" /></svg>,
-  // 6. Tesseract
-  <svg key="tesseract" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="w-8 h-8 text-amber-500/30 drop-shadow-[0_0_8px_rgba(245,158,11,0.6)]"><rect x="2" y="2" width="14" height="14" /><rect x="8" y="8" width="14" height="14" /><line x1="2" y1="2" x2="8" y2="8" /><line x1="16" y1="2" x2="22" y2="8" /><line x1="2" y1="16" x2="8" y2="22" /><line x1="16" y1="16" x2="22" y2="22" /></svg>,
-  // 7. Engine Block
-  <svg key="engine" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="w-8 h-8 text-amber-500/30 drop-shadow-[0_0_8px_rgba(245,158,11,0.6)]"><rect x="4" y="6" width="16" height="12" rx="2" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="8" y1="6" x2="8" y2="18" /><line x1="12" y1="6" x2="12" y2="18" /><line x1="16" y1="6" x2="16" y2="18" /><circle cx="12" cy="12" r="2" fill="none" /></svg>,
-  // 8. DNA Helix
-  <svg key="dna" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="w-8 h-8 text-amber-500/30 drop-shadow-[0_0_8px_rgba(245,158,11,0.6)]"><path d="M7 4s-3 3-3 8 3 8 3 8" /><path d="M17 4s3 3 3 8-3 8-3 8" /><line x1="7" y1="6" x2="17" y2="6" /><line x1="4.5" y1="10" x2="19.5" y2="10" /><line x1="4" y1="14" x2="20" y2="14" /><line x1="6.5" y1="18" x2="17.5" y2="18" /></svg>,
-  // 9. Hourglass (Chronometer)
-  <svg key="hourglass" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="w-8 h-8 text-amber-500/30 drop-shadow-[0_0_8px_rgba(245,158,11,0.6)]"><polygon points="6,2 18,2 14,12 18,22 6,22 10,12" /><line x1="6" y1="2" x2="18" y2="2" /><line x1="6" y1="22" x2="18" y2="22" /><line x1="10" y1="12" x2="14" y2="12" /></svg>,
-  // 10. Prism
-  <svg key="prism" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="w-8 h-8 text-amber-500/30 drop-shadow-[0_0_8px_rgba(245,158,11,0.6)]"><polygon points="12,2 22,20 2,20" /><line x1="12" y1="2" x2="12" y2="20" /><line x1="12" y1="2" x2="18" y2="16" /><line x1="12" y1="20" x2="18" y2="16" /><line x1="22" y1="20" x2="18" y2="16" /></svg>,
-  // 11. Radar / Dish
-  <svg key="radar" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="w-8 h-8 text-amber-500/30 drop-shadow-[0_0_8px_rgba(245,158,11,0.6)]"><path d="M4 10a8 8 0 0 1 16 0" /><path d="M2 12a10 10 0 0 1 20 0" /><line x1="12" y1="10" x2="12" y2="22" /><polygon points="9,22 15,22 12,18" /><circle cx="12" cy="10" r="2" /></svg>,
-  // 12. CPU Core
-  <svg key="cpu" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="w-8 h-8 text-amber-500/30 drop-shadow-[0_0_8px_rgba(245,158,11,0.6)]"><rect x="6" y="6" width="12" height="12" /><rect x="10" y="10" width="4" height="4" /><line x1="6" y1="8" x2="2" y2="8" /><line x1="6" y1="12" x2="2" y2="12" /><line x1="6" y1="16" x2="2" y2="16" /><line x1="18" y1="8" x2="22" y2="8" /><line x1="18" y1="12" x2="22" y2="12" /><line x1="18" y1="16" x2="22" y2="16" /><line x1="8" y1="6" x2="8" y2="2" /><line x1="12" y1="6" x2="12" y2="2" /><line x1="16" y1="6" x2="16" y2="2" /><line x1="8" y1="18" x2="8" y2="22" /><line x1="12" y1="18" x2="12" y2="22" /><line x1="16" y1="18" x2="16" y2="22" /></svg>,
-  // 13. Drone Eye
-  <svg key="drone" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="w-8 h-8 text-amber-500/30 drop-shadow-[0_0_8px_rgba(245,158,11,0.6)]"><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" /><path d="M12 2v4M12 18v4M2 12h4M18 12h4" /><path d="M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" /></svg>,
-  // 14. Battery Cell
-  <svg key="battery" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="w-8 h-8 text-amber-500/30 drop-shadow-[0_0_8px_rgba(245,158,11,0.6)]"><rect x="6" y="4" width="12" height="16" rx="2" ry="2" /><rect x="9" y="2" width="6" height="2" /><line x1="6" y1="8" x2="18" y2="8" /><line x1="6" y1="12" x2="18" y2="12" /><line x1="6" y1="16" x2="18" y2="16" /><path d="M12 12l2-3h-4l2-3" /></svg>,
-  // 15. Magnetic Toroid
-  <svg key="toroid" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="w-8 h-8 text-amber-500/30 drop-shadow-[0_0_8px_rgba(245,158,11,0.6)]"><ellipse cx="12" cy="12" rx="10" ry="6" /><ellipse cx="12" cy="12" rx="4" ry="2" /><path d="M2 12c0 3.31 4.48 6 10 6s10-2.69 10-6" /><line x1="12" y1="6" x2="12" y2="10" /><line x1="12" y1="14" x2="12" y2="18" /><line x1="4" y1="9" x2="7" y2="11" /><line x1="20" y1="9" x2="17" y2="11" /><line x1="4" y1="15" x2="7" y2="13" /><line x1="20" y1="15" x2="17" y2="13" /></svg>,
-  // 16. Orbital Satellite
-  <svg key="satellite" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="w-8 h-8 text-amber-500/30 drop-shadow-[0_0_8px_rgba(245,158,11,0.6)]"><rect x="10" y="8" width="4" height="8" /><polygon points="10,8 14,8 12,4" /><polygon points="10,16 14,16 12,20" /><rect x="2" y="10" width="6" height="4" /><rect x="16" y="10" width="6" height="4" /><line x1="8" y1="12" x2="10" y2="12" /><line x1="14" y1="12" x2="16" y2="12" /></svg>
-];
+const ForgeInventoryTab = dynamic(() => import('@/components/forge/ForgeInventoryTab'), { ssr: false });
+const ForgeMixTab = dynamic(() => import('@/components/forge/ForgeMixTab'), { ssr: false });
+const ForgeRequisitionTab = dynamic(() => import('@/components/forge/ForgeRequisitionTab'), { ssr: false });
+const DynamicAddPaintModal = dynamic(() => import('@/components/forge/AddPaintModal'), { ssr: false });
 
 export default function ForgePage() {
   const [activeTab, setActiveTab] = useState<'inventory' | 'forgemix' | 'requisition'>('inventory');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [filterBrand, setFilterBrand] = useState('ALL');
-  const [filterColor, setFilterColor] = useState('ALL');
   const [lastAddedId, setLastAddedId] = useState<string | null>(null);
   const [newlyAddedQueue, setNewlyAddedQueue] = useState<string[]>([]);
   const [pendingAnimationIds, setPendingAnimationIds] = useState<string[]>([]);
@@ -98,119 +24,8 @@ export default function ForgePage() {
   const addToInventory = useAppStore((state) => state.addToInventory);
   const removeFromInventory = useAppStore((state) => state.removeFromInventory);
   const addToCart = useAppStore((state) => state.addToCart);
-  const preferredBrands = useAppStore((state) => state.preferredBrands);
-  const setPreferredBrands = useAppStore((state) => state.setPreferredBrands);
-  const preferredRegion = useAppStore((state) => state.preferredRegion) as Region;
-  const setPreferredRegion = useAppStore((state) => state.setPreferredRegion);
+  
   const [manifestId] = useState(() => Date.now().toString().slice(-6));
-
-  const merchants = AFFILIATE_MERCHANTS[preferredRegion] || AFFILIATE_MERCHANTS.global;
-
-  const filteredInventory = React.useMemo(() => {
-    return inventory.filter(p => {
-      if (filterBrand !== 'ALL' && p.brand.toUpperCase() !== filterBrand) return false;
-      if (filterColor !== 'ALL' && (p.colorFamily || 'UNKNOWN').toUpperCase() !== filterColor) return false;
-      return true;
-    });
-  }, [inventory, filterBrand, filterColor]);
-
-  const dynamicBrandFilters = React.useMemo(() => {
-    const brands = new Set(['ALL']);
-    inventory.forEach(p => brands.add(p.brand.toUpperCase()));
-    return Array.from(brands);
-  }, [inventory]);
-
-  const dynamicColorFilters = React.useMemo(() => {
-    const colors = new Set(['ALL']);
-    inventory.forEach(p => {
-      if (p.colorFamily) colors.add(p.colorFamily.toUpperCase());
-    });
-    return Array.from(colors);
-  }, [inventory]);
-
-  const [recipe, setRecipe] = useState<{paint: Paint, parts: number}[]>([]);
-  const [primer, setPrimer] = useState<'none'|'#000000'|'#808080'|'#DDD1B4'|'#FFFFFF'>('none');
-  const [customName, setCustomName] = useState('');
-  const [showPrimerToggle, setShowPrimerToggle] = useState(false);
-  const [showSaveInput, setShowSaveInput] = useState(false);
-
-  const primerButtonRef = useRef<HTMLButtonElement>(null);
-  const primerPopoverRef = useRef<HTMLDivElement>(null);
-  const saveButtonRef = useRef<HTMLButtonElement>(null);
-  const savePopoverRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Node;
-      if (showPrimerToggle && 
-          primerButtonRef.current && !primerButtonRef.current.contains(target) &&
-          primerPopoverRef.current && !primerPopoverRef.current.contains(target)) {
-        setShowPrimerToggle(false);
-      }
-      if (showSaveInput && 
-          saveButtonRef.current && !saveButtonRef.current.contains(target) &&
-          savePopoverRef.current && !savePopoverRef.current.contains(target)) {
-        setShowSaveInput(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [showPrimerToggle, showSaveInput]);
-  
-  const [mixFilterBrand, setMixFilterBrand] = useState('ALL');
-  const [mixFilterColor, setMixFilterColor] = useState('ALL');
-
-  const filterableMixInventory = React.useMemo(() => {
-    return inventory.filter(paint => {
-      const t = (paint.type || '').toLowerCase();
-      // Exclude washes, contrast, speedpaints for accurate mixing
-      if (t.includes('wash') || t.includes('shade') || t.includes('contrast') || t.includes('speedpaint') || t.includes('xpress')) {
-        return false;
-      }
-      return true;
-    });
-  }, [inventory]);
-
-  const mixInventoryBrands = React.useMemo(() => {
-    const brands = new Set(['ALL']);
-    filterableMixInventory.forEach(p => brands.add(p.brand.toUpperCase()));
-    return Array.from(brands);
-  }, [filterableMixInventory]);
-
-  const mixInventoryColors = React.useMemo(() => {
-    const colors = new Set(['ALL']);
-    filterableMixInventory.forEach(p => {
-      if (p.colorFamily) colors.add(p.colorFamily.toUpperCase());
-    });
-    return Array.from(colors);
-  }, [filterableMixInventory]);
-
-  const filteredMixInventory = filterableMixInventory.filter(p => {
-    if (mixFilterBrand !== 'ALL' && p.brand.toUpperCase() !== mixFilterBrand) return false;
-    if (mixFilterColor !== 'ALL' && (p.colorFamily || 'UNKNOWN').toUpperCase() !== mixFilterColor) return false;
-    return true;
-  });
-  
-  // paintId lets the mixer use each paint's measured colour + opacity rating.
-  const recipeIngredients = React.useMemo(() => {
-    return recipe.map(r => ({ hex: r.paint.hex, parts: r.parts, paintId: r.paint.id }));
-  }, [recipe]);
-
-  const mixedHex = React.useMemo(() => {
-    return mixColorsWeighted(recipeIngredients) || '#1A1A1A';
-  }, [recipeIngredients]);
-
-  const topMatches = React.useMemo(() => {
-    if (recipe.length === 0 || mixedHex === '#1A1A1A') return [];
-    return findTopAlternativeMatches(mixedHex);
-  }, [mixedHex, recipe.length]);
-
-  const simulatedHex = React.useMemo(() => {
-    if (primer === 'none' || recipe.length === 0) return mixedHex;
-    return simulateBasecoat(mixedHex, primer, effectiveCoverage(recipeIngredients));
-  }, [mixedHex, primer, recipe.length, recipeIngredients]);
-
-
 
   const getPaintId = (p: Paint) => p.id || p.name.toLowerCase().replace(/\s+/g, '-');
 
@@ -253,7 +68,7 @@ export default function ForgePage() {
         
         {/* 3-TAB SEGMENTED TOGGLE */}
         <div className="flex p-1 bg-charcoal/80 border border-gray-800 rounded-lg relative overflow-hidden shadow-lg backdrop-blur-md">
-           {['inventory', 'forgemix', 'requisition'].map((tab, idx) => (
+           {['inventory', 'forgemix', 'requisition'].map((tab) => (
              <button 
                key={tab}
                onClick={() => setActiveTab(tab as any)}
@@ -276,412 +91,36 @@ export default function ForgePage() {
         {/* TAB CONTENT */}
         <AnimatePresence mode="wait">
           {activeTab === 'inventory' && (
-             <motion.div key="inventory" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="mt-8 space-y-6">
-                
-
-                {/* Filters and Tooltip */}
-                <div className="flex justify-between items-center relative z-50">
-                  {inventory.length > 0 ? (
-                    <div className="flex gap-2">
-                      <CustomDropdown 
-                        value={filterBrand}
-                        options={dynamicBrandFilters}
-                        onChange={setFilterBrand}
-                      />
-                      <CustomDropdown 
-                        value={filterColor}
-                        options={dynamicColorFilters}
-                        onChange={setFilterColor}
-                        formatOption={(val) => val === 'ALL' ? 'ALL COLORS' : val}
-                      />
-                    </div>
-                  ) : <div />}
-                  <InfoTooltip 
-                    position="left"
-                    text={
-                      <div className="space-y-1.5">
-                        <strong className="text-imperial-gold block mb-1">COLLECTION BENEFITS:</strong>
-                        <ul className="list-disc pl-3 space-y-0.5 text-gray-400">
-                          <li><span className="text-gray-300">Miniscan</span> prioritises matches to colours you own.</li>
-                          <li><span className="text-gray-300">Forge Mix</span> unlocks custom mixing from your library.</li>
-                        </ul>
-                      </div>
-                    } 
-                  />
-                </div>
-
-                {/* Gamified Silhouette Grid */}
-                <div className="relative overflow-hidden p-1 -m-1">
-                  <InventoryHexGrid 
-                    inventory={filteredInventory}
-                    onAddPaint={() => setIsAddModalOpen(true)}
-                    onRemovePaint={removeFromInventory}
-                    lastAddedId={lastAddedId}
-                    pendingAnimationIds={pendingAnimationIds}
-                  />
-                </div>
-
-             </motion.div>
+            <ForgeInventoryTab 
+              inventory={inventory}
+              removeFromInventory={removeFromInventory}
+              setIsAddModalOpen={setIsAddModalOpen}
+              lastAddedId={lastAddedId}
+              pendingAnimationIds={pendingAnimationIds}
+            />
           )}
 
           {activeTab === 'forgemix' && (
-             <motion.div key="forgemix" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="mt-8 space-y-6">
-                {/* 1. The Canvas (Output Swatch & Wet Palette Gradient) */}
-                <div className="bg-[#050505] border-[6px] border-charcoal/90 outline outline-1 outline-brass/40 rounded-sm p-6 relative overflow-hidden shadow-[inset_0_0_80px_rgba(0,0,0,0.95)] ring-1 ring-inset ring-brass/20 flex flex-col items-center">
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(184,134,11,0.15)_0%,transparent_70%)] pointer-events-none mix-blend-screen" />
-                  <div className="absolute inset-0 opacity-40 mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, #000 2px, #000 4px)' }} />
-                  
-                  {/* Action Icons (Floating left and right) */}
-                  <div className="absolute bottom-4 right-4 z-20 pointer-events-auto">
-                    <InfoTooltip 
-                      position="left"
-                      text={
-                        <div className="space-y-1.5">
-                          <strong className="text-imperial-gold block mb-1">HOW TO MIX:</strong>
-                          <ul className="list-disc pl-3 space-y-0.5 text-gray-400">
-                            <li><span className="text-gray-300">Select paints</span> from your Inventory below.</li>
-                            <li><span className="text-gray-300">Adjust ratios</span> and toggle basecoats.</li>
-                            <li><span className="text-gray-300">Preview</span> the final colour before using real paint.</li>
-                          </ul>
-                        </div>
-                      } 
-                    />
-                  </div>
-
-                  {recipe.length > 0 && (
-                    <>
-                      <button 
-                        ref={primerButtonRef}
-                        onClick={() => { setShowPrimerToggle(!showPrimerToggle); setShowSaveInput(false); }}
-                        className={`absolute top-4 left-4 w-10 h-10 rounded-sm flex items-center justify-center transition-all z-20 border-y-2 border-x border-b-gray-900 border-t-gray-600 border-x-gray-800 shadow-[inset_0_0_10px_rgba(0,0,0,0.8)] active:scale-95 ${showPrimerToggle ? 'bg-brass/20 border-brass/50 text-imperial-gold drop-shadow-[0_0_4px_rgba(184,134,11,0.5)]' : 'bg-black/80 text-gray-500 hover:text-imperial-gold hover:bg-charcoal'}`}
-                      >
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
-                      </button>
-                      <button 
-                        ref={saveButtonRef}
-                        onClick={() => { setShowSaveInput(!showSaveInput); setShowPrimerToggle(false); }}
-                        className={`absolute top-4 right-4 w-10 h-10 rounded-sm flex items-center justify-center transition-all z-20 border-y-2 border-x border-b-gray-900 border-t-gray-600 border-x-gray-800 shadow-[inset_0_0_10px_rgba(0,0,0,0.8)] active:scale-95 ${showSaveInput ? 'bg-brass/20 border-brass/50 text-imperial-gold drop-shadow-[0_0_4px_rgba(184,134,11,0.5)]' : 'bg-black/80 text-gray-500 hover:text-imperial-gold hover:bg-charcoal'}`}
-                      >
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                      </button>
-                    </>
-                  )}
-
-                  {/* Popovers */}
-                  <AnimatePresence>
-                    {showPrimerToggle && recipe.length > 0 && (
-                      <motion.div 
-                        ref={primerPopoverRef}
-                        initial={{ opacity: 0, scale: 0.9, y: -10 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.9, y: -10 }}
-                        className="absolute top-18 left-6 z-30 bg-void-black/95 border border-gray-700 rounded-lg p-3 backdrop-blur-md shadow-xl"
-                      >
-                        <div className="text-[10px] text-gray-500 uppercase tracking-widest tech-text mb-2 text-center">Simulate Basecoat</div>
-                        <div className="flex justify-center gap-3">
-                          {[
-                            { id: 'none', label: 'None', color: 'transparent' },
-                            { id: '#000000', label: 'Black', color: '#000000' },
-                            { id: '#808080', label: 'Grey', color: '#808080' },
-                            { id: '#DDD1B4', label: 'Bone', color: '#DDD1B4' },
-                            { id: '#FFFFFF', label: 'White', color: '#FFFFFF' }
-                          ].map(p => (
-                            <button
-                              key={p.id}
-                              onClick={() => setPrimer(p.id as any)}
-                              className={`flex flex-col items-center gap-1 opacity-80 hover:opacity-100 active:scale-95 transition-all ${primer === p.id ? 'opacity-100' : ''}`}
-                            >
-                              <div className={`w-6 h-6 rounded-full border ${primer === p.id ? 'border-brass scale-110' : 'border-gray-600'} transition-transform`} style={{ backgroundColor: p.color, ...(p.id === 'none' && { backgroundImage: 'repeating-linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333), repeating-linear-gradient(45deg, #333 25%, #222 25%, #222 75%, #333 75%, #333)', backgroundPosition: '0 0, 4px 4px', backgroundSize: '8px 8px' }) }} />
-                              <span className={`text-[8px] uppercase tracking-widest ${primer === p.id ? 'text-brass' : 'text-gray-500'}`}>{p.label}</span>
-                            </button>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
-
-                    {showSaveInput && recipe.length > 0 && (
-                      <motion.div 
-                        ref={savePopoverRef}
-                        initial={{ opacity: 0, scale: 0.9, y: -10 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.9, y: -10 }}
-                        className="absolute top-18 right-6 z-30 bg-void-black/95 border border-gray-700 rounded-lg p-3 backdrop-blur-md shadow-xl w-64"
-                      >
-                        <div className="flex gap-2">
-                          <input 
-                            type="text"
-                            value={customName}
-                            onChange={(e) => setCustomName(e.target.value)}
-                            placeholder="Name your mix..."
-                            className="flex-1 bg-[#050505] border border-gray-800 rounded-sm px-2 py-1.5 text-xs text-imperial-gold placeholder-gray-600 focus:outline-none focus:border-brass/50 transition-colors min-w-0 shadow-inner"
-                          />
-                          <button
-                            disabled={!customName.trim()}
-                            onClick={() => {
-                              const newId = 'custom-' + Date.now();
-                              addToInventory({ id: newId, name: customName.trim(), brand: 'Custom', hex: mixedHex, type: 'Custom Mix' });
-                              setCustomName('');
-                              setShowSaveInput(false);
-                              setLastAddedId(newId);
-                              setTimeout(() => setLastAddedId(null), 1000);
-                            }}
-                            className="px-4 bg-[#050505] text-imperial-gold text-[10px] font-bold tracking-widest uppercase rounded-sm border border-brass/30 hover:bg-brass/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-[inset_0_0_10px_rgba(0,0,0,0.8)] flex-shrink-0 active:scale-95"
-                          >
-                            SAVE
-                          </button>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                  
-                  {/* The Containment Field (Swatch) */}
-                  <div className="relative w-32 h-32 flex items-center justify-center mt-2 mb-4 z-10">
-                    {/* Centrifuge Ring */}
-                    {recipe.length > 0 && (
-                      <motion.svg 
-                        className="absolute inset-[-15%] w-[130%] h-[130%] pointer-events-none opacity-50 drop-shadow-[0_0_4px_rgba(184,134,11,0.5)]"
-                        viewBox="0 0 100 100"
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-                      >
-                        <circle cx="50" cy="50" r="48" fill="none" stroke="var(--imperial-gold)" strokeWidth="1" strokeDasharray="4 8" />
-                        <circle cx="50" cy="50" r="44" fill="none" stroke="var(--brass)" strokeWidth="0.5" strokeDasharray="10 5 2 5" />
-                      </motion.svg>
-                    )}
-
-                    <motion.div 
-                      className="absolute inset-0 rounded-full"
-                      style={{
-                        backgroundColor: simulatedHex,
-                        boxShadow: recipe.length > 0 ? `0 0 40px ${simulatedHex}80, inset 0 0 20px rgba(255,255,255,0.2)` : 'inset 0 0 20px rgba(0,0,0,0.8)'
-                      }}
-                      animate={{ scale: recipe.length > 0 ? [1, 1.05, 1] : 1 }}
-                      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                    />
-                    
-                    {/* Removed the SVG wireframe, keeping it as a sleek liquid drop */}
-                    <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/20 to-transparent rounded-t-full z-10 pointer-events-none" />
-                  </div>
-                  
-                  <div className="text-center z-10 mb-4">
-                    <div className="text-xl font-bold tracking-widest uppercase tech-text text-white drop-shadow-md">
-                      {recipe.length > 0 ? 'CUSTOM MIX' : 'EMPTY CRUCIBLE'}
-                    </div>
-                    <div className="text-xs text-brass tech-text mt-1 font-mono uppercase">
-                      {recipe.length > 0 ? mixedHex : 'AWAITING INGREDIENTS'}
-                    </div>
-                  </div>
-
-                  {/* The Wet Palette Transition Bar */}
-                  {recipe.length > 1 && (
-                    <div className="w-full relative z-10 mt-2">
-                      <div className="text-[9px] text-gray-500 uppercase tracking-widest tech-text mb-2 text-center">Wet Palette Transition</div>
-                      <div className="w-full h-6 relative overflow-hidden rounded-full border border-gray-700/50 shadow-[inset_0_4px_10px_rgba(0,0,0,0.6)]">
-                        <div 
-                          className="absolute inset-0 opacity-90"
-                          style={{
-                            background: `linear-gradient(to right, ${recipe.map(r => r.paint.hex).join(', ')})`
-                          }}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none mix-blend-overlay" />
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* 2. The Recipe Board */}
-                <div className="space-y-2 mt-6">
-                  <div className="flex justify-between items-end mb-3 px-1">
-                    <h3 className="text-sm text-imperial-gold/80 cyber-text tracking-[0.2em] drop-shadow-[0_0_8px_rgba(255,215,0,0.4)] uppercase">ACTIVE INGREDIENTS</h3>
-                    {recipe.length > 0 && (
-                      <button 
-                        onClick={() => setRecipe([])} 
-                        className="text-[10px] text-red-500/80 hover:text-red-400 uppercase tracking-widest font-bold"
-                      >
-                        [ CLEAR MIX ]
-                      </button>
-                    )}
-                  </div>
-                  
-                  {recipe.length === 0 ? (
-                    <div className="bg-void-black/50 border border-gray-800 border-dashed rounded-lg p-6 text-center text-gray-600 text-xs uppercase tracking-widest tech-text">
-                      Select paints from your inventory below to begin mixing
-                    </div>
-                  ) : (
-                    <AnimatePresence>
-                      {recipe.map((ingredient, idx) => {
-                        const paintId = getPaintId(ingredient.paint);
-                        return (
-                          <motion.div 
-                            key={paintId}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: 20 }}
-                            className="flex items-center justify-between bg-charcoal/80 border border-gray-800 rounded-lg p-2 backdrop-blur-sm"
-                          >
-                            <div className="flex items-center gap-2 min-w-0">
-                              <div className="w-5 h-6 relative flex items-center justify-center flex-shrink-0 drop-shadow-md" style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)', backgroundColor: ingredient.paint.hex, boxShadow: 'inset 0 2px 4px rgba(255,255,255,0.3), inset 0 -2px 4px rgba(0,0,0,0.4)' }}>
-                                <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent pointer-events-none" />
-                              </div>
-                              <div className="truncate">
-                                <div className="text-[10px] font-bold text-white uppercase truncate">{ingredient.paint.name}</div>
-                                <div className="text-[8px] text-brass uppercase tracking-widest truncate">{ingredient.paint.brand}</div>
-                              </div>
-                            </div>
-                            
-                            <div className="flex items-center gap-2 flex-shrink-0">
-                              <div className="flex items-center gap-1 border-r border-gray-800 pr-2">
-                                <button
-                                  disabled={idx === 0}
-                                  onClick={() => setRecipe(prev => { const n = [...prev]; [n[idx-1], n[idx]] = [n[idx], n[idx-1]]; return n; })}
-                                  className="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-white disabled:opacity-30 disabled:hover:text-gray-500"
-                                >
-                                  ↑
-                                </button>
-                                <button
-                                  disabled={idx === recipe.length - 1}
-                                  onClick={() => setRecipe(prev => { const n = [...prev]; [n[idx+1], n[idx]] = [n[idx], n[idx+1]]; return n; })}
-                                  className="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-white disabled:opacity-30 disabled:hover:text-gray-500"
-                                >
-                                  ↓
-                                </button>
-                              </div>
-                              
-                              <div className="flex items-center gap-2 bg-void-black/80 rounded border border-gray-800 px-1 py-0.5">
-                                <button 
-                                  onClick={() => {
-                                    if (ingredient.parts <= 1) setRecipe(prev => prev.filter(r => getPaintId(r.paint) !== paintId));
-                                    else setRecipe(prev => prev.map(r => getPaintId(r.paint) === paintId ? { ...r, parts: r.parts - 1 } : r));
-                                  }}
-                                  className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 rounded"
-                                >-</button>
-                                <div className="text-[10px] font-mono font-bold text-imperial-gold w-10 text-center select-none">
-                                  {ingredient.parts} PT
-                                </div>
-                                <button 
-                                  onClick={() => setRecipe(prev => prev.map(r => getPaintId(r.paint) === paintId ? { ...r, parts: r.parts + 1 } : r))}
-                                  className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 rounded"
-                                >+</button>
-                              </div>
-                            </div>
-                          </motion.div>
-                        );
-                      })}
-                    </AnimatePresence>
-                  )}
-                </div>
-
-                {/* 4. Top Brand Alternatives */}
-                {topMatches.length > 0 && (
-                  <div className="pt-2">
-                    <h3 className="text-sm text-imperial-gold/80 cyber-text tracking-[0.2em] drop-shadow-[0_0_8px_rgba(255,215,0,0.4)] uppercase mb-2 px-1">TOP BRAND ALTERNATIVES</h3>
-                    <div className="space-y-1.5">
-                      {topMatches.map((match, idx) => (
-                        <div key={idx} className="flex items-center gap-3 justify-between bg-[#111] p-1.5 rounded border border-gray-800/80 shadow-inner">
-                          <div className="flex items-center gap-2 min-w-0">
-                            <div className="w-5 h-6 relative flex items-center justify-center flex-shrink-0 drop-shadow-md" style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)', backgroundColor: match.hex, boxShadow: 'inset 0 2px 4px rgba(255,255,255,0.3), inset 0 -2px 4px rgba(0,0,0,0.4)' }}>
-                              <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent pointer-events-none" />
-                            </div>
-                            <div className="text-left truncate">
-                              <div className="text-[9px] font-bold text-white uppercase truncate">{match.name}</div>
-                              <div className="text-[8px] text-brass uppercase tracking-widest">{match.brand}</div>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-3 flex-shrink-0">
-                            <div className={`text-[9px] font-bold tech-text ${Number(match.delta_e) < 2 ? 'text-green-400' : Number(match.delta_e) < 4 ? 'text-amber-400' : 'text-red-400'}`}>
-                              ΔE: {match.delta_e}
-                            </div>
-                            <button
-                              onClick={() => addToCart(match)}
-                              className="text-[8px] px-1.5 py-0.5 bg-charcoal border border-gray-700 hover:border-brass hover:text-brass text-gray-400 rounded uppercase tracking-widest transition-colors"
-                            >
-                              + CART
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* 3. The Injector (Inventory Selector) */}
-                <div className="pt-4 border-t border-gray-800/50">
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 px-1 gap-2">
-                    <h3 className="text-sm text-imperial-gold/80 cyber-text tracking-[0.2em] drop-shadow-[0_0_8px_rgba(255,215,0,0.4)] uppercase">INVENTORY</h3>
-                    
-                    {filterableMixInventory.length > 0 && (
-                      <div className="flex gap-2 relative z-50">
-                        <CustomDropdown 
-                          value={mixFilterBrand}
-                          options={mixInventoryBrands}
-                          onChange={setMixFilterBrand}
-                        />
-                        <CustomDropdown 
-                          value={mixFilterColor}
-                          options={mixInventoryColors}
-                          onChange={setMixFilterColor}
-                          formatOption={(val) => val === 'ALL' ? 'ALL COLORS' : val}
-                        />
-                      </div>
-                    )}
-                  </div>
-                  
-                  {filterableMixInventory.length === 0 ? (
-                    <div className="text-center p-4 bg-red-900/10 border border-red-900/30 rounded text-red-400/80 text-xs">
-                      {inventory.length === 0 ? 'Your inventory is empty. Add paints in the Inventory tab first!' : 'No valid paints found. Washes and Contrasts cannot be used in mixes.'}
-                    </div>
-                  ) : (
-                    <div className="flex flex-wrap gap-2 px-1 max-h-64 overflow-y-auto scrollbar-hide">
-                      {filteredMixInventory.map(paint => {
-                        const paintId = getPaintId(paint);
-                        const isActive = recipe.some(r => getPaintId(r.paint) === paintId);
-                        
-                        return (
-                          <button
-                            key={paintId}
-                            onClick={() => {
-                              if (!isActive) {
-                                setRecipe(prev => [...prev, { paint, parts: 1 }]);
-                              }
-                            }}
-                            className={`flex items-center gap-2 p-1.5 pr-3 rounded-full border transition-all ${
-                              isActive 
-                                ? 'border-brass bg-brass/10 opacity-50 cursor-not-allowed' 
-                                : 'border-gray-800 bg-charcoal hover:border-brass/70 hover:bg-charcoal/80 shadow-[0_2px_8px_rgba(0,0,0,0.5)]'
-                            }`}
-                          >
-                            <div className="w-5 h-6 relative flex items-center justify-center flex-shrink-0 drop-shadow-md" style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)', backgroundColor: paint.hex, boxShadow: 'inset 0 2px 4px rgba(255,255,255,0.3), inset 0 -2px 4px rgba(0,0,0,0.4)' }}>
-                              <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent pointer-events-none" />
-                              {isActive && (
-                                <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-10">
-                                  <span className="text-white text-[8px] font-bold">✓</span>
-                                </div>
-                              )}
-                            </div>
-                            <div className="text-left max-w-[80px] sm:max-w-[100px]">
-                              <div className="text-[9px] font-bold text-white uppercase truncate">{paint.name}</div>
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-             </motion.div>
+            <ForgeMixTab 
+              inventory={inventory}
+              addToInventory={addToInventory}
+              addToCart={addToCart}
+              setLastAddedId={setLastAddedId}
+            />
           )}
 
           {activeTab === 'requisition' && (
-             <motion.div key="requisition" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6 mt-8">
-                <ShoppingCart manifestId={manifestId} />
-             </motion.div>
+            <ForgeRequisitionTab 
+              manifestId={manifestId}
+            />
           )}
         </AnimatePresence>
+
       </div>
 
-      {/* MANUAL ADD MODAL */}
-      <AddPaintModal 
+      <DynamicAddPaintModal 
         isOpen={isAddModalOpen} 
-        onClose={() => setIsAddModalOpen(false)}
+        onClose={() => setIsAddModalOpen(false)} 
         onAddPaint={handleAddPaint}
       />
     </div>

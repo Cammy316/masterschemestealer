@@ -6,7 +6,7 @@
 'use client';
 
 import React, { useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 
 interface WarpPortalProps {
   onActivate: () => void;
@@ -18,9 +18,12 @@ interface WarpPortalProps {
 export function WarpPortal({ onActivate, isActive = false, disabled = false, hasUploaded = false }: WarpPortalProps) {
   const portalRef = useRef<HTMLButtonElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const shouldReduceMotion = useReducedMotion();
 
   // Canvas particle system with trails
   useEffect(() => {
+    if (shouldReduceMotion) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -205,39 +208,42 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
           parallax starfield below are the intentional fallback. */}
 
 
-      {/* Eye of the Storm: Nebula Clouds */}
-      <motion.div
-        className="absolute w-[500px] h-[500px] pointer-events-none -z-10 rounded-full"
-        style={{ background: 'radial-gradient(circle, rgba(88,28,135,0.4) 0%, rgba(88,28,135,0) 60%)' }}
-        animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <motion.div
-        className="absolute w-[600px] h-[600px] pointer-events-none -z-10 rounded-full"
-        style={{ background: 'radial-gradient(circle, rgba(131,24,67,0.3) 0%, rgba(131,24,67,0) 60%)' }}
-        animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.4, 0.2] }}
-        transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
-      />
+      {/* Eye of the Storm: Nebula Clouds & Space Dust */}
+      {!shouldReduceMotion && (
+        <>
+          <motion.div
+            className="absolute w-[500px] h-[500px] pointer-events-none -z-10 rounded-full"
+            style={{ background: 'radial-gradient(circle, rgba(88,28,135,0.4) 0%, rgba(88,28,135,0) 60%)' }}
+            animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+            transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <motion.div
+            className="absolute w-[600px] h-[600px] pointer-events-none -z-10 rounded-full"
+            style={{ background: 'radial-gradient(circle, rgba(131,24,67,0.3) 0%, rgba(131,24,67,0) 60%)' }}
+            animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.4, 0.2] }}
+            transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+          />
 
-      {/* Eye of the Storm: Space Dust / Debris */}
-      <motion.div
-        className="absolute w-[400px] h-[400px] rounded-full pointer-events-none -z-10"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-      >
-        <div className="absolute top-0 left-1/2 w-2 h-2 bg-purple-400/40 rounded-full blur-sm" />
-        <div className="absolute bottom-10 right-10 w-3 h-3 bg-pink-400/30 rounded-full blur-[2px]" />
-        <div className="absolute top-1/4 left-0 w-1.5 h-1.5 bg-white/30 rounded-full" />
-      </motion.div>
-      <motion.div
-        className="absolute w-[500px] h-[500px] rounded-full pointer-events-none -z-10"
-        animate={{ rotate: -360 }}
-        transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
-      >
-        <div className="absolute bottom-0 left-1/4 w-2 h-2 bg-purple-300/40 rounded-full blur-[1px]" />
-        <div className="absolute top-10 right-1/4 w-1 h-1 bg-white/40 rounded-full" />
-        <div className="absolute top-1/2 right-0 w-2.5 h-2.5 bg-teal-400/20 rounded-full blur-sm" />
-      </motion.div>
+          <motion.div
+            className="absolute w-[400px] h-[400px] rounded-full pointer-events-none -z-10"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+          >
+            <div className="absolute top-0 left-1/2 w-2 h-2 bg-purple-400/40 rounded-full blur-sm" />
+            <div className="absolute bottom-10 right-10 w-3 h-3 bg-pink-400/30 rounded-full blur-[2px]" />
+            <div className="absolute top-1/4 left-0 w-1.5 h-1.5 bg-white/30 rounded-full" />
+          </motion.div>
+          <motion.div
+            className="absolute w-[500px] h-[500px] rounded-full pointer-events-none -z-10"
+            animate={{ rotate: -360 }}
+            transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
+          >
+            <div className="absolute bottom-0 left-1/4 w-2 h-2 bg-purple-300/40 rounded-full blur-[1px]" />
+            <div className="absolute top-10 right-1/4 w-1 h-1 bg-white/40 rounded-full" />
+            <div className="absolute top-1/2 right-0 w-2.5 h-2.5 bg-teal-400/20 rounded-full blur-sm" />
+          </motion.div>
+        </>
+      )}
 
       {/* Main portal button */}
       <motion.button
@@ -339,69 +345,73 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
         />
 
         {/* Layer 6: Logarithmic spiral tendrils (SVG) */}
-        <svg className="absolute inset-2 w-[calc(100%-1rem)] h-[calc(100%-1rem)] pointer-events-none" viewBox="0 0 200 200">
-          <defs>
-            <linearGradient id="spiralGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="rgba(139, 92, 246, 0)" />
-              <stop offset="30%" stopColor="rgba(139, 92, 246, 0.7)" />
-              <stop offset="70%" stopColor="rgba(236, 72, 153, 0.8)" />
-              <stop offset="100%" stopColor="rgba(20, 184, 166, 0.6)" />
-            </linearGradient>
-            <linearGradient id="spiralGradient2" x1="100%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="rgba(236, 72, 153, 0)" />
-              <stop offset="30%" stopColor="rgba(236, 72, 153, 0.7)" />
-              <stop offset="70%" stopColor="rgba(139, 92, 246, 0.8)" />
-              <stop offset="100%" stopColor="rgba(20, 184, 166, 0.6)" />
-            </linearGradient>
-          </defs>
+        {!shouldReduceMotion && (
+          <svg className="absolute inset-2 w-[calc(100%-1rem)] h-[calc(100%-1rem)] pointer-events-none" viewBox="0 0 200 200">
+            <defs>
+              <linearGradient id="spiralGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="rgba(139, 92, 246, 0)" />
+                <stop offset="30%" stopColor="rgba(139, 92, 246, 0.7)" />
+                <stop offset="70%" stopColor="rgba(236, 72, 153, 0.8)" />
+                <stop offset="100%" stopColor="rgba(20, 184, 166, 0.6)" />
+              </linearGradient>
+              <linearGradient id="spiralGradient2" x1="100%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="rgba(236, 72, 153, 0)" />
+                <stop offset="30%" stopColor="rgba(236, 72, 153, 0.7)" />
+                <stop offset="70%" stopColor="rgba(139, 92, 246, 0.8)" />
+                <stop offset="100%" stopColor="rgba(20, 184, 166, 0.6)" />
+              </linearGradient>
+            </defs>
 
-          {spiralPaths.map((spiral, index) => {
-            // Calculate path length for stroke animation
-            const pathLength = 1000; // Approximate length
+            {spiralPaths.map((spiral, index) => {
+              // Calculate path length for stroke animation
+              const pathLength = 1000; // Approximate length
 
-            return (
-              <motion.path
-                key={index}
-                d={spiral.path}
-                fill="none"
-                stroke={index % 2 === 0 ? 'url(#spiralGradient1)' : 'url(#spiralGradient2)'}
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                opacity={spiral.opacity}
-                strokeDasharray={pathLength}
-                animate={{
-                  strokeDashoffset: [pathLength, 0],
-                  rotate: index % 2 === 0 ? 360 : -360,
-                  scale: [1, 0.8, 1]
-                }}
-                transition={{
-                  strokeDashoffset: {
-                    duration: isActive ? 1.5 : spiral.duration * 0.8,
-                    repeat: Infinity,
-                    ease: "linear",
-                  },
-                  rotate: {
-                    duration: isActive ? 2 : spiral.duration,
-                    repeat: Infinity,
-                    ease: "linear",
-                  },
-                  scale: {
-                    duration: isActive ? 1 : spiral.duration * 0.5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }
-                }}
-                style={{ originX: '50%', originY: '50%' }}
-              />
-            );
-          })}
-        </svg>
+              return (
+                <motion.path
+                  key={index}
+                  d={spiral.path}
+                  fill="none"
+                  stroke={index % 2 === 0 ? 'url(#spiralGradient1)' : 'url(#spiralGradient2)'}
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  opacity={spiral.opacity}
+                  strokeDasharray={pathLength}
+                  animate={{
+                    strokeDashoffset: [pathLength, 0],
+                    rotate: index % 2 === 0 ? 360 : -360,
+                    scale: [1, 0.8, 1]
+                  }}
+                  transition={{
+                    strokeDashoffset: {
+                      duration: isActive ? 1.5 : spiral.duration * 0.8,
+                      repeat: Infinity,
+                      ease: "linear",
+                    },
+                    rotate: {
+                      duration: isActive ? 2 : spiral.duration,
+                      repeat: Infinity,
+                      ease: "linear",
+                    },
+                    scale: {
+                      duration: isActive ? 1 : spiral.duration * 0.5,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }
+                  }}
+                  style={{ originX: '50%', originY: '50%' }}
+                />
+              );
+            })}
+          </svg>
+        )}
 
         {/* Canvas particle system with trails */}
-        <canvas
-          ref={canvasRef}
-          className="absolute inset-0 w-full h-full rounded-full pointer-events-none"
-        />
+        {!shouldReduceMotion && (
+          <canvas
+            ref={canvasRef}
+            className="absolute inset-0 w-full h-full rounded-full pointer-events-none"
+          />
+        )}
 
         {/* The Singularity - Absolute Center Void
             Sits on top of the spirals and particles to swallow them before they converge,

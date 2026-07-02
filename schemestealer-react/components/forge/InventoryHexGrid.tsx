@@ -215,7 +215,7 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
       {/* Ambient Center Glow */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(184,134,11,0.15)_0%,transparent_70%)] pointer-events-none mix-blend-screen" />
       {/* CRT Scanlines */}
-      <div className="absolute inset-0 opacity-40 mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, #000 2px, #000 4px)' }} />
+      <div className="absolute inset-0 opacity-40 mix-blend-overlay pointer-events-none bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,#000_2px,#000_4px)]" />
       {/* Zoom / Pan Wrapper */}
       <TransformWrapper
         initialScale={1}
@@ -276,7 +276,7 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
                   type: isNew ? "tween" : "spring",
                   ...(isNew ? { duration: 0.8, ease: "easeInOut" } : { stiffness: 300, damping: 25, delay: i * 0.01 })
                 }}
-                className="absolute flex items-center justify-center cursor-pointer group"
+                className="absolute flex items-center justify-center cursor-pointer group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brass z-10"
                 style={{ 
                   left: x, 
                   top: y, 

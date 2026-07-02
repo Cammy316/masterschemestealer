@@ -6,6 +6,7 @@
 'use client';
 
 import { ReactNode, useEffect } from 'react';
+import { MotionConfig } from 'framer-motion';
 import { ErrorBoundary } from './ErrorBoundary';
 import { ToastContainer } from './shared/Toast';
 import { mlLogger } from '@/lib/mlDataLogger';
@@ -31,9 +32,11 @@ export function ClientProvider({ children }: ClientProviderProps) {
 
   return (
     <ErrorBoundary>
-      <AnalyticsPageTracker />
-      {children}
-      <ToastContainer />
+      <MotionConfig reducedMotion="user">
+        <AnalyticsPageTracker />
+        {children}
+        <ToastContainer />
+      </MotionConfig>
     </ErrorBoundary>
   );
 }

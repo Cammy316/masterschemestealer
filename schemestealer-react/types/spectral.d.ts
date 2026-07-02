@@ -1,15 +1,8 @@
 declare module 'spectral.js' {
-  /** Kubelka-Munk pigment colour (reflectance reconstructed from sRGB). */
-  class Color {
-    constructor(color: string | [number, number, number]);
-    /** 0-255 sRGB channels of the colour. */
+  export class Color {
+    constructor(color: string | number[]);
     sRGB: [number, number, number];
   }
 
-  /** Weighted K-M mix: spectral.mix([colorA, wA], [colorB, wB], ...). */
-  function mix(...entries: Array<[Color, number]>): Color;
-
-  const spectral: { Color: typeof Color; mix: typeof mix };
-  export default spectral;
+  export function mix(...args: (Color | number | [Color, number])[]): Color;
 }
-declare module 'culori';

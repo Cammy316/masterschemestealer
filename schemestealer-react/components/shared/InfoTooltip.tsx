@@ -29,11 +29,17 @@ export function InfoTooltip({ text, position = 'bottom' }: { text: ReactNode; po
       className="relative inline-flex items-center justify-center z-50 pointer-events-auto"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={() => setIsHovered(!isHovered)}
     >
-      <div className={`w-5 h-5 rounded-sm border-2 border-brass/50 text-imperial-gold flex items-center justify-center text-[10px] font-bold cursor-help transition-all shadow-inner active:scale-95 ${isHovered ? 'bg-brass/20 drop-shadow-[0_0_4px_rgba(184,134,11,0.5)] border-brass' : 'bg-black/80 hover:bg-charcoal hover:border-brass/80'}`}>
-        ?
-      </div>
+      <button 
+        type="button"
+        className="min-w-[44px] min-h-[44px] flex items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brass group"
+        onClick={() => setIsHovered(!isHovered)}
+        aria-label="Information"
+      >
+        <div className={`w-5 h-5 rounded-sm border-2 border-brass/50 text-imperial-gold flex items-center justify-center text-[10px] font-bold cursor-help transition-all shadow-inner group-active:scale-95 ${isHovered ? 'bg-brass/20 drop-shadow-[0_0_4px_rgba(184,134,11,0.5)] border-brass' : 'bg-black/80 group-hover:bg-charcoal group-hover:border-brass/80'}`}>
+          ?
+        </div>
+      </button>
       <AnimatePresence>
         {isHovered && (
           <motion.div

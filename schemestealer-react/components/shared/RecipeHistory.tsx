@@ -45,7 +45,7 @@ export function RecipeHistory({
       {/* Header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between p-4 bg-gray-900/80 hover:bg-gray-900 transition-colors"
+        className="w-full flex items-center justify-between p-4 min-h-[44px] bg-gray-900/80 hover:bg-gray-900 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brass"
         aria-expanded={isExpanded}
       >
         <div className="flex items-center gap-2">
@@ -125,7 +125,7 @@ function HistoryCard({ scan, onSelect }: HistoryCardProps) {
   return (
     <motion.button
       onClick={() => onSelect?.(scan)}
-      className="w-full p-4 bg-gray-900/50 hover:bg-gray-800/50 transition-colors text-left"
+      className="w-full p-4 min-h-[44px] bg-gray-900/50 hover:bg-gray-800/50 transition-colors text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brass"
       whileHover={{ x: 4 }}
       whileTap={{ scale: 0.98 }}
       disabled={!onSelect}

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 
 interface ShareModalProps {
   mode: 'miniature' | 'inspiration';
@@ -92,16 +93,15 @@ export function ShareModal({ mode, data, onClose }: ShareModalProps) {
   };
 
   return (
-    <div
-      className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
-      onClick={onClose}
-    >
-      <div
-        className={`w-full max-w-lg bg-gray-900 rounded-lg border-2 ${themeColors.border} p-6 max-h-[90vh] overflow-y-auto`}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex justify-between items-center mb-6">
-          <h2 className={`text-2xl font-bold ${themeColors.text}`}>Share Results</h2>
+    <Dialog open={true} onClose={onClose} className="relative z-50">
+      <div className="fixed inset-0 bg-black/80" aria-hidden="true" />
+      
+      <div className="fixed inset-0 flex items-center justify-center p-4">
+        <DialogPanel
+          className={`w-full max-w-lg bg-gray-900 rounded-lg border-2 ${themeColors.border} p-6 max-h-[90vh] flex flex-col`}
+        >
+          <div className="flex justify-between items-center mb-6 shrink-0">
+            <DialogTitle className={`text-2xl font-bold ${themeColors.text}`}>Share Results</DialogTitle>
           <button onClick={onClose} className="text-gray-400 hover:text-white text-2xl w-8 h-8">×</button>
         </div>
 
@@ -180,7 +180,8 @@ export function ShareModal({ mode, data, onClose }: ShareModalProps) {
             </div>
           )}
         </div>
+        </DialogPanel>
       </div>
-    </div>
+    </Dialog>
   );
 }
