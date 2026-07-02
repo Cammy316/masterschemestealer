@@ -102,7 +102,7 @@ export function mixColorsWeighted(ingredients: Ingredient[]): string | null {
 
   // Map to spectral arguments: [Color, weight]
   const spectralArgs = resolved.map(item => {
-    return [new spectral.Color(item.hex), item.weight / totalWeight];
+    return [new spectral.Color(item.hex), item.weight / totalWeight] as [import('spectral.js').Color, number];
   });
 
   // Call spectral.mix with the spread arguments
