@@ -187,11 +187,29 @@ def _load_anchors():
 
 def _nearest_family(group, L, a, b):
     """Family of the nearest exemplar by CIEDE2000."""
+    return _nearest_family_margin(group, L, a, b)[0]
+
+
+def _nearest_family_margin(group, L, a, b):
+    """(family, margin) of the nearest exemplar by CIEDE2000.
+
+    margin = (d2 − d1) / d1, where d1 is the distance to the winning
+    exemplar and d2 the distance to the nearest exemplar of a DIFFERENT
+    family — the classification's own certainty, free of charge from the
+    nearest-anchor search. 0 = coin toss on a family boundary; ≥1 = the
+    runner-up family is at least twice as far.
+    """
     pts, fams = group
     target = np.array([[[L, a, b]]])
     candidates = pts.reshape(-1, 1, 3)
     dists = deltaE_ciede2000(target, candidates).flatten()
-    return fams[int(np.argmin(dists))]
+    order = np.argsort(dists)
+    win_fam = fams[int(order[0])]
+    d1 = max(float(dists[order[0]]), 1e-6)
+    d2 = next((float(dists[i]) for i in order[1:] if fams[int(i)] != win_fam),
+              None)
+    margin = ((d2 - d1) / d1) if d2 is not None else 1.0
+    return win_fam, max(margin, 0.0)
 
 
 def classify_family(lab, chroma: float = None, is_metallic: bool = False) -> str:
@@ -224,13 +242,31 @@ def classify_family(lab, chroma: float = None, is_metallic: bool = False) -> str
     return _nearest_family(A['chromatic'], L, a, b)
 
 
+def classify_family_margin(lab, chroma: float = None,
+                           is_metallic: bool = False):
+    """classify_family plus the classification margin (see
+    _nearest_family_margin) — the honest confidence signal for the scan's
+    detail/major filtering. Same decisions as classify_family, always."""
+    L, a, b = float(lab[0]), float(lab[1]), float(lab[2])
+    A = _load_anchors()
+
+    if is_metallic:
+        return _nearest_family_margin(A['metallic'], L, a, b)
+    black_l = A['thresholds']['black_l']
+    if L < black_l:
+        # Certainty grows as the colour sinks below the floor.
+        return 'black', min((black_l - L) / 5.0, 1.0)
+    return _nearest_family_margin(A['chromatic'], L, a, b)
+
+
 def hue_family(h_deg: float, s: float, v: float, chroma: float = None,
                lab=None, finish: str = 'matte') -> str:
     """Back-compat shim → `classify_family` (non-metallic). The LAB drives the
     result; the legacy HSV args are ignored. Kept so existing callers/tests that
     still pass HSV keep working — new code should call `classify_family(lab)`."""
     if lab is None:
-        return 'grey'
+        raise ValueError("hue_family requires a LAB triple — the legacy HSV "
+                         "arguments alone cannot classify a colour")
     return classify_family(lab, chroma, is_metallic=False)
 
 
@@ -294,9 +330,6 @@ class ShadeTypeAnalyser:
 # PAINT MATCHER — vectorised CIEDE2000 (replaces Euclidean KDTree)
 # ============================================================================
 
-_METALLIC_KEYWORDS = ("Silver", "Steel", "Gold", "Bronze", "Metal",
-                      "Retributor", "Leadbelcher", "Iron")
-
 # Role → DB category sets.  Callers request a semantic role; the matcher
 # expands it to the relevant DB category strings stored in Paint.type.
 ROLE_CATEGORIES: Dict[str, set] = {
@@ -330,10 +363,18 @@ FAMILY_GATED_ROLES = {'dominant', 'highlight'}
 BASE_MATCH_DELTA_E_CEILING: float = 30.0
 
 from core.colour_maths import ciede2000_single as _ciede2000_single
+from core.colour_maths import lab_to_oklab as _lab_to_oklab
+
+# Two-stage retrieval: candidates are first shortlisted by OKLab Euclidean
+# distance (a proper metric — fast and monotone with perception), then the
+# shortlist is ranked by CIEDE2000 in the small-distance regime where it is
+# valid. Large enough that the CIEDE2000-best candidate cannot fall outside it
+# for any realistic brand pool.
+_RETRIEVAL_SHORTLIST: int = 48
 
 
 class PaintMatcher:
-    """Match colours to paint database using vectorised CIEDE2000."""
+    """Match colours to paint database — OKLab retrieval + CIEDE2000 ranking."""
 
     def __init__(self, paint_db: List[Paint]):
         # Exclude non-matchable paints from the search index.
@@ -341,6 +382,8 @@ class PaintMatcher:
         self.paint_db = matchable
         # Precompute arrays once — rows correspond to paint_db order.
         self.lab_matrix = np.array([p.lab for p in matchable], dtype=float)   # (N, 3)
+        self.oklab_matrix = (_lab_to_oklab(self.lab_matrix)
+                             if matchable else np.zeros((0, 3)))               # (N, 3)
         self.brands_arr = np.array([p.brand for p in matchable])               # (N,)
         self.types_arr  = np.array([p.type.lower() for p in matchable])        # (N,) lowercase
         self.finish_arr = np.array([p.finish.lower() for p in matchable])      # (N,) sheen only
@@ -352,7 +395,7 @@ class PaintMatcher:
         self.transp_arr = np.array([p.transparency for p in matchable],
                                    dtype=float)                                 # (N,)
         logger.info(f"Paint matcher initialised: {len(matchable)}/{len(paint_db)} "
-                    "matchable paints (vectorised CIEDE2000)")
+                    "matchable paints (OKLab retrieval + CIEDE2000 ranking)")
 
     # ------------------------------------------------------------------
     # Internal helpers
@@ -371,9 +414,18 @@ class PaintMatcher:
         c = candidate_labs.reshape(n, 1, 3)
         return deltaE_ciede2000(t, c).flatten()
 
-    @staticmethod
-    def _is_metallic_paint(name: str) -> bool:
-        return any(kw in name for kw in _METALLIC_KEYWORDS)
+    def _retrieval_shortlist(self, target_lab: np.ndarray,
+                             candidate_indices: np.ndarray) -> np.ndarray:
+        """Stage 1 of the two-stage match: prune candidates to the
+        _RETRIEVAL_SHORTLIST nearest by OKLab Euclidean distance. CIEDE2000
+        then ranks only the shortlist — inside its validity regime."""
+        if len(candidate_indices) <= _RETRIEVAL_SHORTLIST:
+            return candidate_indices
+        target_ok = _lab_to_oklab(np.asarray(target_lab, dtype=float))
+        d_ok = np.linalg.norm(self.oklab_matrix[candidate_indices] - target_ok,
+                              axis=1)
+        keep = np.argpartition(d_ok, _RETRIEVAL_SHORTLIST)[:_RETRIEVAL_SHORTLIST]
+        return candidate_indices[keep]
 
     # ------------------------------------------------------------------
     # Public API
@@ -383,10 +435,16 @@ class PaintMatcher:
                     role: str = 'dominant',
                     context: Dict = None,
                     paint_type: str = None,
-                    target_family: str = None) -> Optional[Paint]:
-        """Return the best-matching paint for target_rgb in the given brand/role.
+                    target_family: str = None,
+                    target_lab: np.ndarray = None) -> Optional[Paint]:
+        """Return the best-matching paint for the target in the given brand/role.
 
         paint_type is accepted for backward compatibility and mapped to role.
+
+        target_lab, when given, is used directly as the CIEDE2000 target — the
+        caller's cluster representative is authoritative and is NOT re-derived
+        from target_rgb (F3 fix: one colour per cluster). Without it, the LAB
+        is derived from target_rgb as before.
 
         target_family (the detected colour's canonical family) gates base/highlight
         candidates to that family + its adjacent families and applies a ΔE ceiling,
@@ -397,8 +455,11 @@ class PaintMatcher:
         if paint_type is not None:
             role = _TYPE_TO_ROLE.get(paint_type.lower(), paint_type.lower())
 
-        target_rgb_norm = target_rgb / 255.0 if target_rgb.max() > 1 else target_rgb
-        target_lab = color.rgb2lab(np.array([[target_rgb_norm]]))[0][0]
+        if target_lab is None:
+            target_rgb_norm = target_rgb / 255.0 if target_rgb.max() > 1 else target_rgb
+            target_lab = color.rgb2lab(np.array([[target_rgb_norm]]))[0][0]
+        else:
+            target_lab = np.asarray(target_lab, dtype=float)
 
         mask = self._candidates_mask(brand, role)
 
@@ -439,37 +500,29 @@ class PaintMatcher:
         if len(candidate_indices) == 0:
             return None
 
+        candidate_indices = self._retrieval_shortlist(target_lab, candidate_indices)
         candidate_labs = self.lab_matrix[candidate_indices]
-        # Keep the pure CIEDE2000 distances separate from the penalised ranking
-        # distances, so the ΔE ceiling is judged on true colour distance (not on a
-        # penalty-inflated score).
         raw_distances = self._ciede2000_vs_matrix(target_lab, candidate_labs)
+
+        # ── ΔE ceiling (base/highlight only) — gate BEFORE ranking ────────
+        # The ceiling is a candidacy condition on true colour distance, so it
+        # must remove candidates before penalties reorder them (F4 fix: a
+        # within-ceiling paint must never lose to an over-ceiling one that
+        # then trips the ceiling and returns None).
+        if role.lower() in FAMILY_GATED_ROLES:
+            within = raw_distances <= BASE_MATCH_DELTA_E_CEILING
+            if not within.any():
+                return None
+            candidate_indices = candidate_indices[within]
+            raw_distances = raw_distances[within]
+
         distances = raw_distances.copy()
 
         # ── Transparency penalty (dominant/highlight only) ────────────────
         if role in ('dominant', 'highlight'):
             distances += self.transp_arr[candidate_indices] * TRANSPARENCY_PENALTY
 
-        # ── Legacy context-aware metallic name penalties ──────────────────
-        if context and role not in ('shade', 'wash'):
-            is_target_metallic = bool(context.get('metallic_score',
-                                                   context.get('is_metallic', False)))
-            for local_i, global_i in enumerate(candidate_indices):
-                paint_metallic = self._is_metallic_paint(self.paint_db[global_i].name)
-                if not is_target_metallic and paint_metallic:
-                    distances[local_i] += 100
-                elif is_target_metallic:
-                    distances[local_i] += -30 if paint_metallic else 50
-
         best_local = int(np.argmin(distances))
-
-        # ── ΔE ceiling (base/highlight only) ──────────────────────────────
-        # A far-off winner is not a recommendation — return None so the slot
-        # shows "No match found" rather than a misleading cross-family paint.
-        if (role.lower() in FAMILY_GATED_ROLES
-                and raw_distances[best_local] > BASE_MATCH_DELTA_E_CEILING):
-            return None
-
         return self.paint_db[candidate_indices[best_local]]
 
     def match_top_n(self, target_lab: np.ndarray, brand: str = None,
@@ -509,6 +562,8 @@ class PaintMatcher:
         if len(candidate_indices) == 0:
             return []
 
+        candidate_indices = self._retrieval_shortlist(
+            np.asarray(target_lab, dtype=float), candidate_indices)
         candidate_labs = self.lab_matrix[candidate_indices]
         distances = self._ciede2000_vs_matrix(
             np.asarray(target_lab, dtype=float), candidate_labs

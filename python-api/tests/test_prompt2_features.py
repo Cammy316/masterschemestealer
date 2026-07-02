@@ -28,7 +28,8 @@ from core.color_engine import (
 # ---------------------------------------------------------------------------
 
 def _make_paint(name, brand, category, finish="matte", transparency=0.0,
-                lab=(50.0, 0.0, 0.0), matchable=True, discontinued=False):
+                lab=(50.0, 0.0, 0.0), matchable=True, discontinued=False,
+                metallic=False):
     """Construct a Paint with precomputed lab — bypasses hex parsing."""
     p = Paint(
         name=name,
@@ -40,6 +41,7 @@ def _make_paint(name, brand, category, finish="matte", transparency=0.0,
         transparency=transparency,
         matchable=matchable,
         discontinued=discontinued,
+        metallic=metallic,
     )
     # Inject precomputed colour properties directly
     p.lab = np.array(lab, dtype=float)
@@ -67,8 +69,8 @@ _DB = [
     _make_paint("Wash",          "Citadel", "wash",      lab=(40.0, 0.0, 0.0)),
     # shade-role — ink
     _make_paint("Ink",           "Citadel", "ink",       lab=(45.0, 0.0, 0.0)),
-    # metallic base paint
-    _make_paint("Gold Metal",    "Citadel", "base",      finish="metallic", lab=(55.0, 5.0, 25.0)),
+    # metallic base paint (metallic-ness carried by the flag, not finish)
+    _make_paint("Gold Metal",    "Citadel", "base",      metallic=True, lab=(55.0, 5.0, 25.0)),
     # unmatchable paint — must be excluded from index
     _make_paint("Bad Code",      "Citadel", "base",      matchable=False,   lab=(50.5, 0.0, 0.0)),
 ]
@@ -148,27 +150,27 @@ def test_backward_compat_paint_type_maps_to_dominant(matcher):
 # ============================================================================
 
 def test_metallic_gate_restricts_to_metallic_when_score_high(matcher):
-    """metallic_score >= 0.5 must restrict candidates to finish='metallic' paints."""
+    """metallic_score >= 0.5 must restrict candidates to metallic-flagged
+    paints — the DB `metallic` flag is the single metallic decision."""
     result = matcher.match_color(
         TARGET_RGB, "Citadel", role="dominant",
         context={"metallic_score": 1.0}
     )
     assert result is not None
-    assert result.finish.lower() == "metallic", (
-        f"Expected metallic finish, got {result.finish!r} "
-        f"(paint: {result.name!r})"
+    assert result.metallic, (
+        f"Expected a metallic-flagged paint, got {result.name!r}"
     )
 
 
 def test_metallic_gate_excludes_metallic_when_score_zero(matcher):
-    """metallic_score == 0 must exclude metallic-finish paints."""
+    """metallic_score == 0 must exclude metallic-flagged paints."""
     result = matcher.match_color(
         TARGET_RGB, "Citadel", role="dominant",
         context={"metallic_score": 0.0}
     )
     assert result is not None
-    assert result.finish.lower() != "metallic", (
-        f"Metallic-finish paint {result.name!r} was returned for a non-metallic colour"
+    assert not result.metallic, (
+        f"Metallic paint {result.name!r} was returned for a non-metallic colour"
     )
 
 

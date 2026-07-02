@@ -79,7 +79,6 @@ class InspirationScannerService:
                 mode="inspiration",  # NO background removal
                 remove_base=False,
                 use_awb=True,
-                sat_boost=1.2,
                 detect_details=False,
                 brands=Affiliate.SUPPORTED_BRANDS,
             )

@@ -191,7 +191,7 @@ implementations — see the audit report for the divergence/tech-debt detail.
 /miniature/results      reticle reveals + PaintRecipeCard per colour
 /inspiration            Warp Portal upload
 /inspiration/results    colour orbs + PaintRecipeCard per colour
-/cart                   affiliate "supply requisition" by region
+/forge                  Inventory (HexGrid), Forge Mix (Alchemy Crucible), Requisition Cart
 ```
 
 Navigation is a fixed bottom bar (`components/Navigation.tsx`); the app uses linear
@@ -202,7 +202,7 @@ else a themed empty state (never a 404).
 **Zustand store** (`lib/store.ts`)
 
 State: `currentMode`, `currentScan`, `scanHistory` (last 10, persisted), `cart`,
-`isScanning`/`isLoading`, `error`, `offlineMode`, `preferredBrands`, `preferredRegion`.
+`isScanning`/`isLoading`, `error`, `offlineMode`, `preferredBrands`, `preferredRegion`, `inventory`, `customMixes`.
 Notable hygiene:
 - `setScanResult()` **discards a result whose `mode` no longer matches `currentMode`** —
   the core guard against mode-switch races.

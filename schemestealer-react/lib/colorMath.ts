@@ -1,5 +1,5 @@
 import spectral from 'spectral.js';
-import { differenceCiede2000, parseHex, converter } from 'culori';
+import { differenceCiede2000, converter, formatHex } from 'culori';
 import paintsData from './data/paints_groundtruth.json';
 
 export interface RGB {
@@ -11,6 +11,9 @@ export interface RGB {
 export interface Ingredient {
   hex: string;
   parts: number;
+  /** Ground-truth paint_id — when present, the mix uses the paint's MEASURED
+   *  colour and its opacity rating instead of the chart hex alone. */
+  paintId?: string;
 }
 
 export interface PaintGroundTruth {
@@ -19,9 +22,34 @@ export interface PaintGroundTruth {
   brand: string;
   hex: string;
   lab: [number, number, number];
+  metallic?: boolean;
+  opacity_rating?: number | null;
 }
 
-const toLab = converter('lab');
+// DB labs are CIELAB **D65** (backend skimage). culori's 'lab' mode is D50
+// per CSS Color 4 — tagging D65 values with it applies a spurious chromatic
+// adaptation inside differenceCiede2000 (audit F9). Everything here speaks
+// 'lab65'.
+const toLab = converter('lab65');
+const toRgb = converter('rgb');
+
+const PAINTS = paintsData as unknown as PaintGroundTruth[];
+const PAINTS_BY_ID = new Map(PAINTS.map(p => [p.paint_id, p]));
+
+/** The paint's measured applied colour as a hex (falls back to chart hex). */
+function measuredHex(p: PaintGroundTruth): string {
+  if (!p.lab) return p.hex;
+  const rgb = toRgb({ mode: 'lab65', l: p.lab[0], a: p.lab[1], b: p.lab[2] } as any);
+  return rgb ? formatHex(rgb).toUpperCase() : p.hex;
+}
+
+/** Relative pigment load from the DB opacity rating (0 translucent .. 3
+ *  opaque): a wash contributes far less colourant per part than a heavy
+ *  base. Unknown rating → neutral load 1. */
+function pigmentLoad(rating: number | null | undefined): number {
+  if (rating == null) return 1.0;
+  return 0.4 + 0.2 * Math.max(0, Math.min(3, rating));
+}
 
 /**
  * Converts an RGB object to a hex color string.
@@ -39,8 +67,13 @@ export function rgbToHex({ r, g, b }: RGB): string {
 }
 
 /**
- * Mixes an array of ingredients (hex color + parts ratio) using spectral.js (Kubelka-Munk theory).
- * Iteratively mixes ingredients according to their parts ratio.
+ * Mixes an array of ingredients using spectral.js (Kubelka-Munk theory).
+ *
+ * When an ingredient carries a paintId, two physical corrections apply:
+ *  - its MEASURED applied colour (DB lab) feeds the reflectance
+ *    reconstruction instead of the marketing chart hex, and
+ *  - its parts are scaled by pigment load (opacity rating), so one part of
+ *    wash no longer contributes as much colourant as one part of heavy base.
  */
 export function mixColorsWeighted(ingredients: Ingredient[]): string | null {
   if (!ingredients || ingredients.length === 0) {
@@ -49,17 +82,27 @@ export function mixColorsWeighted(ingredients: Ingredient[]): string | null {
 
   // Filter out ingredients with 0 parts
   const activeIngredients = ingredients.filter(i => i.parts > 0);
-  
+
   if (activeIngredients.length === 0) {
     return null;
   }
 
-  // Calculate total parts to get the relative weight of each ingredient
-  const totalParts = activeIngredients.reduce((sum, item) => sum + item.parts, 0);
+  const resolved = activeIngredients.map(item => {
+    const paint = item.paintId ? PAINTS_BY_ID.get(item.paintId) : undefined;
+    return {
+      hex: paint ? measuredHex(paint) : item.hex,
+      weight: item.parts * pigmentLoad(paint?.opacity_rating),
+    };
+  });
+
+  const totalWeight = resolved.reduce((sum, item) => sum + item.weight, 0);
+  if (totalWeight <= 0) {
+    return null;
+  }
 
   // Map to spectral arguments: [Color, weight]
-  const spectralArgs = activeIngredients.map(item => {
-    return [new spectral.Color(item.hex), item.parts / totalParts];
+  const spectralArgs = resolved.map(item => {
+    return [new spectral.Color(item.hex), item.weight / totalWeight];
   });
 
   // Call spectral.mix with the spread arguments
@@ -79,8 +122,34 @@ export function mixColorsWeighted(ingredients: Ingredient[]): string | null {
 }
 
 /**
+ * Coverage weight of a mix over a primer, from the parts-weighted mean of the
+ * ingredients' opacity ratings: an opaque mix (rating 3) covers ~95%, a
+ * translucent glaze (rating 0) lets ~55% of the primer through. Ingredients
+ * without a known rating count as the historical default coverage (0.85).
+ */
+export function effectiveCoverage(ingredients: Ingredient[]): number {
+  const active = ingredients.filter(i => i.parts > 0);
+  if (active.length === 0) return 0.85;
+
+  let weighted = 0;
+  let totalParts = 0;
+  for (const item of active) {
+    const paint = item.paintId ? PAINTS_BY_ID.get(item.paintId) : undefined;
+    const rating = paint?.opacity_rating;
+    const coverage = rating == null ? 0.85 : 0.45 + (0.5 / 3) * Math.max(0, Math.min(3, rating));
+    weighted += coverage * item.parts;
+    totalParts += item.parts;
+  }
+  return weighted / totalParts;
+}
+
+/**
  * Finds the closest single-pot paint match from the ground truth database
  * using CIEDE2000 color difference.
+ *
+ * Metallic paints are excluded: the Forge simulates matte pigment mixing, so
+ * a mix can never legitimately resolve to a metallic (same gate the backend
+ * matcher enforces).
  */
 export function findClosestPaint(targetHex: string) {
   const targetLab = toLab(targetHex);
@@ -89,12 +158,10 @@ export function findClosestPaint(targetHex: string) {
   let bestMatch = null;
   let minDeltaE = Infinity;
 
-  const paints = paintsData as unknown as PaintGroundTruth[];
+  for (const paint of PAINTS) {
+    if (!paint.lab || paint.metallic) continue;
 
-  for (const paint of paints) {
-    if (!paint.lab) continue;
-    
-    const paintLab = { mode: 'lab', l: paint.lab[0], a: paint.lab[1], b: paint.lab[2] };
+    const paintLab = { mode: 'lab65', l: paint.lab[0], a: paint.lab[1], b: paint.lab[2] };
     const deltaE = differenceCiede2000()(targetLab, paintLab as any);
 
     if (deltaE < minDeltaE) {
@@ -126,18 +193,23 @@ function getDeltaEBand(deltaE: number): string {
  * Finds the top alternative matches, limited to Citadel, Vallejo, and Army Painter.
  * Returns the best match overall, and the best match from the remaining two brands.
  */
-export function findTopAlternativeMatches(targetHex: string) {
+export function findTopAlternativeMatches(
+  targetHex: string,
+  opts: { includeMetallics?: boolean } = {},
+) {
   const targetLab = toLab(targetHex);
   if (!targetLab) return [];
 
-  const paints = paintsData as unknown as PaintGroundTruth[];
   const allowedBrands = ['Citadel', 'Vallejo', 'Army Painter'];
 
-  // Score all allowed paints
-  const scored = paints
-    .filter(p => allowedBrands.includes(p.brand) && p.lab)
+  // Metallics are excluded by default: the primary caller matches a MATTE
+  // pigment mix, which can never legitimately resolve to a metallic. Callers
+  // matching a physical pot (inventory scanning) opt back in.
+  const scored = PAINTS
+    .filter(p => allowedBrands.includes(p.brand) && p.lab
+      && (opts.includeMetallics || !p.metallic))
     .map(p => {
-      const pLab = { mode: 'lab', l: p.lab[0], a: p.lab[1], b: p.lab[2] };
+      const pLab = { mode: 'lab65', l: p.lab[0], a: p.lab[1], b: p.lab[2] };
       const deltaE = differenceCiede2000()(targetLab, pLab as any);
       return { ...p, deltaE };
     })
@@ -170,13 +242,21 @@ export function findTopAlternativeMatches(targetHex: string) {
 
 /**
  * Simulates painting a custom mix over a primer basecoat.
- * Opacity is 0.85 (85% paint, 15% primer).
+ *
+ * `coverage` is the paint's share of the result — derive it from the mix's
+ * opacity ratings via effectiveCoverage() (an opaque mix hides the primer,
+ * a glaze lets it through). Defaults to the historical 0.85.
  */
-export function simulateBasecoat(paintHex: string, primerHex: string): string {
+export function simulateBasecoat(
+  paintHex: string,
+  primerHex: string,
+  coverage: number = 0.85,
+): string {
+  const c = Math.max(0.05, Math.min(0.98, coverage));
   // @ts-ignore - spectral.js API
   const simulated = spectral.mix(
-    [new spectral.Color(paintHex), 0.85],
-    [new spectral.Color(primerHex), 0.15]
+    [new spectral.Color(paintHex), c],
+    [new spectral.Color(primerHex), 1 - c]
   );
   if (simulated && simulated.sRGB) {
     return rgbToHex({

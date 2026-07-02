@@ -1,27 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { hexToRgb, rgbToHex, mixColorsWeighted } from './colorMath';
+import { rgbToHex, mixColorsWeighted } from './colorMath';
 
 describe('colorMath', () => {
-  describe('hexToRgb', () => {
-    it('converts valid hex to RGB', () => {
-      expect(hexToRgb('#FF0000')).toEqual({ r: 255, g: 0, b: 0 });
-      expect(hexToRgb('#00FF00')).toEqual({ r: 0, g: 255, b: 0 });
-      expect(hexToRgb('#0000FF')).toEqual({ r: 0, g: 0, b: 255 });
-      expect(hexToRgb('#FFFFFF')).toEqual({ r: 255, g: 255, b: 255 });
-      expect(hexToRgb('#000000')).toEqual({ r: 0, g: 0, b: 0 });
-    });
-
-    it('works without the hash prefix', () => {
-      expect(hexToRgb('FF0000')).toEqual({ r: 255, g: 0, b: 0 });
-    });
-
-    it('throws error on invalid format', () => {
-      expect(() => hexToRgb('#FF0')).toThrowError();
-      expect(() => hexToRgb('#FFFFFFF')).toThrowError();
-      expect(() => hexToRgb('#ZZZZZZ')).toThrowError();
-    });
-  });
-
   describe('rgbToHex', () => {
     it('converts RGB to hex', () => {
       expect(rgbToHex({ r: 255, g: 0, b: 0 })).toBe('#FF0000');
@@ -57,30 +37,29 @@ describe('colorMath', () => {
       ])).toBe('#FF0000');
     });
 
-    it('mixes two colors equally (1:1 ratio)', () => {
-      // Red + Green using squared average: sqrt( (255^2 + 0) / 2 ) = sqrt(32512.5) ≈ 180.3 -> B4
+    // Expected values are spectral.js Kubelka-Munk pigment mixes — real paint
+    // behaviour, NOT channel averaging. Pure red + green pigments make a
+    // brown-orange; all three primaries make a dark brown, never grey.
+    it('mixes two colors equally (1:1 ratio) like pigment', () => {
       expect(mixColorsWeighted([
         { hex: '#FF0000', parts: 1 },
         { hex: '#00FF00', parts: 1 }
-      ])).toBe('#B4B400');
+      ])).toBe('#834B17');
     });
 
-    it('mixes two colors with different weights (2:1 ratio)', () => {
-      // 2 parts Red + 1 part Green
-      // R: sqrt( (2*255^2 + 0)/3 ) = sqrt(130050/3) = sqrt(43350) ≈ 208.2 -> D0
-      // G: sqrt( (0 + 255^2)/3 ) = sqrt(65025/3) = sqrt(21675) ≈ 147.2 -> 93
+    it('weights the mix by parts (2:1 pulls toward red)', () => {
       expect(mixColorsWeighted([
         { hex: '#FF0000', parts: 2 },
         { hex: '#00FF00', parts: 1 }
-      ])).toBe('#D09300');
+      ])).toBe('#8A3A16');
     });
 
-    it('mixes multiple colors correctly', () => {
+    it('mixes all three primaries to a dark brown, not grey', () => {
       expect(mixColorsWeighted([
         { hex: '#FF0000', parts: 1 },
         { hex: '#00FF00', parts: 1 },
         { hex: '#0000FF', parts: 1 }
-      ])).toBe('#939393'); // 147, 147, 147
+      ])).toBe('#593923');
     });
   });
 });

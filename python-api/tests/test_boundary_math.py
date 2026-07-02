@@ -154,19 +154,33 @@ _MONO_BASES = [
     (100.0, 0.0, 0.0),     # white
 ]
 
-
-@pytest.mark.parametrize("base", _MONO_BASES)
-def test_target_lab_highlight_is_strictly_lighter(base):
-    """The ideal highlight target lifts L* by +12 — always lighter than the base."""
-    assert target_lab(base, "highlight")[0] == pytest.approx(base[0] + IDEAL_DL_HIGHLIGHT)
-    assert target_lab(base, "highlight")[0] > base[0]
+# The Phase 3 geometry scales the lightness step by the available headroom
+# (a base at L*=95 cannot be lifted 12), so the contract is DIRECTION plus a
+# meaningful step wherever headroom exists — never an inversion.
+_MID_RANGE = lambda L: 5.0 < L < 90.0  # noqa: E731
 
 
 @pytest.mark.parametrize("base", _MONO_BASES)
-def test_target_lab_shade_is_strictly_darker(base):
-    """The ideal shade target drops L* by 12 — always darker than the base."""
-    assert target_lab(base, "shade")[0] == pytest.approx(base[0] + IDEAL_DL_SHADE)
-    assert target_lab(base, "shade")[0] < base[0]
+def test_target_lab_highlight_never_darkens(base):
+    """A highlight target is lighter than the base wherever headroom exists,
+    and never darker anywhere — an inverted target would derive recipes that
+    darken the model."""
+    tgt_l = target_lab(base, "highlight")[0]
+    assert tgt_l >= base[0] - 1e-6
+    if _MID_RANGE(base[0]):
+        assert tgt_l > base[0] + 2.0, f"highlight step too small: {tgt_l - base[0]:.2f}"
+        assert tgt_l < base[0] + 25.0, f"highlight step too large: {tgt_l - base[0]:.2f}"
+
+
+@pytest.mark.parametrize("base", _MONO_BASES)
+def test_target_lab_shade_never_lightens(base):
+    """The mirror: a shade target is darker wherever headroom exists, never
+    lighter anywhere."""
+    tgt_l = target_lab(base, "shade")[0]
+    assert tgt_l <= base[0] + 1e-6
+    if _MID_RANGE(base[0]):
+        assert tgt_l < base[0] - 2.0, f"shade step too small: {base[0] - tgt_l:.2f}"
+        assert tgt_l > base[0] - 25.0, f"shade step too large: {base[0] - tgt_l:.2f}"
 
 
 def _node(pid: str, L: float, fam: str = "red", brand: str = "TestBrand") -> PaintNode:

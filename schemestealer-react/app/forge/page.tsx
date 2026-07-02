@@ -13,7 +13,7 @@ import { InfoTooltip } from '@/components/shared/InfoTooltip';
 import { useAppStore } from '@/lib/store';
 import type { Paint } from '@/lib/types';
 import { getPaintId } from '@/lib/utils';
-import { mixColorsWeighted, findTopAlternativeMatches, simulateBasecoat } from '@/lib/colorMath';
+import { mixColorsWeighted, findTopAlternativeMatches, simulateBasecoat, effectiveCoverage } from '@/lib/colorMath';
 import { PAINT_DATABASE } from '@/lib/paintDatabase';
 
 const AFFILIATE_MERCHANTS: Record<Region, { name: string; searchUrl: (query: string) => string }[]> = {
@@ -191,9 +191,14 @@ export default function ForgePage() {
     return true;
   });
   
-  const mixedHex = React.useMemo(() => {
-    return mixColorsWeighted(recipe.map(r => ({ hex: r.paint.hex, parts: r.parts }))) || '#1A1A1A';
+  // paintId lets the mixer use each paint's measured colour + opacity rating.
+  const recipeIngredients = React.useMemo(() => {
+    return recipe.map(r => ({ hex: r.paint.hex, parts: r.parts, paintId: r.paint.id }));
   }, [recipe]);
+
+  const mixedHex = React.useMemo(() => {
+    return mixColorsWeighted(recipeIngredients) || '#1A1A1A';
+  }, [recipeIngredients]);
 
   const topMatches = React.useMemo(() => {
     if (recipe.length === 0 || mixedHex === '#1A1A1A') return [];
@@ -202,8 +207,8 @@ export default function ForgePage() {
 
   const simulatedHex = React.useMemo(() => {
     if (primer === 'none' || recipe.length === 0) return mixedHex;
-    return simulateBasecoat(mixedHex, primer);
-  }, [mixedHex, primer, recipe.length]);
+    return simulateBasecoat(mixedHex, primer, effectiveCoverage(recipeIngredients));
+  }, [mixedHex, primer, recipe.length, recipeIngredients]);
 
 
 
