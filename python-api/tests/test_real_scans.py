@@ -46,7 +46,9 @@ def _find(name: str):
 
 def _load_rgba(path: Path) -> np.ndarray:
     """Load as RGBA; if the photo has no meaningful alpha, derive a
-    foreground mask from the border colour (studio backdrop)."""
+    foreground mask with grabCut (the prod flow uses ML background removal —
+    a naive border-colour threshold leaks gradient backdrops and enclosed
+    background between limbs into the foreground, corrupting coverage)."""
     img = Image.open(path)
     if img.mode == "RGBA":
         rgba = np.asarray(img)
@@ -56,23 +58,21 @@ def _load_rgba(path: Path) -> np.ndarray:
 
     rgb = np.asarray(img.convert("RGB"))
     h, w = rgb.shape[:2]
-    border = np.concatenate([rgb[0], rgb[-1], rgb[:, 0], rgb[:, -1]], axis=0)
-    backdrop = np.median(border.astype(float), axis=0)
 
-    dist = np.linalg.norm(rgb.astype(float) - backdrop, axis=2)
-    fg = (dist > 45).astype(np.uint8)
+    gc_mask = np.zeros((h, w), np.uint8)
+    rect = (int(w * 0.04), int(h * 0.04), int(w * 0.92), int(h * 0.92))
+    bgd, fgd = np.zeros((1, 65), np.float64), np.zeros((1, 65), np.float64)
+    cv2.grabCut(cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR), gc_mask, rect,
+                bgd, fgd, 5, cv2.GC_INIT_WITH_RECT)
+    fg = np.where((gc_mask == cv2.GC_FGD) | (gc_mask == cv2.GC_PR_FGD),
+                  1, 0).astype(np.uint8)
 
-    # Clean up: close pinholes, keep the largest component, fill its holes.
-    kernel = np.ones((5, 5), np.uint8)
-    fg = cv2.morphologyEx(fg, cv2.MORPH_CLOSE, kernel)
+    # Keep the largest component only (no hole filling: enclosed background
+    # between limbs/weapons is genuine background).
     n, labels, stats, _ = cv2.connectedComponentsWithStats(fg, connectivity=8)
     if n > 1:
         largest = 1 + int(np.argmax(stats[1:, cv2.CC_STAT_AREA]))
         fg = (labels == largest).astype(np.uint8)
-    flood = fg.copy()
-    ff_mask = np.zeros((h + 2, w + 2), np.uint8)
-    cv2.floodFill(flood, ff_mask, (0, 0), 1)
-    fg = fg | (1 - flood)   # holes = not-fg and not reachable from the border
 
     alpha = (fg * 255).astype(np.uint8)
     return np.dstack([rgb, alpha])
@@ -105,14 +105,22 @@ def _coverage_by_family(recipes) -> dict:
 
 def test_pink_figure_dominant_is_pink_not_bronze(engine):
     """The production failure: this photo's dominant colour came back
-    'Bronze 56.8%'. The dominant family must be the pink body and metal
-    families must stay at trim scale."""
+    'Bronze 56.8%'. The dominant CHROMATIC family must be the pink body and
+    metal families must stay at trim scale. (Neutral families are excluded
+    from the dominance check: the fixture's derived mask keeps slivers of
+    studio backdrop and rock base that the app's ML background removal
+    would strip.)"""
     recipes = _scan(engine, "capturepink")
     cov = _coverage_by_family(recipes)
 
-    dominant = max(cov, key=cov.get)
+    chromatic = {f: v for f, v in cov.items()
+                 if f not in {"grey", "white", "black", "bone"}}
+    assert chromatic, f"no chromatic families detected: {cov}"
+    dominant = max(chromatic, key=chromatic.get)
     assert dominant in {"pink", "magenta"}, (
-        f"dominant family {dominant!r} (coverage map: {cov})")
+        f"dominant chromatic family {dominant!r} (coverage map: {cov})")
+    assert cov.get("pink", 0) + cov.get("magenta", 0) >= 20.0, (
+        f"pink body under-detected: {cov}")
 
     metal_total = sum(v for f, v in cov.items() if f in METAL_FAMILIES)
     assert metal_total < 15.0, (

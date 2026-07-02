@@ -524,15 +524,24 @@ class SmartColorExtractor:
 
         # A scan-INFERRED metallic flag on a near-black cluster is
         # unfalsifiable (at that lightness "silver" and "black" look the
-        # same) and routes classification to the metals-only anchors — black
-        # armour must never come back as Silver. The DB path is untouched:
-        # a curated dark-gunmetal paint keeps its metallic flag.
+        # same) — drop it so near-black regions get matte black paints.
         if is_metallic and float(lab[0]) < black_floor_l():
             is_metallic = False
         cluster['is_metallic'] = is_metallic
 
+        # The FAMILY is always classified chromatically at scan time. On real
+        # photos at analysis resolution, edge-dense matte regions (black
+        # armour with edge highlights, heraldry with painted borders) are
+        # statistically indistinguishable from metallic sparkle — measured on
+        # the production regression photos, every armour cluster carried
+        # sparkle-level local variance. Routing such clusters to the
+        # metals-only anchors is what returned "Silver 71.5%" for a black
+        # model and "Bronze" for a pink one. The inferred flag keeps its
+        # low-stakes jobs (the matcher's metallic paint gate, wash choice)
+        # where the family gates bound the damage; only the DB's CURATED
+        # metallic flags may steer classification (the DB path is untouched).
         chroma = float(cluster.get('chroma') or 0.0)
-        family_lc, margin = classify_family_margin(lab, chroma, is_metallic)
+        family_lc, margin = classify_family_margin(lab, chroma, is_metallic=False)
         family = family_lc.capitalize()
 
         # Confidence from the classification MARGIN — how much closer the
