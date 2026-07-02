@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { useAppStore } from '@/lib/store';
 import { Paint } from '@/lib/types';
+import { findTopAlternativeMatches } from '@/lib/colorMath';
 interface AddPaintModalProps {
   isOpen: boolean;
   onClose: () => void;

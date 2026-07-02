@@ -359,7 +359,7 @@ interface ColourCorrectionRowProps {
   mode: ScanMode;
 }
 
-function ColourCorrectionRow({ colour, correction, onChange, mode }: ColourCorrectionRowProps) {
+function ColourCorrectionRow({ colour, index, correction, onChange, mode }: ColourCorrectionRowProps) {
   const theme = useThemeColors(mode);
 
   const handleCorrectToggle = (isCorrect: boolean) => {

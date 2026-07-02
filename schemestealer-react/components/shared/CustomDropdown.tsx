@@ -36,6 +36,7 @@ export function CustomDropdown({ value, options, onChange, formatOption = (v) =>
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -5 }}
+                // @ts-expect-error Headless UI v2 adds a boolean transition prop which conflicts with framer-motion's transition object
                 transition={{ duration: 0.15 }}
                 className="absolute top-full left-0 mt-1 w-full max-h-48 overflow-y-auto bg-[#0a0a0a] border border-gray-700 rounded shadow-[0_4px_20px_rgba(0,0,0,0.8)] backdrop-blur-md scrollbar-hide focus:outline-none"
               >
