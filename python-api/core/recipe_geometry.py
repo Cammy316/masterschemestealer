@@ -1,18 +1,37 @@
 """
-Shared LAB-geometry scorer for recipe edges (highlight / shade).
+Shared OKLCH-geometry scorer for recipe edges (highlight / shade).
 
 This is the SINGLE source of truth for the algorithmic fallback used in two
 places: scripts/generate_algorithmic_edges.py (pre-computes edges into
 recipes.json) and core/schemestealer_engine.py (live fallback when the graph has
 no curated edge). Both import the functions here so the maths can never drift.
 
-Real paint progressions shift hue, not just lightness:
-  - HIGHLIGHT: lighter (target dL* = +12) and warm colours rotate TOWARD YELLOW,
-    cool colours TOWARD CYAN (by ~5–20°). Chroma should not collapse.
-  - SHADE: darker (target dL* = -12) with the hue rotation reversed (toward the
-    cool/deeper side); a slight chroma increase is fine.
+Phase 3 of the colour-science overhaul rebuilt this module on three principles:
 
-Hue is measured as the LAB hue angle h_ab = atan2(b*, a*).
+  1. GEOMETRY LIVES IN OKLCH. Hue rotation at constant chroma is exactly the
+     operation CIELAB gets wrong (its blue constant-hue loci are curved — the
+     classic Lab-gradient purple shift); OKLCH hue is uniform by construction.
+     CIELAB remains the interchange representation at the module boundary.
+
+  2. RECIPES VARY CONTINUOUSLY WITH THEIR INPUT. The old binary warm/cool
+     split flipped the hue-shift direction at exactly h=120°, and the neutral
+     lock snapped at chroma 5 — two perceptually identical bases could get
+     visibly different recipes. The hue field below is continuous everywhere:
+     zero at the warm/cool poles (nothing to rotate toward), zero at the
+     watersheds between the basins (ramped in over _WATERSHED_RAMP_DEG), and
+     ramped in smoothly with chroma near neutral.
+
+  3. ONE SOFT-SCORED OBJECTIVE, NO TIER LADDER. Candidate selection combines
+     colour distance to the explicit target, a soft family preference, a soft
+     monotonicity term with a minimum visible step, and the opacity/vibrancy
+     tie-breakers — as weights, not cliffs. A lexicographic ladder let any
+     in-family candidate beat an excellent adjacent-family one; weights keep
+     the preference without the pathology. Selection stays deterministic.
+
+Painterly model (unchanged in intent): a HIGHLIGHT is lighter and rotates
+toward the warm pole (yellow) for warm colours, toward the cool pole (cyan)
+for cool colours; a SHADE is darker with the rotation reversed. Chroma is
+preserved — highlights must not wash out, shades must not grey out.
 """
 
 from dataclasses import dataclass
@@ -20,33 +39,56 @@ from typing import List, Optional, Tuple
 import math
 import numpy as np
 
+from core.colour_maths import lab_to_oklab, oklab_to_lab
+
 # ---------------------------------------------------------------------------
 # Tunables (documented; kept identical across script + engine via this module)
 # ---------------------------------------------------------------------------
+
+# Lab-scale ideal lightness deltas. Consumed by recipe_graph as the curated-
+# edge tie-break, and kept as the Lab-scale reference for tests/documentation.
 IDEAL_DL_HIGHLIGHT = 12.0
 IDEAL_DL_SHADE = -12.0
-IDEAL_HUE_SHIFT_DEG = 12.0   # within the 5–20° band the prompt specifies
 
-DL_WEIGHT = 1.0
-HUE_WEIGHT = 0.8
-CHROMA_WEIGHT = 0.5
-CHROMA_COLLAPSE_TOLERANCE = 5.0  # only penalise chroma loss beyond this
+# OKLab lightness step (L in [0, 1]); ≈ the ±12 L* step at midtones. The step
+# shrinks smoothly near the lightness extremes (see _lightness_delta) so a
+# near-white base is not sent past white.
+_DL_OK = 0.09
+_HEADROOM_FACTOR = 0.75          # never target more than 75% of the remaining headroom
 
-# Candidates scoring above this are not good enough to suggest.
-SCORE_THRESHOLD = 30.0
+# Continuous hue field (OKLab hue degrees). Yellow sits near 110°, cyan near
+# 195° in OKLab. The watersheds are the basin boundaries between them; the
+# shift ramps to zero within _WATERSHED_RAMP_DEG of a watershed so the field
+# is continuous where the old binary split jumped.
+_YELLOW_POLE_DEG = 110.0
+_CYAN_POLE_DEG = 195.0
+_WATERSHED_A_DEG = (_YELLOW_POLE_DEG + _CYAN_POLE_DEG) / 2.0            # ≈152.5 (greens)
+_WATERSHED_B_DEG = ((_CYAN_POLE_DEG + _YELLOW_POLE_DEG + 360.0) / 2.0) % 360.0  # ≈332.5 (magentas)
+_HUE_SHIFT_MAX_DEG = 15.0
+_WATERSHED_RAMP_DEG = 25.0
 
-# Phase 4 candidate weighting (tie-breakers on the LAB-ΔE scale, NOT hard
+# Neutral stability: the hue shift ramps in linearly with OKLab chroma and is
+# fully active from _CHROMA_FULL_OK — a ramp, not the old C<5 cliff.
+_CHROMA_FULL_OK = 0.04
+
+# Soft-objective weights (all in OKLab distance units, so they compose with
+# the colour-distance term on one scale).
+_MIN_STEP_OK = 0.02             # minimum clearly-visible lightness step (≈3 L*)
+_W_MONOTONICITY = 8.0           # hinge slope: per OKLab-L unit short of the step
+_W_ADJACENT_FAMILY = 0.02       # mild preference for staying in-family
+_W_UNRELATED_FAMILY = 0.08      # strong (but not absolute) cross-family penalty
+HONEST_EMPTY_SCORE = 0.35       # a best score above this is not a recommendation
+
+# Phase 4 candidate weighting (tie-breakers on the OKLab scale, NOT hard
 # filters): opaque paints make poor highlight/glaze layers, so penalise opacity
 # for the highlight role; reward vibrant paints when the target is saturated.
-OPACITY_HIGHLIGHT_PENALTY = 2.0   # per opacity_rating point (0..3) → up to +6 ΔE
-VIBRANCY_BONUS = 3.0              # 'significant' vibrancy when target is saturated
-SATURATED_CHROMA = 30.0          # target chroma above which vibrancy matters
+OPACITY_HIGHLIGHT_PENALTY = 0.006   # per opacity_rating point (0..3)
+VIBRANCY_BONUS = 0.010              # 'significant' vibrancy when target is saturated
+SATURATED_CHROMA_OK = 0.09          # target OKLab chroma above which vibrancy matters
 
-# Highlight "pull" target hue angles (degrees). Warm colours highlight toward
-# yellow (~90°); cool colours toward cyan (~200°, between green 180° and blue
-# 270°). Shade reverses the direction.
-WARM_HIGHLIGHT_TARGET = 90.0
-COOL_HIGHLIGHT_TARGET = 200.0
+# Edge-generation quality bar (scripts/generate_algorithmic_edges.py): a
+# candidate scoring above this is not good enough to write into recipes.json.
+SCORE_THRESHOLD = 0.14
 
 # Roles eligible as base/layer paints for a highlight or shade step.
 CANDIDATE_CATEGORIES = {"base", "layer", "air"}
@@ -105,7 +147,7 @@ class PaintNode:
 
 
 def hue_angle_deg(a: float, b: float) -> float:
-    """LAB hue angle h_ab in degrees, normalised to [0, 360)."""
+    """Hue angle h = atan2(b, a) in degrees, normalised to [0, 360)."""
     return math.degrees(math.atan2(b, a)) % 360.0
 
 
@@ -118,44 +160,110 @@ def _angular_diff(frm: float, to: float) -> float:
     return ((to - frm + 180.0) % 360.0) - 180.0
 
 
-def is_warm(h_ab_deg: float) -> bool:
-    """Warm = LAB hue angle in roughly -20°..120° (reds/oranges/yellows and
-    yellow-greens); everything else (greens/cyans/blues/purples/magentas) is
-    cool. The boundary is documented here so script + engine agree."""
-    h = h_ab_deg % 360.0
-    return h <= 120.0 + 1e-5 or h >= 340.0 - 1e-5
+# ---------------------------------------------------------------------------
+# The continuous OKLCH target
+# ---------------------------------------------------------------------------
+
+def _hue_shift_deg(h_ok_deg: float, c_ok: float, rel: str) -> float:
+    """Signed hue rotation (OKLab degrees) — a continuous field.
+
+    Direction: toward the basin's pole (yellow for warm hues, cyan for cool)
+    for a highlight; reversed for a shade. Magnitude: capped at
+    _HUE_SHIFT_MAX_DEG, ramped to zero approaching the watersheds between the
+    basins (where the old binary model jumped sign) and near the poles
+    (nothing to rotate toward), and ramped in with chroma so neutrals stay
+    hue-stable without a threshold cliff.
+    """
+    h = h_ok_deg % 360.0
+
+    in_warm_basin = h < _WATERSHED_A_DEG or h > _WATERSHED_B_DEG
+    pole = _YELLOW_POLE_DEG if in_warm_basin else _CYAN_POLE_DEG
+    delta = _angular_diff(h, pole)
+
+    watershed_dist = min(abs(_angular_diff(h, _WATERSHED_A_DEG)),
+                         abs(_angular_diff(h, _WATERSHED_B_DEG)))
+    watershed_ramp = min(watershed_dist / _WATERSHED_RAMP_DEG, 1.0)
+    chroma_ramp = min(max(c_ok, 0.0) / _CHROMA_FULL_OK, 1.0)
+
+    magnitude = min(abs(delta), _HUE_SHIFT_MAX_DEG) * watershed_ramp * chroma_ramp
+    shift = math.copysign(magnitude, delta) if delta != 0.0 else 0.0
+    return shift if rel == "highlight" else -shift
+
+
+def _lightness_delta(l_ok: float, rel: str) -> float:
+    """Signed OKLab lightness step, shrunk smoothly near the extremes so the
+    target never overshoots white/black (relative headroom, not a fixed ±12)."""
+    headroom = (1.0 - l_ok) if rel == "highlight" else l_ok
+    step = min(_DL_OK, _HEADROOM_FACTOR * max(headroom, 0.0))
+    return step if rel == "highlight" else -step
+
+
+def _target_oklab(from_ok: np.ndarray, rel: str) -> np.ndarray:
+    """The explicit highlight/shade target in OKLab: lighten/darken with the
+    continuous hue rotation, chroma preserved."""
+    l_ok = float(from_ok[0])
+    c_ok = chroma(float(from_ok[1]), float(from_ok[2]))
+    h_ok = hue_angle_deg(float(from_ok[1]), float(from_ok[2]))
+
+    h2 = math.radians((h_ok + _hue_shift_deg(h_ok, c_ok, rel)) % 360.0)
+    return np.array([l_ok + _lightness_delta(l_ok, rel),
+                     c_ok * math.cos(h2), c_ok * math.sin(h2)])
+
+
+def target_lab(from_lab: Tuple[float, float, float], rel: str) -> Tuple[float, float, float]:
+    """Explicit highlight/shade target, CIELAB in / CIELAB out. The geometry
+    itself runs in OKLCH (see _target_oklab); CIELAB is the interchange
+    representation the callers and the paint DB speak."""
+    tgt_ok = _target_oklab(lab_to_oklab(np.asarray(from_lab, dtype=float)), rel)
+    out = oklab_to_lab(tgt_ok)
+    return (float(out[0]), float(out[1]), float(out[2]))
+
+
+# ---------------------------------------------------------------------------
+# The soft-scored objective (single selection contract, no tiers)
+# ---------------------------------------------------------------------------
+
+def _candidate_penalty(cand: PaintNode, rel: str, target_c_ok: float) -> float:
+    """Opacity/vibrancy tie-breaker added to the OKLab distance. Small vs the
+    distance scale, so it only separates near-ties — never overrides colour."""
+    pen = 0.0
+    if rel == "highlight" and cand.opacity_rating is not None:
+        pen += OPACITY_HIGHLIGHT_PENALTY * float(cand.opacity_rating)  # opaque = worse glaze
+    if target_c_ok >= SATURATED_CHROMA_OK and cand.vibrancy:
+        pen -= VIBRANCY_BONUS if cand.vibrancy == "significant" else VIBRANCY_BONUS * 0.5
+    return pen
+
+
+def _family_penalty(cand_family: str, same_fam: str, allowed) -> float:
+    fam = (cand_family or "").lower()
+    if fam == same_fam:
+        return 0.0
+    if fam in allowed:
+        return _W_ADJACENT_FAMILY
+    return _W_UNRELATED_FAMILY
+
+
+def _monotonicity_penalty(dl_signed_ok: float) -> float:
+    """Hinge on the signed lightness step: zero once the candidate moves at
+    least _MIN_STEP_OK in the right direction, growing linearly as it falls
+    short or inverts. Soft by design — a hairline-short candidate competes
+    with a small handicap instead of being banished to a fallback tier — but
+    the slope makes a genuine inversion effectively unselectable."""
+    return _W_MONOTONICITY * max(0.0, _MIN_STEP_OK - dl_signed_ok)
 
 
 def score_edge(from_lab: Tuple[float, float, float],
                to_lab: Tuple[float, float, float],
                rel: str) -> float:
-    """Lower is better. Combines lightness, hue-direction and chroma terms."""
-    lf, af, bf = from_lab
-    lt, at, bt = to_lab
+    """Lower is better: OKLab distance from the candidate to the explicit
+    target, plus the soft monotonicity term. One metric, one scale."""
+    from_ok = lab_to_oklab(np.asarray(from_lab, dtype=float))
+    to_ok = lab_to_oklab(np.asarray(to_lab, dtype=float))
+    tgt_ok = _target_oklab(from_ok, rel)
 
-    h_from = hue_angle_deg(af, bf)
-    h_to = hue_angle_deg(at, bt)
-    c_from = chroma(af, bf)
-    c_to = chroma(at, bt)
-
-    target_dl = IDEAL_DL_HIGHLIGHT if rel == "highlight" else IDEAL_DL_SHADE
-
-    # Ideal signed hue shift: toward yellow/cyan for a highlight; reversed for a
-    # shade.
-    target_hue = WARM_HIGHLIGHT_TARGET if is_warm(h_from) else COOL_HIGHLIGHT_TARGET
-    direction = 1.0 if _angular_diff(h_from, target_hue) >= 0 else -1.0
-    ideal_dh = direction * IDEAL_HUE_SHIFT_DEG
-    if rel == "shade":
-        ideal_dh = -ideal_dh
-
-    dl = lt - lf
-    actual_dh = _angular_diff(h_from, h_to)
-
-    dl_penalty = abs(dl - target_dl) * DL_WEIGHT
-    hue_penalty = abs(actual_dh - ideal_dh) * HUE_WEIGHT
-    chroma_penalty = max(0.0, (c_from - c_to) - CHROMA_COLLAPSE_TOLERANCE) * CHROMA_WEIGHT
-
-    return dl_penalty + hue_penalty + chroma_penalty
+    dist = float(np.linalg.norm(to_ok - tgt_ok))
+    dl_signed = (to_ok[0] - from_ok[0]) if rel == "highlight" else (from_ok[0] - to_ok[0])
+    return dist + _monotonicity_penalty(float(dl_signed))
 
 
 def is_eligible(from_node: PaintNode, to_node: PaintNode, rel: str) -> bool:
@@ -192,107 +300,53 @@ def best_geometric_edges(from_node: PaintNode,
     return scored[:top_n]
 
 
-# ===========================================================================
-# Phase 4 — explicit target-LAB derivation with a monotonicity guard, a tiered
-# fallback ladder, and opacity/vibrancy candidate weighting.
-# ===========================================================================
-
-def ideal_hue_shift(h_from_deg: float, rel: str) -> float:
-    """Signed ideal hue rotation (deg): toward yellow/cyan for a highlight,
-    reversed for a shade — the same warm/cool logic score_edge uses."""
-    target_hue = WARM_HIGHLIGHT_TARGET if is_warm(h_from_deg) else COOL_HIGHLIGHT_TARGET
-    direction = 1.0 if _angular_diff(h_from_deg, target_hue) >= 0 else -1.0
-    dh = direction * IDEAL_HUE_SHIFT_DEG
-    return dh if rel == "highlight" else -dh
-
-
-def target_lab(from_lab: Tuple[float, float, float], rel: str) -> Tuple[float, float, float]:
-    """Explicit highlight/shade target LAB: lighten (+dL) or darken (-dL) the base
-    with a small hue rotation toward yellow (warm) / cyan (cool) and chroma kept."""
-    lf, af, bf = from_lab
-    h = hue_angle_deg(af, bf)
-    c = chroma(af, bf)
-    dl = IDEAL_DL_HIGHLIGHT if rel == "highlight" else IDEAL_DL_SHADE
-    
-    # If the color is heavily achromatic (neutral), hue shift is mathematically unstable
-    # and visually undesirable. Lock hue shift to 0.0.
-    if c < 5.0:
-        dh = 0.0
-    else:
-        dh = ideal_hue_shift(h, rel)
-        
-    h2 = math.radians((h + dh) % 360.0)
-    return (lf + dl, c * math.cos(h2), c * math.sin(h2))
-
-
-def _lab_distance(a: Tuple[float, float, float], b: Tuple[float, float, float]) -> float:
-    """Euclidean LAB distance (ΔE76) — 'nearest to the target' selection metric."""
-    return math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2)
-
-
-def _candidate_penalty(cand: PaintNode, rel: str, target_chroma: float) -> float:
-    """Opacity/vibrancy tie-breaker added to the ΔE-to-target. Small vs the LAB
-    scale, so it only separates near-ties — never overrides colour (per Phase 4)."""
-    pen = 0.0
-    if rel == "highlight" and cand.opacity_rating is not None:
-        pen += OPACITY_HIGHLIGHT_PENALTY * float(cand.opacity_rating)  # opaque = worse glaze
-    if target_chroma >= SATURATED_CHROMA and cand.vibrancy:
-        pen -= VIBRANCY_BONUS if cand.vibrancy == "significant" else VIBRANCY_BONUS * 0.5
-    return pen
-
-
 def derive_partner(from_node: PaintNode, pool: List[PaintNode], rel: str
                    ) -> Tuple[Optional[PaintNode], str]:
-    """Phase 4 derivation. Returns (best PaintNode | None, tier_label).
+    """Select the highlight/shade partner via the single soft-scored objective.
 
-    Picks the candidate nearest the explicit target LAB (weighted by
-    opacity/vibrancy) under a hard MONOTONICITY GUARD — a highlight must be
-    strictly lighter than the base, a shade strictly darker — walking a tiered
-    fallback ladder: in-family → adjacent-family → relaxed (any same-brand base) →
-    honest empty. A candidate that violates the guard is never returned.
+    Returns (best PaintNode | None, label). The label reports the winner's
+    family relation ("in-family" / "adjacent-family" / "relaxed") for logging
+    continuity with the old tier ladder; it no longer drives selection. A best
+    score above HONEST_EMPTY_SCORE returns (None, "empty") — an honest
+    no-match beats a bad recommendation.
     """
-    tgt = target_lab(from_node.lab, rel)
-    target_c = chroma(tgt[1], tgt[2])
-    base_l = from_node.lab[0]
+    from_ok = lab_to_oklab(np.asarray(from_node.lab, dtype=float))
+    tgt_ok = _target_oklab(from_ok, rel)
+    target_c_ok = chroma(float(tgt_ok[1]), float(tgt_ok[2]))
+
     same_fam = (from_node.color_family or "").lower()
     allowed = allowed_families(from_node.color_family) or {same_fam}
-
-    def _monotonic_ok(cand: PaintNode) -> bool:
-        return cand.lab[0] > base_l if rel == "highlight" else cand.lab[0] < base_l
 
     def _base_ok(cand: PaintNode) -> bool:
         return (cand.paint_id != from_node.paint_id and cand.matchable
                 and not cand.discontinued and cand.brand == from_node.brand
                 and (cand.category or "").lower() in CANDIDATE_CATEGORIES)
 
-    def _best(family_filter) -> Optional[PaintNode]:
-        valid_cands = []
-        for c in pool:
-            if not _base_ok(c) or not _monotonic_ok(c):
-                continue
-            if family_filter is not None and (c.color_family or "").lower() not in family_filter:
-                continue
-            valid_cands.append(c)
+    candidates = [c for c in pool if _base_ok(c)]
+    if not candidates:
+        return None, "empty"
 
-        if not valid_cands:
-            return None
+    cand_ok = lab_to_oklab(np.array([c.lab for c in candidates], dtype=float))
+    distances = np.linalg.norm(cand_ok - tgt_ok, axis=1)
 
-        # Vectorized distance calculation
-        labs = np.array([c.lab for c in valid_cands])
-        tgt_arr = np.array(tgt)
-        
-        distances = np.linalg.norm(labs - tgt_arr, axis=1)
-        penalties = np.array([_candidate_penalty(c, rel, target_c) for c in valid_cands])
-        
-        total_scores = distances + penalties
-        best_idx = np.argmin(total_scores)
-        
-        return valid_cands[best_idx]
+    sign = 1.0 if rel == "highlight" else -1.0
+    dl_signed = sign * (cand_ok[:, 0] - from_ok[0])
+    mono = _W_MONOTONICITY * np.maximum(0.0, _MIN_STEP_OK - dl_signed)
 
-    for family_filter, tier in (({same_fam}, "in-family"),
-                                (allowed, "adjacent-family"),
-                                (None, "relaxed")):
-        cand = _best(family_filter)
-        if cand is not None:
-            return cand, tier
-    return None, "empty"
+    extras = np.array([
+        _family_penalty(c.color_family, same_fam, allowed)
+        + _candidate_penalty(c, rel, target_c_ok)
+        for c in candidates
+    ])
+
+    scores = distances + mono + extras
+    best_idx = int(np.argmin(scores))
+    if scores[best_idx] > HONEST_EMPTY_SCORE:
+        return None, "empty"
+
+    winner = candidates[best_idx]
+    win_fam = (winner.color_family or "").lower()
+    label = ("in-family" if win_fam == same_fam
+             else "adjacent-family" if win_fam in allowed
+             else "relaxed")
+    return winner, label

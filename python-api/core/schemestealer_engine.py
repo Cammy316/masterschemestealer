@@ -22,7 +22,7 @@ from core.color_engine import (
 from core.smart_color_system import SmartColorExtractor
 from core.recipe_graph import RecipeGraph
 from core.recipe_geometry import PaintNode, derive_partner, CANDIDATE_CATEGORIES
-from utils.helpers import apply_white_balance, increase_saturation
+from utils.helpers import apply_white_balance
 from utils.logging_config import logger
 
 
@@ -99,6 +99,22 @@ class SchemeStealerEngine:
             paint.compute_properties()
             self.paint_db.append(paint)
 
+        # Family is DERIVED, not trusted: the stored color_family drifted from
+        # the canonical classifier for ~100 paints (F8), which corrupts the
+        # matcher's family gate and the recipe pools. The single classifier
+        # applied to the paint's own matching LAB is authoritative — the same
+        # invariant the scan side already obeys.
+        from core.color_engine import classify_family
+        overridden = 0
+        for paint in self.paint_db:
+            derived = classify_family(paint.lab, paint.chroma, paint.metallic)
+            if derived != (paint.color_family or '').lower():
+                overridden += 1
+            paint.color_family = derived
+        if overridden:
+            logger.info(f"Recomputed color_family from matching LAB for "
+                        f"{overridden} paints (stored value had drifted)")
+
         matchable_count = sum(1 for p in self.paint_db if p.matchable)
         logger.info(f"Loaded {len(self.paint_db)} paints from {paint_db_path} "
                     f"({matchable_count} matchable)")
@@ -134,20 +150,22 @@ class SchemeStealerEngine:
 
     def analyze_miniature(self, img_np: np.ndarray, mode: str = "mini",
                          remove_base: bool = True, use_awb: bool = True,
-                         sat_boost: float = 1.3, detect_details: bool = True,
+                         detect_details: bool = True,
                          brands: List[str] = None,
                          precomputed_rgba: np.ndarray = None) -> Tuple[List[dict], np.ndarray, Dict]:
-        
+
         if brands is None:
             brands = Affiliate.SUPPORTED_BRANDS
-        
-        # 1. Quality Check
+
+        # 1. Quality Check. The CLAHE-enhanced image exists for quality
+        #    assessment and segmentation decisions ONLY — colour statistics
+        #    must be measured from the un-enhanced photograph, or every
+        #    cluster's L* inherits the local contrast redistribution and no
+        #    longer matches the measured paint DB (dual-image invariant, F1).
         quality_report = self.photo_processor.process_and_assess(img_np)
         if not quality_report.can_process:
             return [], None, quality_report.__dict__
-        
-        img_np = quality_report.enhanced_image
-        
+
         # 2. Preprocessing — pass alpha mask when available so the illuminant
         #    estimate is computed only over non-transparent foreground pixels.
         if use_awb:
@@ -257,9 +275,13 @@ class SchemeStealerEngine:
             # "No match found" rather than a far-off cross-family paint (Prompt 8).
             target_family = (family or '').lower()
             for b in brands:
+                # The cluster's LAB representative is authoritative (F3): pass
+                # it directly so the matcher never re-derives a second colour
+                # from the RGB view of the same cluster.
                 base_paint = self.matcher.match_color(median_rgb, b, role='dominant',
                                                       context=context,
-                                                      target_family=target_family)
+                                                      target_family=target_family,
+                                                      target_lab=median_lab)
                 base_matches[b] = self._format_paint(base_paint)
                 if base_paint is not None:
                     hp, hs = self._recipe_partner(base_paint, 'highlight', b)

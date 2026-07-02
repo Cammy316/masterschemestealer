@@ -1,6 +1,17 @@
 /**
- * Delta-E Color Difference Calculations
- * Measures perceptual color difference between two colors
+ * Delta-E Color Difference — thin adapter over culori.
+ *
+ * The frontend previously shipped its OWN hand-rolled CIEDE2000 next to the
+ * culori one used by the Forge (audit F2: three CIEDE2000 implementations
+ * across the stack). This module now delegates to culori so exactly one
+ * implementation exists on the frontend; the interface is unchanged for
+ * consumers (offlineColorDetection, paintMatcher, colorClustering).
+ *
+ * Inputs are CIELAB **D65** triples (colorConversion.ts mirrors the backend's
+ * skimage D65 conversion), so they are tagged culori mode 'lab65' — never
+ * 'lab', which is D50 per CSS Color 4 and silently applies a chromatic
+ * adaptation (audit F9). Cross-stack agreement with the backend's skimage
+ * CIEDE2000 is pinned by tests/parity.test.ts.
  *
  * Delta-E scale:
  * - 0-1: Not perceptible by human eyes
@@ -10,12 +21,17 @@
  * - 50+: Colors are very different
  */
 
+import { differenceCiede2000 } from 'culori';
 import type { LAB } from './colorConversion';
 
+const ciede2000 = differenceCiede2000();
+
+function asLab65(lab: LAB) {
+  return { mode: 'lab65' as const, l: lab.l, a: lab.a, b: lab.b };
+}
+
 /**
- * Delta-E 76 (CIE76)
- * Simple Euclidean distance in LAB space
- * Fast but less accurate than CIE2000
+ * Delta-E 76 (CIE76) — Euclidean distance in LAB. Fast screening metric.
  */
 export function deltaE76(lab1: LAB, lab2: LAB): number {
   const dL = lab1.l - lab2.l;
@@ -26,114 +42,10 @@ export function deltaE76(lab1: LAB, lab2: LAB): number {
 }
 
 /**
- * Delta-E 2000 (CIEDE2000)
- * Most accurate perceptually uniform color difference
- * Accounts for non-uniformities in LAB space
+ * Delta-E 2000 (CIEDE2000) via culori — the single frontend implementation.
  */
 export function deltaE2000(lab1: LAB, lab2: LAB): number {
-  // Parametric weighting factors
-  const kL = 1.0;
-  const kC = 1.0;
-  const kH = 1.0;
-
-  // Calculate C1, C2 (chroma)
-  const c1 = Math.sqrt(lab1.a * lab1.a + lab1.b * lab1.b);
-  const c2 = Math.sqrt(lab2.a * lab2.a + lab2.b * lab2.b);
-
-  // Calculate mean chroma
-  const cMean = (c1 + c2) / 2;
-
-  // Calculate G for a' adjustment
-  const g = 0.5 * (1 - Math.sqrt(Math.pow(cMean, 7) / (Math.pow(cMean, 7) + Math.pow(25, 7))));
-
-  // Calculate adjusted a' values
-  const a1Prime = (1 + g) * lab1.a;
-  const a2Prime = (1 + g) * lab2.a;
-
-  // Calculate adjusted C' values
-  const c1Prime = Math.sqrt(a1Prime * a1Prime + lab1.b * lab1.b);
-  const c2Prime = Math.sqrt(a2Prime * a2Prime + lab2.b * lab2.b);
-
-  // Calculate adjusted h' values
-  let h1Prime = 0;
-  if (lab1.b !== 0 || a1Prime !== 0) {
-    h1Prime = Math.atan2(lab1.b, a1Prime);
-    if (h1Prime < 0) h1Prime += 2 * Math.PI;
-  }
-
-  let h2Prime = 0;
-  if (lab2.b !== 0 || a2Prime !== 0) {
-    h2Prime = Math.atan2(lab2.b, a2Prime);
-    if (h2Prime < 0) h2Prime += 2 * Math.PI;
-  }
-
-  // Convert to degrees
-  h1Prime = (h1Prime * 180) / Math.PI;
-  h2Prime = (h2Prime * 180) / Math.PI;
-
-  // Calculate delta values
-  const deltaLPrime = lab2.l - lab1.l;
-  const deltaCPrime = c2Prime - c1Prime;
-
-  // Calculate deltaHPrime
-  let deltahPrime = 0;
-  if (c1Prime * c2Prime !== 0) {
-    deltahPrime = h2Prime - h1Prime;
-    if (deltahPrime > 180) {
-      deltahPrime -= 360;
-    } else if (deltahPrime < -180) {
-      deltahPrime += 360;
-    }
-  }
-
-  const deltaHPrime = 2 * Math.sqrt(c1Prime * c2Prime) * Math.sin((deltahPrime * Math.PI) / 360);
-
-  // Calculate mean values
-  const lMeanPrime = (lab1.l + lab2.l) / 2;
-  const cMeanPrime = (c1Prime + c2Prime) / 2;
-
-  let hMeanPrime = 0;
-  if (c1Prime * c2Prime !== 0) {
-    hMeanPrime = (h1Prime + h2Prime) / 2;
-    if (Math.abs(h1Prime - h2Prime) > 180) {
-      if (hMeanPrime < 180) {
-        hMeanPrime += 180;
-      } else {
-        hMeanPrime -= 180;
-      }
-    }
-  }
-
-  // Calculate T
-  const t =
-    1 -
-    0.17 * Math.cos(((hMeanPrime - 30) * Math.PI) / 180) +
-    0.24 * Math.cos((2 * hMeanPrime * Math.PI) / 180) +
-    0.32 * Math.cos(((3 * hMeanPrime + 6) * Math.PI) / 180) -
-    0.20 * Math.cos(((4 * hMeanPrime - 63) * Math.PI) / 180);
-
-  // Calculate SL, SC, SH
-  const sL = 1 + (0.015 * (lMeanPrime - 50) * (lMeanPrime - 50)) / Math.sqrt(20 + (lMeanPrime - 50) * (lMeanPrime - 50));
-
-  const sC = 1 + 0.045 * cMeanPrime;
-
-  const sH = 1 + 0.015 * cMeanPrime * t;
-
-  // Calculate RT (rotation term)
-  const deltaTheta = 30 * Math.exp(-Math.pow((hMeanPrime - 275) / 25, 2));
-  const rC = 2 * Math.sqrt(Math.pow(cMeanPrime, 7) / (Math.pow(cMeanPrime, 7) + Math.pow(25, 7)));
-  const rT = -rC * Math.sin((2 * deltaTheta * Math.PI) / 180);
-
-  // Calculate final delta-E
-  const deltaE =
-    Math.sqrt(
-      Math.pow(deltaLPrime / (kL * sL), 2) +
-      Math.pow(deltaCPrime / (kC * sC), 2) +
-      Math.pow(deltaHPrime / (kH * sH), 2) +
-      rT * (deltaCPrime / (kC * sC)) * (deltaHPrime / (kH * sH))
-    );
-
-  return deltaE;
+  return ciede2000(asLab65(lab1), asLab65(lab2));
 }
 
 /**

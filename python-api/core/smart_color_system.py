@@ -10,6 +10,7 @@ from skimage import color
 from scipy.spatial.distance import cdist
 from typing import List, Dict, Tuple, Optional
 import colorsys
+from core.colour_maths import lab_to_oklab, lab_to_rgb
 from utils.logging_config import logger
 
 
@@ -54,12 +55,19 @@ class SmartColorExtractor:
 
         # Filter specular highlights (gloss varnish, flash) and deep shadows
         # before clustering so they don't form phantom clusters or drag medians.
+        # Speculars are BRIGHT AND DESATURATED (surface reflection carries the
+        # light's colour, not the paint's) — the joint L/C condition trims
+        # them while letting legitimately bright saturated paint (yellows,
+        # bone) survive, which the old pure-percentile trim ate.
         # surviving_indices maps filtered-array positions → original positions
         # so that pixel_indices stored in clusters still address valid_coords.
         L_vals = pixels_lab[:, 0]
+        C_vals = np.hypot(pixels_lab[:, 1], pixels_lab[:, 2])
         p_lo, p_hi = np.percentile(L_vals, [self._SPECULAR_L_LOW,
                                              self._SPECULAR_L_HIGH])
-        keep = (L_vals >= p_lo) & (L_vals <= p_hi)
+        desaturated = C_vals < max(0.5 * float(np.median(C_vals)), 5.0)
+        specular = (L_vals > p_hi) & desaturated
+        keep = ~specular & (L_vals >= p_lo)
         if keep.sum() >= self._MIN_PIXELS_AFTER_FILTER:
             surviving_indices = np.where(keep)[0]
             pixels_rgb = pixels_rgb[keep]
@@ -71,12 +79,33 @@ class SmartColorExtractor:
             surviving_indices = np.arange(n_pixels)
             logger.warning("Specular filter skipped: too few pixels would remain")
 
-        # STEP 1: Initial clustering in LAB space
-        n_initial_clusters = self._determine_optimal_k(n_pixels)
-        logger.info(f"Initial clustering into {n_initial_clusters} clusters...")
-        
+        # STEP 1: Spatially coherent over-segmentation, then K-means in OKLab.
+        #
+        # SLIC superpixels restore the spatial information a bag-of-pixels
+        # clustering throws away: each superpixel is a contiguous patch, so
+        # sensor noise is averaged out per-patch and small physical details
+        # (gold trim, gems) survive as their own samples instead of being
+        # statistically swamped. K-means then runs on ~10² superpixel means
+        # instead of ~10⁵ pixels — in OKLab, where Euclidean distance IS
+        # perceptual distance — deliberately over-segmented (K=20); the
+        # complete-linkage merge consolidates. Cluster statistics stay in
+        # CIELAB for the classifier and matcher downstream.
+        pixels_oklab = lab_to_oklab(pixels_lab)
+        seg_flat = self._superpixel_labels(img_rgb, mask, surviving_indices)
+
+        uniq, inv = np.unique(seg_flat, return_inverse=True)
+        counts = np.bincount(inv).astype(float)
+        sp_means = np.zeros((len(uniq), 3))
+        for ch in range(3):
+            sp_means[:, ch] = np.bincount(inv, weights=pixels_oklab[:, ch]) / counts
+
+        n_initial_clusters = min(self.OVERSEGMENT_K, len(uniq), n_pixels)
+        logger.info(f"Clustering {len(uniq)} superpixels into "
+                    f"{n_initial_clusters} clusters (OKLab)...")
+
         kmeans = KMeans(n_clusters=n_initial_clusters, n_init=10, random_state=42)
-        labels = kmeans.fit_predict(pixels_lab)
+        kmeans.fit(sp_means, sample_weight=counts)
+        labels = kmeans.labels_[inv]
         
         initial_clusters = []
         for i in range(n_initial_clusters):
@@ -89,9 +118,13 @@ class SmartColorExtractor:
             
             cluster_pixels_rgb = pixels_rgb[cluster_mask]
             cluster_pixels_lab = pixels_lab[cluster_mask]
-            
-            median_rgb = np.median(cluster_pixels_rgb, axis=0)
+
+            # ONE colour representative per cluster: the LAB median. RGB, HSV
+            # and chroma are DERIVED from it so every statistic describes the
+            # same colour (F3 fix) — the classifier and the matcher can no
+            # longer see two different colours for one cluster.
             median_lab = np.median(cluster_pixels_lab, axis=0)
+            median_rgb = lab_to_rgb(median_lab)
             mean_lab = np.mean(cluster_pixels_lab, axis=0)
             std_lab = np.std(cluster_pixels_lab, axis=0)
             brightness = cluster_pixels_rgb.mean(axis=1)
@@ -196,16 +229,30 @@ class SmartColorExtractor:
 
         return major_colors + detail_colors
     
-    def _determine_optimal_k(self, n_pixels: int) -> int:
-        """Adaptive K based on image complexity"""
-        if n_pixels < 5000:
-            return 8
-        elif n_pixels < 20000:
-            return 10
-        elif n_pixels < 50000:
-            return 12
-        else:
-            return 15
+    # Deliberate over-segmentation: K is fixed and generous — the old
+    # pixel-count heuristic proxied chromatic complexity with resolution.
+    # The order-independent merge consolidates whatever K splits too finely.
+    OVERSEGMENT_K = 20
+
+    def _superpixel_labels(self, img_rgb: np.ndarray, mask: np.ndarray,
+                           surviving_indices: np.ndarray) -> np.ndarray:
+        """SLIC superpixel id for each surviving (masked, filtered) pixel.
+
+        Falls back to one-pixel-one-segment if SLIC cannot run (degenerate
+        mask shapes) — clustering then behaves exactly like pixel K-means.
+        """
+        from skimage.segmentation import slic
+
+        n_masked = int(mask.sum())
+        n_segments = int(np.clip(n_masked // 80, 64, 1600))
+        try:
+            seg2d = slic(img_rgb, n_segments=min(n_segments, max(n_masked // 4, 1)),
+                         compactness=10.0, mask=mask, start_label=1,
+                         enforce_connectivity=True)
+            return seg2d[mask][surviving_indices]
+        except (ValueError, TypeError) as e:
+            logger.warning(f"SLIC failed ({e}) — falling back to per-pixel clustering")
+            return np.arange(len(surviving_indices))
     
     def _deduplicate_by_family(self, clusters: List[Dict]) -> List[Dict]:
         """Merge clusters that share the exact same family name"""
@@ -254,60 +301,72 @@ class SmartColorExtractor:
 
         return (small_hi(c1) and large_lo(c2)) or (small_hi(c2) and large_lo(c1))
 
+    # Complete-linkage merge threshold in OKLab Euclidean distance —
+    # calibrated to the old CIEDE2000-6 merge distance (median equivalence
+    # ≈ 0.053). Fixed, not data-dependent: the old min(6, mean/2) rule shrank
+    # on monochrome scenes and under-merged them.
+    _MERGE_THRESHOLD_OK = 0.055
+
     def _merge_perceptually_similar(self, clusters: List[Dict], pixels_lab: np.ndarray) -> List[Dict]:
-        """Merge perceptually similar clusters using deltaE"""
-        if len(clusters) <= 1: return clusters
-        
-        n = len(clusters)
-        dist_matrix = np.zeros((n, n))
-        
-        for i in range(n):
-            for j in range(i+1, n):
-                c1_lab = clusters[i]['median_lab']
-                c2_lab = clusters[j]['median_lab']
-                dist = color.deltaE_ciede2000(np.array([[c1_lab]]), np.array([[c2_lab]]))[0][0]
-                dist_matrix[i, j] = dist
-                dist_matrix[j, i] = dist
-        
-        mean_distance = np.mean(dist_matrix[dist_matrix > 0])
-        merge_threshold = min(6.0, mean_distance * 0.5)
-        
+        """Merge perceptually similar clusters — order-independent.
+
+        Complete-linkage agglomerative grouping in OKLab: two clusters end up
+        together only if EVERY pair in the group is within the threshold, so
+        there is no greedy chaining and the result cannot depend on K-means
+        label numbering (the old single-pass loop absorbed neighbours in
+        visit order — audit F7).
+        """
+        if len(clusters) <= 1:
+            return clusters
+
+        from scipy.cluster.hierarchy import fcluster, linkage
+        from scipy.spatial.distance import pdist
+
+        medians_ok = lab_to_oklab(np.array([c['median_lab'] for c in clusters]))
+        groups = fcluster(linkage(pdist(medians_ok), method='complete'),
+                          t=self._MERGE_THRESHOLD_OK, criterion='distance')
+
+        by_group: Dict[int, List[Dict]] = {}
+        for cluster, g in zip(clusters, groups):
+            by_group.setdefault(int(g), []).append(cluster)
+
         merged = []
-        used = set()
+        for members in by_group.values():
+            # Protect small high-chroma trim (gold/gem) from being blended
+            # into a large low-chroma body — the bronze-nose failure class.
+            if len(members) > 1:
+                protected = [m for m in members
+                             if any(self._would_blend_small_trim(m, other)
+                                    for other in members if other is not m)
+                             and m.get('coverage', 100.0) <= self._TRIM_SMALL_COVERAGE]
+                for p in protected:
+                    members.remove(p)
+                    merged.append(p)
+            if not members:
+                continue
+            merged.append(members[0] if len(members) == 1
+                          else self._combine_clusters(members))
 
-        for i in range(n):
-            if i in used: continue
-
-            similar = [i]
-            for j in range(i+1, n):
-                if j not in used and dist_matrix[i, j] < merge_threshold:
-                    # Protect small high-chroma trim (gold/gem) from being blended
-                    # into a large low-chroma body — the bronze-nose failure class.
-                    if self._would_blend_small_trim(clusters[i], clusters[j]):
-                        continue
-                    similar.append(j)
-                    used.add(j)
-            
-            if len(similar) == 1:
-                merged.append(clusters[i])
-            else:
-                merged_cluster = self._combine_clusters([clusters[idx] for idx in similar])
-                merged.append(merged_cluster)
-            used.add(i)
-        
         return merged
     
     def _combine_clusters(self, clusters: List[Dict]) -> Dict:
-        """Combine multiple clusters into one"""
+        """Combine multiple clusters into one.
+
+        The combined representative is the coverage-weighted LAB blend; RGB,
+        HSV and chroma are DERIVED from it (F3 fix). Averaging the parents'
+        scalar chroma fields is wrong — opposing hues cancel in (a*, b*) but
+        not in their chroma scalars, leaving a 'chroma' that describes no
+        actual colour.
+        """
         total_coverage = sum(c['coverage'] for c in clusters)
         weights = np.array([c['coverage'] for c in clusters])
         weights = weights / weights.sum()
-        
-        median_rgb = sum(c['median_rgb'] * w for c, w in zip(clusters, weights))
+
         median_lab = sum(c['median_lab'] * w for c, w in zip(clusters, weights))
-        chroma = sum(c['chroma'] * w for c, w in zip(clusters, weights))
+        median_rgb = lab_to_rgb(median_lab)
+        chroma = float(np.hypot(median_lab[1], median_lab[2]))
         all_indices = np.concatenate([c['pixel_indices'] for c in clusters])
-        
+
         return {
             'coverage': total_coverage,
             'median_rgb': median_rgb,
@@ -381,17 +440,16 @@ class SmartColorExtractor:
     def _classify_family_ensemble_weighted(self, cluster: Dict, all_clusters: List[Dict] = None) -> Tuple[str, float]:
         """The single scan-time classification (Stage A consolidation).
 
-        ONE call to color_engine.classify_family() on the cluster's median LAB,
-        with the metallic flag from the specular-variance detector
+        ONE call to color_engine.classify_family_margin() on the cluster's
+        median LAB, with the metallic flag from the specular-variance detector
         (is_metallic_surface). There is no voting, no nearest-named-colour table
         and no gold/cyan LAB overlays any more — the scan family is produced by the
         exact SAME function as the DB family, so they cannot diverge. The metallic
         decision is stored on the cluster for the matcher's metallic gate.
         """
-        from core.color_engine import classify_family, is_metallic_surface
+        from core.color_engine import classify_family_margin, is_metallic_surface
 
         lab = cluster['median_lab']
-        chroma = float(cluster.get('chroma') or 0.0)
         hsv = cluster.get('median_hsv', [0.0, 0.0, 0.0])
         median_sat = hsv[1] if len(hsv) > 1 else 0.0
         median_val = hsv[2] if len(hsv) > 2 else 0.0
@@ -400,10 +458,15 @@ class SmartColorExtractor:
                                           median_sat, median_val)
         cluster['is_metallic'] = is_metallic
 
-        family = classify_family(lab, chroma, is_metallic).capitalize()
+        chroma = float(cluster.get('chroma') or 0.0)
+        family_lc, margin = classify_family_margin(lab, chroma, is_metallic)
+        family = family_lc.capitalize()
 
-        # Confidence: high when clearly chromatic, easing off near the achromatic
-        # boundary where the call is least certain (drives detail/major filtering).
-        confidence = float(np.clip(0.55 + 0.4 * min(chroma / 40.0, 1.0), 0.5, 0.95))
-        logger.debug(f"Classify: {family} (metallic={is_metallic}, conf={confidence:.2f})")
+        # Confidence from the classification MARGIN — how much closer the
+        # winning family's anchor is than the nearest rival family's. An
+        # unambiguous grey is now as confident as an unambiguous red; the old
+        # chroma ramp permanently capped neutrals at ~0.55.
+        confidence = float(np.clip(0.5 + 0.45 * min(margin, 1.0), 0.5, 0.95))
+        logger.debug(f"Classify: {family} (metallic={is_metallic}, "
+                     f"margin={margin:.2f}, conf={confidence:.2f})")
         return family, confidence

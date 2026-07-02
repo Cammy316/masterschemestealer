@@ -114,8 +114,9 @@ export default function AddPaintModal({ isOpen, onClose, onAddPaint }: AddPaintM
       return h.length === 1 ? '0' + h : h;
     }).join('');
 
-    // Find closest matches
-    const matches = findTopAlternativeMatches(hex);
+    // Find closest matches. A physical pot can be metallic, so the matte-mix
+    // metallic gate is lifted for inventory scanning.
+    const matches = findTopAlternativeMatches(hex, { includeMetallics: true });
     // map the match format back to standard paint
     const formattedMatches = matches.map((m: any) => ({
       id: m.paint_id,

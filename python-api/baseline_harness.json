@@ -1,0 +1,2078 @@
+{
+  "harness_version": "1.0",
+  "generated_at": "2026-07-02T10:30:50",
+  "engine_root": ".",
+  "python": "3.11.9",
+  "modules": {
+    "1_synthetic_sweep.py": {
+      "module": "synthetic_sweep",
+      "total_samples": 2160,
+      "ok": 1460,
+      "soft_misses": 523,
+      "hard_misses": 177,
+      "hard_miss_rate": 0.0819,
+      "missing_families": [],
+      "classifier_disagreements": 0,
+      "disagreement_examples": [],
+      "hard_miss_examples": [
+        {
+          "hex": "#664D4D",
+          "h": 0.0,
+          "s": 0.25,
+          "v": 0.4,
+          "expected": "grey",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "hard"
+        },
+        {
+          "hex": "#664D4D",
+          "h": 0.0,
+          "s": 0.25,
+          "v": 0.4,
+          "expected": "grey",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "hard"
+        },
+        {
+          "hex": "#664E4D",
+          "h": 2.4,
+          "s": 0.25,
+          "v": 0.4,
+          "expected": "grey",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "hard"
+        },
+        {
+          "hex": "#664F4D",
+          "h": 4.8,
+          "s": 0.25,
+          "v": 0.4,
+          "expected": "grey",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "hard"
+        },
+        {
+          "hex": "#66504D",
+          "h": 7.2,
+          "s": 0.25,
+          "v": 0.4,
+          "expected": "grey",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "hard"
+        },
+        {
+          "hex": "#66514D",
+          "h": 9.6,
+          "s": 0.25,
+          "v": 0.4,
+          "expected": "grey",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "hard"
+        },
+        {
+          "hex": "#66524D",
+          "h": 12.0,
+          "s": 0.25,
+          "v": 0.4,
+          "expected": "grey",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "hard"
+        },
+        {
+          "hex": "#66524D",
+          "h": 12.0,
+          "s": 0.25,
+          "v": 0.4,
+          "expected": "grey",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "hard"
+        },
+        {
+          "hex": "#66534D",
+          "h": 14.4,
+          "s": 0.25,
+          "v": 0.4,
+          "expected": "grey",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "hard"
+        },
+        {
+          "hex": "#F2C6B6",
+          "h": 16.0,
+          "s": 0.25,
+          "v": 0.95,
+          "expected": "brown",
+          "got": "pink",
+          "ensemble": "pink",
+          "severity": "hard"
+        },
+        {
+          "hex": "#66544D",
+          "h": 16.8,
+          "s": 0.25,
+          "v": 0.4,
+          "expected": "grey",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "hard"
+        },
+        {
+          "hex": "#B29386",
+          "h": 17.7,
+          "s": 0.25,
+          "v": 0.7,
+          "expected": "brown",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#F2C8B6",
+          "h": 18.0,
+          "s": 0.25,
+          "v": 0.95,
+          "expected": "brown",
+          "got": "pink",
+          "ensemble": "pink",
+          "severity": "hard"
+        },
+        {
+          "hex": "#66554D",
+          "h": 19.2,
+          "s": 0.25,
+          "v": 0.4,
+          "expected": "grey",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "hard"
+        },
+        {
+          "hex": "#B29586",
+          "h": 20.5,
+          "s": 0.25,
+          "v": 0.7,
+          "expected": "brown",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#F2CAB6",
+          "h": 20.0,
+          "s": 0.25,
+          "v": 0.95,
+          "expected": "brown",
+          "got": "pink",
+          "ensemble": "pink",
+          "severity": "hard"
+        },
+        {
+          "hex": "#B27759",
+          "h": 20.2,
+          "s": 0.5,
+          "v": 0.7,
+          "expected": "orange",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#F2A279",
+          "h": 20.3,
+          "s": 0.5,
+          "v": 0.95,
+          "expected": "orange",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#66564D",
+          "h": 21.6,
+          "s": 0.25,
+          "v": 0.4,
+          "expected": "grey",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "hard"
+        },
+        {
+          "hex": "#B29686",
+          "h": 21.8,
+          "s": 0.25,
+          "v": 0.7,
+          "expected": "brown",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#F2CCB6",
+          "h": 22.0,
+          "s": 0.25,
+          "v": 0.95,
+          "expected": "brown",
+          "got": "pink",
+          "ensemble": "pink",
+          "severity": "hard"
+        },
+        {
+          "hex": "#B27A59",
+          "h": 22.2,
+          "s": 0.5,
+          "v": 0.7,
+          "expected": "orange",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#F2A679",
+          "h": 22.3,
+          "s": 0.5,
+          "v": 0.95,
+          "expected": "orange",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#66574D",
+          "h": 24.0,
+          "s": 0.25,
+          "v": 0.4,
+          "expected": "grey",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "hard"
+        },
+        {
+          "hex": "#B29886",
+          "h": 24.5,
+          "s": 0.25,
+          "v": 0.7,
+          "expected": "brown",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#F2CEB6",
+          "h": 24.0,
+          "s": 0.25,
+          "v": 0.95,
+          "expected": "brown",
+          "got": "white",
+          "ensemble": "white",
+          "severity": "hard"
+        },
+        {
+          "hex": "#B27D59",
+          "h": 24.3,
+          "s": 0.5,
+          "v": 0.7,
+          "expected": "orange",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#F2AA79",
+          "h": 24.3,
+          "s": 0.5,
+          "v": 0.95,
+          "expected": "orange",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#66584D",
+          "h": 26.4,
+          "s": 0.25,
+          "v": 0.4,
+          "expected": "grey",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "hard"
+        },
+        {
+          "hex": "#B29986",
+          "h": 25.9,
+          "s": 0.25,
+          "v": 0.7,
+          "expected": "brown",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#F2D0B6",
+          "h": 26.0,
+          "s": 0.25,
+          "v": 0.95,
+          "expected": "brown",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#B28059",
+          "h": 26.3,
+          "s": 0.5,
+          "v": 0.7,
+          "expected": "orange",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#F2AE79",
+          "h": 26.3,
+          "s": 0.5,
+          "v": 0.95,
+          "expected": "orange",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#66584D",
+          "h": 26.4,
+          "s": 0.25,
+          "v": 0.4,
+          "expected": "grey",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "hard"
+        },
+        {
+          "hex": "#B29B86",
+          "h": 28.6,
+          "s": 0.25,
+          "v": 0.7,
+          "expected": "brown",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#F2D2B6",
+          "h": 28.0,
+          "s": 0.25,
+          "v": 0.95,
+          "expected": "brown",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#B28359",
+          "h": 28.3,
+          "s": 0.5,
+          "v": 0.7,
+          "expected": "orange",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#F2B279",
+          "h": 28.3,
+          "s": 0.5,
+          "v": 0.95,
+          "expected": "orange",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#66594D",
+          "h": 28.8,
+          "s": 0.25,
+          "v": 0.4,
+          "expected": "grey",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "hard"
+        },
+        {
+          "hex": "#B29C86",
+          "h": 30.0,
+          "s": 0.25,
+          "v": 0.7,
+          "expected": "brown",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#F2D4B6",
+          "h": 30.0,
+          "s": 0.25,
+          "v": 0.95,
+          "expected": "brown",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#F2B679",
+          "h": 30.2,
+          "s": 0.5,
+          "v": 0.95,
+          "expected": "orange",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#665A4D",
+          "h": 31.2,
+          "s": 0.25,
+          "v": 0.4,
+          "expected": "grey",
+          "got": "yellow",
+          "ensemble": "yellow",
+          "severity": "hard"
+        },
+        {
+          "hex": "#B29E86",
+          "h": 32.7,
+          "s": 0.25,
+          "v": 0.7,
+          "expected": "brown",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#F2D6B6",
+          "h": 32.0,
+          "s": 0.25,
+          "v": 0.95,
+          "expected": "brown",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#F2BA79",
+          "h": 32.2,
+          "s": 0.5,
+          "v": 0.95,
+          "expected": "orange",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#665B4D",
+          "h": 33.6,
+          "s": 0.25,
+          "v": 0.4,
+          "expected": "grey",
+          "got": "yellow",
+          "ensemble": "yellow",
+          "severity": "hard"
+        },
+        {
+          "hex": "#B29F86",
+          "h": 34.1,
+          "s": 0.25,
+          "v": 0.7,
+          "expected": "brown",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#F2D8B6",
+          "h": 34.0,
+          "s": 0.25,
+          "v": 0.95,
+          "expected": "brown",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#F2BE79",
+          "h": 34.2,
+          "s": 0.5,
+          "v": 0.95,
+          "expected": "orange",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#665C4D",
+          "h": 36.0,
+          "s": 0.25,
+          "v": 0.4,
+          "expected": "grey",
+          "got": "yellow",
+          "ensemble": "yellow",
+          "severity": "hard"
+        },
+        {
+          "hex": "#B2A186",
+          "h": 36.8,
+          "s": 0.25,
+          "v": 0.7,
+          "expected": "brown",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#F2DAB6",
+          "h": 36.0,
+          "s": 0.25,
+          "v": 0.95,
+          "expected": "brown",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#F2C279",
+          "h": 36.2,
+          "s": 0.5,
+          "v": 0.95,
+          "expected": "orange",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#665D4D",
+          "h": 38.4,
+          "s": 0.25,
+          "v": 0.4,
+          "expected": "grey",
+          "got": "yellow",
+          "ensemble": "yellow",
+          "severity": "hard"
+        },
+        {
+          "hex": "#B2A286",
+          "h": 38.2,
+          "s": 0.25,
+          "v": 0.7,
+          "expected": "brown",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#F2DCB6",
+          "h": 38.0,
+          "s": 0.25,
+          "v": 0.95,
+          "expected": "brown",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#F2C679",
+          "h": 38.2,
+          "s": 0.5,
+          "v": 0.95,
+          "expected": "orange",
+          "got": "bone",
+          "ensemble": "bone",
+          "severity": "hard"
+        },
+        {
+          "hex": "#665E4D",
+          "h": 40.8,
+          "s": 0.25,
+          "v": 0.4,
+          "expected": "grey",
+          "got": "yellow",
+          "ensemble": "yellow",
+          "severity": "hard"
+        },
+        {
+          "hex": "#664B14",
+          "h": 40.2,
+          "s": 0.8,
+          "v": 0.4,
+          "expected": "yellow",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "hard"
+        }
+      ],
+      "soft_miss_examples": [
+        {
+          "hex": "#661414",
+          "h": 0.0,
+          "s": 0.8,
+          "v": 0.4,
+          "expected": "red",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "soft"
+        },
+        {
+          "hex": "#660000",
+          "h": 0.0,
+          "s": 1.0,
+          "v": 0.4,
+          "expected": "red",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "soft"
+        },
+        {
+          "hex": "#661714",
+          "h": 2.2,
+          "s": 0.8,
+          "v": 0.4,
+          "expected": "red",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "soft"
+        },
+        {
+          "hex": "#660300",
+          "h": 1.8,
+          "s": 1.0,
+          "v": 0.4,
+          "expected": "red",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "soft"
+        },
+        {
+          "hex": "#B25F59",
+          "h": 4.0,
+          "s": 0.5,
+          "v": 0.7,
+          "expected": "red",
+          "got": "pink",
+          "ensemble": "pink",
+          "severity": "soft"
+        },
+        {
+          "hex": "#661A14",
+          "h": 4.4,
+          "s": 0.8,
+          "v": 0.4,
+          "expected": "red",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "soft"
+        },
+        {
+          "hex": "#660700",
+          "h": 4.1,
+          "s": 1.0,
+          "v": 0.4,
+          "expected": "red",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "soft"
+        },
+        {
+          "hex": "#B26259",
+          "h": 6.1,
+          "s": 0.5,
+          "v": 0.7,
+          "expected": "red",
+          "got": "pink",
+          "ensemble": "pink",
+          "severity": "soft"
+        },
+        {
+          "hex": "#661D14",
+          "h": 6.6,
+          "s": 0.8,
+          "v": 0.4,
+          "expected": "red",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "soft"
+        },
+        {
+          "hex": "#660A00",
+          "h": 5.9,
+          "s": 1.0,
+          "v": 0.4,
+          "expected": "red",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "soft"
+        },
+        {
+          "hex": "#663A33",
+          "h": 8.2,
+          "s": 0.5,
+          "v": 0.4,
+          "expected": "red",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "soft"
+        },
+        {
+          "hex": "#B26559",
+          "h": 8.1,
+          "s": 0.5,
+          "v": 0.7,
+          "expected": "red",
+          "got": "pink",
+          "ensemble": "pink",
+          "severity": "soft"
+        },
+        {
+          "hex": "#661F14",
+          "h": 8.0,
+          "s": 0.8,
+          "v": 0.4,
+          "expected": "red",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "soft"
+        },
+        {
+          "hex": "#660E00",
+          "h": 8.2,
+          "s": 1.0,
+          "v": 0.4,
+          "expected": "red",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "soft"
+        },
+        {
+          "hex": "#663B33",
+          "h": 9.4,
+          "s": 0.5,
+          "v": 0.4,
+          "expected": "red",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "soft"
+        },
+        {
+          "hex": "#B26859",
+          "h": 10.1,
+          "s": 0.5,
+          "v": 0.7,
+          "expected": "red",
+          "got": "pink",
+          "ensemble": "pink",
+          "severity": "soft"
+        },
+        {
+          "hex": "#662214",
+          "h": 10.2,
+          "s": 0.8,
+          "v": 0.4,
+          "expected": "red",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "soft"
+        },
+        {
+          "hex": "#661100",
+          "h": 10.0,
+          "s": 1.0,
+          "v": 0.4,
+          "expected": "red",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "soft"
+        },
+        {
+          "hex": "#663D33",
+          "h": 11.8,
+          "s": 0.5,
+          "v": 0.4,
+          "expected": "red",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "soft"
+        },
+        {
+          "hex": "#B26B59",
+          "h": 12.1,
+          "s": 0.5,
+          "v": 0.7,
+          "expected": "red",
+          "got": "pink",
+          "ensemble": "pink",
+          "severity": "soft"
+        }
+      ],
+      "import_errors": []
+    },
+    "2_distortion_robustness.py": {
+      "module": "distortion_robustness",
+      "paints_tested": 120,
+      "scenarios": [
+        "clean",
+        "wb_cool",
+        "wb_warm",
+        "wb_warm_strong",
+        "underexposed",
+        "overexposed",
+        "gamma_low",
+        "gamma_high",
+        "shadow_gradient",
+        "noise_mod",
+        "noise_high",
+        "jpeg_low",
+        "desaturated_cam",
+        "oversaturated_cam",
+        "indoor_phone"
+      ],
+      "scenario_summary": {
+        "clean": {
+          "family_stability": 1.0,
+          "family_changed": 0,
+          "deltaE_mean": 0.0,
+          "deltaE_p90": 0.0,
+          "deltaE_max": 0.0
+        },
+        "wb_cool": {
+          "family_stability": 0.658,
+          "family_changed": 41,
+          "deltaE_mean": 6.25,
+          "deltaE_p90": 9.86,
+          "deltaE_max": 13.14
+        },
+        "wb_warm": {
+          "family_stability": 0.717,
+          "family_changed": 34,
+          "deltaE_mean": 5.85,
+          "deltaE_p90": 9.54,
+          "deltaE_max": 13.91
+        },
+        "wb_warm_strong": {
+          "family_stability": 0.45,
+          "family_changed": 66,
+          "deltaE_mean": 9.85,
+          "deltaE_p90": 15.53,
+          "deltaE_max": 21.53
+        },
+        "underexposed": {
+          "family_stability": 0.433,
+          "family_changed": 68,
+          "deltaE_mean": 18.64,
+          "deltaE_p90": 27.21,
+          "deltaE_max": 27.73
+        },
+        "overexposed": {
+          "family_stability": 0.425,
+          "family_changed": 69,
+          "deltaE_mean": 20.35,
+          "deltaE_p90": 27.33,
+          "deltaE_max": 34.63
+        },
+        "gamma_low": {
+          "family_stability": 0.6,
+          "family_changed": 48,
+          "deltaE_mean": 8.52,
+          "deltaE_p90": 11.82,
+          "deltaE_max": 12.79
+        },
+        "gamma_high": {
+          "family_stability": 0.608,
+          "family_changed": 47,
+          "deltaE_mean": 8.17,
+          "deltaE_p90": 11.28,
+          "deltaE_max": 12.07
+        },
+        "shadow_gradient": {
+          "family_stability": 1.0,
+          "family_changed": 0,
+          "deltaE_mean": 0.0,
+          "deltaE_p90": 0.0,
+          "deltaE_max": 0.0
+        },
+        "noise_mod": {
+          "family_stability": 1.0,
+          "family_changed": 0,
+          "deltaE_mean": 0.12,
+          "deltaE_p90": 0.27,
+          "deltaE_max": 0.4
+        },
+        "noise_high": {
+          "family_stability": 0.992,
+          "family_changed": 1,
+          "deltaE_mean": 0.25,
+          "deltaE_p90": 0.45,
+          "deltaE_max": 1.33
+        },
+        "jpeg_low": {
+          "family_stability": 0.942,
+          "family_changed": 7,
+          "deltaE_mean": 0.88,
+          "deltaE_p90": 1.57,
+          "deltaE_max": 3.43
+        },
+        "desaturated_cam": {
+          "family_stability": 0.842,
+          "family_changed": 19,
+          "deltaE_mean": 3.16,
+          "deltaE_p90": 5.67,
+          "deltaE_max": 7.54
+        },
+        "oversaturated_cam": {
+          "family_stability": 0.883,
+          "family_changed": 14,
+          "deltaE_mean": 2.93,
+          "deltaE_p90": 5.32,
+          "deltaE_max": 7.66
+        },
+        "indoor_phone": {
+          "family_stability": 0.5,
+          "family_changed": 60,
+          "deltaE_mean": 12.66,
+          "deltaE_p90": 18.75,
+          "deltaE_max": 21.99
+        }
+      },
+      "total_family_flips": 474,
+      "flip_by_base_family": {
+        "grey": 76,
+        "orange": 64,
+        "bone": 53,
+        "yellow": 44,
+        "red": 39,
+        "blue": 34,
+        "cyan": 32,
+        "green": 27,
+        "brown": 22,
+        "purple": 22,
+        "white": 21,
+        "black": 17,
+        "pink": 12,
+        "magenta": 11
+      },
+      "family_flip_examples": [
+        {
+          "paint": "Bright Pale Yellow",
+          "hex": "#f5e9bd",
+          "scenario": "wb_cool",
+          "base_family": "bone",
+          "distorted_family": "white",
+          "deltaE": 12.3
+        },
+        {
+          "paint": "Bright Pale Yellow",
+          "hex": "#f5e9bd",
+          "scenario": "wb_warm",
+          "base_family": "bone",
+          "distorted_family": "yellow",
+          "deltaE": 5.49
+        },
+        {
+          "paint": "Bright Pale Yellow",
+          "hex": "#f5e9bd",
+          "scenario": "wb_warm_strong",
+          "base_family": "bone",
+          "distorted_family": "yellow",
+          "deltaE": 8.51
+        },
+        {
+          "paint": "Bright Pale Yellow",
+          "hex": "#f5e9bd",
+          "scenario": "overexposed",
+          "base_family": "bone",
+          "distorted_family": "white",
+          "deltaE": 15.93
+        },
+        {
+          "paint": "Bright Pale Yellow",
+          "hex": "#f5e9bd",
+          "scenario": "indoor_phone",
+          "base_family": "bone",
+          "distorted_family": "yellow",
+          "deltaE": 17.33
+        },
+        {
+          "paint": "Serpent Eye Yellow",
+          "hex": "#f4bd0b",
+          "scenario": "underexposed",
+          "base_family": "yellow",
+          "distorted_family": "orange",
+          "deltaE": 27.62
+        },
+        {
+          "paint": "Serpent Eye Yellow",
+          "hex": "#f4bd0b",
+          "scenario": "gamma_high",
+          "base_family": "yellow",
+          "distorted_family": "orange",
+          "deltaE": 7.01
+        },
+        {
+          "paint": "Serpent Eye Yellow",
+          "hex": "#f4bd0b",
+          "scenario": "indoor_phone",
+          "base_family": "yellow",
+          "distorted_family": "orange",
+          "deltaE": 16.98
+        },
+        {
+          "paint": "Yriel Yellow",
+          "hex": "#f39f13",
+          "scenario": "wb_cool",
+          "base_family": "orange",
+          "distorted_family": "yellow",
+          "deltaE": 7.52
+        },
+        {
+          "paint": "Yriel Yellow",
+          "hex": "#f39f13",
+          "scenario": "overexposed",
+          "base_family": "orange",
+          "distorted_family": "yellow",
+          "deltaE": 29.83
+        },
+        {
+          "paint": "Yriel Yellow",
+          "hex": "#f39f13",
+          "scenario": "gamma_low",
+          "base_family": "orange",
+          "distorted_family": "yellow",
+          "deltaE": 7.77
+        },
+        {
+          "paint": "Dirty Yellow",
+          "hex": "#ce961d",
+          "scenario": "wb_warm",
+          "base_family": "yellow",
+          "distorted_family": "orange",
+          "deltaE": 6.44
+        },
+        {
+          "paint": "Dirty Yellow",
+          "hex": "#ce961d",
+          "scenario": "wb_warm_strong",
+          "base_family": "yellow",
+          "distorted_family": "orange",
+          "deltaE": 11.18
+        },
+        {
+          "paint": "Dirty Yellow",
+          "hex": "#ce961d",
+          "scenario": "underexposed",
+          "base_family": "yellow",
+          "distorted_family": "brown",
+          "deltaE": 27.31
+        },
+        {
+          "paint": "Dirty Yellow",
+          "hex": "#ce961d",
+          "scenario": "gamma_high",
+          "base_family": "yellow",
+          "distorted_family": "orange",
+          "deltaE": 9.61
+        },
+        {
+          "paint": "Dirty Yellow",
+          "hex": "#ce961d",
+          "scenario": "jpeg_low",
+          "base_family": "yellow",
+          "distorted_family": "orange",
+          "deltaE": 0.96
+        },
+        {
+          "paint": "Dirty Yellow",
+          "hex": "#ce961d",
+          "scenario": "oversaturated_cam",
+          "base_family": "yellow",
+          "distorted_family": "orange",
+          "deltaE": 3.22
+        },
+        {
+          "paint": "Dirty Yellow",
+          "hex": "#ce961d",
+          "scenario": "indoor_phone",
+          "base_family": "yellow",
+          "distorted_family": "orange",
+          "deltaE": 15.54
+        },
+        {
+          "paint": "Sunpetal",
+          "hex": "#ebd40b",
+          "scenario": "underexposed",
+          "base_family": "yellow",
+          "distorted_family": "green",
+          "deltaE": 27.7
+        },
+        {
+          "paint": "Pastel Peach",
+          "hex": "#fb9c5d",
+          "scenario": "underexposed",
+          "base_family": "orange",
+          "distorted_family": "brown",
+          "deltaE": 27.48
+        },
+        {
+          "paint": "Pastel Peach",
+          "hex": "#fb9c5d",
+          "scenario": "overexposed",
+          "base_family": "orange",
+          "distorted_family": "yellow",
+          "deltaE": 33.63
+        },
+        {
+          "paint": "Pastel Peach",
+          "hex": "#fb9c5d",
+          "scenario": "gamma_low",
+          "base_family": "orange",
+          "distorted_family": "bone",
+          "deltaE": 6.63
+        },
+        {
+          "paint": "Pastel Peach",
+          "hex": "#fb9c5d",
+          "scenario": "desaturated_cam",
+          "base_family": "orange",
+          "distorted_family": "bone",
+          "deltaE": 5.29
+        },
+        {
+          "paint": "Troll Slayer Orange",
+          "hex": "#e34819",
+          "scenario": "overexposed",
+          "base_family": "red",
+          "distorted_family": "orange",
+          "deltaE": 14.47
+        },
+        {
+          "paint": "Troll Slayer Orange",
+          "hex": "#e34819",
+          "scenario": "gamma_low",
+          "base_family": "red",
+          "distorted_family": "orange",
+          "deltaE": 7.46
+        },
+        {
+          "paint": "Fanatic Orange",
+          "hex": "#e84616",
+          "scenario": "overexposed",
+          "base_family": "red",
+          "distorted_family": "orange",
+          "deltaE": 13.54
+        },
+        {
+          "paint": "Fanatic Orange",
+          "hex": "#e84616",
+          "scenario": "gamma_low",
+          "base_family": "red",
+          "distorted_family": "orange",
+          "deltaE": 7.11
+        },
+        {
+          "paint": "Fanatic Orange",
+          "hex": "#e84616",
+          "scenario": "desaturated_cam",
+          "base_family": "red",
+          "distorted_family": "orange",
+          "deltaE": 6.63
+        },
+        {
+          "paint": "Burn Orange",
+          "hex": "#cb3b34",
+          "scenario": "desaturated_cam",
+          "base_family": "red",
+          "distorted_family": "pink",
+          "deltaE": 6.88
+        },
+        {
+          "paint": "Jokaero Orange",
+          "hex": "#bb613f",
+          "scenario": "wb_cool",
+          "base_family": "red",
+          "distorted_family": "orange",
+          "deltaE": 5.2
+        },
+        {
+          "paint": "Jokaero Orange",
+          "hex": "#bb613f",
+          "scenario": "wb_warm_strong",
+          "base_family": "red",
+          "distorted_family": "orange",
+          "deltaE": 8.32
+        },
+        {
+          "paint": "Jokaero Orange",
+          "hex": "#bb613f",
+          "scenario": "underexposed",
+          "base_family": "red",
+          "distorted_family": "brown",
+          "deltaE": 20.21
+        },
+        {
+          "paint": "Jokaero Orange",
+          "hex": "#bb613f",
+          "scenario": "overexposed",
+          "base_family": "red",
+          "distorted_family": "orange",
+          "deltaE": 22.31
+        },
+        {
+          "paint": "Jokaero Orange",
+          "hex": "#bb613f",
+          "scenario": "gamma_low",
+          "base_family": "red",
+          "distorted_family": "pink",
+          "deltaE": 10.04
+        },
+        {
+          "paint": "Jokaero Orange",
+          "hex": "#bb613f",
+          "scenario": "gamma_high",
+          "base_family": "red",
+          "distorted_family": "brown",
+          "deltaE": 9.92
+        },
+        {
+          "paint": "Jokaero Orange",
+          "hex": "#bb613f",
+          "scenario": "jpeg_low",
+          "base_family": "red",
+          "distorted_family": "orange",
+          "deltaE": 0.49
+        },
+        {
+          "paint": "Jokaero Orange",
+          "hex": "#bb613f",
+          "scenario": "oversaturated_cam",
+          "base_family": "red",
+          "distorted_family": "orange",
+          "deltaE": 6.31
+        },
+        {
+          "paint": "Jokaero Orange",
+          "hex": "#bb613f",
+          "scenario": "indoor_phone",
+          "base_family": "red",
+          "distorted_family": "brown",
+          "deltaE": 11.05
+        },
+        {
+          "paint": "Matt Red",
+          "hex": "#ad1d0b",
+          "scenario": "underexposed",
+          "base_family": "red",
+          "distorted_family": "brown",
+          "deltaE": 15.07
+        },
+        {
+          "paint": "Gory Red",
+          "hex": "#66211b",
+          "scenario": "wb_warm_strong",
+          "base_family": "brown",
+          "distorted_family": "red",
+          "deltaE": 5.65
+        },
+        {
+          "paint": "Gory Red",
+          "hex": "#66211b",
+          "scenario": "underexposed",
+          "base_family": "brown",
+          "distorted_family": "red",
+          "deltaE": 10.04
+        },
+        {
+          "paint": "Gory Red",
+          "hex": "#66211b",
+          "scenario": "overexposed",
+          "base_family": "brown",
+          "distorted_family": "red",
+          "deltaE": 16.35
+        },
+        {
+          "paint": "Nocturnal Red",
+          "hex": "#4c1f21",
+          "scenario": "wb_cool",
+          "base_family": "red",
+          "distorted_family": "brown",
+          "deltaE": 3.87
+        },
+        {
+          "paint": "Nocturnal Red",
+          "hex": "#4c1f21",
+          "scenario": "wb_warm_strong",
+          "base_family": "red",
+          "distorted_family": "brown",
+          "deltaE": 6.19
+        },
+        {
+          "paint": "Nocturnal Red",
+          "hex": "#4c1f21",
+          "scenario": "underexposed",
+          "base_family": "red",
+          "distorted_family": "black",
+          "deltaE": 8.24
+        },
+        {
+          "paint": "Nocturnal Red",
+          "hex": "#4c1f21",
+          "scenario": "overexposed",
+          "base_family": "red",
+          "distorted_family": "brown",
+          "deltaE": 12.74
+        },
+        {
+          "paint": "Nocturnal Red",
+          "hex": "#4c1f21",
+          "scenario": "gamma_high",
+          "base_family": "red",
+          "distorted_family": "black",
+          "deltaE": 7.07
+        },
+        {
+          "paint": "Glistening Gums",
+          "hex": "#98416b",
+          "scenario": "wb_warm",
+          "base_family": "magenta",
+          "distorted_family": "red",
+          "deltaE": 7.02
+        },
+        {
+          "paint": "Glistening Gums",
+          "hex": "#98416b",
+          "scenario": "wb_warm_strong",
+          "base_family": "magenta",
+          "distorted_family": "red",
+          "deltaE": 12.73
+        },
+        {
+          "paint": "Glistening Gums",
+          "hex": "#98416b",
+          "scenario": "overexposed",
+          "base_family": "magenta",
+          "distorted_family": "pink",
+          "deltaE": 26.43
+        },
+        {
+          "paint": "Warlord Purple",
+          "hex": "#8e1c4e",
+          "scenario": "wb_warm_strong",
+          "base_family": "magenta",
+          "distorted_family": "red",
+          "deltaE": 11.14
+        },
+        {
+          "paint": "Evil Red",
+          "hex": "#231114",
+          "scenario": "overexposed",
+          "base_family": "black",
+          "distorted_family": "brown",
+          "deltaE": 7.18
+        },
+        {
+          "paint": "Evil Red",
+          "hex": "#231114",
+          "scenario": "gamma_low",
+          "base_family": "black",
+          "distorted_family": "brown",
+          "deltaE": 7.66
+        },
+        {
+          "paint": "Doomfire Drab",
+          "hex": "#dfc3d9",
+          "scenario": "wb_cool",
+          "base_family": "pink",
+          "distorted_family": "purple",
+          "deltaE": 12.02
+        },
+        {
+          "paint": "Doomfire Drab",
+          "hex": "#dfc3d9",
+          "scenario": "underexposed",
+          "base_family": "pink",
+          "distorted_family": "purple",
+          "deltaE": 27.05
+        },
+        {
+          "paint": "Doomfire Drab",
+          "hex": "#dfc3d9",
+          "scenario": "overexposed",
+          "base_family": "pink",
+          "distorted_family": "white",
+          "deltaE": 18.47
+        },
+        {
+          "paint": "Doomfire Drab",
+          "hex": "#dfc3d9",
+          "scenario": "indoor_phone",
+          "base_family": "pink",
+          "distorted_family": "red",
+          "deltaE": 20.06
+        },
+        {
+          "paint": "Impish Rouge",
+          "hex": "#d74494",
+          "scenario": "wb_warm",
+          "base_family": "magenta",
+          "distorted_family": "pink",
+          "deltaE": 8.11
+        },
+        {
+          "paint": "Impish Rouge",
+          "hex": "#d74494",
+          "scenario": "wb_warm_strong",
+          "base_family": "magenta",
+          "distorted_family": "pink",
+          "deltaE": 13.55
+        },
+        {
+          "paint": "Impish Rouge",
+          "hex": "#d74494",
+          "scenario": "gamma_low",
+          "base_family": "magenta",
+          "distorted_family": "pink",
+          "deltaE": 7.69
+        }
+      ],
+      "high_deltaE_examples": [
+        {
+          "paint": "Sunny Skin Tone",
+          "hex": "#e9915f",
+          "scenario": "overexposed",
+          "deltaE": 34.63,
+          "rec_hex": "#FFFCA5"
+        },
+        {
+          "paint": "Pastel Peach",
+          "hex": "#fb9c5d",
+          "scenario": "overexposed",
+          "deltaE": 33.63,
+          "rec_hex": "#FFFFA2"
+        },
+        {
+          "paint": "Tourmaline Skin",
+          "hex": "#db928c",
+          "scenario": "overexposed",
+          "deltaE": 32.14,
+          "rec_hex": "#FFFEF4"
+        },
+        {
+          "paint": "Yriel Yellow",
+          "hex": "#f39f13",
+          "scenario": "overexposed",
+          "deltaE": 29.83,
+          "rec_hex": "#FFFF21"
+        },
+        {
+          "paint": "Dark Flesh",
+          "hex": "#c7894c",
+          "scenario": "overexposed",
+          "deltaE": 29.17,
+          "rec_hex": "#FFEF84"
+        },
+        {
+          "paint": "Gold Brown",
+          "hex": "#c68b3b",
+          "scenario": "overexposed",
+          "deltaE": 29.06,
+          "rec_hex": "#FFF267"
+        },
+        {
+          "paint": "Temple Guard Blue",
+          "hex": "#0096b7",
+          "scenario": "overexposed",
+          "deltaE": 28.96,
+          "rec_hex": "#00FFFF"
+        },
+        {
+          "paint": "Command Khaki",
+          "hex": "#bd9885",
+          "scenario": "overexposed",
+          "deltaE": 28.75,
+          "rec_hex": "#FFFFE8"
+        },
+        {
+          "paint": "Dirty Yellow",
+          "hex": "#ce961d",
+          "scenario": "overexposed",
+          "deltaE": 28.39,
+          "rec_hex": "#FFFF32"
+        },
+        {
+          "paint": "Sybarite Green",
+          "hex": "#278f70",
+          "scenario": "overexposed",
+          "deltaE": 27.75,
+          "rec_hex": "#44F9C3"
+        },
+        {
+          "paint": "Phalanx Yellow",
+          "hex": "#f6d027",
+          "scenario": "underexposed",
+          "deltaE": 27.73,
+          "rec_hex": "#8D7716"
+        },
+        {
+          "paint": "Sunpetal",
+          "hex": "#ebd40b",
+          "scenario": "underexposed",
+          "deltaE": 27.7,
+          "rec_hex": "#877A06"
+        },
+        {
+          "paint": "Orruk Flesh",
+          "hex": "#7e8a4f",
+          "scenario": "overexposed",
+          "deltaE": 27.68,
+          "rec_hex": "#DBF08A"
+        },
+        {
+          "paint": "Serpent Eye Yellow",
+          "hex": "#f4bd0b",
+          "scenario": "underexposed",
+          "deltaE": 27.62,
+          "rec_hex": "#8C6D06"
+        },
+        {
+          "paint": "Electric Lime",
+          "hex": "#b6cd34",
+          "scenario": "underexposed",
+          "deltaE": 27.58,
+          "rec_hex": "#69761E"
+        },
+        {
+          "paint": "Slime Green",
+          "hex": "#4ebd05",
+          "scenario": "underexposed",
+          "deltaE": 27.58,
+          "rec_hex": "#2D6D03"
+        },
+        {
+          "paint": "Yriel Yellow",
+          "hex": "#f39f13",
+          "scenario": "underexposed",
+          "deltaE": 27.57,
+          "rec_hex": "#8C5B0B"
+        },
+        {
+          "paint": "Pastel Peach",
+          "hex": "#fb9c5d",
+          "scenario": "underexposed",
+          "deltaE": 27.48,
+          "rec_hex": "#905A35"
+        },
+        {
+          "paint": "Alga Green",
+          "hex": "#586f32",
+          "scenario": "overexposed",
+          "deltaE": 27.4,
+          "rec_hex": "#99C157"
+        },
+        {
+          "paint": "Sunny Skin Tone",
+          "hex": "#e9915f",
+          "scenario": "underexposed",
+          "deltaE": 27.36,
+          "rec_hex": "#865337"
+        },
+        {
+          "paint": "Germ. Beige WWII",
+          "hex": "#938265",
+          "scenario": "overexposed",
+          "deltaE": 27.32,
+          "rec_hex": "#FFE2B0"
+        },
+        {
+          "paint": "Dirty Yellow",
+          "hex": "#ce961d",
+          "scenario": "underexposed",
+          "deltaE": 27.31,
+          "rec_hex": "#765611"
+        },
+        {
+          "paint": "Magic Blue",
+          "hex": "#016eb8",
+          "scenario": "overexposed",
+          "deltaE": 27.31,
+          "rec_hex": "#02C0FF"
+        },
+        {
+          "paint": "Bright Pale Yellow",
+          "hex": "#f5e9bd",
+          "scenario": "underexposed",
+          "deltaE": 27.3,
+          "rec_hex": "#8D866D"
+        },
+        {
+          "paint": "Camouflage Green",
+          "hex": "#9b8935",
+          "scenario": "overexposed",
+          "deltaE": 27.3,
+          "rec_hex": "#FFEF5C"
+        },
+        {
+          "paint": "White Blue",
+          "hex": "#c8f5f8",
+          "scenario": "underexposed",
+          "deltaE": 27.29,
+          "rec_hex": "#738D8E"
+        },
+        {
+          "paint": "Luminous Flesh",
+          "hex": "#f4c39c",
+          "scenario": "underexposed",
+          "deltaE": 27.23,
+          "rec_hex": "#8C705A"
+        },
+        {
+          "paint": "Sunrise Blue",
+          "hex": "#77c8fb",
+          "scenario": "underexposed",
+          "deltaE": 27.21,
+          "rec_hex": "#447390"
+        },
+        {
+          "paint": "Light Green Grey",
+          "hex": "#8a9381",
+          "scenario": "overexposed",
+          "deltaE": 27.18,
+          "rec_hex": "#F0FFE1"
+        },
+        {
+          "paint": "Marine Mist",
+          "hex": "#a6d9d4",
+          "scenario": "underexposed",
+          "deltaE": 27.15,
+          "rec_hex": "#5F7D7A"
+        },
+        {
+          "paint": "Ambush Yellow",
+          "hex": "#d7b881",
+          "scenario": "underexposed",
+          "deltaE": 27.15,
+          "rec_hex": "#7B6A4A"
+        },
+        {
+          "paint": "British Khaki",
+          "hex": "#765427",
+          "scenario": "overexposed",
+          "deltaE": 27.13,
+          "rec_hex": "#CD9244"
+        },
+        {
+          "paint": "Elfic Flesh",
+          "hex": "#efd6b8",
+          "scenario": "underexposed",
+          "deltaE": 27.12,
+          "rec_hex": "#897B6A"
+        },
+        {
+          "paint": "Tourmaline Skin",
+          "hex": "#db928c",
+          "scenario": "underexposed",
+          "deltaE": 27.1,
+          "rec_hex": "#7E5450"
+        },
+        {
+          "paint": "Buff",
+          "hex": "#cca773",
+          "scenario": "underexposed",
+          "deltaE": 27.09,
+          "rec_hex": "#756042"
+        },
+        {
+          "paint": "Green Sky",
+          "hex": "#9bba8b",
+          "scenario": "underexposed",
+          "deltaE": 27.06,
+          "rec_hex": "#596B50"
+        },
+        {
+          "paint": "Ironclad Silver",
+          "hex": "#8b7a73",
+          "scenario": "overexposed",
+          "deltaE": 27.06,
+          "rec_hex": "#F2D4C8"
+        },
+        {
+          "paint": "Doomfire Drab",
+          "hex": "#dfc3d9",
+          "scenario": "underexposed",
+          "deltaE": 27.05,
+          "rec_hex": "#80707D"
+        },
+        {
+          "paint": "Stratos Blue",
+          "hex": "#516685",
+          "scenario": "overexposed",
+          "deltaE": 27.05,
+          "rec_hex": "#8DB2E8"
+        },
+        {
+          "paint": "Administra- tum Grey",
+          "hex": "#8b8f92",
+          "scenario": "overexposed",
+          "deltaE": 27.05,
+          "rec_hex": "#F2F9FE"
+        }
+      ],
+      "import_errors": [],
+      "notes": "family_stability=fraction of distortions that kept the same family as the clean swatch. Low stability for a family = that family sits near a brittle boundary and needs a wider margin or better achromatic handling."
+    },
+    "3_clustering_sampling.py": {
+      "module": "clustering_sampling",
+      "scenes": {
+        "pink_horror_like": {
+          "planted_regions": [
+            "pink_body",
+            "blue_spikes",
+            "gold_trim",
+            "green_base",
+            "bone_loincloth"
+          ],
+          "extract_method": "extract_colors",
+          "methods_tried": [
+            "extract_colors"
+          ],
+          "regions": [
+            {
+              "label": "pink_body",
+              "true_hex": "#C9527F",
+              "coverage": 0.55,
+              "nearest_cluster_hex": "#C9527F",
+              "nearest_deltaE": 0.14,
+              "recovered": true,
+              "detected_family": "Magenta"
+            },
+            {
+              "label": "blue_spikes",
+              "true_hex": "#5BB9C9",
+              "coverage": 0.12,
+              "nearest_cluster_hex": "#5BB8C9",
+              "nearest_deltaE": 0.15,
+              "recovered": true,
+              "detected_family": "Cyan"
+            },
+            {
+              "label": "gold_trim",
+              "true_hex": "#C9A227",
+              "coverage": 0.06,
+              "nearest_cluster_hex": "#C8A226",
+              "nearest_deltaE": 0.14,
+              "recovered": true,
+              "detected_family": "Yellow"
+            },
+            {
+              "label": "green_base",
+              "true_hex": "#6E8B3D",
+              "coverage": 0.15,
+              "nearest_cluster_hex": "#6D8A3C",
+              "nearest_deltaE": 0.28,
+              "recovered": true,
+              "detected_family": "Green"
+            },
+            {
+              "label": "bone_loincloth",
+              "true_hex": "#E8E0D0",
+              "coverage": 0.12,
+              "nearest_cluster_hex": "#E7DFCF",
+              "nearest_deltaE": 0.73,
+              "recovered": true,
+              "detected_family": "White"
+            }
+          ],
+          "recovery_rate": 1.0,
+          "blended_small_regions": []
+        },
+        "space_marine_like": {
+          "planted_regions": [
+            "blue_armour",
+            "gold_trim",
+            "red_accent",
+            "black_join",
+            "silver_metal"
+          ],
+          "extract_method": "extract_colors",
+          "methods_tried": [
+            "extract_colors"
+          ],
+          "regions": [
+            {
+              "label": "blue_armour",
+              "true_hex": "#0D407F",
+              "coverage": 0.5,
+              "nearest_cluster_hex": "#0D3F7F",
+              "nearest_deltaE": 0.29,
+              "recovered": true,
+              "detected_family": "Blue"
+            },
+            {
+              "label": "gold_trim",
+              "true_hex": "#C39E81",
+              "coverage": 0.08,
+              "nearest_cluster_hex": "#C29D80",
+              "nearest_deltaE": 0.55,
+              "recovered": true,
+              "detected_family": "Bone"
+            },
+            {
+              "label": "red_accent",
+              "true_hex": "#9A1115",
+              "coverage": 0.07,
+              "nearest_cluster_hex": "#991014",
+              "nearest_deltaE": 0.27,
+              "recovered": true,
+              "detected_family": "Red"
+            },
+            {
+              "label": "black_join",
+              "true_hex": "#231F20",
+              "coverage": 0.2,
+              "nearest_cluster_hex": "#231F20",
+              "nearest_deltaE": 0.14,
+              "recovered": true,
+              "detected_family": "Black"
+            },
+            {
+              "label": "silver_metal",
+              "true_hex": "#888D8F",
+              "coverage": 0.15,
+              "nearest_cluster_hex": "#888D8E",
+              "nearest_deltaE": 0.4,
+              "recovered": true,
+              "detected_family": "Grey"
+            }
+          ],
+          "recovery_rate": 1.0,
+          "blended_small_regions": []
+        },
+        "high_contrast_trim": {
+          "planted_regions": [
+            "black_body",
+            "gold_edge",
+            "red_lens",
+            "cyan_gem",
+            "grey_trim"
+          ],
+          "extract_method": "extract_colors",
+          "methods_tried": [
+            "extract_colors"
+          ],
+          "regions": [
+            {
+              "label": "black_body",
+              "true_hex": "#1E1E1E",
+              "coverage": 0.6,
+              "nearest_cluster_hex": "#1D1E1E",
+              "nearest_deltaE": 0.25,
+              "recovered": true,
+              "detected_family": "Black"
+            },
+            {
+              "label": "gold_edge",
+              "true_hex": "#C9A227",
+              "coverage": 0.05,
+              "nearest_cluster_hex": "#C9A227",
+              "nearest_deltaE": 0.13,
+              "recovered": true,
+              "detected_family": "Yellow"
+            },
+            {
+              "label": "red_lens",
+              "true_hex": "#C21E10",
+              "coverage": 0.05,
+              "nearest_cluster_hex": "#C21E10",
+              "nearest_deltaE": 0.0,
+              "recovered": true,
+              "detected_family": "Red"
+            },
+            {
+              "label": "cyan_gem",
+              "true_hex": "#3FB8C8",
+              "coverage": 0.05,
+              "nearest_cluster_hex": "#3FB7C8",
+              "nearest_deltaE": 0.16,
+              "recovered": true,
+              "detected_family": "Cyan"
+            },
+            {
+              "label": "grey_trim",
+              "true_hex": "#E0E0E0",
+              "coverage": 0.25,
+              "nearest_cluster_hex": "#DFDFE0",
+              "nearest_deltaE": 0.43,
+              "recovered": true,
+              "detected_family": "White"
+            }
+          ],
+          "recovery_rate": 1.0,
+          "blended_small_regions": []
+        },
+        "monochrome_greens": {
+          "planted_regions": [
+            "mid_green",
+            "dark_green",
+            "light_green"
+          ],
+          "extract_method": "extract_colors",
+          "methods_tried": [
+            "extract_colors"
+          ],
+          "regions": [
+            {
+              "label": "mid_green",
+              "true_hex": "#1E7B3F",
+              "coverage": 0.4,
+              "nearest_cluster_hex": "#328D4F",
+              "nearest_deltaE": 6.82,
+              "recovered": true,
+              "detected_family": "Green"
+            },
+            {
+              "label": "dark_green",
+              "true_hex": "#0E4D26",
+              "coverage": 0.3,
+              "nearest_cluster_hex": "#0E4D25",
+              "nearest_deltaE": 0.17,
+              "recovered": true,
+              "detected_family": "Cyan"
+            },
+            {
+              "label": "light_green",
+              "true_hex": "#4FA968",
+              "coverage": 0.3,
+              "nearest_cluster_hex": "#328D4F",
+              "nearest_deltaE": 9.44,
+              "recovered": true,
+              "detected_family": "Green"
+            }
+          ],
+          "recovery_rate": 1.0,
+          "blended_small_regions": []
+        },
+        "more_regions_than_clusters": {
+          "planted_regions": [
+            "pink_body",
+            "green_base",
+            "blue_cloth",
+            "gold_trim",
+            "red_gem",
+            "cyan_spike",
+            "bone_pouch"
+          ],
+          "extract_method": "extract_colors",
+          "methods_tried": [
+            "extract_colors"
+          ],
+          "regions": [
+            {
+              "label": "pink_body",
+              "true_hex": "#C9527F",
+              "coverage": 0.38,
+              "nearest_cluster_hex": "#C8517E",
+              "nearest_deltaE": 0.23,
+              "recovered": true,
+              "detected_family": "Magenta"
+            },
+            {
+              "label": "green_base",
+              "true_hex": "#6E8B3D",
+              "coverage": 0.2,
+              "nearest_cluster_hex": "#6E8A3D",
+              "nearest_deltaE": 0.31,
+              "recovered": true,
+              "detected_family": "Green"
+            },
+            {
+              "label": "blue_cloth",
+              "true_hex": "#0D407F",
+              "coverage": 0.18,
+              "nearest_cluster_hex": "#0D407F",
+              "nearest_deltaE": 0.15,
+              "recovered": true,
+              "detected_family": "Blue"
+            },
+            {
+              "label": "gold_trim",
+              "true_hex": "#C9A227",
+              "coverage": 0.06,
+              "nearest_cluster_hex": "#C8A226",
+              "nearest_deltaE": 0.14,
+              "recovered": true,
+              "detected_family": "Yellow"
+            },
+            {
+              "label": "red_gem",
+              "true_hex": "#C21E10",
+              "coverage": 0.06,
+              "nearest_cluster_hex": "#C21D0F",
+              "nearest_deltaE": 0.13,
+              "recovered": true,
+              "detected_family": "Red"
+            },
+            {
+              "label": "cyan_spike",
+              "true_hex": "#3FB8C8",
+              "coverage": 0.06,
+              "nearest_cluster_hex": "#3EB8C7",
+              "nearest_deltaE": 0.39,
+              "recovered": true,
+              "detected_family": "Cyan"
+            },
+            {
+              "label": "bone_pouch",
+              "true_hex": "#E8E0D0",
+              "coverage": 0.06,
+              "nearest_cluster_hex": "#E7DECF",
+              "nearest_deltaE": 0.85,
+              "recovered": true,
+              "detected_family": "White"
+            }
+          ],
+          "recovery_rate": 1.0,
+          "blended_small_regions": []
+        }
+      },
+      "import_errors": [],
+      "overall_recovery_rate": 1.0,
+      "small_region_recovery": 1.0,
+      "extract_method_used": "extract_colors"
+    }
+  },
+  "summary": {
+    "sweep_hard_miss_rate": 0.0819,
+    "missing_families": [],
+    "classifier_disagreements": 0,
+    "distortion_family_flips": 474,
+    "most_fragile_families": {
+      "grey": 76,
+      "orange": 64,
+      "bone": 53,
+      "yellow": 44,
+      "red": 39,
+      "blue": 34,
+      "cyan": 32,
+      "green": 27,
+      "brown": 22,
+      "purple": 22,
+      "white": 21,
+      "black": 17,
+      "pink": 12,
+      "magenta": 11
+    },
+    "region_recovery_rate": 1.0,
+    "small_region_recovery": 1.0
+  }
+}

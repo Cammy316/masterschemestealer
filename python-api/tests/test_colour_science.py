@@ -99,14 +99,20 @@ def test_white_balance_grey_stays_grey():
 
 
 def test_white_balance_warm_cast_neutralises():
-    """An orange-cast image should become more neutral (R-B gap should shrink)."""
-    warm = np.zeros((50, 50, 3), dtype=np.uint8)
-    warm[:, :, 0] = 200  # strong red
-    warm[:, :, 1] = 140  # moderate green
-    warm[:, :, 2] = 80   # weak blue
+    """A warm-cast GREY should become more neutral (R-B gap should shrink).
 
-    result = apply_white_balance(warm)
-    original_rb_gap = int(warm[0, 0, 0]) - int(warm[0, 0, 2])
+    Note the Phase 6b contract change: the corrector only acts on neutral
+    EVIDENCE. A uniformly orange image (the old test input) is treated as an
+    orange subject and left alone — assuming every image averages to grey is
+    the failure mode that injected ~10 ΔE on clean paint photos. A tinted
+    grey, however, is exactly what the corrector exists for."""
+    warm_grey = np.zeros((50, 50, 3), dtype=np.uint8)
+    warm_grey[:, :, 0] = 170  # warm-tinted grey card
+    warm_grey[:, :, 1] = 150
+    warm_grey[:, :, 2] = 128
+
+    result = apply_white_balance(warm_grey)
+    original_rb_gap = int(warm_grey[0, 0, 0]) - int(warm_grey[0, 0, 2])
     corrected_rb_gap = int(result[0, 0, 0]) - int(result[0, 0, 2])
     assert corrected_rb_gap < original_rb_gap, (
         f"Warm cast not reduced: original R-B gap={original_rb_gap}, "
@@ -115,18 +121,16 @@ def test_white_balance_warm_cast_neutralises():
 
 
 def test_white_balance_alpha_mask_respected():
-    """With an alpha mask, illuminant is estimated only over opaque pixels."""
-    # Create a blue image (background) with a red foreground square.
+    """With an alpha mask, the illuminant is estimated only over opaque
+    pixels: a warm near-neutral BACKGROUND must not drive the correction of
+    a clean grey foreground."""
     img = np.zeros((60, 60, 3), dtype=np.uint8)
-    img[:, :, 2] = 200          # blue background
-    img[20:40, 20:40, 0] = 200  # red foreground square
-    img[20:40, 20:40, 2] = 0
+    img[:, :] = (200, 175, 150)      # warm near-neutral background
+    img[20:40, 20:40] = (128, 128, 128)  # clean grey foreground
 
     alpha = np.zeros((60, 60), dtype=np.uint8)
     alpha[20:40, 20:40] = 255   # only foreground is opaque
 
-    # With mask: illuminant estimated from red pixels only — output should
-    # not crash and should differ from the no-mask version.
     result_masked = apply_white_balance(img, alpha_mask=alpha)
     result_full = apply_white_balance(img)
 
@@ -135,6 +139,13 @@ def test_white_balance_alpha_mask_respected():
         "Masked and unmasked white balance produced identical output "
         "(mask may not be respected)"
     )
+    # Under the mask the clean grey foreground supplies the estimate, so the
+    # foreground stays (near-)untouched; without it the warm background
+    # drags the correction.
+    fg = (slice(20, 40), slice(20, 40))
+    shift_masked = np.abs(result_masked[fg].astype(int) - img[fg].astype(int)).mean()
+    shift_full = np.abs(result_full[fg].astype(int) - img[fg].astype(int)).mean()
+    assert shift_masked < shift_full
 
 
 # ============================================================================
@@ -248,13 +259,17 @@ def test_neutral_colors_bypass_hue_shift():
     from core.recipe_geometry import target_lab
     # Very dark, neutral grey (chroma near 0)
     black_lab = (5.0, 0.1, 0.1)
-    
+
     hlt_lab = target_lab(black_lab, "highlight")
-    
+
     # L must strictly increase for a highlight
     assert hlt_lab[0] > black_lab[0]
-    
-    # Hue shift is bypassed, so 'a' and 'b' remain nearly identical to their original small values
-    # (they are re-calculated from the non-shifted angle, preserving small chroma)
-    assert abs(hlt_lab[1] - 0.1) < 1e-5
-    assert abs(hlt_lab[2] - 0.1) < 1e-5
+
+    # A neutral must STAY neutral: the chroma ramp suppresses the hue shift,
+    # so the target invents no hue. (The Phase 3 geometry holds chroma in
+    # OKLCH, so the CIELAB a/b view may drift by a perceptually invisible
+    # amount — the contract is neutrality, not bit-exact a/b.)
+    import math
+    assert math.hypot(hlt_lab[1], hlt_lab[2]) < 0.5
+    assert abs(hlt_lab[1] - 0.1) < 0.2
+    assert abs(hlt_lab[2] - 0.1) < 0.2
