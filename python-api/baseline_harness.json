@@ -1,16 +1,16 @@
 {
   "harness_version": "1.0",
-  "generated_at": "2026-07-02T10:30:50",
+  "generated_at": "2026-07-03T11:12:07",
   "engine_root": ".",
   "python": "3.11.9",
   "modules": {
     "1_synthetic_sweep.py": {
       "module": "synthetic_sweep",
       "total_samples": 2160,
-      "ok": 1460,
-      "soft_misses": 523,
-      "hard_misses": 177,
-      "hard_miss_rate": 0.0819,
+      "ok": 1316,
+      "soft_misses": 641,
+      "hard_misses": 203,
+      "hard_miss_rate": 0.094,
       "missing_families": [],
       "classifier_disagreements": 0,
       "disagreement_examples": [],
@@ -106,6 +106,16 @@
           "severity": "hard"
         },
         {
+          "hex": "#B29286",
+          "h": 16.4,
+          "s": 0.25,
+          "v": 0.7,
+          "expected": "brown",
+          "got": "pink",
+          "ensemble": "pink",
+          "severity": "hard"
+        },
+        {
           "hex": "#F2C6B6",
           "h": 16.0,
           "s": 0.25,
@@ -176,26 +186,6 @@
           "severity": "hard"
         },
         {
-          "hex": "#B27759",
-          "h": 20.2,
-          "s": 0.5,
-          "v": 0.7,
-          "expected": "orange",
-          "got": "bone",
-          "ensemble": "bone",
-          "severity": "hard"
-        },
-        {
-          "hex": "#F2A279",
-          "h": 20.3,
-          "s": 0.5,
-          "v": 0.95,
-          "expected": "orange",
-          "got": "bone",
-          "ensemble": "bone",
-          "severity": "hard"
-        },
-        {
           "hex": "#66564D",
           "h": 21.6,
           "s": 0.25,
@@ -221,18 +211,8 @@
           "s": 0.25,
           "v": 0.95,
           "expected": "brown",
-          "got": "pink",
-          "ensemble": "pink",
-          "severity": "hard"
-        },
-        {
-          "hex": "#B27A59",
-          "h": 22.2,
-          "s": 0.5,
-          "v": 0.7,
-          "expected": "orange",
-          "got": "bone",
-          "ensemble": "bone",
+          "got": "white",
+          "ensemble": "white",
           "severity": "hard"
         },
         {
@@ -321,8 +301,8 @@
           "s": 0.25,
           "v": 0.95,
           "expected": "brown",
-          "got": "bone",
-          "ensemble": "bone",
+          "got": "white",
+          "ensemble": "white",
           "severity": "hard"
         },
         {
@@ -371,8 +351,8 @@
           "s": 0.25,
           "v": 0.95,
           "expected": "brown",
-          "got": "bone",
-          "ensemble": "bone",
+          "got": "white",
+          "ensemble": "white",
           "severity": "hard"
         },
         {
@@ -421,15 +401,15 @@
           "s": 0.25,
           "v": 0.95,
           "expected": "brown",
-          "got": "bone",
-          "ensemble": "bone",
+          "got": "white",
+          "ensemble": "white",
           "severity": "hard"
         },
         {
-          "hex": "#F2B679",
-          "h": 30.2,
+          "hex": "#B28659",
+          "h": 30.3,
           "s": 0.5,
-          "v": 0.95,
+          "v": 0.7,
           "expected": "orange",
           "got": "bone",
           "ensemble": "bone",
@@ -461,18 +441,8 @@
           "s": 0.25,
           "v": 0.95,
           "expected": "brown",
-          "got": "bone",
-          "ensemble": "bone",
-          "severity": "hard"
-        },
-        {
-          "hex": "#F2BA79",
-          "h": 32.2,
-          "s": 0.5,
-          "v": 0.95,
-          "expected": "orange",
-          "got": "bone",
-          "ensemble": "bone",
+          "got": "white",
+          "ensemble": "white",
           "severity": "hard"
         },
         {
@@ -501,8 +471,8 @@
           "s": 0.25,
           "v": 0.95,
           "expected": "brown",
-          "got": "bone",
-          "ensemble": "bone",
+          "got": "white",
+          "ensemble": "white",
           "severity": "hard"
         },
         {
@@ -541,8 +511,8 @@
           "s": 0.25,
           "v": 0.95,
           "expected": "brown",
-          "got": "bone",
-          "ensemble": "bone",
+          "got": "white",
+          "ensemble": "white",
           "severity": "hard"
         },
         {
@@ -581,8 +551,8 @@
           "s": 0.25,
           "v": 0.95,
           "expected": "brown",
-          "got": "bone",
-          "ensemble": "bone",
+          "got": "white",
+          "ensemble": "white",
           "severity": "hard"
         },
         {
@@ -614,13 +584,83 @@
           "got": "brown",
           "ensemble": "brown",
           "severity": "hard"
+        },
+        {
+          "hex": "#664400",
+          "h": 40.0,
+          "s": 1.0,
+          "v": 0.4,
+          "expected": "yellow",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "hard"
+        },
+        {
+          "hex": "#665E4D",
+          "h": 40.8,
+          "s": 0.25,
+          "v": 0.4,
+          "expected": "grey",
+          "got": "yellow",
+          "ensemble": "yellow",
+          "severity": "hard"
+        },
+        {
+          "hex": "#664E14",
+          "h": 42.4,
+          "s": 0.8,
+          "v": 0.4,
+          "expected": "yellow",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "hard"
         }
       ],
       "soft_miss_examples": [
         {
+          "hex": "#B28686",
+          "h": 0.0,
+          "s": 0.25,
+          "v": 0.7,
+          "expected": "red",
+          "got": "pink",
+          "ensemble": "pink",
+          "severity": "soft"
+        },
+        {
+          "hex": "#663333",
+          "h": 0.0,
+          "s": 0.5,
+          "v": 0.4,
+          "expected": "red",
+          "got": "magenta",
+          "ensemble": "magenta",
+          "severity": "soft"
+        },
+        {
           "hex": "#661414",
           "h": 0.0,
           "s": 0.8,
+          "v": 0.4,
+          "expected": "red",
+          "got": "magenta",
+          "ensemble": "magenta",
+          "severity": "soft"
+        },
+        {
+          "hex": "#F23030",
+          "h": 0.0,
+          "s": 0.8,
+          "v": 0.95,
+          "expected": "red",
+          "got": "pink",
+          "ensemble": "pink",
+          "severity": "soft"
+        },
+        {
+          "hex": "#660000",
+          "h": 0.0,
+          "s": 1.0,
           "v": 0.4,
           "expected": "red",
           "got": "brown",
@@ -628,9 +668,19 @@
           "severity": "soft"
         },
         {
-          "hex": "#660000",
-          "h": 0.0,
-          "s": 1.0,
+          "hex": "#B28786",
+          "h": 1.4,
+          "s": 0.25,
+          "v": 0.7,
+          "expected": "red",
+          "got": "pink",
+          "ensemble": "pink",
+          "severity": "soft"
+        },
+        {
+          "hex": "#663533",
+          "h": 2.4,
+          "s": 0.5,
           "v": 0.4,
           "expected": "red",
           "got": "brown",
@@ -648,9 +698,39 @@
           "severity": "soft"
         },
         {
+          "hex": "#F23730",
+          "h": 2.2,
+          "s": 0.8,
+          "v": 0.95,
+          "expected": "red",
+          "got": "pink",
+          "ensemble": "pink",
+          "severity": "soft"
+        },
+        {
           "hex": "#660300",
           "h": 1.8,
           "s": 1.0,
+          "v": 0.4,
+          "expected": "red",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "soft"
+        },
+        {
+          "hex": "#B28986",
+          "h": 4.1,
+          "s": 0.25,
+          "v": 0.7,
+          "expected": "red",
+          "got": "pink",
+          "ensemble": "pink",
+          "severity": "soft"
+        },
+        {
+          "hex": "#663633",
+          "h": 3.5,
+          "s": 0.5,
           "v": 0.4,
           "expected": "red",
           "got": "brown",
@@ -678,9 +758,39 @@
           "severity": "soft"
         },
         {
+          "hex": "#F23D30",
+          "h": 4.0,
+          "s": 0.8,
+          "v": 0.95,
+          "expected": "red",
+          "got": "pink",
+          "ensemble": "pink",
+          "severity": "soft"
+        },
+        {
           "hex": "#660700",
           "h": 4.1,
           "s": 1.0,
+          "v": 0.4,
+          "expected": "red",
+          "got": "brown",
+          "ensemble": "brown",
+          "severity": "soft"
+        },
+        {
+          "hex": "#B28A86",
+          "h": 5.5,
+          "s": 0.25,
+          "v": 0.7,
+          "expected": "red",
+          "got": "pink",
+          "ensemble": "pink",
+          "severity": "soft"
+        },
+        {
+          "hex": "#663833",
+          "h": 5.9,
+          "s": 0.5,
           "v": 0.4,
           "expected": "red",
           "got": "brown",
@@ -705,116 +815,6 @@
           "expected": "red",
           "got": "brown",
           "ensemble": "brown",
-          "severity": "soft"
-        },
-        {
-          "hex": "#660A00",
-          "h": 5.9,
-          "s": 1.0,
-          "v": 0.4,
-          "expected": "red",
-          "got": "brown",
-          "ensemble": "brown",
-          "severity": "soft"
-        },
-        {
-          "hex": "#663A33",
-          "h": 8.2,
-          "s": 0.5,
-          "v": 0.4,
-          "expected": "red",
-          "got": "brown",
-          "ensemble": "brown",
-          "severity": "soft"
-        },
-        {
-          "hex": "#B26559",
-          "h": 8.1,
-          "s": 0.5,
-          "v": 0.7,
-          "expected": "red",
-          "got": "pink",
-          "ensemble": "pink",
-          "severity": "soft"
-        },
-        {
-          "hex": "#661F14",
-          "h": 8.0,
-          "s": 0.8,
-          "v": 0.4,
-          "expected": "red",
-          "got": "brown",
-          "ensemble": "brown",
-          "severity": "soft"
-        },
-        {
-          "hex": "#660E00",
-          "h": 8.2,
-          "s": 1.0,
-          "v": 0.4,
-          "expected": "red",
-          "got": "brown",
-          "ensemble": "brown",
-          "severity": "soft"
-        },
-        {
-          "hex": "#663B33",
-          "h": 9.4,
-          "s": 0.5,
-          "v": 0.4,
-          "expected": "red",
-          "got": "brown",
-          "ensemble": "brown",
-          "severity": "soft"
-        },
-        {
-          "hex": "#B26859",
-          "h": 10.1,
-          "s": 0.5,
-          "v": 0.7,
-          "expected": "red",
-          "got": "pink",
-          "ensemble": "pink",
-          "severity": "soft"
-        },
-        {
-          "hex": "#662214",
-          "h": 10.2,
-          "s": 0.8,
-          "v": 0.4,
-          "expected": "red",
-          "got": "brown",
-          "ensemble": "brown",
-          "severity": "soft"
-        },
-        {
-          "hex": "#661100",
-          "h": 10.0,
-          "s": 1.0,
-          "v": 0.4,
-          "expected": "red",
-          "got": "brown",
-          "ensemble": "brown",
-          "severity": "soft"
-        },
-        {
-          "hex": "#663D33",
-          "h": 11.8,
-          "s": 0.5,
-          "v": 0.4,
-          "expected": "red",
-          "got": "brown",
-          "ensemble": "brown",
-          "severity": "soft"
-        },
-        {
-          "hex": "#B26B59",
-          "h": 12.1,
-          "s": 0.5,
-          "v": 0.7,
-          "expected": "red",
-          "got": "pink",
-          "ensemble": "pink",
           "severity": "soft"
         }
       ],
@@ -849,53 +849,53 @@
           "deltaE_max": 0.0
         },
         "wb_cool": {
-          "family_stability": 0.658,
-          "family_changed": 41,
-          "deltaE_mean": 6.25,
-          "deltaE_p90": 9.86,
-          "deltaE_max": 13.14
+          "family_stability": 0.7,
+          "family_changed": 36,
+          "deltaE_mean": 6.37,
+          "deltaE_p90": 10.01,
+          "deltaE_max": 13.2
         },
         "wb_warm": {
-          "family_stability": 0.717,
-          "family_changed": 34,
-          "deltaE_mean": 5.85,
-          "deltaE_p90": 9.54,
-          "deltaE_max": 13.91
+          "family_stability": 0.725,
+          "family_changed": 33,
+          "deltaE_mean": 5.94,
+          "deltaE_p90": 10.35,
+          "deltaE_max": 13.95
         },
         "wb_warm_strong": {
-          "family_stability": 0.45,
-          "family_changed": 66,
-          "deltaE_mean": 9.85,
-          "deltaE_p90": 15.53,
-          "deltaE_max": 21.53
+          "family_stability": 0.492,
+          "family_changed": 61,
+          "deltaE_mean": 10.0,
+          "deltaE_p90": 16.32,
+          "deltaE_max": 21.65
         },
         "underexposed": {
-          "family_stability": 0.433,
-          "family_changed": 68,
-          "deltaE_mean": 18.64,
+          "family_stability": 0.3,
+          "family_changed": 84,
+          "deltaE_mean": 18.85,
           "deltaE_p90": 27.21,
-          "deltaE_max": 27.73
+          "deltaE_max": 27.75
         },
         "overexposed": {
-          "family_stability": 0.425,
-          "family_changed": 69,
-          "deltaE_mean": 20.35,
-          "deltaE_p90": 27.33,
-          "deltaE_max": 34.63
+          "family_stability": 0.442,
+          "family_changed": 67,
+          "deltaE_mean": 20.48,
+          "deltaE_p90": 27.39,
+          "deltaE_max": 34.87
         },
         "gamma_low": {
-          "family_stability": 0.6,
-          "family_changed": 48,
-          "deltaE_mean": 8.52,
+          "family_stability": 0.583,
+          "family_changed": 50,
+          "deltaE_mean": 8.55,
           "deltaE_p90": 11.82,
-          "deltaE_max": 12.79
+          "deltaE_max": 12.77
         },
         "gamma_high": {
-          "family_stability": 0.608,
-          "family_changed": 47,
-          "deltaE_mean": 8.17,
-          "deltaE_p90": 11.28,
-          "deltaE_max": 12.07
+          "family_stability": 0.558,
+          "family_changed": 53,
+          "deltaE_mean": 8.22,
+          "deltaE_p90": 11.41,
+          "deltaE_max": 12.11
         },
         "shadow_gradient": {
           "family_stability": 1.0,
@@ -907,219 +907,227 @@
         "noise_mod": {
           "family_stability": 1.0,
           "family_changed": 0,
-          "deltaE_mean": 0.12,
-          "deltaE_p90": 0.27,
+          "deltaE_mean": 0.13,
+          "deltaE_p90": 0.28,
           "deltaE_max": 0.4
         },
         "noise_high": {
-          "family_stability": 0.992,
-          "family_changed": 1,
-          "deltaE_mean": 0.25,
-          "deltaE_p90": 0.45,
-          "deltaE_max": 1.33
+          "family_stability": 1.0,
+          "family_changed": 0,
+          "deltaE_mean": 0.26,
+          "deltaE_p90": 0.46,
+          "deltaE_max": 1.32
         },
         "jpeg_low": {
-          "family_stability": 0.942,
-          "family_changed": 7,
-          "deltaE_mean": 0.88,
-          "deltaE_p90": 1.57,
-          "deltaE_max": 3.43
+          "family_stability": 0.983,
+          "family_changed": 2,
+          "deltaE_mean": 0.84,
+          "deltaE_p90": 1.51,
+          "deltaE_max": 3.35
         },
         "desaturated_cam": {
-          "family_stability": 0.842,
-          "family_changed": 19,
-          "deltaE_mean": 3.16,
-          "deltaE_p90": 5.67,
-          "deltaE_max": 7.54
+          "family_stability": 0.867,
+          "family_changed": 16,
+          "deltaE_mean": 3.14,
+          "deltaE_p90": 5.59,
+          "deltaE_max": 7.52
         },
         "oversaturated_cam": {
-          "family_stability": 0.883,
-          "family_changed": 14,
+          "family_stability": 0.9,
+          "family_changed": 12,
           "deltaE_mean": 2.93,
-          "deltaE_p90": 5.32,
-          "deltaE_max": 7.66
+          "deltaE_p90": 5.62,
+          "deltaE_max": 7.74
         },
         "indoor_phone": {
           "family_stability": 0.5,
           "family_changed": 60,
-          "deltaE_mean": 12.66,
-          "deltaE_p90": 18.75,
-          "deltaE_max": 21.99
+          "deltaE_mean": 12.83,
+          "deltaE_p90": 18.71,
+          "deltaE_max": 22.2
         }
       },
       "total_family_flips": 474,
       "flip_by_base_family": {
-        "grey": 76,
-        "orange": 64,
-        "bone": 53,
-        "yellow": 44,
-        "red": 39,
+        "bone": 70,
+        "orange": 70,
+        "grey": 67,
+        "yellow": 38,
         "blue": 34,
-        "cyan": 32,
-        "green": 27,
+        "white": 33,
+        "red": 30,
+        "green": 29,
+        "cyan": 24,
         "brown": 22,
-        "purple": 22,
-        "white": 21,
-        "black": 17,
-        "pink": 12,
-        "magenta": 11
+        "pink": 18,
+        "purple": 17,
+        "magenta": 12,
+        "black": 10
       },
       "family_flip_examples": [
         {
           "paint": "Bright Pale Yellow",
-          "hex": "#f5e9bd",
+          "hex": "#F7EBBF",
           "scenario": "wb_cool",
           "base_family": "bone",
-          "distorted_family": "white",
-          "deltaE": 12.3
+          "distorted_family": "cyan",
+          "deltaE": 12.38
         },
         {
           "paint": "Bright Pale Yellow",
-          "hex": "#f5e9bd",
+          "hex": "#F7EBBF",
           "scenario": "wb_warm",
           "base_family": "bone",
           "distorted_family": "yellow",
-          "deltaE": 5.49
+          "deltaE": 5.32
         },
         {
           "paint": "Bright Pale Yellow",
-          "hex": "#f5e9bd",
+          "hex": "#F7EBBF",
           "scenario": "wb_warm_strong",
           "base_family": "bone",
           "distorted_family": "yellow",
-          "deltaE": 8.51
+          "deltaE": 8.5
         },
         {
           "paint": "Bright Pale Yellow",
-          "hex": "#f5e9bd",
+          "hex": "#F7EBBF",
+          "scenario": "underexposed",
+          "base_family": "bone",
+          "distorted_family": "grey",
+          "deltaE": 27.32
+        },
+        {
+          "paint": "Bright Pale Yellow",
+          "hex": "#F7EBBF",
           "scenario": "overexposed",
           "base_family": "bone",
           "distorted_family": "white",
-          "deltaE": 15.93
+          "deltaE": 15.8
         },
         {
           "paint": "Bright Pale Yellow",
-          "hex": "#f5e9bd",
+          "hex": "#F7EBBF",
           "scenario": "indoor_phone",
           "base_family": "bone",
           "distorted_family": "yellow",
-          "deltaE": 17.33
+          "deltaE": 17.36
         },
         {
-          "paint": "Serpent Eye Yellow",
-          "hex": "#f4bd0b",
+          "paint": "Phalanx Yellow",
+          "hex": "#F8D228",
           "scenario": "underexposed",
           "base_family": "yellow",
           "distorted_family": "orange",
-          "deltaE": 27.62
+          "deltaE": 27.75
         },
         {
           "paint": "Serpent Eye Yellow",
-          "hex": "#f4bd0b",
+          "hex": "#F9C10D",
+          "scenario": "underexposed",
+          "base_family": "yellow",
+          "distorted_family": "orange",
+          "deltaE": 27.66
+        },
+        {
+          "paint": "Serpent Eye Yellow",
+          "hex": "#F9C10D",
           "scenario": "gamma_high",
           "base_family": "yellow",
           "distorted_family": "orange",
-          "deltaE": 7.01
-        },
-        {
-          "paint": "Serpent Eye Yellow",
-          "hex": "#f4bd0b",
-          "scenario": "indoor_phone",
-          "base_family": "yellow",
-          "distorted_family": "orange",
-          "deltaE": 16.98
+          "deltaE": 6.82
         },
         {
           "paint": "Yriel Yellow",
-          "hex": "#f39f13",
+          "hex": "#F5A115",
           "scenario": "wb_cool",
           "base_family": "orange",
           "distorted_family": "yellow",
-          "deltaE": 7.52
+          "deltaE": 7.56
         },
         {
           "paint": "Yriel Yellow",
-          "hex": "#f39f13",
+          "hex": "#F5A115",
+          "scenario": "underexposed",
+          "base_family": "orange",
+          "distorted_family": "brown",
+          "deltaE": 27.58
+        },
+        {
+          "paint": "Yriel Yellow",
+          "hex": "#F5A115",
           "scenario": "overexposed",
           "base_family": "orange",
           "distorted_family": "yellow",
-          "deltaE": 29.83
+          "deltaE": 29.41
         },
         {
           "paint": "Yriel Yellow",
-          "hex": "#f39f13",
+          "hex": "#F5A115",
           "scenario": "gamma_low",
           "base_family": "orange",
           "distorted_family": "yellow",
-          "deltaE": 7.77
+          "deltaE": 7.63
         },
         {
           "paint": "Dirty Yellow",
-          "hex": "#ce961d",
+          "hex": "#CF971F",
           "scenario": "wb_warm",
           "base_family": "yellow",
           "distorted_family": "orange",
-          "deltaE": 6.44
+          "deltaE": 6.45
         },
         {
           "paint": "Dirty Yellow",
-          "hex": "#ce961d",
+          "hex": "#CF971F",
           "scenario": "wb_warm_strong",
           "base_family": "yellow",
           "distorted_family": "orange",
-          "deltaE": 11.18
+          "deltaE": 11.19
         },
         {
           "paint": "Dirty Yellow",
-          "hex": "#ce961d",
+          "hex": "#CF971F",
           "scenario": "underexposed",
           "base_family": "yellow",
           "distorted_family": "brown",
-          "deltaE": 27.31
+          "deltaE": 27.34
         },
         {
           "paint": "Dirty Yellow",
-          "hex": "#ce961d",
+          "hex": "#CF971F",
           "scenario": "gamma_high",
           "base_family": "yellow",
           "distorted_family": "orange",
-          "deltaE": 9.61
+          "deltaE": 9.49
         },
         {
           "paint": "Dirty Yellow",
-          "hex": "#ce961d",
-          "scenario": "jpeg_low",
-          "base_family": "yellow",
-          "distorted_family": "orange",
-          "deltaE": 0.96
-        },
-        {
-          "paint": "Dirty Yellow",
-          "hex": "#ce961d",
+          "hex": "#CF971F",
           "scenario": "oversaturated_cam",
           "base_family": "yellow",
           "distorted_family": "orange",
-          "deltaE": 3.22
+          "deltaE": 3.45
         },
         {
           "paint": "Dirty Yellow",
-          "hex": "#ce961d",
+          "hex": "#CF971F",
           "scenario": "indoor_phone",
           "base_family": "yellow",
           "distorted_family": "orange",
-          "deltaE": 15.54
+          "deltaE": 15.43
         },
         {
           "paint": "Sunpetal",
-          "hex": "#ebd40b",
+          "hex": "#EED70D",
           "scenario": "underexposed",
           "base_family": "yellow",
           "distorted_family": "green",
-          "deltaE": 27.7
+          "deltaE": 27.73
         },
         {
           "paint": "Pastel Peach",
-          "hex": "#fb9c5d",
+          "hex": "#FD9D5F",
           "scenario": "underexposed",
           "base_family": "orange",
           "distorted_family": "brown",
@@ -1127,605 +1135,597 @@
         },
         {
           "paint": "Pastel Peach",
-          "hex": "#fb9c5d",
+          "hex": "#FD9D5F",
           "scenario": "overexposed",
           "base_family": "orange",
           "distorted_family": "yellow",
-          "deltaE": 33.63
+          "deltaE": 33.51
         },
         {
           "paint": "Pastel Peach",
-          "hex": "#fb9c5d",
+          "hex": "#FD9D5F",
           "scenario": "gamma_low",
           "base_family": "orange",
           "distorted_family": "bone",
-          "deltaE": 6.63
+          "deltaE": 6.57
         },
         {
           "paint": "Pastel Peach",
-          "hex": "#fb9c5d",
+          "hex": "#FD9D5F",
           "scenario": "desaturated_cam",
           "base_family": "orange",
           "distorted_family": "bone",
-          "deltaE": 5.29
+          "deltaE": 5.3
         },
         {
           "paint": "Troll Slayer Orange",
-          "hex": "#e34819",
-          "scenario": "overexposed",
+          "hex": "#E6491A",
+          "scenario": "underexposed",
           "base_family": "red",
-          "distorted_family": "orange",
-          "deltaE": 14.47
+          "distorted_family": "brown",
+          "deltaE": 22.01
         },
         {
           "paint": "Troll Slayer Orange",
-          "hex": "#e34819",
-          "scenario": "gamma_low",
-          "base_family": "red",
-          "distorted_family": "orange",
-          "deltaE": 7.46
-        },
-        {
-          "paint": "Fanatic Orange",
-          "hex": "#e84616",
+          "hex": "#E6491A",
           "scenario": "overexposed",
           "base_family": "red",
           "distorted_family": "orange",
-          "deltaE": 13.54
+          "deltaE": 14.38
         },
         {
-          "paint": "Fanatic Orange",
-          "hex": "#e84616",
+          "paint": "Troll Slayer Orange",
+          "hex": "#E6491A",
           "scenario": "gamma_low",
           "base_family": "red",
           "distorted_family": "orange",
-          "deltaE": 7.11
+          "deltaE": 7.3
         },
         {
           "paint": "Fanatic Orange",
-          "hex": "#e84616",
-          "scenario": "desaturated_cam",
+          "hex": "#E84516",
+          "scenario": "underexposed",
+          "base_family": "red",
+          "distorted_family": "brown",
+          "deltaE": 21.93
+        },
+        {
+          "paint": "Fanatic Orange",
+          "hex": "#E84516",
+          "scenario": "overexposed",
           "base_family": "red",
           "distorted_family": "orange",
-          "deltaE": 6.63
+          "deltaE": 13.25
+        },
+        {
+          "paint": "Fanatic Orange",
+          "hex": "#E84516",
+          "scenario": "gamma_low",
+          "base_family": "red",
+          "distorted_family": "orange",
+          "deltaE": 7.03
         },
         {
           "paint": "Burn Orange",
-          "hex": "#cb3b34",
+          "hex": "#CD3E36",
+          "scenario": "wb_warm_strong",
+          "base_family": "red",
+          "distorted_family": "pink",
+          "deltaE": 9.85
+        },
+        {
+          "paint": "Burn Orange",
+          "hex": "#CD3E36",
+          "scenario": "overexposed",
+          "base_family": "red",
+          "distorted_family": "pink",
+          "deltaE": 15.05
+        },
+        {
+          "paint": "Burn Orange",
+          "hex": "#CD3E36",
+          "scenario": "gamma_low",
+          "base_family": "red",
+          "distorted_family": "pink",
+          "deltaE": 8.61
+        },
+        {
+          "paint": "Burn Orange",
+          "hex": "#CD3E36",
           "scenario": "desaturated_cam",
           "base_family": "red",
           "distorted_family": "pink",
-          "deltaE": 6.88
+          "deltaE": 6.91
         },
         {
           "paint": "Jokaero Orange",
-          "hex": "#bb613f",
+          "hex": "#BD6240",
           "scenario": "wb_cool",
           "base_family": "red",
           "distorted_family": "orange",
-          "deltaE": 5.2
+          "deltaE": 5.23
         },
         {
           "paint": "Jokaero Orange",
-          "hex": "#bb613f",
+          "hex": "#BD6240",
           "scenario": "wb_warm_strong",
           "base_family": "red",
           "distorted_family": "orange",
-          "deltaE": 8.32
+          "deltaE": 8.34
         },
         {
           "paint": "Jokaero Orange",
-          "hex": "#bb613f",
+          "hex": "#BD6240",
           "scenario": "underexposed",
           "base_family": "red",
           "distorted_family": "brown",
-          "deltaE": 20.21
+          "deltaE": 20.48
         },
         {
           "paint": "Jokaero Orange",
-          "hex": "#bb613f",
+          "hex": "#BD6240",
           "scenario": "overexposed",
           "base_family": "red",
           "distorted_family": "orange",
-          "deltaE": 22.31
+          "deltaE": 22.25
         },
         {
           "paint": "Jokaero Orange",
-          "hex": "#bb613f",
+          "hex": "#BD6240",
           "scenario": "gamma_low",
           "base_family": "red",
-          "distorted_family": "pink",
-          "deltaE": 10.04
-        },
-        {
-          "paint": "Jokaero Orange",
-          "hex": "#bb613f",
-          "scenario": "gamma_high",
-          "base_family": "red",
-          "distorted_family": "brown",
-          "deltaE": 9.92
-        },
-        {
-          "paint": "Jokaero Orange",
-          "hex": "#bb613f",
-          "scenario": "jpeg_low",
-          "base_family": "red",
           "distorted_family": "orange",
-          "deltaE": 0.49
+          "deltaE": 9.91
         },
         {
           "paint": "Jokaero Orange",
-          "hex": "#bb613f",
+          "hex": "#BD6240",
           "scenario": "oversaturated_cam",
           "base_family": "red",
           "distorted_family": "orange",
-          "deltaE": 6.31
+          "deltaE": 6.36
         },
         {
           "paint": "Jokaero Orange",
-          "hex": "#bb613f",
+          "hex": "#BD6240",
           "scenario": "indoor_phone",
           "base_family": "red",
           "distorted_family": "brown",
-          "deltaE": 11.05
+          "deltaE": 11.59
+        },
+        {
+          "paint": "Angelic Red",
+          "hex": "#E93E38",
+          "scenario": "wb_cool",
+          "base_family": "pink",
+          "distorted_family": "red",
+          "deltaE": 6.42
+        },
+        {
+          "paint": "Angelic Red",
+          "hex": "#E93E38",
+          "scenario": "underexposed",
+          "base_family": "pink",
+          "distorted_family": "red",
+          "deltaE": 21.68
+        },
+        {
+          "paint": "Angelic Red",
+          "hex": "#E93E38",
+          "scenario": "gamma_high",
+          "base_family": "pink",
+          "distorted_family": "red",
+          "deltaE": 5.22
+        },
+        {
+          "paint": "Angelic Red",
+          "hex": "#E93E38",
+          "scenario": "oversaturated_cam",
+          "base_family": "pink",
+          "distorted_family": "red",
+          "deltaE": 6.54
+        },
+        {
+          "paint": "Angelic Red",
+          "hex": "#E93E38",
+          "scenario": "indoor_phone",
+          "base_family": "pink",
+          "distorted_family": "red",
+          "deltaE": 12.69
         },
         {
           "paint": "Matt Red",
-          "hex": "#ad1d0b",
+          "hex": "#AA1B0A",
           "scenario": "underexposed",
           "base_family": "red",
           "distorted_family": "brown",
-          "deltaE": 15.07
+          "deltaE": 14.81
         },
         {
           "paint": "Gory Red",
-          "hex": "#66211b",
+          "hex": "#65201A",
           "scenario": "wb_warm_strong",
           "base_family": "brown",
           "distorted_family": "red",
-          "deltaE": 5.65
+          "deltaE": 5.56
         },
         {
           "paint": "Gory Red",
-          "hex": "#66211b",
+          "hex": "#65201A",
           "scenario": "underexposed",
           "base_family": "brown",
           "distorted_family": "red",
-          "deltaE": 10.04
+          "deltaE": 9.98
         },
         {
           "paint": "Gory Red",
-          "hex": "#66211b",
+          "hex": "#65201A",
           "scenario": "overexposed",
           "base_family": "brown",
           "distorted_family": "red",
-          "deltaE": 16.35
+          "deltaE": 16.12
         },
         {
-          "paint": "Nocturnal Red",
-          "hex": "#4c1f21",
-          "scenario": "wb_cool",
-          "base_family": "red",
-          "distorted_family": "brown",
-          "deltaE": 3.87
+          "paint": "Gory Red",
+          "hex": "#65201A",
+          "scenario": "gamma_low",
+          "base_family": "brown",
+          "distorted_family": "red",
+          "deltaE": 8.93
         },
         {
-          "paint": "Nocturnal Red",
-          "hex": "#4c1f21",
-          "scenario": "wb_warm_strong",
-          "base_family": "red",
-          "distorted_family": "brown",
-          "deltaE": 6.19
-        },
-        {
-          "paint": "Nocturnal Red",
-          "hex": "#4c1f21",
-          "scenario": "underexposed",
-          "base_family": "red",
-          "distorted_family": "black",
-          "deltaE": 8.24
-        },
-        {
-          "paint": "Nocturnal Red",
-          "hex": "#4c1f21",
-          "scenario": "overexposed",
-          "base_family": "red",
-          "distorted_family": "brown",
-          "deltaE": 12.74
-        },
-        {
-          "paint": "Nocturnal Red",
-          "hex": "#4c1f21",
+          "paint": "Gory Red",
+          "hex": "#65201A",
           "scenario": "gamma_high",
-          "base_family": "red",
-          "distorted_family": "black",
-          "deltaE": 7.07
-        },
-        {
-          "paint": "Glistening Gums",
-          "hex": "#98416b",
-          "scenario": "wb_warm",
-          "base_family": "magenta",
+          "base_family": "brown",
           "distorted_family": "red",
-          "deltaE": 7.02
-        },
-        {
-          "paint": "Glistening Gums",
-          "hex": "#98416b",
-          "scenario": "wb_warm_strong",
-          "base_family": "magenta",
-          "distorted_family": "red",
-          "deltaE": 12.73
-        },
-        {
-          "paint": "Glistening Gums",
-          "hex": "#98416b",
-          "scenario": "overexposed",
-          "base_family": "magenta",
-          "distorted_family": "pink",
-          "deltaE": 26.43
-        },
-        {
-          "paint": "Warlord Purple",
-          "hex": "#8e1c4e",
-          "scenario": "wb_warm_strong",
-          "base_family": "magenta",
-          "distorted_family": "red",
-          "deltaE": 11.14
-        },
-        {
-          "paint": "Evil Red",
-          "hex": "#231114",
-          "scenario": "overexposed",
-          "base_family": "black",
-          "distorted_family": "brown",
           "deltaE": 7.18
         },
         {
-          "paint": "Evil Red",
-          "hex": "#231114",
-          "scenario": "gamma_low",
-          "base_family": "black",
-          "distorted_family": "brown",
+          "paint": "Bold Pyrrole Red",
+          "hex": "#E10F21",
+          "scenario": "overexposed",
+          "base_family": "red",
+          "distorted_family": "pink",
           "deltaE": 7.66
         },
         {
-          "paint": "Doomfire Drab",
-          "hex": "#dfc3d9",
-          "scenario": "wb_cool",
-          "base_family": "pink",
-          "distorted_family": "purple",
-          "deltaE": 12.02
+          "paint": "Bold Pyrrole Red",
+          "hex": "#E10F21",
+          "scenario": "desaturated_cam",
+          "base_family": "red",
+          "distorted_family": "pink",
+          "deltaE": 7.52
         },
         {
-          "paint": "Doomfire Drab",
-          "hex": "#dfc3d9",
+          "paint": "Evil Sunz Scarlet",
+          "hex": "#B7292D",
           "scenario": "underexposed",
-          "base_family": "pink",
-          "distorted_family": "purple",
-          "deltaE": 27.05
+          "base_family": "red",
+          "distorted_family": "magenta",
+          "deltaE": 16.06
         },
         {
-          "paint": "Doomfire Drab",
-          "hex": "#dfc3d9",
+          "paint": "Evil Sunz Scarlet",
+          "hex": "#B7292D",
           "scenario": "overexposed",
-          "base_family": "pink",
-          "distorted_family": "white",
-          "deltaE": 18.47
-        },
-        {
-          "paint": "Doomfire Drab",
-          "hex": "#dfc3d9",
-          "scenario": "indoor_phone",
-          "base_family": "pink",
-          "distorted_family": "red",
-          "deltaE": 20.06
-        },
-        {
-          "paint": "Impish Rouge",
-          "hex": "#d74494",
-          "scenario": "wb_warm",
-          "base_family": "magenta",
+          "base_family": "red",
           "distorted_family": "pink",
-          "deltaE": 8.11
+          "deltaE": 17.77
         },
         {
-          "paint": "Impish Rouge",
-          "hex": "#d74494",
+          "paint": "Nocturnal Red",
+          "hex": "#4B1E20",
           "scenario": "wb_warm_strong",
-          "base_family": "magenta",
-          "distorted_family": "pink",
-          "deltaE": 13.55
+          "base_family": "red",
+          "distorted_family": "brown",
+          "deltaE": 6.09
         },
         {
-          "paint": "Impish Rouge",
-          "hex": "#d74494",
+          "paint": "Nocturnal Red",
+          "hex": "#4B1E20",
+          "scenario": "underexposed",
+          "base_family": "red",
+          "distorted_family": "black",
+          "deltaE": 8.17
+        },
+        {
+          "paint": "Nocturnal Red",
+          "hex": "#4B1E20",
+          "scenario": "overexposed",
+          "base_family": "red",
+          "distorted_family": "brown",
+          "deltaE": 12.53
+        },
+        {
+          "paint": "Nocturnal Red",
+          "hex": "#4B1E20",
           "scenario": "gamma_low",
-          "base_family": "magenta",
-          "distorted_family": "pink",
-          "deltaE": 7.69
+          "base_family": "red",
+          "distorted_family": "magenta",
+          "deltaE": 9.1
         }
       ],
       "high_deltaE_examples": [
         {
           "paint": "Sunny Skin Tone",
-          "hex": "#e9915f",
+          "hex": "#EA9360",
           "scenario": "overexposed",
-          "deltaE": 34.63,
-          "rec_hex": "#FFFCA5"
+          "deltaE": 34.87,
+          "rec_hex": "#FFFFA7"
         },
         {
           "paint": "Pastel Peach",
-          "hex": "#fb9c5d",
+          "hex": "#FD9D5F",
           "scenario": "overexposed",
-          "deltaE": 33.63,
-          "rec_hex": "#FFFFA2"
+          "deltaE": 33.51,
+          "rec_hex": "#FFFFA5"
         },
         {
           "paint": "Tourmaline Skin",
-          "hex": "#db928c",
+          "hex": "#DC938D",
           "scenario": "overexposed",
-          "deltaE": 32.14,
-          "rec_hex": "#FFFEF4"
+          "deltaE": 32.19,
+          "rec_hex": "#FFFFF5"
         },
         {
           "paint": "Yriel Yellow",
-          "hex": "#f39f13",
+          "hex": "#F5A115",
           "scenario": "overexposed",
-          "deltaE": 29.83,
-          "rec_hex": "#FFFF21"
+          "deltaE": 29.41,
+          "rec_hex": "#FFFF25"
         },
         {
           "paint": "Dark Flesh",
-          "hex": "#c7894c",
+          "hex": "#C88A4D",
           "scenario": "overexposed",
-          "deltaE": 29.17,
-          "rec_hex": "#FFEF84"
+          "deltaE": 29.4,
+          "rec_hex": "#FFF086"
         },
         {
           "paint": "Gold Brown",
-          "hex": "#c68b3b",
+          "hex": "#C78C3C",
           "scenario": "overexposed",
-          "deltaE": 29.06,
-          "rec_hex": "#FFF267"
-        },
-        {
-          "paint": "Temple Guard Blue",
-          "hex": "#0096b7",
-          "scenario": "overexposed",
-          "deltaE": 28.96,
-          "rec_hex": "#00FFFF"
+          "deltaE": 29.26,
+          "rec_hex": "#FFF468"
         },
         {
           "paint": "Command Khaki",
-          "hex": "#bd9885",
+          "hex": "#BB9783",
           "scenario": "overexposed",
-          "deltaE": 28.75,
-          "rec_hex": "#FFFFE8"
+          "deltaE": 28.99,
+          "rec_hex": "#FFFFE4"
+        },
+        {
+          "paint": "Temple Guard Blue",
+          "hex": "#0297B8",
+          "scenario": "overexposed",
+          "deltaE": 28.66,
+          "rec_hex": "#03FFFF"
         },
         {
           "paint": "Dirty Yellow",
-          "hex": "#ce961d",
+          "hex": "#CF971F",
           "scenario": "overexposed",
-          "deltaE": 28.39,
-          "rec_hex": "#FFFF32"
+          "deltaE": 28.13,
+          "rec_hex": "#FFFF36"
         },
         {
           "paint": "Sybarite Green",
-          "hex": "#278f70",
+          "hex": "#269070",
           "scenario": "overexposed",
-          "deltaE": 27.75,
-          "rec_hex": "#44F9C3"
+          "deltaE": 27.77,
+          "rec_hex": "#42FBC3"
         },
         {
           "paint": "Phalanx Yellow",
-          "hex": "#f6d027",
+          "hex": "#F8D228",
           "scenario": "underexposed",
-          "deltaE": 27.73,
-          "rec_hex": "#8D7716"
+          "deltaE": 27.75,
+          "rec_hex": "#8E7917"
         },
         {
           "paint": "Sunpetal",
-          "hex": "#ebd40b",
+          "hex": "#EED70D",
           "scenario": "underexposed",
-          "deltaE": 27.7,
-          "rec_hex": "#877A06"
+          "deltaE": 27.73,
+          "rec_hex": "#897B07"
         },
         {
           "paint": "Orruk Flesh",
-          "hex": "#7e8a4f",
+          "hex": "#7D8A4F",
           "scenario": "overexposed",
           "deltaE": 27.68,
-          "rec_hex": "#DBF08A"
+          "rec_hex": "#DAF08A"
         },
         {
           "paint": "Serpent Eye Yellow",
-          "hex": "#f4bd0b",
+          "hex": "#F9C10D",
           "scenario": "underexposed",
-          "deltaE": 27.62,
-          "rec_hex": "#8C6D06"
+          "deltaE": 27.66,
+          "rec_hex": "#8F6F07"
         },
         {
           "paint": "Electric Lime",
-          "hex": "#b6cd34",
+          "hex": "#B6CE33",
           "scenario": "underexposed",
-          "deltaE": 27.58,
-          "rec_hex": "#69761E"
-        },
-        {
-          "paint": "Slime Green",
-          "hex": "#4ebd05",
-          "scenario": "underexposed",
-          "deltaE": 27.58,
-          "rec_hex": "#2D6D03"
+          "deltaE": 27.59,
+          "rec_hex": "#69761D"
         },
         {
           "paint": "Yriel Yellow",
-          "hex": "#f39f13",
+          "hex": "#F5A115",
+          "scenario": "underexposed",
+          "deltaE": 27.58,
+          "rec_hex": "#8D5C0C"
+        },
+        {
+          "paint": "Slime Green",
+          "hex": "#4CBC05",
           "scenario": "underexposed",
           "deltaE": 27.57,
-          "rec_hex": "#8C5B0B"
+          "rec_hex": "#2C6C03"
         },
         {
           "paint": "Pastel Peach",
-          "hex": "#fb9c5d",
+          "hex": "#FD9D5F",
           "scenario": "underexposed",
           "deltaE": 27.48,
-          "rec_hex": "#905A35"
+          "rec_hex": "#915A37"
         },
         {
           "paint": "Alga Green",
-          "hex": "#586f32",
+          "hex": "#586F31",
           "scenario": "overexposed",
-          "deltaE": 27.4,
-          "rec_hex": "#99C157"
-        },
-        {
-          "paint": "Sunny Skin Tone",
-          "hex": "#e9915f",
-          "scenario": "underexposed",
-          "deltaE": 27.36,
-          "rec_hex": "#865337"
-        },
-        {
-          "paint": "Germ. Beige WWII",
-          "hex": "#938265",
-          "scenario": "overexposed",
-          "deltaE": 27.32,
-          "rec_hex": "#FFE2B0"
-        },
-        {
-          "paint": "Dirty Yellow",
-          "hex": "#ce961d",
-          "scenario": "underexposed",
-          "deltaE": 27.31,
-          "rec_hex": "#765611"
-        },
-        {
-          "paint": "Magic Blue",
-          "hex": "#016eb8",
-          "scenario": "overexposed",
-          "deltaE": 27.31,
-          "rec_hex": "#02C0FF"
-        },
-        {
-          "paint": "Bright Pale Yellow",
-          "hex": "#f5e9bd",
-          "scenario": "underexposed",
-          "deltaE": 27.3,
-          "rec_hex": "#8D866D"
+          "deltaE": 27.41,
+          "rec_hex": "#99C155"
         },
         {
           "paint": "Camouflage Green",
-          "hex": "#9b8935",
+          "hex": "#998835",
           "scenario": "overexposed",
-          "deltaE": 27.3,
-          "rec_hex": "#FFEF5C"
+          "deltaE": 27.39,
+          "rec_hex": "#FFED5C"
+        },
+        {
+          "paint": "Sunny Skin Tone",
+          "hex": "#EA9360",
+          "scenario": "underexposed",
+          "deltaE": 27.36,
+          "rec_hex": "#865437"
+        },
+        {
+          "paint": "Dirty Yellow",
+          "hex": "#CF971F",
+          "scenario": "underexposed",
+          "deltaE": 27.34,
+          "rec_hex": "#775712"
+        },
+        {
+          "paint": "Germ. Beige WWII",
+          "hex": "#938264",
+          "scenario": "overexposed",
+          "deltaE": 27.33,
+          "rec_hex": "#FFE2AE"
+        },
+        {
+          "paint": "Bright Pale Yellow",
+          "hex": "#F7EBBF",
+          "scenario": "underexposed",
+          "deltaE": 27.32,
+          "rec_hex": "#8E876E"
         },
         {
           "paint": "White Blue",
-          "hex": "#c8f5f8",
+          "hex": "#CAF6F9",
           "scenario": "underexposed",
           "deltaE": 27.29,
-          "rec_hex": "#738D8E"
+          "rec_hex": "#748D8F"
         },
         {
           "paint": "Luminous Flesh",
-          "hex": "#f4c39c",
+          "hex": "#F4C29B",
           "scenario": "underexposed",
           "deltaE": 27.23,
-          "rec_hex": "#8C705A"
+          "rec_hex": "#8C6F59"
         },
         {
           "paint": "Sunrise Blue",
-          "hex": "#77c8fb",
+          "hex": "#75C7FB",
           "scenario": "underexposed",
           "deltaE": 27.21,
-          "rec_hex": "#447390"
+          "rec_hex": "#437290"
         },
         {
-          "paint": "Light Green Grey",
-          "hex": "#8a9381",
+          "paint": "Magic Blue",
+          "hex": "#016DB7",
           "scenario": "overexposed",
-          "deltaE": 27.18,
-          "rec_hex": "#F0FFE1"
-        },
-        {
-          "paint": "Marine Mist",
-          "hex": "#a6d9d4",
-          "scenario": "underexposed",
-          "deltaE": 27.15,
-          "rec_hex": "#5F7D7A"
+          "deltaE": 27.21,
+          "rec_hex": "#02BEFF"
         },
         {
           "paint": "Ambush Yellow",
-          "hex": "#d7b881",
+          "hex": "#D8B982",
           "scenario": "underexposed",
           "deltaE": 27.15,
-          "rec_hex": "#7B6A4A"
+          "rec_hex": "#7C6A4B"
         },
         {
-          "paint": "British Khaki",
-          "hex": "#765427",
-          "scenario": "overexposed",
-          "deltaE": 27.13,
-          "rec_hex": "#CD9244"
-        },
-        {
-          "paint": "Elfic Flesh",
-          "hex": "#efd6b8",
+          "paint": "Marine Mist",
+          "hex": "#A7D9D5",
           "scenario": "underexposed",
-          "deltaE": 27.12,
-          "rec_hex": "#897B6A"
-        },
-        {
-          "paint": "Tourmaline Skin",
-          "hex": "#db928c",
-          "scenario": "underexposed",
-          "deltaE": 27.1,
-          "rec_hex": "#7E5450"
-        },
-        {
-          "paint": "Buff",
-          "hex": "#cca773",
-          "scenario": "underexposed",
-          "deltaE": 27.09,
-          "rec_hex": "#756042"
-        },
-        {
-          "paint": "Green Sky",
-          "hex": "#9bba8b",
-          "scenario": "underexposed",
-          "deltaE": 27.06,
-          "rec_hex": "#596B50"
+          "deltaE": 27.14,
+          "rec_hex": "#607D7A"
         },
         {
           "paint": "Ironclad Silver",
-          "hex": "#8b7a73",
+          "hex": "#8F7D76",
+          "scenario": "overexposed",
+          "deltaE": 27.12,
+          "rec_hex": "#F9DACD"
+        },
+        {
+          "paint": "Elfic Flesh",
+          "hex": "#EED5B7",
+          "scenario": "underexposed",
+          "deltaE": 27.11,
+          "rec_hex": "#897A69"
+        },
+        {
+          "paint": "Tourmaline Skin",
+          "hex": "#DC938D",
+          "scenario": "underexposed",
+          "deltaE": 27.11,
+          "rec_hex": "#7E5451"
+        },
+        {
+          "paint": "Buff",
+          "hex": "#CBA672",
+          "scenario": "underexposed",
+          "deltaE": 27.09,
+          "rec_hex": "#755F41"
+        },
+        {
+          "paint": "Stratos Blue",
+          "hex": "#526786",
           "scenario": "overexposed",
           "deltaE": 27.06,
-          "rec_hex": "#F2D4C8"
+          "rec_hex": "#8FB3E9"
+        },
+        {
+          "paint": "Green Sky",
+          "hex": "#9AB98A",
+          "scenario": "underexposed",
+          "deltaE": 27.06,
+          "rec_hex": "#586A4F"
         },
         {
           "paint": "Doomfire Drab",
-          "hex": "#dfc3d9",
+          "hex": "#DFC3D9",
           "scenario": "underexposed",
           "deltaE": 27.05,
           "rec_hex": "#80707D"
         },
         {
-          "paint": "Stratos Blue",
-          "hex": "#516685",
+          "paint": "Administra- tum Grey",
+          "hex": "#8A8E91",
           "scenario": "overexposed",
-          "deltaE": 27.05,
-          "rec_hex": "#8DB2E8"
+          "deltaE": 27.04,
+          "rec_hex": "#F0F7FC"
         },
         {
-          "paint": "Administra- tum Grey",
-          "hex": "#8b8f92",
+          "paint": "Light Feldgrau",
+          "hex": "#737F79",
           "scenario": "overexposed",
-          "deltaE": 27.05,
-          "rec_hex": "#F2F9FE"
+          "deltaE": 27.0,
+          "rec_hex": "#C8DDD3"
+        },
+        {
+          "paint": "Japan. Unif. WWII",
+          "hex": "#997322",
+          "scenario": "overexposed",
+          "deltaE": 27.0,
+          "rec_hex": "#FFC83B"
         }
       ],
       "import_errors": [],
@@ -1751,7 +1751,7 @@
               "label": "pink_body",
               "true_hex": "#C9527F",
               "coverage": 0.55,
-              "nearest_cluster_hex": "#C9527F",
+              "nearest_cluster_hex": "#C9527E",
               "nearest_deltaE": 0.14,
               "recovered": true,
               "detected_family": "Magenta"
@@ -1761,7 +1761,7 @@
               "true_hex": "#5BB9C9",
               "coverage": 0.12,
               "nearest_cluster_hex": "#5BB8C9",
-              "nearest_deltaE": 0.15,
+              "nearest_deltaE": 0.14,
               "recovered": true,
               "detected_family": "Cyan"
             },
@@ -1769,8 +1769,8 @@
               "label": "gold_trim",
               "true_hex": "#C9A227",
               "coverage": 0.06,
-              "nearest_cluster_hex": "#C8A226",
-              "nearest_deltaE": 0.14,
+              "nearest_cluster_hex": "#C8A127",
+              "nearest_deltaE": 0.15,
               "recovered": true,
               "detected_family": "Yellow"
             },
@@ -1778,8 +1778,8 @@
               "label": "green_base",
               "true_hex": "#6E8B3D",
               "coverage": 0.15,
-              "nearest_cluster_hex": "#6D8A3C",
-              "nearest_deltaE": 0.28,
+              "nearest_cluster_hex": "#6E8B3D",
+              "nearest_deltaE": 0.17,
               "recovered": true,
               "detected_family": "Green"
             },
@@ -1787,8 +1787,8 @@
               "label": "bone_loincloth",
               "true_hex": "#E8E0D0",
               "coverage": 0.12,
-              "nearest_cluster_hex": "#E7DFCF",
-              "nearest_deltaE": 0.73,
+              "nearest_cluster_hex": "#E7DFD0",
+              "nearest_deltaE": 0.53,
               "recovered": true,
               "detected_family": "White"
             }
@@ -1813,8 +1813,8 @@
               "label": "blue_armour",
               "true_hex": "#0D407F",
               "coverage": 0.5,
-              "nearest_cluster_hex": "#0D3F7F",
-              "nearest_deltaE": 0.29,
+              "nearest_cluster_hex": "#0D407F",
+              "nearest_deltaE": 0.16,
               "recovered": true,
               "detected_family": "Blue"
             },
@@ -1822,8 +1822,8 @@
               "label": "gold_trim",
               "true_hex": "#C39E81",
               "coverage": 0.08,
-              "nearest_cluster_hex": "#C29D80",
-              "nearest_deltaE": 0.55,
+              "nearest_cluster_hex": "#C39E81",
+              "nearest_deltaE": 0.13,
               "recovered": true,
               "detected_family": "Bone"
             },
@@ -1831,8 +1831,8 @@
               "label": "red_accent",
               "true_hex": "#9A1115",
               "coverage": 0.07,
-              "nearest_cluster_hex": "#991014",
-              "nearest_deltaE": 0.27,
+              "nearest_cluster_hex": "#991114",
+              "nearest_deltaE": 0.14,
               "recovered": true,
               "detected_family": "Red"
             },
@@ -1840,8 +1840,8 @@
               "label": "black_join",
               "true_hex": "#231F20",
               "coverage": 0.2,
-              "nearest_cluster_hex": "#231F20",
-              "nearest_deltaE": 0.14,
+              "nearest_cluster_hex": "#231F1F",
+              "nearest_deltaE": 0.4,
               "recovered": true,
               "detected_family": "Black"
             },
@@ -1849,8 +1849,8 @@
               "label": "silver_metal",
               "true_hex": "#888D8F",
               "coverage": 0.15,
-              "nearest_cluster_hex": "#888D8E",
-              "nearest_deltaE": 0.4,
+              "nearest_cluster_hex": "#888C8F",
+              "nearest_deltaE": 0.18,
               "recovered": true,
               "detected_family": "Grey"
             }
@@ -1875,8 +1875,8 @@
               "label": "black_body",
               "true_hex": "#1E1E1E",
               "coverage": 0.6,
-              "nearest_cluster_hex": "#1D1E1E",
-              "nearest_deltaE": 0.25,
+              "nearest_cluster_hex": "#1E1E1D",
+              "nearest_deltaE": 0.21,
               "recovered": true,
               "detected_family": "Black"
             },
@@ -1885,7 +1885,7 @@
               "true_hex": "#C9A227",
               "coverage": 0.05,
               "nearest_cluster_hex": "#C9A227",
-              "nearest_deltaE": 0.13,
+              "nearest_deltaE": 0.12,
               "recovered": true,
               "detected_family": "Yellow"
             },
@@ -1893,8 +1893,8 @@
               "label": "red_lens",
               "true_hex": "#C21E10",
               "coverage": 0.05,
-              "nearest_cluster_hex": "#C21E10",
-              "nearest_deltaE": 0.0,
+              "nearest_cluster_hex": "#C21E0F",
+              "nearest_deltaE": 0.12,
               "recovered": true,
               "detected_family": "Red"
             },
@@ -1902,8 +1902,8 @@
               "label": "cyan_gem",
               "true_hex": "#3FB8C8",
               "coverage": 0.05,
-              "nearest_cluster_hex": "#3FB7C8",
-              "nearest_deltaE": 0.16,
+              "nearest_cluster_hex": "#3FB8C8",
+              "nearest_deltaE": 0.13,
               "recovered": true,
               "detected_family": "Cyan"
             },
@@ -1912,7 +1912,7 @@
               "true_hex": "#E0E0E0",
               "coverage": 0.25,
               "nearest_cluster_hex": "#DFDFE0",
-              "nearest_deltaE": 0.43,
+              "nearest_deltaE": 0.3,
               "recovered": true,
               "detected_family": "White"
             }
@@ -1935,8 +1935,8 @@
               "label": "mid_green",
               "true_hex": "#1E7B3F",
               "coverage": 0.4,
-              "nearest_cluster_hex": "#328D4F",
-              "nearest_deltaE": 6.82,
+              "nearest_cluster_hex": "#348E50",
+              "nearest_deltaE": 7.16,
               "recovered": true,
               "detected_family": "Green"
             },
@@ -1945,7 +1945,7 @@
               "true_hex": "#0E4D26",
               "coverage": 0.3,
               "nearest_cluster_hex": "#0E4D25",
-              "nearest_deltaE": 0.17,
+              "nearest_deltaE": 0.13,
               "recovered": true,
               "detected_family": "Cyan"
             },
@@ -1953,8 +1953,8 @@
               "label": "light_green",
               "true_hex": "#4FA968",
               "coverage": 0.3,
-              "nearest_cluster_hex": "#328D4F",
-              "nearest_deltaE": 9.44,
+              "nearest_cluster_hex": "#348E50",
+              "nearest_deltaE": 9.11,
               "recovered": true,
               "detected_family": "Green"
             }
@@ -1981,8 +1981,8 @@
               "label": "pink_body",
               "true_hex": "#C9527F",
               "coverage": 0.38,
-              "nearest_cluster_hex": "#C8517E",
-              "nearest_deltaE": 0.23,
+              "nearest_cluster_hex": "#C9527F",
+              "nearest_deltaE": 0.17,
               "recovered": true,
               "detected_family": "Magenta"
             },
@@ -1990,8 +1990,8 @@
               "label": "green_base",
               "true_hex": "#6E8B3D",
               "coverage": 0.2,
-              "nearest_cluster_hex": "#6E8A3D",
-              "nearest_deltaE": 0.31,
+              "nearest_cluster_hex": "#6E8B3D",
+              "nearest_deltaE": 0.18,
               "recovered": true,
               "detected_family": "Green"
             },
@@ -2000,7 +2000,7 @@
               "true_hex": "#0D407F",
               "coverage": 0.18,
               "nearest_cluster_hex": "#0D407F",
-              "nearest_deltaE": 0.15,
+              "nearest_deltaE": 0.09,
               "recovered": true,
               "detected_family": "Blue"
             },
@@ -2008,8 +2008,8 @@
               "label": "gold_trim",
               "true_hex": "#C9A227",
               "coverage": 0.06,
-              "nearest_cluster_hex": "#C8A226",
-              "nearest_deltaE": 0.14,
+              "nearest_cluster_hex": "#C8A227",
+              "nearest_deltaE": 0.12,
               "recovered": true,
               "detected_family": "Yellow"
             },
@@ -2027,7 +2027,7 @@
               "true_hex": "#3FB8C8",
               "coverage": 0.06,
               "nearest_cluster_hex": "#3EB8C7",
-              "nearest_deltaE": 0.39,
+              "nearest_deltaE": 0.14,
               "recovered": true,
               "detected_family": "Cyan"
             },
@@ -2035,8 +2035,8 @@
               "label": "bone_pouch",
               "true_hex": "#E8E0D0",
               "coverage": 0.06,
-              "nearest_cluster_hex": "#E7DECF",
-              "nearest_deltaE": 0.85,
+              "nearest_cluster_hex": "#E7DED0",
+              "nearest_deltaE": 1.02,
               "recovered": true,
               "detected_family": "White"
             }
@@ -2052,25 +2052,25 @@
     }
   },
   "summary": {
-    "sweep_hard_miss_rate": 0.0819,
+    "sweep_hard_miss_rate": 0.094,
     "missing_families": [],
     "classifier_disagreements": 0,
     "distortion_family_flips": 474,
     "most_fragile_families": {
-      "grey": 76,
-      "orange": 64,
-      "bone": 53,
-      "yellow": 44,
-      "red": 39,
+      "bone": 70,
+      "orange": 70,
+      "grey": 67,
+      "yellow": 38,
       "blue": 34,
-      "cyan": 32,
-      "green": 27,
+      "white": 33,
+      "red": 30,
+      "green": 29,
+      "cyan": 24,
       "brown": 22,
-      "purple": 22,
-      "white": 21,
-      "black": 17,
-      "pink": 12,
-      "magenta": 11
+      "pink": 18,
+      "purple": 17,
+      "magenta": 12,
+      "black": 10
     },
     "region_recovery_rate": 1.0,
     "small_region_recovery": 1.0

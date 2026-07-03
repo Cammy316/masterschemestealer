@@ -103,24 +103,51 @@ def test_family_gate_admits_adjacent_family():
 
 
 # ---------------------------------------------------------------------------
-# Metallic gate (DB flag is the single source of truth)
+# Metallic competition (scan flag is noisy; the DB's ΔE evidence decides)
 # ---------------------------------------------------------------------------
 
-def test_metallic_target_prefers_metallic_pool():
-    """A metallic scan restricts to metallic-flagged paints even when a
-    non-metallic paint is colorimetrically closer."""
-    near_matte = _paint("matte-close", _lab_on_ray(TARGET_LAB, (1, 0, 0), 3.0))
-    far_metal = _paint("metal-far", _lab_on_ray(TARGET_LAB, (1, 0, 0), 15.0),
-                       metallic=True)
-    matcher = PaintMatcher([near_matte, far_metal])
+def test_warm_metal_wins_the_competition_within_its_tolerance():
+    """Gold/bronze differ clearly from matte browns, so their win tolerance
+    is generous: a flagged warm trim picks the gold even when a matte sits
+    slightly closer."""
+    matte = _paint("matte-close", _lab_on_ray(TARGET_LAB, (1, 0, 0), 3.0))
+    metal = _paint("gold-near", _lab_on_ray(TARGET_LAB, (1, 0, 0), 5.5),
+                   family="gold", metallic=True)
+    matcher = PaintMatcher([matte, metal])
     got = matcher.match_color(TARGET_RGB, BRAND, role="dominant",
                               context={"is_metallic": True}, target_family="red")
-    assert got is far_metal
+    assert got is metal
+
+
+def test_silver_must_essentially_tie_to_win():
+    """Silver paints are colorimetrically near-identical to mid greys, so
+    silver's tolerance is tight — the same 2.5 ΔE gap that a gold overcomes
+    loses for a silver (matte grey armour must not become 'Silver')."""
+    matte = _paint("matte-close", _lab_on_ray(TARGET_LAB, (1, 0, 0), 3.0))
+    metal = _paint("silver-near", _lab_on_ray(TARGET_LAB, (1, 0, 0), 5.5),
+                   family="silver", metallic=True)
+    matcher = PaintMatcher([matte, metal])
+    got = matcher.match_color(TARGET_RGB, BRAND, role="dominant",
+                              context={"is_metallic": True}, target_family="red")
+    assert got is matte
+
+
+def test_matte_wins_the_competition_when_metallic_is_far():
+    """The flag alone must not force a metallic: black armour flagged
+    'metallic' by edge highlights still gets the matte black, because every
+    gunmetal is a far worse colour match (beyond the win tolerance)."""
+    matte = _paint("matte-close", _lab_on_ray(TARGET_LAB, (1, 0, 0), 2.0))
+    metal = _paint("metal-far", _lab_on_ray(TARGET_LAB, (1, 0, 0), 15.0),
+                   metallic=True)
+    matcher = PaintMatcher([matte, metal])
+    got = matcher.match_color(TARGET_RGB, BRAND, role="dominant",
+                              context={"is_metallic": True}, target_family="red")
+    assert got is matte
 
 
 def test_non_metallic_target_never_gets_metallic_paint():
-    """The reverse gate: a matte scan must exclude metallic paints even when
-    the metallic is the nearest colour."""
+    """The reverse stays a HARD gate: a matte scan must exclude metallic
+    paints even when the metallic is the nearest colour."""
     near_metal = _paint("metal-close", _lab_on_ray(TARGET_LAB, (1, 0, 0), 3.0),
                         metallic=True)
     far_matte = _paint("matte-far", _lab_on_ray(TARGET_LAB, (1, 0, 0), 15.0))
@@ -132,7 +159,7 @@ def test_non_metallic_target_never_gets_metallic_paint():
 
 def test_metallic_target_falls_back_when_brand_has_no_metallics():
     """A brand with zero metallic paints still returns its best matte paint
-    for a metallic target (fallback documented in match_color) — not None."""
+    for a metallic target — not None."""
     matte = _paint("matte-only", _lab_on_ray(TARGET_LAB, (1, 0, 0), 5.0))
     matcher = PaintMatcher([matte])
     got = matcher.match_color(TARGET_RGB, BRAND, role="dominant",

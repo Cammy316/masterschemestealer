@@ -149,17 +149,18 @@ def test_backward_compat_paint_type_maps_to_dominant(matcher):
 # metallic gate
 # ============================================================================
 
-def test_metallic_gate_restricts_to_metallic_when_score_high(matcher):
-    """metallic_score >= 0.5 must restrict candidates to metallic-flagged
-    paints — the DB `metallic` flag is the single metallic decision."""
+def test_metallic_flag_admits_metallics_to_the_pool(matcher):
+    """metallic_score >= 0.5 lets metallic paints COMPETE for the slot (the
+    scan flag is too noisy on edge-dense minis to hard-gate); the winner is
+    decided by ΔE against the best matte with a per-metal tolerance. The
+    contract here: a flagged target must return a valid paint, and the
+    matte/metallic decision is evidence-based, not flag-forced. The
+    competition semantics are pinned in test_matcher_contract.py."""
     result = matcher.match_color(
         TARGET_RGB, "Citadel", role="dominant",
         context={"metallic_score": 1.0}
     )
     assert result is not None
-    assert result.metallic, (
-        f"Expected a metallic-flagged paint, got {result.name!r}"
-    )
 
 
 def test_metallic_gate_excludes_metallic_when_score_zero(matcher):
