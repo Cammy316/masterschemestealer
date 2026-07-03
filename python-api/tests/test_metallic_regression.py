@@ -151,13 +151,15 @@ def test_family_dedup_merges_ramps_but_respects_the_lightness_cap(extractor):
             "coverage": cov, "brightness_std": 5.0,
             "local_brightness_std": 4.0,
             "pixel_indices": np.arange(idx, idx + 10),
+            "local_indices": np.arange(idx, idx + 10),
         }
 
     shadow = cl((30.0, 0.5, 0.5), (72, 72, 72), 20.0, 0)      # armour shadow
     lit = cl((48.0, -0.5, 0.0), (114, 114, 114), 15.0, 100)   # armour lit band
     near_white = cl((92.0, 0.0, 1.0), (232, 232, 232), 10.0, 200)
 
-    result = extractor._deduplicate_by_family([shadow, lit, near_white])
+    dummy_pixels = np.zeros((300, 3))
+    result = extractor._deduplicate_by_family([shadow, lit, near_white], dummy_pixels)
     assert len(result) == 2, (
         f"expected armour ramp merged + near-white separate, got "
         f"{[(round(c['coverage'], 1), round(c['median_lab'][0], 1)) for c in result]}")

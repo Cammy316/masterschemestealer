@@ -167,6 +167,7 @@ class SmartColorExtractor:
                 'local_brightness_std': local_brightness_std,
                 'median_hsv': median_hsv,
                 'pixel_indices': original_indices,
+                'local_indices': local_indices,
             })
         
         # STEP 2: Perceptual merging
@@ -188,7 +189,7 @@ class SmartColorExtractor:
         logger.info(f"After shadow filtering: {len(merged_clusters)} clusters remain")
         
         # STEP 4: Deduplicate Families
-        deduplicated_clusters = self._deduplicate_by_family(merged_clusters)
+        deduplicated_clusters = self._deduplicate_by_family(merged_clusters, pixels_lab)
         
         # STEP 5: Classify Major vs Detail WITH confidence filtering
         major_colors = []
@@ -278,7 +279,7 @@ class SmartColorExtractor:
             logger.warning(f"SLIC failed ({e}) — falling back to per-pixel clustering")
             return np.arange(len(surviving_indices))
     
-    def _deduplicate_by_family(self, clusters: List[Dict]) -> List[Dict]:
+    def _deduplicate_by_family(self, clusters: List[Dict], pixels_lab: np.ndarray) -> List[Dict]:
         """Consolidate clusters that share a family name — ramp-aware.
 
         Within a family the hue is already agreed, so members are grouped by
@@ -316,7 +317,7 @@ class SmartColorExtractor:
                 if len(members) == 1:
                     final_clusters.append(members[0])
                 else:
-                    combined = self._combine_clusters(members)
+                    combined = self._combine_clusters(members, pixels_lab)
                     combined['family'] = fam
                     combined['confidence'] = np.mean(
                         [c.get('confidence', 1.0) for c in members])
@@ -432,11 +433,11 @@ class SmartColorExtractor:
             if not members:
                 continue
             merged.append(members[0] if len(members) == 1
-                          else self._combine_clusters(members))
+                          else self._combine_clusters(members, pixels_lab))
 
         return merged
     
-    def _combine_clusters(self, clusters: List[Dict]) -> Dict:
+    def _combine_clusters(self, clusters: List[Dict], pixels_lab: np.ndarray) -> Dict:
         """Combine multiple clusters into one.
 
         The combined representative is the coverage-weighted LAB blend; RGB,
@@ -449,10 +450,25 @@ class SmartColorExtractor:
         weights = np.array([c['coverage'] for c in clusters])
         weights = weights / weights.sum()
 
-        median_lab = sum(c['median_lab'] * w for c, w in zip(clusters, weights))
+        all_indices = np.concatenate([c['pixel_indices'] for c in clusters])
+        all_local_indices = np.concatenate([c['local_indices'] for c in clusters])
+
+        # 1a. Union-median
+        union_lab = pixels_lab[all_local_indices]
+        median_lab = np.median(union_lab, axis=0)
+
+        # 1b. Base-coat bias for dark neutral clusters
+        ok_lab = lab_to_oklab(np.array([median_lab]))[0]
+        ok_chroma = np.hypot(ok_lab[1], ok_lab[2])
+        if median_lab[0] < 45 and ok_chroma < 0.05:
+            l_vals = union_lab[:, 0]
+            darker_half_mask = l_vals <= np.median(l_vals)
+            darker_pixels = union_lab[darker_half_mask]
+            if len(darker_pixels) > 0:
+                median_lab = np.median(darker_pixels, axis=0)
+
         median_rgb = lab_to_rgb(median_lab)
         chroma = float(np.hypot(median_lab[1], median_lab[2]))
-        all_indices = np.concatenate([c['pixel_indices'] for c in clusters])
 
         combined = {
             'coverage': total_coverage,
@@ -464,7 +480,8 @@ class SmartColorExtractor:
                 c.get('local_brightness_std', c['brightness_std']) * w
                 for c, w in zip(clusters, weights))),
             'median_hsv': np.array(colorsys.rgb_to_hsv(*(median_rgb / 255.0))),
-            'pixel_indices': all_indices
+            'pixel_indices': all_indices,
+            'local_indices': all_local_indices
         }
         # Preserve the metallic decision through merges (coverage-weighted
         # majority) — previously the flag was silently dropped, so merged

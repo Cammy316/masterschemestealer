@@ -26,16 +26,20 @@ import { motion } from 'framer-motion';
 import { mlLogger } from '@/lib/mlDataLogger';
 
 function DecryptionHeader({ text }: { text: string }) {
-  const [displayText, setDisplayText] = React.useState(text.replace(/[a-zA-Z]/g, '0'));
+  const textRef = React.useRef<HTMLSpanElement>(null);
   
   React.useEffect(() => {
     let iterations = 0;
     const interval = setInterval(() => {
-      setDisplayText(text.split('').map((char, index) => {
+      if (!textRef.current) return;
+      
+      const scrambled = text.split('').map((char, index) => {
         if (char === ' ' || char === '◆') return char;
         if (index < iterations) return text[index];
         return String.fromCharCode(65 + Math.floor(Math.random() * 26));
-      }).join(''));
+      }).join('');
+      
+      textRef.current.textContent = scrambled;
       
       if (iterations >= text.length) clearInterval(interval);
       iterations += 1/3;
@@ -43,7 +47,7 @@ function DecryptionHeader({ text }: { text: string }) {
     return () => clearInterval(interval);
   }, [text]);
 
-  return <span>{displayText}</span>;
+  return <span ref={textRef}>{text.replace(/[a-zA-Z]/g, '0')}</span>;
 }
 
 export default function MiniscanResultsPage() {

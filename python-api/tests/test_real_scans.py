@@ -190,3 +190,20 @@ def test_complex_figure_is_not_a_silver_blob(engine):
     for metal in METAL_FAMILIES:
         assert cov.get(metal, 0.0) <= 40.0, (
             f"{metal} at {cov.get(metal, 0):.1f}% — trim cannot cover that: {cov}")
+
+def test_complex_neutral_display_labels(engine):
+    """The two neutral cards (dark armour, light heraldry) must carry distinct display labels."""
+    recipes = _scan(engine, "complex")
+    grey_labels = [r.get('family', '') for r in recipes if 'Grey' in r.get('family', '')]
+    assert len(set(grey_labels)) >= 2, f"Expected distinct grey display labels, got {grey_labels}"
+
+def test_pinkhorror_union_median_accuracy(engine):
+    """pink card's chroma > 15, representing a real bright paint band, not a desaturated average."""
+    recipes = _scan(engine, "pinkhorror")
+    pink_cards = [r for r in recipes if (r.get("heuristic_family") or "").lower() in {"pink", "magenta"}]
+    assert pink_cards, "no pink/magenta cards detected on pinkhorror"
+    
+    best_card = max(pink_cards, key=lambda x: x.get("dominance", 0))
+    assert best_card.get("chroma", 0) > 15.0, (
+        f"Pink card chroma too low ({best_card.get('chroma')} <= 15), union-median failed to preserve saturation."
+    )

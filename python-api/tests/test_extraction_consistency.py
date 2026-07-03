@@ -49,6 +49,7 @@ def _cluster(lab, rgb, coverage: float, start_idx: int) -> dict:
         "brightness_std": 5.0,
         "median_hsv": np.array([0.0, 0.5, 0.5]),
         "pixel_indices": np.arange(start_idx, start_idx + 10),
+        "local_indices": np.arange(start_idx, start_idx + 10),
     }
 
 
@@ -67,7 +68,7 @@ def test_combined_chroma_matches_combined_ab(extractor):
     red_ish = _cluster((50.0, 40.0, 0.0), (196, 83, 121), 10.0, 0)
     green_ish = _cluster((50.0, -40.0, 0.0), (0, 140, 118), 10.0, 100)
 
-    combined = extractor._combine_clusters([red_ish, green_ish])
+    combined = extractor._combine_clusters([red_ish, green_ish], np.zeros((200, 3)))
     a, b = combined["median_lab"][1], combined["median_lab"][2]
 
     assert combined["chroma"] == pytest.approx(math.hypot(a, b), abs=2.0), (
@@ -85,7 +86,7 @@ def test_combined_rgb_and_lab_describe_the_same_colour(extractor):
     red_ish = _cluster((50.0, 40.0, 0.0), (196, 83, 121), 10.0, 0)
     green_ish = _cluster((50.0, -40.0, 0.0), (0, 140, 118), 10.0, 100)
 
-    combined = extractor._combine_clusters([red_ish, green_ish])
+    combined = extractor._combine_clusters([red_ish, green_ish], np.zeros((200, 3)))
     lab_from_rgb = rgb_to_lab(combined["median_rgb"])
 
     divergence = ciede2000_single(lab_from_rgb, combined["median_lab"])
@@ -141,7 +142,7 @@ def test_merge_is_order_independent(extractor):
         _cluster(lab_c, (150, 114, 108), 10.0, 200),
         _cluster(lab_d, (20, 60, 20), 10.0, 300),
     ]
-    dummy_pixels = np.zeros((10, 3))
+    dummy_pixels = np.zeros((400, 3))
 
     def palette(cluster_list):
         merged = extractor._merge_perceptually_similar(cluster_list, dummy_pixels)

@@ -231,6 +231,12 @@ class SchemeStealerEngine:
         """
         recipes = []
         
+        neutral_counts = {}
+        for c in colors:
+            fam = c.get('family', 'Unknown')
+            if fam in ('Grey', 'White'):
+                neutral_counts[fam] = neutral_counts.get(fam, 0) + 1
+        
         for color_data in colors:
             family = color_data.get('family', 'Unknown')
             
@@ -327,6 +333,21 @@ class SchemeStealerEngine:
                     modal = max(set(winners), key=winners.count)
                     if modal in ('gold', 'silver', 'bronze'):
                         display_family = modal.capitalize()
+
+            if not is_metallic and family in ('Grey', 'White') and neutral_counts.get(family, 0) >= 2:
+                l_val = median_lab[0]
+                if family == 'Grey':
+                    if l_val < 32:
+                        display_family = 'Dark Grey'
+                    elif l_val > 62:
+                        display_family = 'Light Grey'
+                    else:
+                        display_family = 'Grey'
+                elif family == 'White':
+                    if l_val < 85:
+                        display_family = 'Off-White'
+                    else:
+                        display_family = 'White'
 
             # Calculate spatial features
             spatial_mask = np.zeros(img_rgb.shape[:2], dtype=bool)

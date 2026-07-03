@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Paint } from '@/lib/types';
 import paintsData from '@/lib/data/paints_groundtruth.json';
@@ -74,14 +74,16 @@ function generateHexSpiral(count: number) {
 }
 
 function ScrambleString({ text }: { text: string }) {
-  const [displayText, setDisplayText] = useState(text);
-  const [isScrambling, setIsScrambling] = useState(true);
+  const textRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    setIsScrambling(true);
+    if (!textRef.current) return;
+    
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
     let iteration = 0;
     const maxIterations = 6; // Fast scramble (300ms total)
+    
+    textRef.current.className = 'font-mono tracking-tighter';
     
     const interval = setInterval(() => {
       let result = "";
@@ -92,27 +94,32 @@ function ScrambleString({ text }: { text: string }) {
           result += chars.charAt(Math.floor(Math.random() * chars.length));
         }
       }
-      setDisplayText(result);
+      if (textRef.current) textRef.current.textContent = result;
       iteration++;
       
       if (iteration >= maxIterations) {
         clearInterval(interval);
-        setDisplayText(text);
-        setIsScrambling(false);
+        if (textRef.current) {
+          textRef.current.textContent = text;
+          textRef.current.className = '';
+        }
       }
     }, 50);
     
     return () => clearInterval(interval);
   }, [text]);
 
-  return <span className={isScrambling ? 'font-mono tracking-tighter' : ''}>{displayText}</span>;
+  return <span ref={textRef}>{text}</span>;
 }
 
 function StatsOverlay({ count, isAnimating }: { count: number, isAnimating: boolean }) {
-  const [displayText, setDisplayText] = useState(`${count} PIGMENTS`);
+  const textRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
+    if (!textRef.current) return;
+    
     if (isAnimating) {
+      textRef.current.className = 'text-sm tracking-widest uppercase transition-colors duration-200 text-imperial-gold drop-shadow-[0_0_8px_rgba(184,134,11,0.6)] font-mono font-bold';
       const words = ["ANALYZING", "COGITATING", "ASSESSING", "COMPILING", "SYNTHESIZING", "EXTRACTING", "INDEXING", "CALCULATING", "PROCESSING"];
       const chars = "0123456789!@#$%^&*";
       let frame = 0;
@@ -134,18 +141,19 @@ function StatsOverlay({ count, isAnimating }: { count: number, isAnimating: bool
             scrambled += currentWord[i];
           }
         }
-        setDisplayText(scrambled);
+        if (textRef.current) textRef.current.textContent = scrambled;
       }, 50);
       return () => clearInterval(interval);
     } else {
-      setDisplayText(`${count} PIGMENTS`);
+      textRef.current.className = 'text-sm tracking-widest uppercase transition-colors duration-200 text-imperial-gold drop-shadow-[0_0_8px_rgba(184,134,11,0.6)] cyber-text';
+      textRef.current.textContent = `${count} PIGMENTS`;
     }
   }, [isAnimating, count]);
 
   return (
     <div className="absolute top-4 left-4 bg-charcoal/80 border border-brass/50 backdrop-blur-sm px-4 py-2 rounded-sm flex flex-col z-20 pointer-events-none min-w-[140px] items-start shadow-[0_0_15px_rgba(184,134,11,0.15)]">
-      <span className={`text-sm tracking-widest uppercase transition-colors duration-200 text-imperial-gold drop-shadow-[0_0_8px_rgba(184,134,11,0.6)] ${isAnimating ? 'font-mono font-bold' : 'cyber-text'}`}>
-        {displayText}
+      <span ref={textRef} className="text-sm tracking-widest uppercase transition-colors duration-200 text-imperial-gold drop-shadow-[0_0_8px_rgba(184,134,11,0.6)] cyber-text">
+        {count} PIGMENTS
       </span>
     </div>
   );

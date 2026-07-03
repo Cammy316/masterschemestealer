@@ -31,10 +31,12 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
     if (!ctx) return;
 
     // Set canvas size
+    // Set canvas size using device pixel ratio
     const updateSize = () => {
-      canvas.width = canvas.offsetWidth * 2;
-      canvas.height = canvas.offsetHeight * 2;
-      ctx.scale(2, 2);
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = canvas.offsetWidth * dpr;
+      canvas.height = canvas.offsetHeight * dpr;
+      ctx.scale(dpr, dpr);
     };
     updateSize();
 
@@ -98,10 +100,14 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
     }
 
     let animationId: number;
-    let time = 0;
+    let lastTime = performance.now();
+    let isVisible = false;
 
-    const animate = () => {
-      time += 0.01;
+    const animate = (time: number) => {
+      if (!isVisible) return;
+      
+      const dt = (time - lastTime) / 16.666; // Normalize to 60fps
+      lastTime = time;
       
       // Fade existing particles to create trails without filling with a solid background
       ctx.globalCompositeOperation = 'destination-out';
@@ -112,9 +118,9 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
 
       particles.forEach((p, index) => {
         // Warp maelstrom math
-        p.angle += p.speed + (p.radius < 50 ? 0.1 : 0); 
-        p.radius -= (p.radius > 20 ? 0.3 : 0.05); // suck inward
-        p.wobble += p.wobbleSpeed;
+        p.angle += (p.speed + (p.radius < 50 ? 0.1 : 0)) * dt; 
+        p.radius -= (p.radius > 20 ? 0.3 : 0.05) * dt; // suck inward
+        p.wobble += p.wobbleSpeed * dt;
 
         const isLightning = p.color === 'rgba(255, 255, 255, 0.8)';
 
@@ -124,8 +130,8 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
         
         // Add chaotic turbulence
         if (isLightning) {
-          targetX += (Math.random() - 0.5) * 20;
-          targetY += (Math.random() - 0.5) * 20;
+          targetX += (Math.random() - 0.5) * 20 * dt;
+          targetY += (Math.random() - 0.5) * 20 * dt;
         } else {
           targetX += Math.cos(p.wobble) * 10;
           targetY += Math.sin(p.wobble) * 10;
@@ -141,7 +147,7 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
 
         p.x = targetX;
         p.y = targetY;
-        p.life++;
+        p.life += dt;
 
         if (p.radius < 5 || p.life > p.maxLife) {
           particles[index] = createParticle();
@@ -158,10 +164,26 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
       animationId = requestAnimationFrame(animate);
     };
 
-    animate();
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          isVisible = true;
+          lastTime = performance.now();
+          animationId = requestAnimationFrame(animate);
+        } else {
+          isVisible = false;
+          if (animationId) cancelAnimationFrame(animationId);
+        }
+      });
+    }, { threshold: 0.1 });
+    
+    observer.observe(canvas);
 
-    return () => cancelAnimationFrame(animationId);
-  }, []);
+    return () => {
+      observer.disconnect();
+      if (animationId) cancelAnimationFrame(animationId);
+    };
+  }, [shouldReduceMotion]);
 
   // Generate logarithmic spiral path
   const generateLogarithmicSpiral = (
