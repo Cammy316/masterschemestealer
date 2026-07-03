@@ -1,0 +1,76 @@
+[
+  {
+    "image": "ultra.jpg",
+    "targets": [
+      {
+        "description": "Blue Armor (Left Leg)",
+        "x_pct": 0.4,
+        "y_pct": 0.6,
+        "acceptable_matches": ["Macragge Blue", "Caledor Sky", "Ultramarine Blue", "Kantor Blue", "Altdorf Guard Blue", "Talassar Blue"]
+      },
+      {
+        "description": "Gold Trim / Details",
+        "x_pct": 0.5,
+        "y_pct": 0.8,
+        "acceptable_matches": ["Retributor Armour", "Balthasar Gold", "Gehenna's Gold", "Auric Armour Gold", "Liberator Gold", "Nazdreg Yellow", "Snakebite Leather", "Military Yellow", "Desert Yellow"]
+      }
+    ]
+  },
+  {
+    "image": "complex.PNG",
+    "targets": [
+      {
+        "description": "Black Armor",
+        "x_pct": 0.3,
+        "y_pct": 0.7,
+        "acceptable_matches": ["Abaddon Black", "Corvus Black", "Chaos Black", "Black Templar", "Rhinox Hide", "Dryad Bark", "Iron Warriors", "Heavy Metal", "Dark Olive", "Thondia Brown", "Jet Exhaust"]
+      },
+      {
+        "description": "Red Cloth/Tabard",
+        "x_pct": 0.5,
+        "y_pct": 0.45,
+        "acceptable_matches": ["Mephiston Red", "Khorne Red", "Evil Sunz Scarlet", "Flesh Tearers Red", "Blood Angels Red", "Wazdakka Red", "Gemstone Red", "Word Bearers Red", "Succubus Skin", "Fur Brown", "Tuskgor Fur"]
+      },
+      {
+        "description": "Base/Leather Details",
+        "x_pct": 0.5,
+        "y_pct": 0.8,
+        "acceptable_matches": ["Steel Legion Drab", "Zandri Dust", "Balor Brown", "Snakebite Leather", "Gorthor Brown", "Baneblade Brown", "Mournfang Brown", "Skrag Brown", "Hobgrot Hide", "Desert Yellow"]
+      }
+    ]
+  },
+  {
+    "image": "pinkhorror.jpg",
+    "targets": [
+      {
+        "description": "Pink Skin",
+        "x_pct": 0.5,
+        "y_pct": 0.55,
+        "acceptable_matches": ["Pink Horror", "Emperor‘s Children", "Fulgrim Pink", "Screamer Pink", "Changeling Pink", "Volupus Pink", "Magos Purple", "Tourmaline Skin", "Old Rose", "Sycorax Bronze"]
+      },
+      {
+        "description": "Bone/Horn Details",
+        "x_pct": 0.5,
+        "y_pct": 0.8,
+        "acceptable_matches": ["Zandri Dust", "Ushabti Bone", "Skeleton Horde", "Baneblade Brown", "Steel Legion Drab", "Karak Stone", "Tallarn Sand"]
+      }
+    ]
+  },
+  {
+    "image": "capturepink.PNG",
+    "targets": [
+      {
+        "description": "Pink Skin",
+        "x_pct": 0.5,
+        "y_pct": 0.5,
+        "acceptable_matches": ["Pink Horror", "Emperor‘s Children", "Fulgrim Pink", "Screamer Pink", "Changeling Pink", "Volupus Pink"]
+      },
+      {
+        "description": "Yellow Beak",
+        "x_pct": 0.55,
+        "y_pct": 0.55,
+        "acceptable_matches": ["Averland Sunset", "Yriel Yellow", "Flash Gitz Yellow", "Phalanx Yellow", "Iyanden Yellow", "Nazdreg Yellow", "Polished Gold", "Bright Gold", "Auric Armour Gold", "Retributor Armour"]
+      }
+    ]
+  }
+]
