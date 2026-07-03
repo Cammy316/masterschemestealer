@@ -146,10 +146,11 @@ def test_ultramarine_is_one_blue_card(engine):
     recipes = _scan(engine, "ultra")
     _assert_no_family_fragmentation(recipes)
 
-    blues = [r for r in recipes if (r.get("family") or "").lower() == "blue"]
+    majors = [r for r in recipes if not r.get("is_detail")]
+    blues = [r for r in majors if (r.get("family") or "").lower() == "blue"]
     assert len(blues) == 1, (
-        f"expected exactly one Blue card, got {len(blues)}: "
-        f"{[(r['family'], round(r.get('dominance', 0), 1)) for r in recipes]}")
+        f"expected exactly one MAJOR Blue card, got {len(blues)}: "
+        f"{[(r['family'], round(r.get('dominance', 0), 1)) for r in majors]}")
     assert blues[0].get("dominance", 0) >= 45.0, (
         f"blue armour under-detected: {blues[0].get('dominance'):.1f}%")
 

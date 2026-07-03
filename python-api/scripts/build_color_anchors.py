@@ -58,7 +58,10 @@ def _lab(hex_str):
 # Curated exemplars (hand-verified correct family) for the edge classes. These
 # are added on top of the DB medoids so the hard cases always have a true anchor.
 CURATED = {
-    "green":   ["#808000", "#6B8E23", "#556B2F", "#4B5320", "#60664D"],
+    # #00C000: high-chroma pure green — swatch-median paint greens sit
+    # yellow-ward of the gamut edge, so without it neon greens (out-of-gamut
+    # scan colours) fall to the yellow family.
+    "green":   ["#808000", "#6B8E23", "#556B2F", "#4B5320", "#60664D", "#00C000"],
     "yellow":  ["#BDB76B", "#D4AF37", "#C9A227", "#FFD400"],
     "bone":    ["#C3B091", "#CABA8E", "#D2B48C", "#C19A6B", "#E8DCC0"],
     "pink":    ["#FFB6C1", "#E0B0FF", "#F4C2C2", "#DECBDA", "#C7AFBD", "#F2C2B6"],
@@ -104,6 +107,13 @@ def main():
         if p.get("metallic"):
             if fam in by_metal:
                 by_metal[fam].append(lab)
+        elif fam == "black":
+            # Applied black paint photographs at L* 15-22 (swatch medians),
+            # but anchors that light make the black basin swallow dark blues
+            # and greys. Only the DARKEST exemplars define black; everything
+            # else resolves to grey/its tint by distance.
+            if lab[0] <= 15.0:
+                by_fam[fam].append(lab)
         elif fam in NEUTRALS:
             by_fam[fam].append(lab)                  # neutrals: no chroma filter
         elif fam in by_fam and c >= ac:              # chromatic anchors stay chromatic

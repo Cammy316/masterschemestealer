@@ -371,6 +371,16 @@ FAMILY_GATED_ROLES = {'dominant', 'highlight'}
 # instead of a far-off (often cross-family) paint, e.g. a ΔE-44 grey for a pink.
 BASE_MATCH_DELTA_E_CEILING: float = 30.0
 
+# Metallic competition (scan-flagged targets): a metallic paint wins the slot
+# only when it is within this ΔE00 of the best matte candidate. The tolerance
+# is PER METAL, because the colour ambiguity is asymmetric: gold/bronze differ
+# clearly from matte browns, but silver paints are colorimetrically
+# near-identical to mid greys — a generous silver tolerance relabels matte
+# grey armour "Silver" (the production failure class), so silver must
+# essentially tie or beat the best grey on true colour distance.
+METALLIC_WIN_TOLERANCE = {"gold": 4.0, "bronze": 4.0, "silver": 1.5}
+_METALLIC_WIN_DEFAULT: float = 1.5
+
 from core.colour_maths import ciede2000_single as _ciede2000_single
 from core.colour_maths import lab_to_oklab as _lab_to_oklab
 
@@ -472,37 +482,42 @@ class PaintMatcher:
 
         mask = self._candidates_mask(brand, role)
 
+        # Scan-inferred metallic flag (both legacy bool and float score).
+        metallic_score = 0.0
+        if role not in ('shade', 'wash'):
+            if context:
+                raw = context.get('metallic_score')
+                if raw is None:
+                    raw = float(bool(context.get('is_metallic', False)))
+                metallic_score = float(raw)
+        flagged_metallic = metallic_score >= 0.5
+
         # ── Colour-family gate (base/highlight only) ─────────────────────────
         # Restrict to the detected family + adjacent families (shared adjacency
         # with the recipe graph). If the gated pool is empty, return None so the
         # slot honestly shows "No match found" instead of a cross-family paint.
+        # A metallic-flagged target also reaches the metal families — a gold
+        # trim classifies into a warm family whose adjacency contains no
+        # metals, and it must still be able to WIN a gold paint (see the
+        # metallic competition below).
         if target_family and role.lower() in FAMILY_GATED_ROLES:
             allowed = allowed_families(target_family)
             if allowed is not None:
+                if flagged_metallic:
+                    allowed = set(allowed) | {'gold', 'silver', 'bronze'}
                 family_mask = mask & np.isin(self.family_arr, list(allowed))
                 if not family_mask.any():
                     return None
                 mask = family_mask
 
-        # ── Metallic finish gate (skip for shade/wash roles) ─────────────
-        if role not in ('shade', 'wash') and context:
-            # Accept both legacy bool and new float metallic_score
-            raw = context.get('metallic_score')
-            if raw is None:
-                raw = float(bool(context.get('is_metallic', False)))
-            metallic_score = float(raw)
-
-            if metallic_score >= 0.5:
-                metallic_mask = mask & self.metallic_arr
-                if metallic_mask.any():
-                    mask = metallic_mask
-                else:
-                    logger.debug(f"Metallic pool empty for {brand}/{role}, "
-                                 "falling back to unrestricted candidates")
-            elif metallic_score == 0.0:
-                mask = mask & ~self.metallic_arr
-        elif role not in ('shade', 'wash'):
-            # No context → exclude metallics from opaque paint matches
+        # ── Metallic paints in the pool ────────────────────────────────────
+        # NOT flagged → metallics are excluded outright (a matte surface can
+        # never want a metallic paint). Flagged → metallics ENTER the pool but
+        # must win a ΔE competition against the best matte (below): the
+        # scan-side flag is too noisy on edge-dense minis to hard-gate, and
+        # the DB knows the answer — Abaddon Black crushes any gunmetal on a
+        # black armour cluster, while Leadbelcher wins a true silver blade.
+        if role not in ('shade', 'wash') and not flagged_metallic:
             mask = mask & ~self.metallic_arr
 
         candidate_indices = np.where(mask)[0]
@@ -530,6 +545,20 @@ class PaintMatcher:
         # ── Transparency penalty (dominant/highlight only) ────────────────
         if role in ('dominant', 'highlight'):
             distances += self.transp_arr[candidate_indices] * TRANSPARENCY_PENALTY
+
+        # ── Metallic competition (flagged targets only) ────────────────────
+        if flagged_metallic and role not in ('shade', 'wash'):
+            is_met = self.metallic_arr[candidate_indices]
+            if is_met.any() and (~is_met).any():
+                best_met = int(np.where(is_met)[0][np.argmin(distances[is_met])])
+                best_matte = int(np.where(~is_met)[0][np.argmin(distances[~is_met])])
+                met_family = (self.paint_db[candidate_indices[best_met]]
+                              .color_family or '').lower()
+                tol = METALLIC_WIN_TOLERANCE.get(met_family,
+                                                 _METALLIC_WIN_DEFAULT)
+                if raw_distances[best_met] <= raw_distances[best_matte] + tol:
+                    return self.paint_db[candidate_indices[best_met]]
+                return self.paint_db[candidate_indices[best_matte]]
 
         best_local = int(np.argmin(distances))
         return self.paint_db[candidate_indices[best_local]]

@@ -105,7 +105,7 @@ _FAMILY_TABLE = [
     ("#EF6E2E", "orange"),   # Troll Slayer Orange — Orange now exists (was pink)
     ("#F2792B", "orange"),   # Fire Dragon Bright
     ("#664400", "brown"),    # dark olive → nearest brown exemplar (Stage B)
-    ("#665E33", "yellow"),   # olive-yellow (was brown)
+    ("#665E33", "green"),    # dark olive — curated green seeds (#808000) own olives
     ("#797424", "green"),    # Death/Dead Flesh olive (was brown)
     ("#60664D", "green"),    # yellow-green floor (was bone)
     ("#B2DFD1", "cyan"),     # blue-spike bug (was green)
@@ -262,7 +262,7 @@ _FAMILY_TABLE = [
     ("#EF6E2E", "orange"),   # Troll Slayer Orange — Orange now exists (was pink)
     ("#F2792B", "orange"),   # Fire Dragon Bright
     ("#664400", "brown"),    # dark olive → nearest brown exemplar (Stage B)
-    ("#665E33", "yellow"),   # olive-yellow (was brown)
+    ("#665E33", "green"),    # dark olive — curated green seeds (#808000) own olives
     ("#797424", "green"),    # Death/Dead Flesh olive (was brown)
     ("#60664D", "green"),    # yellow-green floor (was bone)
     ("#B2DFD1", "cyan"),     # blue-spike bug (was green)

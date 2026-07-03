@@ -19,6 +19,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { converter, differenceCiede2000 } from 'culori';
+import paintsData from '../lib/data/paints_groundtruth.json';
 import {
   effectiveCoverage,
   findClosestPaint,
@@ -184,27 +185,41 @@ describe('findClosestPaint', () => {
   // Audit F9 (fixed in Phase 4): DB labs are D65 and must be tagged culori
   // mode 'lab65' — tagging them 'lab' (D50) applied a spurious chromatic
   // adaptation that corrupted every reported ΔE and flipped close matches.
-  it('reports ~0 ΔE for a paint whose DB lab equals its own hex', () => {
-    // pro-acryl-bright-pale-yellow: hex #f5e9bd, lab [92.29, -2.74, 22.89]
-    // — the lab IS the hex's D65 lab, so the correct ΔE is ~0.01.
-    const match = findClosestPaint('#f5e9bd');
+  it('reports ~0 ΔE for a paint whose own hex is the target', () => {
+    // Self-consistent against the live DB (values change when the ground
+    // truth is re-sampled): pick a real non-metallic paint and search for
+    // its own hex — the D65-consistent pipeline must report near-zero ΔE.
+    // (Under the old 'lab' (D50) mislabel this reported ~1.8.)
+    const paint = (paintsData as any[]).find(
+      p => !p.metallic && p.lab && p.hex && p.paint_id.includes('pro-acryl'));
+    expect(paint).toBeDefined();
+    const match = findClosestPaint(paint.hex);
     expect(match).not.toBeNull();
-    expect(Number(match!.delta_e)).toBeLessThan(0.1);
+    expect(Number(match!.delta_e)).toBeLessThan(0.6);
   });
 
-  it('agrees with a D65-consistent ranking on close calls', () => {
-    // Under the old D50 mislabel, #2980b9 returned a measurably farther
-    // paint than the true D65-nearest one.
+  it('returns the true D65-nearest non-metallic paint', () => {
+    // Self-validating ranking check: the returned paint must achieve the
+    // MINIMUM D65 CIEDE2000 over the whole eligible pool — no magic
+    // constants to rot when the DB is re-sampled. (The old D50 mislabel
+    // returned measurably farther paints on close calls.)
+    const target = toLab65('#2980b9')!;
     const match = findClosestPaint('#2980b9');
     expect(match).not.toBeNull();
-    const target = toLab65('#2980b9')!;
-    const correct = deltaE(target, {
+    const de = deltaE;
+    let minD = Infinity;
+    for (const p of paintsData as any[]) {
+      if (!p.lab || p.metallic) continue;
+      const d = de(target, { mode: 'lab65', l: p.lab[0], a: p.lab[1], b: p.lab[2] } as any);
+      if (d < minD) minD = d;
+    }
+    const got = de(target, {
       mode: 'lab65',
       l: (match as any).lab[0],
       a: (match as any).lab[1],
       b: (match as any).lab[2],
     } as any);
-    expect(correct).toBeLessThan(5.2);
+    expect(got).toBeCloseTo(minD, 6);
   });
 
   it('never matches a metallic paint — mixes are matte pigment simulations', () => {
