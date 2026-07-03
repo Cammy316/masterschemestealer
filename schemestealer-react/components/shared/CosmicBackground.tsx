@@ -1,92 +1,77 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
 
-export function CosmicBackground() {
-  const [starLayers] = React.useState(() => {
-    return [
-      {
-        stars: [...Array(30)].map(() => ({
-          x: 10 + Math.random() * 80,
-          y: 10 + Math.random() * 80,
-          size: 2 + Math.random() * 2,
-          brightness: 0.8 + Math.random() * 0.2,
-          speed: 2 + Math.random() * 2,
-          delay: Math.random() * 2,
-        })),
-        parallax: 1.5,
-      },
-      {
-        stars: [...Array(50)].map(() => ({
-          x: 10 + Math.random() * 80,
-          y: 10 + Math.random() * 80,
-          size: 1.5 + Math.random() * 1,
-          brightness: 0.6 + Math.random() * 0.3,
-          speed: 3 + Math.random() * 2,
-          delay: Math.random() * 2,
-        })),
-        parallax: 1,
-      },
-      {
-        stars: [...Array(70)].map(() => ({
-          x: 10 + Math.random() * 80,
-          y: 10 + Math.random() * 80,
-          size: 1,
-          brightness: 0.4 + Math.random() * 0.3,
-          speed: 4 + Math.random() * 3,
-          delay: Math.random() * 2,
-        })),
-        parallax: 0.5,
-      },
-    ];
-  });
+// Generates a massive box-shadow string to render hundreds of stars with a single DOM element
+function generateStars(count: number, size: number, maxBlur: number = 0) {
+  let value = '';
+  for (let i = 0; i < count; i++) {
+    // Generate static values to prevent hydration mismatches if this was SSR, 
+    // but this is a client component. Still, deterministic generation is nice.
+    // However, since it's only rendered on client, Math.random is fine.
+    const x = Math.floor(Math.random() * 2000);
+    const y = Math.floor(Math.random() * 2000);
+    const opacity = (0.4 + Math.random() * 0.6).toFixed(2);
+    value += `${x}px ${y}px ${maxBlur > 0 ? Math.floor(Math.random() * maxBlur) + 'px ' : ''}rgba(255, 255, 255, ${opacity})`;
+    if (i < count - 1) value += ', ';
+  }
+  return value;
+}
+
+export const CosmicBackground = React.memo(function CosmicBackground() {
+  const [layers, setLayers] = React.useState<{shadow: string, size: number, animationDuration: number}[]>([]);
+
+  React.useEffect(() => {
+    setLayers([
+      { shadow: generateStars(150, 1, 0), size: 1, animationDuration: 30 },
+      { shadow: generateStars(70, 2, 1), size: 2, animationDuration: 40 },
+      { shadow: generateStars(30, 3, 2), size: 3, animationDuration: 50 },
+    ]);
+  }, []);
 
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-      <div className="absolute inset-0 bg-void-black" />
-      {starLayers.map((layer, layerIndex) => (
-        <motion.div
-          key={layerIndex}
-          className="absolute inset-0"
-          style={{ willChange: 'transform' }}
-          animate={{
-            x: [0, -5 * layer.parallax, 0, 5 * layer.parallax, 0],
-            y: [0, -3 * layer.parallax, 0, 3 * layer.parallax, 0],
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 bg-void-black">
+      <style>{`
+        @keyframes drift {
+          from { transform: translateY(0); }
+          to { transform: translateY(-1000px); }
+        }
+        @keyframes twinkle-drift {
+          0% { opacity: 0.8; transform: translateY(0); }
+          50% { opacity: 0.4; }
+          100% { opacity: 0.8; transform: translateY(-1000px); }
+        }
+        .star-layer {
+          position: absolute;
+          top: 0;
+          left: 0;
+          border-radius: 50%;
+        }
+        .star-layer::after {
+          content: " ";
+          position: absolute;
+          top: 2000px;
+          left: 0;
+          border-radius: 50%;
+          width: inherit;
+          height: inherit;
+          box-shadow: inherit;
+        }
+      `}</style>
+      
+      {layers.map((layer, index) => (
+        <div
+          key={index}
+          className="star-layer"
+          style={{
+            width: `${layer.size}px`,
+            height: `${layer.size}px`,
+            boxShadow: layer.shadow,
+            animation: `twinkle-drift ${layer.animationDuration}s linear infinite`,
           }}
-          transition={{
-            duration: 20 + layerIndex * 5,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        >
-          {layer.stars.map((star, i) => (
-            <motion.div
-              key={`${layerIndex}-${i}`}
-              className="absolute rounded-full"
-              style={{
-                left: `${star.x}%`,
-                top: `${star.y}%`,
-                width: `${star.size}px`,
-                height: `${star.size}px`,
-                background: `radial-gradient(circle, rgba(255, 255, 255, ${star.brightness}), transparent)`,
-                boxShadow: `0 0 ${star.size * 2}px rgba(255, 255, 255, ${star.brightness * 0.8})`,
-              }}
-              animate={{
-                opacity: [star.brightness * 0.6, star.brightness, star.brightness * 0.6],
-                scale: [0.8, 1.2, 0.8],
-              }}
-              transition={{
-                duration: star.speed,
-                repeat: Infinity,
-                delay: star.delay,
-                ease: 'easeInOut',
-              }}
-            />
-          ))}
-        </motion.div>
+        />
       ))}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(139,92,246,0.1)_0%,rgba(139,92,246,0)_80%)] pointer-events-none" />
     </div>
   );
-}
+});
