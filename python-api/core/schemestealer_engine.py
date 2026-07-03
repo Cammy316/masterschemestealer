@@ -303,6 +303,31 @@ class SchemeStealerEngine:
             # selects on the detected colour's family rather than a neighbour paint's.
             display_family = family
 
+            # ONE exception: a metallic-flagged cluster whose matches WON the
+            # metallic ΔE competition displays the winning metal family
+            # (Silver/Gold/Bronze). The scan classifies metallic surfaces
+            # chromatically (silver blade → Grey), but when the majority of
+            # brands' best paints are metallic, the DB's curated knowledge is
+            # the better display answer — this is matcher evidence, not an
+            # image heuristic.
+            if is_metallic:
+                # UNANIMITY required: silver paints are colorimetrically
+                # near-identical to grey paints, so a mere majority relabels
+                # mid-grey armour panels "Silver". Only when EVERY brand's
+                # best paint is metallic is the evidence decisive.
+                winners = []
+                n_matched = 0
+                for b in brands:
+                    m = base_matches.get(b)
+                    if m:
+                        n_matched += 1
+                        if m.get('metallic'):
+                            winners.append((m.get('color_family') or '').lower())
+                if n_matched and len(winners) == n_matched:
+                    modal = max(set(winners), key=winners.count)
+                    if modal in ('gold', 'silver', 'bronze'):
+                        display_family = modal.capitalize()
+
             # Calculate spatial features
             spatial_mask = np.zeros(img_rgb.shape[:2], dtype=bool)
             indices = color_data.get('pixel_indices')
@@ -375,6 +400,7 @@ class SchemeStealerEngine:
             'hex': paint.hex,
             'type': 'wash' if is_wash else paint.type,
             'color_family': paint.color_family,
+            'metallic': bool(paint.metallic),
         }
         if source:
             out['source'] = source   # 'official' | 'computed'

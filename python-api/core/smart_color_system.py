@@ -357,7 +357,15 @@ class SmartColorExtractor:
     # span a ramp would merge blue into purple. The ΔL-span cap keeps
     # opposite ends of the lightness axis (black armour vs white heraldry)
     # from collapsing into one card even at Δa=Δb=0.
-    _RAMP_L_WEIGHT = 0.1
+    # The lightness discount is CHROMA-DEPENDENT: for chromatic paints, hue
+    # anchors identity and shading varies L (full discount); for neutrals,
+    # LIGHTNESS IS THE IDENTITY — black, grey and white are different paints
+    # with the same (absent) hue, so a neutral pair keeps most of its L
+    # weight. A fixed discount let the chaplain's whole neutral axis (dark
+    # armour → sword → off-white heraldry) chain into one 67% "Grey" card.
+    _RAMP_L_WEIGHT_CHROMA = 0.1
+    _RAMP_L_WEIGHT_NEUTRAL = 0.8
+    _RAMP_CHROMA_REF = 0.09        # OKLab chroma at which a pair is fully chromatic
     # Tight threshold for the pre-classification merge: joins adjacent
     # shading bands (including across a family boundary, e.g. pink body →
     # magenta shadow) without ever bridging distinct hues.
@@ -378,8 +386,14 @@ class SmartColorExtractor:
         from scipy.spatial.distance import squareform
 
         oks = lab_to_oklab(np.array([c['median_lab'] for c in clusters]))
+        chroma_ok = np.hypot(oks[:, 1], oks[:, 2])
+        pair_c = np.minimum(chroma_ok[:, None], chroma_ok[None, :])
+        t = np.clip(pair_c / self._RAMP_CHROMA_REF, 0.0, 1.0)
+        w_l = (self._RAMP_L_WEIGHT_NEUTRAL
+               + t * (self._RAMP_L_WEIGHT_CHROMA - self._RAMP_L_WEIGHT_NEUTRAL))
+
         diff = oks[:, None, :] - oks[None, :, :]
-        d = np.sqrt(self._RAMP_L_WEIGHT * diff[..., 0] ** 2
+        d = np.sqrt(w_l * diff[..., 0] ** 2
                     + diff[..., 1] ** 2 + diff[..., 2] ** 2)
         d[np.abs(diff[..., 0]) > self._RAMP_MAX_L_SPAN] = 1e6
         condensed = squareform(d, checks=False)
