@@ -2,6 +2,7 @@
 # Description: Automates analyzing code diffs and writing formatted Conventional Commits.
 
 ## Guidelines
+- Before committing, autonomously review and update the root `CHANGELOG.md` under the `[Unreleased]` heading to reflect the features, changes, and fixes being committed.
 - When instructed to "commit changes", autonomously run `git status` and `git diff` to analyze the staged and unstaged changes in the workspace.
 - Stage all relevant modified files automatically.
 - Generate a precise commit message following the Conventional Commits standard (using prefixes like `feat:`, `fix:`, `refactor:`, `chore:`).

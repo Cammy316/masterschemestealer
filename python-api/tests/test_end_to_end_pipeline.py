@@ -89,8 +89,9 @@ def test_miniature_scan_pipeline(degradation):
     for color in colors:
         assert "paintRecipe" in color
         assert "family" in color
-        assert "reticle" in color
-        assert color["reticle"] is None or color["reticle"].startswith("/9j/") or color["reticle"].startswith("iVBORw0KGgo") or len(color["reticle"]) > 10
+        assert "reticle" in color or "mask" in color
+        mask_or_reticle = color.get("mask") or color.get("reticle")
+        assert mask_or_reticle is None or len(mask_or_reticle) > 10
 
     scan_id = data.get("scan_id", f"test_{degradation}")
     ml_payload = {

@@ -21,6 +21,7 @@ const PAINTS_TIMEOUT_MS = 30_000;
 interface ScanResponse {
   colors?: Color[];
   paints?: Paint[];
+  mask_frame?: { width: number; height: number };
 }
 
 /**
@@ -46,6 +47,7 @@ export async function scanMiniature(imageFile: File, signal?: AbortSignal): Prom
     imageUrl: URL.createObjectURL(imageFile),
     detectedColors: data.colors || [],
     recommendedPaints: data.paints || [],
+    maskFrame: data.mask_frame,
     timestamp: new Date().toISOString(),
     analysisSource: 'backend',
   };

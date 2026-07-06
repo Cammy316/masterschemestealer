@@ -25,7 +25,8 @@ function toPersistableScan(result: ScanResult): ScanResult {
     ...result,
     imageUrl: undefined,
     imageData: undefined,
-    detectedColors: result.detectedColors.map((c) => ({ ...c, reticle: undefined })),
+    maskFrame: undefined,
+    detectedColors: result.detectedColors.map((c) => ({ ...c, reticle: undefined, mask: undefined })),
   };
 }
 

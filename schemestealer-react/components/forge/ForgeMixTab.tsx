@@ -394,7 +394,7 @@ export default function ForgeMixTab({ inventory, addToInventory, addToCart, setL
                 value={mixFilterColor}
                 options={mixInventoryColors}
                 onChange={setMixFilterColor}
-                formatOption={(val) => val === 'ALL' ? 'ALL COLORS' : val}
+                formatOption={(val) => val === 'ALL' ? 'ALL COLOURS' : val}
               />
             </div>
           )}

@@ -6,10 +6,11 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { ReticleReveal } from '@/components/miniscan/ReticleReveal';
+import { AuspexReveal } from '@/components/miniscan/AuspexReveal';
 import { HexPalette } from '@/components/miniscan/HexPalette';
 import { PaintList } from '@/components/PaintCard';
 import { PaintRecipeCard } from '@/components/shared/PaintRecipeCard';
@@ -195,11 +196,26 @@ export default function MiniscanResultsPage() {
           }))} 
         />
 
+        {/* TACTICAL READOUT — Auspex Reveal v2 map mode */}
+        {currentScan.detectedColors.some(c => c.mask) && currentScan.imageUrl && (
+          <AuspexReveal
+            mode="map"
+            imageUrl={currentScan.imageUrl}
+            colors={currentScan.detectedColors}
+            maskFrame={currentScan.maskFrame}
+            onChipClick={(index) => {
+              const el = document.getElementById(`color-card-${index}`);
+              el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }}
+          />
+        )}
+
         {/* Detected Colors with ReticleReveal and PaintRecipeCard */}
         <div className="space-y-6">
           {currentScan.detectedColors.map((color, index) => (
             <motion.div
               key={index}
+              id={`color-card-${index}`}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -228,24 +244,35 @@ export default function MiniscanResultsPage() {
                     </div>
                   </div>
 
-                  {/* RETICLE REVEAL - THE MAGIC MOMENT */}
-                  <ReticleReveal
-                    colorName={color.family || 'Colour'}
-                    colorHex={color.hex}
-                    reticleImage={
-                      color.reticle ? `data:image/jpeg;base64,${color.reticle}` : undefined
-                    }
-                    originalImage={currentScan.imageUrl}
-                    reticlePositions={
-                      currentScan.imageUrl && currentScan.detectedColors.some((c) => c.position)
-                        ? currentScan.detectedColors.flatMap((c, i) =>
-                            c.position
-                              ? [{ x: c.position.x, y: c.position.y, color: c.hex, active: i === index }]
-                              : []
-                          )
-                        : undefined
-                    }
-                  />
+                  {/* AUSPEX REVEAL v2 — mask-based single reveal */}
+                  {color.mask && currentScan.imageUrl ? (
+                    <AuspexReveal
+                      mode="single"
+                      imageUrl={currentScan.imageUrl}
+                      colors={currentScan.detectedColors}
+                      maskFrame={currentScan.maskFrame}
+                      activeIndex={index}
+                    />
+                  ) : (
+                    /* Legacy fallback: old ReticleReveal for scans without masks */
+                    <ReticleReveal
+                      colorName={color.family || 'Colour'}
+                      colorHex={color.hex}
+                      reticleImage={
+                        color.reticle ? `data:image/jpeg;base64,${color.reticle}` : undefined
+                      }
+                      originalImage={currentScan.imageUrl}
+                      reticlePositions={
+                        currentScan.imageUrl && currentScan.detectedColors.some((c) => c.position)
+                          ? currentScan.detectedColors.flatMap((c, i) =>
+                              c.position
+                                ? [{ x: c.position.x, y: c.position.y, color: c.hex, active: i === index }]
+                                : []
+                            )
+                          : undefined
+                      }
+                    />
+                  )
 
                   {/* Paint Recipe Card - NEW: Per-color brand selection */}
                   {color.paintRecipe ? (

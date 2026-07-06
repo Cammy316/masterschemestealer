@@ -46,7 +46,28 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.6,
     }));
     
-    return [...routes, ...dynamicRoutes];
+    // Paint Pages Routes
+    let paintRoutes: MetadataRoute.Sitemap = [];
+    try {
+      const paintsFilePath = path.join(process.cwd(), 'lib', 'data', 'conversions.json');
+      const paintsFileData = fs.readFileSync(paintsFilePath, 'utf8');
+      const paintsData = JSON.parse(paintsFileData);
+      
+      paintRoutes = Object.keys(paintsData.paints).map((slug: string) => {
+        const paint = paintsData.paints[slug].source;
+        const brandSlug = paint.brand.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+        return {
+          url: `${baseUrl}/paints/${brandSlug}/${slug}`,
+          lastModified: new Date(),
+          changeFrequency: 'weekly',
+          priority: 0.6,
+        };
+      });
+    } catch (error) {
+      console.error('Error reading conversions.json for sitemap generation:', error);
+    }
+    
+    return [...routes, ...dynamicRoutes, ...paintRoutes];
   } catch (error) {
     console.error('Error reading conversion paths for sitemap generation:', error);
     return routes;

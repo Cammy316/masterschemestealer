@@ -160,11 +160,13 @@ async def readiness():
     Returns ready=true once both scanners have finished initialising.
     """
     ready = _scanner_ready.is_set() and _miniature_scanner is not None
+    from utils.supabase_client import supabase_enabled
     return {
         "ready": ready,
         "miniature_scanner": _miniature_scanner is not None,
         "inspiration_scanner": _inspiration_scanner is not None,
         "message": "Scanners ready" if ready else "Warming up machine spirit, please wait...",
+        "persistence": "supabase" if supabase_enabled() else "ephemeral_files",
     }
 
 

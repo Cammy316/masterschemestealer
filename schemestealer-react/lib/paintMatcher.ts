@@ -224,7 +224,7 @@ export function getFullPaintRecipe(
 
 /**
  * Enhance scan result with multi-brand matches (legacy format — offline mode only).
- * In online mode the backend's 3,022-paint results are used as-is.
+ * In online mode the backend's results are used as-is.
  */
 export function enhanceWithMultiBrandMatches(
   scanResult: ScanResult,

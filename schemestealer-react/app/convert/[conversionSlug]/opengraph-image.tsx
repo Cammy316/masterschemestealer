@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 
 export const runtime = 'nodejs'; // Use Node.js runtime to read files
-export const alt = 'Color Match Representation';
+export const alt = 'Colour Match Representation';
 export const size = {
   width: 1200,
   height: 630,
