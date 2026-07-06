@@ -19763,3 +19763,169 @@
 2026-07-06 20:46:01,910 - SchemeStealer - INFO - Paint matcher initialised: 2/2 matchable paints (OKLab retrieval + CIEDE2000 ranking)
 2026-07-06 20:46:01,910 - SchemeStealer - INFO - Paint matcher initialised: 3/3 matchable paints (OKLab retrieval + CIEDE2000 ranking)
 2026-07-06 20:46:01,912 - SchemeStealer - INFO - Paint matcher initialised: 2/2 matchable paints (OKLab retrieval + CIEDE2000 ranking)
+2026-07-06 21:32:46,616 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-07-06 21:32:46,620 - SchemeStealer - WARNING - Specular filter skipped: too few pixels would remain
+2026-07-06 21:32:46,650 - SchemeStealer - INFO - Clustering 128 superpixels into 20 clusters (OKLab)...
+2026-07-06 21:32:46,721 - SchemeStealer - INFO - After shadow filtering: 1 clusters remain
+2026-07-06 21:32:46,722 - SchemeStealer - INFO - Final: 1 major + 0 details
+2026-07-06 21:32:46,722 - SchemeStealer - INFO -   White: 100.0% (conf=0.95)
+2026-07-06 21:32:46,723 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-07-06 21:32:46,724 - SchemeStealer - WARNING - Specular filter skipped: too few pixels would remain
+2026-07-06 21:32:46,729 - SchemeStealer - INFO - Clustering 128 superpixels into 20 clusters (OKLab)...
+2026-07-06 21:32:46,738 - SchemeStealer - INFO - After shadow filtering: 1 clusters remain
+2026-07-06 21:32:46,738 - SchemeStealer - INFO - Final: 1 major + 0 details
+2026-07-06 21:32:46,738 - SchemeStealer - INFO -   Black: 100.0% (conf=0.95)
+2026-07-06 21:32:46,739 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-07-06 21:32:46,740 - SchemeStealer - WARNING - Specular filter skipped: too few pixels would remain
+2026-07-06 21:32:46,748 - SchemeStealer - INFO - Clustering 109 superpixels into 20 clusters (OKLab)...
+2026-07-06 21:32:46,794 - SchemeStealer - INFO - After shadow filtering: 3 clusters remain
+2026-07-06 21:32:46,794 - SchemeStealer - INFO - Final: 3 major + 0 details
+2026-07-06 21:32:46,794 - SchemeStealer - INFO -   Green: 33.3% (conf=0.95)
+2026-07-06 21:32:46,794 - SchemeStealer - INFO -   Purple: 33.3% (conf=0.60)
+2026-07-06 21:32:46,794 - SchemeStealer - INFO -   Red: 33.3% (conf=0.95)
+2026-07-06 21:32:46,794 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-07-06 21:32:46,795 - SchemeStealer - WARNING - Specular filter skipped: too few pixels would remain
+2026-07-06 21:32:46,803 - SchemeStealer - INFO - Clustering 109 superpixels into 20 clusters (OKLab)...
+2026-07-06 21:32:46,848 - SchemeStealer - INFO - After shadow filtering: 3 clusters remain
+2026-07-06 21:32:46,848 - SchemeStealer - INFO - Final: 3 major + 0 details
+2026-07-06 21:32:46,849 - SchemeStealer - INFO -   Green: 33.3% (conf=0.95)
+2026-07-06 21:32:46,849 - SchemeStealer - INFO -   Purple: 33.3% (conf=0.60)
+2026-07-06 21:32:46,849 - SchemeStealer - INFO -   Red: 33.3% (conf=0.95)
+2026-07-06 21:32:47,742 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-07-06 21:32:47,743 - SchemeStealer - WARNING - Specular filter skipped: too few pixels would remain
+2026-07-06 21:32:47,749 - SchemeStealer - INFO - Clustering 128 superpixels into 20 clusters (OKLab)...
+2026-07-06 21:32:47,760 - SchemeStealer - INFO - After shadow filtering: 1 clusters remain
+2026-07-06 21:32:47,760 - SchemeStealer - INFO - Final: 1 major + 0 details
+2026-07-06 21:32:47,760 - SchemeStealer - INFO -   Green: 99.6% (conf=0.66)
+2026-07-06 21:32:48,233 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (OKLab retrieval + CIEDE2000 ranking)
+2026-07-06 21:32:48,252 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-07-06 21:32:48,252 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-07-06 21:32:48,252 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-07-06 21:32:48,414 - SchemeStealer - INFO - Loaded 1312 paints from paints_groundtruth.json (1312 matchable)
+2026-07-06 21:32:48,416 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (OKLab retrieval + CIEDE2000 ranking)
+2026-07-06 21:32:48,427 - SchemeStealer - INFO - Engine initialization complete - ML features enabled (4822 recipe edges)
+2026-07-06 21:32:48,434 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-07-06 21:32:48,434 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-07-06 21:32:48,434 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-07-06 21:32:48,595 - SchemeStealer - INFO - Loaded 1312 paints from paints_groundtruth.json (1312 matchable)
+2026-07-06 21:32:48,597 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (OKLab retrieval + CIEDE2000 ranking)
+2026-07-06 21:32:48,609 - SchemeStealer - INFO - Engine initialization complete - ML features enabled (4822 recipe edges)
+2026-07-06 21:32:48,618 - SchemeStealer - INFO - Starting photo quality assessment
+2026-07-06 21:32:48,619 - SchemeStealer - INFO - Overexposure corrected
+2026-07-06 21:32:48,619 - SchemeStealer - WARNING - Severe color cast detected
+2026-07-06 21:32:48,619 - SchemeStealer - INFO - Photo quality score: 60/100 (Good)
+2026-07-06 21:32:48,647 - SchemeStealer - INFO - Starting base detection v2.0 on 300x300 image
+2026-07-06 21:32:48,703 - SchemeStealer - INFO - Base detection complete: removed 21.8% as base material
+2026-07-06 21:32:48,703 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-07-06 21:32:49,561 - SchemeStealer - INFO - Clustering 1548 superpixels into 20 clusters (OKLab)...
+2026-07-06 21:32:49,592 - SchemeStealer - INFO - After shadow filtering: 5 clusters remain
+2026-07-06 21:32:49,592 - SchemeStealer - INFO - Deduplicating family 'Red': 3 clusters -> 1 card(s)
+2026-07-06 21:32:49,593 - SchemeStealer - INFO - Final: 3 major + 0 details
+2026-07-06 21:32:49,593 - SchemeStealer - INFO -   White: 89.2% (conf=0.95)
+2026-07-06 21:32:49,593 - SchemeStealer - INFO -   Red: 8.5% (conf=0.87)
+2026-07-06 21:32:49,593 - SchemeStealer - INFO -   Brown: 2.3% (conf=0.50)
+2026-07-06 21:32:49,670 - SchemeStealer - INFO - Starting photo quality assessment
+2026-07-06 21:32:49,671 - SchemeStealer - INFO - Overexposure corrected
+2026-07-06 21:32:49,671 - SchemeStealer - WARNING - Severe color cast detected
+2026-07-06 21:32:49,671 - SchemeStealer - INFO - Photo quality score: 60/100 (Good)
+2026-07-06 21:32:49,698 - SchemeStealer - INFO - Starting base detection v2.0 on 300x300 image
+2026-07-06 21:32:49,701 - SchemeStealer - INFO - Base detection complete: removed 21.8% as base material
+2026-07-06 21:32:49,701 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-07-06 21:32:50,566 - SchemeStealer - INFO - Clustering 1548 superpixels into 20 clusters (OKLab)...
+2026-07-06 21:32:50,596 - SchemeStealer - INFO - After shadow filtering: 5 clusters remain
+2026-07-06 21:32:50,597 - SchemeStealer - INFO - Deduplicating family 'Red': 3 clusters -> 1 card(s)
+2026-07-06 21:32:50,597 - SchemeStealer - INFO - Final: 3 major + 0 details
+2026-07-06 21:32:50,597 - SchemeStealer - INFO -   White: 89.2% (conf=0.95)
+2026-07-06 21:32:50,597 - SchemeStealer - INFO -   Red: 8.5% (conf=0.87)
+2026-07-06 21:32:50,597 - SchemeStealer - INFO -   Brown: 2.3% (conf=0.50)
+2026-07-06 21:32:50,693 - SchemeStealer - INFO - Starting photo quality assessment
+2026-07-06 21:32:50,694 - SchemeStealer - INFO - Glare detected and corrected
+2026-07-06 21:32:50,694 - SchemeStealer - INFO - Overexposure corrected
+2026-07-06 21:32:50,695 - SchemeStealer - WARNING - Severe color cast detected
+2026-07-06 21:32:50,695 - SchemeStealer - INFO - Photo quality score: 40/100 (Fair)
+2026-07-06 21:32:50,721 - SchemeStealer - INFO - Starting base detection v2.0 on 300x300 image
+2026-07-06 21:32:50,724 - SchemeStealer - INFO - Base detection complete: removed 20.5% as base material
+2026-07-06 21:32:50,724 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-07-06 21:32:51,609 - SchemeStealer - INFO - Clustering 1124 superpixels into 20 clusters (OKLab)...
+2026-07-06 21:32:51,641 - SchemeStealer - INFO - After shadow filtering: 5 clusters remain
+2026-07-06 21:32:51,641 - SchemeStealer - INFO - Deduplicating family 'Red': 2 clusters -> 1 card(s)
+2026-07-06 21:32:51,642 - SchemeStealer - INFO - Final: 2 major + 1 details
+2026-07-06 21:32:51,642 - SchemeStealer - INFO -   White: 88.6% (conf=0.95)
+2026-07-06 21:32:51,642 - SchemeStealer - INFO -   Red: 10.9% (conf=0.95)
+2026-07-06 21:32:51,642 - SchemeStealer - INFO -   Pink: 0.6% (conf=0.56)
+2026-07-06 21:32:51,722 - SchemeStealer - INFO - Starting photo quality assessment
+2026-07-06 21:32:51,723 - SchemeStealer - INFO - Glare detected and corrected
+2026-07-06 21:32:51,723 - SchemeStealer - INFO - Overexposure corrected
+2026-07-06 21:32:51,723 - SchemeStealer - WARNING - Severe color cast detected
+2026-07-06 21:32:51,723 - SchemeStealer - INFO - Photo quality score: 40/100 (Fair)
+2026-07-06 21:32:51,751 - SchemeStealer - INFO - Starting base detection v2.0 on 300x300 image
+2026-07-06 21:32:51,754 - SchemeStealer - INFO - Base detection complete: removed 20.3% as base material
+2026-07-06 21:32:51,754 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-07-06 21:32:52,613 - SchemeStealer - INFO - Clustering 1547 superpixels into 20 clusters (OKLab)...
+2026-07-06 21:32:52,642 - SchemeStealer - INFO - After shadow filtering: 5 clusters remain
+2026-07-06 21:32:52,642 - SchemeStealer - INFO - Deduplicating family 'Red': 3 clusters -> 1 card(s)
+2026-07-06 21:32:52,643 - SchemeStealer - INFO - Final: 2 major + 0 details
+2026-07-06 21:32:52,643 - SchemeStealer - INFO -   White: 87.4% (conf=0.95)
+2026-07-06 21:32:52,643 - SchemeStealer - INFO -   Red: 12.5% (conf=0.79)
+2026-07-06 21:32:52,767 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-07-06 21:32:53,071 - SchemeStealer - INFO - Clustering 960 superpixels into 20 clusters (OKLab)...
+2026-07-06 21:32:53,098 - SchemeStealer - INFO - After shadow filtering: 4 clusters remain
+2026-07-06 21:32:53,099 - SchemeStealer - INFO - Deduplicating family 'Blue': 3 clusters -> 1 card(s)
+2026-07-06 21:32:53,100 - SchemeStealer - INFO - Final: 2 major + 0 details
+2026-07-06 21:32:53,100 - SchemeStealer - INFO -   Blue: 63.4% (conf=0.87)
+2026-07-06 21:32:53,100 - SchemeStealer - INFO -   Purple: 36.6% (conf=0.52)
+2026-07-06 21:32:53,103 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-07-06 21:32:53,275 - SchemeStealer - INFO - Clustering 719 superpixels into 20 clusters (OKLab)...
+2026-07-06 21:32:53,296 - SchemeStealer - INFO - After shadow filtering: 2 clusters remain
+2026-07-06 21:32:53,296 - SchemeStealer - INFO - Final: 2 major + 0 details
+2026-07-06 21:32:53,296 - SchemeStealer - INFO -   Blue: 51.0% (conf=0.61)
+2026-07-06 21:32:53,296 - SchemeStealer - INFO -   Purple: 49.0% (conf=0.92)
+2026-07-06 21:32:53,298 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-07-06 21:32:53,353 - SchemeStealer - INFO - Clustering 344 superpixels into 20 clusters (OKLab)...
+2026-07-06 21:32:53,369 - SchemeStealer - INFO - After shadow filtering: 3 clusters remain
+2026-07-06 21:32:53,369 - SchemeStealer - INFO - Final: 3 major + 0 details
+2026-07-06 21:32:53,369 - SchemeStealer - INFO -   Red: 34.6% (conf=0.95)
+2026-07-06 21:32:53,369 - SchemeStealer - INFO -   Bone: 32.9% (conf=0.95)
+2026-07-06 21:32:53,369 - SchemeStealer - INFO -   Blue: 32.5% (conf=0.95)
+2026-07-06 21:32:53,372 - SchemeStealer - INFO - Initializing SchemeStealer Engine v2.6 (ML-Enhanced)
+2026-07-06 21:32:53,372 - SchemeStealer - INFO - Loading ground-truth paint DB: paints_groundtruth.json
+2026-07-06 21:32:53,550 - SchemeStealer - INFO - Loaded 1312 paints from paints_groundtruth.json (1312 matchable)
+2026-07-06 21:32:53,551 - SchemeStealer - INFO - Paint matcher initialised: 1312/1312 matchable paints (OKLab retrieval + CIEDE2000 ranking)
+2026-07-06 21:32:53,563 - SchemeStealer - INFO - Engine initialization complete - ML features enabled (4822 recipe edges)
+2026-07-06 21:32:53,567 - SchemeStealer - INFO - Paint matcher initialised: 1/1 matchable paints (OKLab retrieval + CIEDE2000 ranking)
+2026-07-06 21:32:53,574 - SchemeStealer - INFO - Paint matcher initialised: 1/1 matchable paints (OKLab retrieval + CIEDE2000 ranking)
+2026-07-06 21:32:53,588 - SchemeStealer - INFO - Paint matcher initialised: 2/2 matchable paints (OKLab retrieval + CIEDE2000 ranking)
+2026-07-06 21:32:53,601 - SchemeStealer - INFO - Paint matcher initialised: 2/2 matchable paints (OKLab retrieval + CIEDE2000 ranking)
+2026-07-06 21:32:53,615 - SchemeStealer - INFO - Paint matcher initialised: 2/2 matchable paints (OKLab retrieval + CIEDE2000 ranking)
+2026-07-06 21:32:53,628 - SchemeStealer - INFO - Paint matcher initialised: 2/2 matchable paints (OKLab retrieval + CIEDE2000 ranking)
+2026-07-06 21:32:53,635 - SchemeStealer - INFO - Paint matcher initialised: 1/1 matchable paints (OKLab retrieval + CIEDE2000 ranking)
+2026-07-06 21:32:53,643 - SchemeStealer - INFO - Paint matcher initialised: 1/1 matchable paints (OKLab retrieval + CIEDE2000 ranking)
+2026-07-06 21:32:53,656 - SchemeStealer - INFO - Paint matcher initialised: 2/2 matchable paints (OKLab retrieval + CIEDE2000 ranking)
+2026-07-06 21:32:53,663 - SchemeStealer - INFO - Paint matcher initialised: 2/2 matchable paints (OKLab retrieval + CIEDE2000 ranking)
+2026-07-06 21:32:53,664 - SchemeStealer - INFO - Paint matcher initialised: 3/3 matchable paints (OKLab retrieval + CIEDE2000 ranking)
+2026-07-06 21:32:53,692 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-07-06 21:32:53,914 - SchemeStealer - INFO - Clustering 650 superpixels into 20 clusters (OKLab)...
+2026-07-06 21:32:53,935 - SchemeStealer - INFO - After shadow filtering: 6 clusters remain
+2026-07-06 21:32:53,935 - SchemeStealer - INFO - Deduplicating family 'Magenta': 3 clusters -> 1 card(s)
+2026-07-06 21:32:53,937 - SchemeStealer - INFO - Final: 3 major + 1 details
+2026-07-06 21:32:53,937 - SchemeStealer - INFO -   Magenta: 90.4% (conf=0.76)
+2026-07-06 21:32:53,937 - SchemeStealer - INFO -   White: 4.5% (conf=0.95)
+2026-07-06 21:32:53,937 - SchemeStealer - INFO -   Yellow: 2.3% (conf=0.95)
+2026-07-06 21:32:53,937 - SchemeStealer - INFO -   Cyan: 2.8% (conf=0.95)
+2026-07-06 21:32:53,942 - SchemeStealer - INFO - Starting smart color extraction (FINAL VERSION)
+2026-07-06 21:32:54,614 - SchemeStealer - INFO - Clustering 1114 superpixels into 20 clusters (OKLab)...
+2026-07-06 21:32:54,647 - SchemeStealer - INFO - After shadow filtering: 7 clusters remain
+2026-07-06 21:32:54,647 - SchemeStealer - INFO - Deduplicating family 'Grey': 7 clusters -> 3 card(s)
+2026-07-06 21:32:54,650 - SchemeStealer - INFO - Final: 3 major + 0 details
+2026-07-06 21:32:54,650 - SchemeStealer - INFO -   Grey: 56.2% (conf=0.94)
+2026-07-06 21:32:54,650 - SchemeStealer - INFO -   Grey: 27.9% (conf=0.87)
+2026-07-06 21:32:54,650 - SchemeStealer - INFO -   Grey: 15.9% (conf=0.95)
+2026-07-06 21:32:54,652 - SchemeStealer - INFO - Deduplicating family 'Grey': 3 clusters -> 2 card(s)
+2026-07-06 21:32:54,658 - SchemeStealer - INFO - Paint matcher initialised: 200/200 matchable paints (OKLab retrieval + CIEDE2000 ranking)
+2026-07-06 21:32:54,844 - SchemeStealer - INFO - Paint matcher initialised: 6/7 matchable paints (OKLab retrieval + CIEDE2000 ranking)
+2026-07-06 21:32:54,850 - SchemeStealer - INFO - Paint matcher initialised: 2/2 matchable paints (OKLab retrieval + CIEDE2000 ranking)
+2026-07-06 21:32:54,851 - SchemeStealer - INFO - Paint matcher initialised: 2/2 matchable paints (OKLab retrieval + CIEDE2000 ranking)
+2026-07-06 21:32:54,852 - SchemeStealer - INFO - Paint matcher initialised: 2/2 matchable paints (OKLab retrieval + CIEDE2000 ranking)
+2026-07-06 21:32:54,853 - SchemeStealer - INFO - Paint matcher initialised: 2/2 matchable paints (OKLab retrieval + CIEDE2000 ranking)
+2026-07-06 21:32:54,854 - SchemeStealer - INFO - Paint matcher initialised: 3/3 matchable paints (OKLab retrieval + CIEDE2000 ranking)
+2026-07-06 21:32:54,855 - SchemeStealer - INFO - Paint matcher initialised: 2/2 matchable paints (OKLab retrieval + CIEDE2000 ranking)
