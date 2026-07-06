@@ -272,7 +272,7 @@ export default function MiniscanResultsPage() {
                           : undefined
                       }
                     />
-                  )
+                  )}
 
                   {/* Paint Recipe Card - NEW: Per-color brand selection */}
                   {color.paintRecipe ? (
