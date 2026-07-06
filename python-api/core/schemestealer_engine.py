@@ -368,11 +368,8 @@ class SchemeStealerEngine:
                 position_y = 0.5
                 position_x = 0.5
 
-            # Create visualization
+            # Find optimal reticle position (for numbered chip placement)
             reticle_pos = self.viz_engine.find_optimal_reticle_position(spatial_mask)
-            reticle_img = self.viz_engine.create_color_overlay(
-                img_rgb, spatial_mask, median_rgb / 255.0, reticle_pos
-            )
 
             # Build comprehensive recipe with ML features
             recipe = {
@@ -385,7 +382,8 @@ class SchemeStealerEngine:
                 'shade': shade_matches,
                 'wash': wash_matches,          # graph-driven wash (None -> scanner fallback)
                 'shade_type': shade_type,
-                'reticle': reticle_img,
+                'spatial_mask': spatial_mask,   # raw boolean mask for client-side compositing
+                'analysis_shape': (height, width),  # analysis resolution for mask alignment
                 'rgb_preview': median_rgb.astype(int),
                 'is_detail': color_data.get('is_detail', False),
                 

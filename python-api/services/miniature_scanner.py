@@ -94,16 +94,15 @@ class MiniatureScannerService:
             raise
     def _format_results(self, recipes: List[Dict], mode: str) -> Dict[str, Any]:
         """
-        Format scan results for API response with full recipe structure
-        Args:
-            recipes: List of recipe dictionaries from engine
-            mode: 'miniature' or 'inspiration'
-        Returns:
-            Formatted API response with paintRecipe for each color
+        Format scan results for API response with full recipe structure.
+        Colours now carry a lightweight 1-bit PNG alpha mask instead of
+        a full JPEG composite — the frontend composites client-side.
         """
         colors = []
         paints = []  # Legacy format
         seen_paints = set()
+        # All recipes share the same analysis resolution
+        analysis_shape = None
         for recipe in recipes:
             # Extract color info
             rgb = recipe.get('rgb', recipe.get('rgb_preview', [0, 0, 0]))
@@ -117,25 +116,28 @@ class MiniatureScannerService:
                 int(rgb[0]), int(rgb[1]), int(rgb[2])
             )
             family = recipe.get('family', 'Unknown')
-            # Encode reticle image as base64 if available
-            reticle_base64 = self._encode_reticle(recipe.get('reticle'), hex_color)
+            # Encode spatial mask as lightweight 1-bit PNG (replaces JPEG composite)
+            mask_base64 = self._encode_mask(recipe.get('spatial_mask'), hex_color)
+            # Capture analysis resolution from the first recipe
+            if analysis_shape is None:
+                analysis_shape = recipe.get('analysis_shape')
             # Build structured paint recipe for each brand
             paint_recipe = self._build_paint_recipe(recipe, family, lab)
-            # Add color with reticle data and paintRecipe
+            # Add color with mask data and paintRecipe
             colors.append({
                 'rgb': [int(rgb[0]), int(rgb[1]), int(rgb[2])],
                 'lab': [float(lab[0]), float(lab[1]), float(lab[2])],
                 'hex': hex_color,
                 'percentage': float(recipe.get('dominance', 0)),
                 'family': family,
-                'reticle': reticle_base64,
+                'mask': mask_base64,
                 # Normalised (0-1) centre of this colour's region, so the frontend
-                # can draw a reticle at the real location on the full-colour image.
+                # can draw a numbered chip at the real location on the image.
                 'position': {
                     'x': float(recipe.get('position_x', 0.5)),
                     'y': float(recipe.get('position_y', 0.5)),
                 },
-                'paintRecipe': paint_recipe,  # NEW: Structured recipe per brand
+                'paintRecipe': paint_recipe,
             })
             # Legacy: Extract paint recommendations from base matches
             base_matches = recipe.get('base', {})
@@ -144,11 +146,9 @@ class MiniatureScannerService:
                     paint_key = f"{brand}-{match_data['name']}"
                     if paint_key not in seen_paints:
                         seen_paints.add(paint_key)
-                        # Get paint RGB from hex
                         paint_hex = match_data['hex']
                         paint_rgb = self._hex_to_rgb(paint_hex)
                         paint_lab = self._rgb_to_lab(paint_rgb)
-                        # Calculate Delta-E (CIEDE2000)
                         delta_e = ciede2000_single(paint_lab, lab)
                         paints.append({
                             'name': match_data['name'],
@@ -160,12 +160,21 @@ class MiniatureScannerService:
                             'lab': paint_lab,
                         })
         # Limit results
-        colors = colors[:5]  # Top 5 colors for miniatures
-        paints = paints[:12]  # Top 12 paint recommendations (legacy)
+        colors = colors[:5]
+        paints = paints[:12]
+        # Build mask_frame: analysis resolution metadata so the frontend can
+        # map the 1-bit masks onto the user's uploaded image.
+        mask_frame = None
+        if analysis_shape:
+            mask_frame = {
+                'height': int(analysis_shape[0]),
+                'width': int(analysis_shape[1]),
+            }
         return {
             'mode': mode,
             'colors': colors,
-            'paints': paints,  # Legacy format for backwards compatibility
+            'paints': paints,
+            'mask_frame': mask_frame,
             'metadata': {
                 'color_count': len(colors),
                 'paint_count': len(paints),
@@ -176,30 +185,25 @@ class MiniatureScannerService:
         """Build the structured per-brand recipe via the shared builder (graph-driven
         base/shade/highlight + graph-or-WashMapping wash)."""
         return build_paint_recipe(recipe, family, color_lab, self.wash_db)
-    def _encode_reticle(self, reticle_img, hex_color: str) -> Optional[str]:
-        """Encode reticle image as base64 JPEG"""
-        if reticle_img is None:
+    def _encode_mask(self, spatial_mask, hex_color: str) -> Optional[str]:
+        """Encode a boolean spatial mask as a 1-bit PNG (base64).
+        Typically 1–4 KB vs 50–100 KB for the old JPEG composite."""
+        if spatial_mask is None:
             return None
         try:
-            # Convert numpy array to JPEG bytes
-            if isinstance(reticle_img, np.ndarray):
-                # Ensure it's in BGR format for cv2
-                if len(reticle_img.shape) == 3:
-                    if reticle_img.shape[2] == 4:  # RGBA
-                        reticle_bgr = cv2.cvtColor(reticle_img, cv2.COLOR_RGBA2BGR)
-                    else:  # RGB
-                        reticle_bgr = cv2.cvtColor(reticle_img, cv2.COLOR_RGB2BGR)
-                else:
-                    # Grayscale
-                    reticle_bgr = reticle_img
-                # Encode as JPEG
-                encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 85]
-                _, buffer = cv2.imencode('.jpg', reticle_bgr, encode_param)
-                reticle_base64 = base64.b64encode(buffer).decode('utf-8')
-                logger.debug(f"Encoded reticle image ({len(reticle_base64)} bytes)")
-                return reticle_base64
+            if isinstance(spatial_mask, np.ndarray):
+                # Convert boolean mask to 8-bit for PIL (0 or 255)
+                mask_uint8 = (spatial_mask.astype(np.uint8)) * 255
+                img = Image.fromarray(mask_uint8, mode='L')
+                # Convert to 1-bit (dramatically smaller)
+                img = img.convert('1')
+                buf = io.BytesIO()
+                img.save(buf, format='PNG', optimize=True)
+                mask_b64 = base64.b64encode(buf.getvalue()).decode('utf-8')
+                logger.debug(f"Encoded mask for {hex_color} ({len(mask_b64)} bytes)")
+                return mask_b64
         except Exception as e:
-            logger.warning(f"Failed to encode reticle for {hex_color}: {e}")
+            logger.warning(f"Failed to encode mask for {hex_color}: {e}")
         return None
     def _hex_to_rgb(self, hex_color: str) -> List[int]:
         """Convert hex color to RGB"""

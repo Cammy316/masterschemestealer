@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const displayName = source.old_name ? `${source.name} (formerly ${source.old_name})` : source.name;
 
   const pageTitle = `${targetBrandName} Equivalent to ${source.brand} ${displayName} | SchemeStealer`;
-  const pageDescription = `Find the closest ${targetBrandName} alternative for ${source.brand} ${source.name}. Compare paint swatches and view color accuracy (\u0394E) to find the perfect drop-in substitute.`;
+  const pageDescription = `Find the closest ${targetBrandName} alternative for ${source.brand} ${source.name}. Compare paint swatches and view colour accuracy (\u0394E) to find the perfect drop-in substitute.`;
 
   return {
     title: pageTitle,
@@ -120,7 +120,7 @@ export default async function ConversionPage({ params }: Props) {
       "name": `What is the ${targetBrandName} equivalent to ${fullSourceName}?`,
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": `The closest ${targetBrandName} match for ${fullSourceName} is ${topMatch.name} with a color difference (\u0394E) of ${topMatch.delta_e}, making it a ${topMatch.band} drop-in replacement.`
+        "text": `The closest ${targetBrandName} match for ${fullSourceName} is ${topMatch.name} with a colour difference (\u0394E) of ${topMatch.delta_e}, making it a ${topMatch.band} drop-in replacement.`
       }
     }]
   } : null;

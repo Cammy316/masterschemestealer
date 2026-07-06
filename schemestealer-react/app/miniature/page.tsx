@@ -77,19 +77,30 @@ export default function MiniscanPage() {
     if (file) handleFileSelect(file);
   };
 
+  const offlineMode = useAppStore(s => s.offlineMode);
+  const setOfflineMode = useAppStore(s => s.setOfflineMode);
+
   // Display a subtle warm-up banner instead of gating the entire UI
-  const apiWarmupBanner = !apiReady && !isProcessing && (
+  const apiWarmupBanner = !apiReady && !isProcessing && !offlineMode && (
     <motion.div 
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-black/80 border border-green-500/50 rounded-full px-4 py-2 flex items-center gap-3 shadow-[0_0_10px_rgba(0,255,65,0.2)] backdrop-blur-sm"
+      className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-black/80 border border-green-500/50 rounded-full px-4 py-2 flex flex-col sm:flex-row items-center gap-3 shadow-[0_0_10px_rgba(0,255,65,0.2)] backdrop-blur-sm"
     >
-      <motion.div animate={{ rotate: 360 }} transition={{ duration: 2, repeat: Infinity, ease: 'linear' }} className="text-green-500">
-        ⚙
-      </motion.div>
-      <span className="text-xs text-green-500 tech-text uppercase tracking-widest">
-        Machine Spirit Waking (~60s)
-      </span>
+      <div className="flex items-center gap-3">
+        <motion.div animate={{ rotate: 360 }} transition={{ duration: 2, repeat: Infinity, ease: 'linear' }} className="text-green-500">
+          ⚙
+        </motion.div>
+        <span className="text-xs text-green-500 tech-text uppercase tracking-widest">
+          Machine Spirit Waking (~60s)
+        </span>
+      </div>
+      <button 
+        onClick={() => setOfflineMode(true)}
+        className="text-[10px] text-brass border border-brass/50 rounded px-2 py-1 hover:bg-brass/20 transition-colors uppercase font-bold tracking-widest mt-2 sm:mt-0"
+      >
+        USE LOCAL AUSPEX
+      </button>
     </motion.div>
   );
 

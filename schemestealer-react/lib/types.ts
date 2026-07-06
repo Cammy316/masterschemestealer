@@ -22,9 +22,10 @@ export interface Color {
   hex: string;
   percentage?: number; // % of image this color represents
   family?: string; // Color family (e.g., "Blue", "Gold", "Red")
-  reticle?: string | null; // Base64 encoded JPEG showing color location on miniature
+  reticle?: string | null; // Legacy: Base64 encoded JPEG showing color location on miniature
+  mask?: string | null; // Base64 encoded 1-bit PNG alpha mask (Auspex Reveal v2)
   position?: { x: number; y: number }; // Normalised (0-1) centre of this colour's region
-  paintRecipe?: PaintRecipe; // NEW: Structured recipe per brand
+  paintRecipe?: PaintRecipe; // Structured recipe per brand
   // Legacy support for old paint matches format (offline mode only)
   paintMatches?: {
     citadel: Paint[];
@@ -85,6 +86,8 @@ export interface ScanResult {
   detectedColors: Color[];
   recommendedPaints: Paint[];
   timestamp: string; // ISO 8601 — survives JSON.stringify in persist without type drift
+  // Mask alignment metadata: analysis resolution so frontend maps masks onto the image
+  maskFrame?: { width: number; height: number };
   // Which engine produced this result. 'local' = in-browser fallback (reduced
   // accuracy); defaults to 'backend'. Used for the results badge and ML logging.
   analysisSource?: 'backend' | 'local';
