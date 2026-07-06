@@ -134,8 +134,8 @@ class MiniatureScannerService:
                 # Normalised (0-1) centre of this colour's region, so the frontend
                 # can draw a numbered chip at the real location on the image.
                 'position': {
-                    'x': float(recipe.get('position_x', 0.5)),
-                    'y': float(recipe.get('position_y', 0.5)),
+                    'x': float(recipe.get('reticle_x', recipe.get('position_x', 0.5))),
+                    'y': float(recipe.get('reticle_y', recipe.get('position_y', 0.5))),
                 },
                 'paintRecipe': paint_recipe,
             })
