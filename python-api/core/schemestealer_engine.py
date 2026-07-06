@@ -401,6 +401,10 @@ class SchemeStealerEngine:
                 'position_x': position_x,
                 'position_y': position_y,
                 
+                # Visual reticle positioning
+                'reticle_x': float(reticle_pos[1] / width) if reticle_pos else position_x,
+                'reticle_y': float(reticle_pos[0] / height) if reticle_pos else position_y,
+                
                 # Context features (2 features)
                 'is_metallic': is_metallic
                 # is_detail already included above

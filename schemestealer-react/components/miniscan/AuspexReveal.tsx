@@ -101,33 +101,15 @@ export function AuspexReveal({
     // Draw base image
     ctx.drawImage(img, 0, 0);
 
-    // Apply dim + desaturate overlay (scanline CRT feel)
-    ctx.save();
-    ctx.globalCompositeOperation = 'source-atop';
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
-    ctx.fillRect(0, 0, w, h);
-    ctx.restore();
-
-    // Desaturate: draw the image again with saturation blend
-    ctx.save();
-    ctx.globalCompositeOperation = 'saturation';
-    ctx.fillStyle = 'hsl(0, 0%, 50%)';
-    ctx.fillRect(0, 0, w, h);
-    ctx.restore();
-
-    // Redraw original dimly as base
+    // Tactical dimming (dark cool tint)
     ctx.save();
     ctx.globalCompositeOperation = 'source-over';
-    ctx.globalAlpha = 0.3;
-    ctx.drawImage(img, 0, 0);
-    ctx.globalAlpha = 1;
-    ctx.restore();
+    ctx.fillStyle = 'rgba(5, 12, 10, 0.75)'; 
+    ctx.fillRect(0, 0, w, h);
 
     // Scanline texture
-    ctx.save();
-    ctx.globalCompositeOperation = 'source-over';
     for (let y = 0; y < h; y += 4) {
-      ctx.fillStyle = 'rgba(0, 255, 65, 0.02)';
+      ctx.fillStyle = 'rgba(0, 255, 65, 0.03)';
       ctx.fillRect(0, y, w, 1);
     }
     ctx.restore();
@@ -156,20 +138,31 @@ export function AuspexReveal({
         // Use the mask as a clip for the tint
         ctx.save();
         ctx.globalCompositeOperation = 'source-over';
-        ctx.globalAlpha = 0.45;
 
-        // Draw tinted region: first draw the original image through the mask
+        // Draw tinted region
         const tintCanvas = document.createElement('canvas');
         tintCanvas.width = w;
         tintCanvas.height = h;
         const tintCtx = tintCanvas.getContext('2d');
         if (tintCtx) {
-          // Fill with the colour's hex
+          // 1. Draw the actual image texture in the mask area
+          tintCtx.drawImage(img, 0, 0);
+          
+          // 2. Tint it with the color
+          tintCtx.globalCompositeOperation = 'color';
           tintCtx.fillStyle = color.hex;
           tintCtx.fillRect(0, 0, w, h);
-          // Use mask as alpha
+          
+          // 3. Add a slight color overlay to make it pop
+          tintCtx.globalCompositeOperation = 'overlay';
+          tintCtx.globalAlpha = 0.5;
+          tintCtx.fillRect(0, 0, w, h);
+          
+          // 4. Cut out everything outside the mask
           tintCtx.globalCompositeOperation = 'destination-in';
+          tintCtx.globalAlpha = 1.0;
           tintCtx.drawImage(tmpCanvas, 0, 0);
+          
           // Composite onto main canvas
           ctx.drawImage(tintCanvas, 0, 0);
         }
