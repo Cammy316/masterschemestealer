@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { scanMiniature, scanInspiration } from '@/lib/api';
 import { mlLogger } from '@/lib/mlDataLogger';
+import { useAppStore } from '@/lib/store';
 import { mapScanError, type ScanError } from '@/lib/errorMessages';
 import type { ScanMode, ScanResult } from '@/lib/types';
 
@@ -82,6 +83,12 @@ export function useScan(mode: ScanMode, options: UseScanOptions = {}): UseScanRe
 
       lastFileRef.current = file;
       revokePending(); // drop any prior uncommitted result's URL
+      
+      // If store is in offline mode, proactively skip the backend and preprocess
+      if (useAppStore.getState().offlineMode) {
+        return fallbackToOffline();
+      }
+
       setIsProcessing(true);
       setError(null);
 
@@ -126,7 +133,7 @@ export function useScan(mode: ScanMode, options: UseScanOptions = {}): UseScanRe
       await mlLogger.startScan(mode, file);
       // Dynamically import the offline engine + matcher (keeps them, and the
       // paint DB, out of the main bundle).
-      const [{ detectColorsOffline }, { enhanceWithMultiBrandMatches }] = await Promise.all([
+      const [{ detectColorsOffline }, { enhanceWithMultiBrandMatches, enhanceWithPaintRecipes }] = await Promise.all([
         import('@/lib/offlineColorDetection'),
         import('@/lib/paintMatcher'),
       ]);
@@ -135,6 +142,7 @@ export function useScan(mode: ScanMode, options: UseScanOptions = {}): UseScanRe
         numPaintMatches: 5,
       });
       scanResult = enhanceWithMultiBrandMatches(scanResult, 3); // analysisSource stays 'local'
+      scanResult = enhanceWithPaintRecipes(scanResult);
       completeWith(scanResult);
     } catch (err) {
       if (process.env.NODE_ENV === 'development') console.error('Local fallback error:', err);

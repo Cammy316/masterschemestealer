@@ -5,6 +5,11 @@ logger = logging.getLogger(__name__)
 
 _client = None
 
+if os.getenv("SUPABASE_URL") and os.getenv("SUPABASE_SERVICE_KEY"):
+    logger.info("PERSISTENCE: supabase")
+else:
+    logger.warning("PERSISTENCE: EPHEMERAL FILES")
+
 
 def get_supabase():
     """Return a Supabase client if configured, else None (falls back to file storage)."""

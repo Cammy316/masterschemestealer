@@ -5,7 +5,7 @@
 
 let defaultApiUrl = 'http://localhost:8000';
 if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
-  defaultApiUrl = `http://${window.location.hostname}:8000`;
+  defaultApiUrl = `https://${window.location.hostname}`;
 }
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || defaultApiUrl;
@@ -210,12 +210,17 @@ export const apiClient = {
    * Health check endpoint
    */
   async healthCheck(): Promise<boolean> {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
     try {
       const response = await fetch(`${API_BASE_URL}/`, {
         method: 'GET',
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
       return response.ok;
     } catch {
+      clearTimeout(timeoutId);
       return false;
     }
   },

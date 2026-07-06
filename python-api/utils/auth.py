@@ -13,5 +13,8 @@ from fastapi import Header, HTTPException
 
 def require_admin_key(x_admin_key: Optional[str] = Header(default=None)) -> None:
     expected = os.getenv("ANALYTICS_ADMIN_KEY")
+    if os.getenv("RENDER") == "true" and not expected:
+        raise HTTPException(status_code=403, detail="Admin key not configured in production")
+    
     if expected and x_admin_key != expected:
         raise HTTPException(status_code=403, detail="Forbidden")
