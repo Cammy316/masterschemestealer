@@ -58,6 +58,50 @@ def resolve_paint_db_path(path: str = CANONICAL_PAINT_DB) -> str:
     return candidate
 
 
+# Display-label bands per neutral family, ordered dark → light. Used by the
+# subdivision in _build_recipes_with_ml_features and the distinctness
+# tie-break below.
+_NEUTRAL_LABEL_BANDS = {
+    'Grey': ['Dark Grey', 'Grey', 'Light Grey'],
+    'White': ['Off-White', 'White'],
+}
+
+
+def _dedupe_neutral_display_labels(recipes: List[dict]) -> None:
+    """Guarantee that same-family neutral cards carry DISTINCT display labels.
+
+    The L* banding alone cannot promise this — two mid-band Greys both label
+    'Grey', two L*≥85 Whites both label 'White' — and two identical cards on
+    the results screen are exactly the confusion the subdivision exists to
+    solve. When a family's labels collide, its cards are re-assigned bands in
+    lightness order, keeping each card in its original band wherever possible
+    (a metallic-relabelled card — 'Silver' etc. — is not in the band set and
+    is never touched). Mutates recipes in place; display-only."""
+    from itertools import combinations
+
+    for fam, ordered in _NEUTRAL_LABEL_BANDS.items():
+        group = [r for r in recipes
+                 if r.get('heuristic_family') == fam and r.get('family') in ordered]
+        labels = [r['family'] for r in group]
+        if len(group) < 2 or len(set(labels)) == len(labels):
+            continue
+        if len(group) > len(ordered):
+            # More cards than bands cannot be made distinct — that is the
+            # family-fragmentation failure mode, guarded elsewhere.
+            continue
+        group.sort(key=lambda r: float(r['lab'][0]))
+        # Pick the band combination (indices strictly increasing, so
+        # lightness order is preserved) that keeps the most cards in the
+        # band their own L* put them in.
+        best_combo = max(
+            combinations(range(len(ordered)), len(group)),
+            key=lambda combo: sum(
+                1 for r, band_i in zip(group, combo)
+                if ordered.index(r['family']) == band_i))
+        for r, band_i in zip(group, best_combo):
+            r['family'] = ordered[band_i]
+
+
 def reproject_to_frame(col: float, row: float,
                        analysis_w: int, analysis_h: int,
                        crop_rect: Tuple[int, int, int, int],
@@ -370,7 +414,13 @@ class SchemeStealerEngine:
                     if modal in ('gold', 'silver', 'bronze'):
                         display_family = modal.capitalize()
 
-            if not is_metallic and family in ('Grey', 'White') and neutral_counts.get(family, 0) >= 2:
+            # Subdivide unless the metallic display relabel WON above
+            # (display_family changed to Silver/Gold/Bronze). Gating on the
+            # raw is_metallic flag was too broad: the specular detector
+            # over-triggers on edge-dense armour, and a flagged neutral that
+            # LOST the unanimity vote displays its chromatic family anyway —
+            # blocking subdivision gave two indistinguishable 'White' cards.
+            if display_family == family and family in ('Grey', 'White') and neutral_counts.get(family, 0) >= 2:
                 l_val = median_lab[0]
                 if family == 'Grey':
                     if l_val < 32:
@@ -459,7 +509,9 @@ class SchemeStealerEngine:
             }
             
             recipes.append(recipe)
-        
+
+        # Same-family neutral cards must never display identical labels.
+        _dedupe_neutral_display_labels(recipes)
         return recipes
 
     def _format_paint(self, paint, source: str = None, is_wash: bool = False):
