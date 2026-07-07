@@ -11,9 +11,10 @@ interface HexPaletteProps {
     percentage?: number;
   }[];
   title?: string;
+  onColorClick?: (index: number) => void;
 }
 
-export function HexPalette({ colors, title = '◆ DATA CORE EXTRACT ◆' }: HexPaletteProps) {
+export function HexPalette({ colors, title = '◆ DATA CORE EXTRACT ◆', onColorClick }: HexPaletteProps) {
   if (!colors || colors.length === 0) {
     return null;
   }
@@ -58,14 +59,15 @@ export function HexPalette({ colors, title = '◆ DATA CORE EXTRACT ◆' }: HexP
           >
             {/* Hex node container */}
             <motion.div
-              className="relative group cursor-crosshair"
+              className="relative group cursor-pointer"
+              onClick={() => onColorClick?.(index)}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
             >
               {/* Outer targeting bracket */}
               <motion.div 
                 className="absolute -inset-2 border border-cogitator-green/20 rounded-lg pointer-events-none"
-                animate={{ rotate: 360 }}
+                animate={{ rotate: [0, 360] }}
                 transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
                 style={{ 
                   clipPath: 'polygon(0 0, 20% 0, 20% 10%, 10% 10%, 10% 20%, 0 20%, 0 0, 80% 0, 100% 0, 100% 20%, 90% 20%, 90% 10%, 80% 10%, 80% 0, 100% 80%, 100% 100%, 80% 100%, 80% 90%, 90% 90%, 90% 80%, 100% 80%, 0 100%, 20% 100%, 20% 90%, 10% 90%, 10% 80%, 0 80%, 0 100%)' 
@@ -74,11 +76,12 @@ export function HexPalette({ colors, title = '◆ DATA CORE EXTRACT ◆' }: HexP
 
               {/* The actual color hex */}
               <div 
-                className="w-16 h-16 sm:w-20 sm:h-20 shadow-[0_0_15px_rgba(0,255,65,0.2)] flex items-center justify-center transition-all duration-300 group-hover:shadow-[0_0_25px_var(--cogitator-green)]"
+                className="w-16 h-16 sm:w-20 sm:h-20 shadow-[0_0_15px_rgba(0,255,65,0.2)] flex items-center justify-center transition-all duration-300 group-hover:shadow-[0_0_25px_var(--cogitator-green)] group-hover:animate-[pulse-glow_1s_ease-in-out_infinite]"
                 style={{
                   backgroundColor: color.hex,
                   clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
-                  border: '2px solid var(--cogitator-green)'
+                  border: '2px solid var(--cogitator-green)',
+                  color: color.hex, // pulse-glow needs currentColor
                 }}
               >
                 <div className="absolute inset-0 border-2 border-white/20" style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' }} />
