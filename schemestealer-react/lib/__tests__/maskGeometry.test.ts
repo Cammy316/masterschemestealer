@@ -8,7 +8,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { maskDestRect } from '../maskGeometry';
+import { maskDestRect, layoutRailCallouts } from '../maskGeometry';
 
 describe('maskDestRect', () => {
   it('places the mask inside its crop rectangle, scaled to the canvas', () => {
@@ -53,5 +53,71 @@ describe('maskDestRect', () => {
   it('degrades to the full canvas when maskFrame is absent entirely', () => {
     const rect = maskDestRect(undefined, 640, 480);
     expect(rect).toEqual({ x: 0, y: 0, w: 640, h: 480 });
+  });
+});
+
+describe('layoutRailCallouts', () => {
+  // The production symptom this replaces: five numbered chips stacked ON the
+  // model, overlapping each other. Chips must dock at the frame edges,
+  // never overlap, and keep top-to-bottom order matching their anchors.
+
+  const MIN_GAP = 0.12;
+  const PADDING = 0.07;
+
+  it('assigns each anchor to its nearest side', () => {
+    const out = layoutRailCallouts([
+      { x: 0.2, y: 0.3 },
+      { x: 0.8, y: 0.4 },
+      { x: 0.49, y: 0.6 },
+    ]);
+    expect(out[0].side).toBe('left');
+    expect(out[1].side).toBe('right');
+    expect(out[2].side).toBe('left');
+  });
+
+  it('enforces the minimum gap on a crowded rail', () => {
+    // Four anchors all on the left at nearly the same height — the pink
+    // horror's clustered-chip case.
+    const out = layoutRailCallouts([
+      { x: 0.3, y: 0.45 },
+      { x: 0.31, y: 0.46 },
+      { x: 0.32, y: 0.47 },
+      { x: 0.33, y: 0.48 },
+    ]);
+    const ys = out.map((c) => c.railY).sort((a, b) => a - b);
+    for (let i = 1; i < ys.length; i++) {
+      expect(ys[i] - ys[i - 1]).toBeGreaterThanOrEqual(MIN_GAP - 1e-9);
+    }
+  });
+
+  it('keeps every chip inside the padded band even when crowded at the bottom', () => {
+    const out = layoutRailCallouts([
+      { x: 0.7, y: 0.95 },
+      { x: 0.72, y: 0.96 },
+      { x: 0.74, y: 0.97 },
+      { x: 0.76, y: 0.98 },
+    ]);
+    for (const c of out) {
+      expect(c.railY).toBeGreaterThanOrEqual(PADDING - 1e-9);
+      expect(c.railY).toBeLessThanOrEqual(1 - PADDING + 1e-9);
+    }
+  });
+
+  it('preserves top-to-bottom anchor order within a rail', () => {
+    const out = layoutRailCallouts([
+      { x: 0.2, y: 0.8 },
+      { x: 0.25, y: 0.2 },
+      { x: 0.3, y: 0.5 },
+    ]);
+    const byAnchor = [...out].sort((a, b) => a.anchorY - b.anchorY);
+    for (let i = 1; i < byAnchor.length; i++) {
+      expect(byAnchor[i].railY).toBeGreaterThan(byAnchor[i - 1].railY);
+    }
+  });
+
+  it('a lone anchor keeps its own height', () => {
+    const [c] = layoutRailCallouts([{ x: 0.6, y: 0.42 }]);
+    expect(c.railY).toBeCloseTo(0.42, 5);
+    expect(c.side).toBe('right');
   });
 });
