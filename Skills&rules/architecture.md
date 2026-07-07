@@ -155,7 +155,7 @@ detected colour; the frontend renders it through one shared card driven by a `mo
 | `routes/ml_data.py` | `/api/ml/*` — scan/colour/behaviour/feedback logging to Supabase or local files. |
 | `routes/analytics.py` | `/api/analytics/*` — page/scan/ko-fi events to Supabase or daily CSV. |
 | `utils/supabase_client.py` | Lazy Supabase client from `SUPABASE_URL` + `SUPABASE_SERVICE_KEY`; absent → silent file fallback. |
-| `utils/auth.py` | `require_admin_key` — guards aggregate reads **only when `ANALYTICS_ADMIN_KEY` is set** (open by default, §9-P1). |
+| `utils/auth.py` | `require_admin_key` — guards aggregate reads. **Fail-closed on Render** (403 until `ANALYTICS_ADMIN_KEY` is set in the dashboard); open only in local dev. |
 | `utils/helpers.py` | Auto white balance: near-neutral (grey-pixel) illuminant estimation + CAT16 partial adaptation D=0.7 in linear light; skips when <2% neutral evidence. The old shades-of-grey design is gone (it injected ~10 ΔE00 on clean paint photos). |
 
 **HTTP surface**
@@ -250,16 +250,17 @@ Zustand 5.
 /forge                   Inventory (HexGrid), Forge Mix (Alchemy Crucible), Requisition Cart
 /convert/[conversionSlug]  programmatic SEO conversion pages — LIVE (static params,
                            FAQ JSON-LD, OG images, SwatchCompare/DeltaEBadge)
-/paints/[brand]/[slug]   programmatic SEO paint pages — STUB ("UI GENERATION PAUSED"),
-                         statically generated and crawlable but thin (§9-P2)
+/paints/[brand]/[slug]   programmatic SEO paint pages — LIVE since the Phase 0 commits
+                         (SwatchCompare/DeltaEBadge/CopyHexBadge, in the sitemap)
 ```
 
-`app/sitemap.ts` covers home/miniature/inspiration/forge + `/convert/...` but **omits the
-`/paints` routes**; `app/robots.ts` allows all, disallows `/api/`. `app/error.tsx` and
-`app/not-found.tsx` exist. Navigation is a fixed bottom bar; linear `router.push()` only.
-Both results pages are refresh-safe (fall back to persisted `scanHistory`, then a themed
-empty state — never a 404). `layout.tsx` references `/manifest.json`, **which does not
-exist** — the PWA manifest 404s (§9-P0).
+`app/sitemap.ts` covers home/miniature/inspiration/forge + `/convert/...` + `/paints/...`
+(added in the Phase 0 commits); `app/robots.ts` allows all, disallows `/api/`.
+`app/error.tsx` and `app/not-found.tsx` exist. Navigation is a fixed bottom bar; linear
+`router.push()` only. Both results pages are refresh-safe (fall back to persisted
+`scanHistory`, then a themed empty state — never a 404). `app/manifest.ts` + next-pwa are
+wired and `public/icons/` ships generated placeholder icons (2026-07-07) — real brand art
+still wanted.
 
 **Zustand store** (`lib/store.ts`)
 
@@ -278,25 +279,22 @@ Notable hygiene:
 `AbortController` cancels in-flight scans on unmount; `apiClient` enforces per-request
 timeouts (120 s for scans to cover cold start) and raises a typed `ApiError`. On backend
 failure the hook can fall back to in-browser offline detection — the offline engine and
-matcher are dynamically imported to stay out of the main bundle. Two gaps: `healthCheck()`
-does a bare fetch with no timeout, and `API_BASE_URL` falls back to plain
-`http://localhost:8000` when `NEXT_PUBLIC_API_URL` is unset (§9-P2).
+matcher are dynamically imported to stay out of the main bundle. `healthCheck()` now
+carries an 8 s abort and the no-env `API_BASE_URL` fallback is HTTPS-only (Phase 0) —
+note the HTTPS default means LAN-IP device testing requires `NEXT_PUBLIC_API_URL`.
 
-**Offline fallback parity gap:** offline scans call `enhanceWithMultiBrandMatches` only
-(`useScan.ts:137`), producing the legacy flat `paintMatches` shape, so they render through
-the old `PaintResults` list — never the structured `PaintRecipeCard`.
-`enhanceWithPaintRecipes` exists with zero call sites (§9-P1). The offline paint DB
+**Offline parity:** offline scans run `enhanceWithPaintRecipes` (wired in Phase 0), so
+they render through the shared `PaintRecipeCard` like backend scans. The offline paint DB
 (`lib/paintDatabase.ts`, generated) carries all **1,312** paints — full parity with the
-backend DB (the old 982-vs-3,022 gap is closed; one stale "3,022-paint" comment survives
-at `lib/paintMatcher.ts:228`).
+backend DB.
 
 **Cold-start gate** (`hooks/useApiReady.ts`)
 
 Polls `/api/ready` every 5 s, backing off to 30 s after 5 minutes, 4 s per-poll timeout,
 continue-on-error. Pages render a themed "machine spirit awakening" / "warp conduit
-stabilising" overlay until ready. A "USE LOCAL AUSPEX" offline button exists but only
-inside the retryable-error state — there is **no proactive skip-to-offline** during the
-warm-up wait itself (§9-P1).
+stabilising" overlay until ready. The warm-up overlay carries a proactive
+"USE LOCAL AUSPEX" button (Phase 0) that flips the store to offline mode immediately;
+the same button still appears in the retryable-error state.
 
 **Shared recipe card** (`components/shared/PaintRecipeCard.tsx`)
 
@@ -356,64 +354,84 @@ no third-party pixels.
 - **Testing:** 20 backend pytest files (`python-api/tests/`, run with `USE_REAL_CV2=1`),
   frontend vitest (parity fixtures + store races + colour maths) plus Playwright specs.
   Canonical local command: `.\run_all_tests.ps1` (requires PowerShell 7 — the script's
-  UTF-8 em dashes break Windows PowerShell 5.1 parsing). CI runs only the classifier-parity
-  fixture test (`.github/workflows/color-classifier.yml`), not the full suites (§9-P2).
+  UTF-8 em dashes break Windows PowerShell 5.1 parsing). CI runs the full pytest + vitest
+  suites (`.github/workflows/ci.yml`, Phase 0) plus the classifier-parity gate
+  (`color-classifier.yml`).
 - **Offline fallback is a parallel, simpler implementation** of detection + recipe
   derivation; explicitly non-authoritative (and currently renders a degraded results view,
   §9-P1).
 
 ---
 
-## 9. Known Issues & Debt Register (audit 2026-07-06)
+## 9. Known Issues & Debt Register (audit 2026-07-06, updated 2026-07-07)
 
-Prioritised. These are documented here for separate, approved fix prompts — none were
-changed during the audit except the P3 dead-file deletions noted as resolved.
+Prioritised. Most of the original P0–P2 items were closed by the Phase 0 hardening
+commits (`d53cc1a`..`b5ca2e9`) and the 2026-07-07 follow-up fixes; strikethrough = done.
 
-### P0 — fix before anything else
-1. **Ephemeral data loss / silent fallback.** No Supabase env vars in `render.yaml`; if
-   `SUPABASE_URL`/`SUPABASE_SERVICE_KEY` are missing from the Render dashboard, every
-   ML/analytics/feedback write lands on the ephemeral disk and is wiped on deploy, while
-   the API returns 200 regardless (`utils/supabase_client.py:30`, `routes/ml_data.py`
-   fallback paths). Fix: set the secrets, and log loudly (or fail health) when running in
-   file-fallback mode in production.
-2. **Broken PWA manifest.** `app/layout.tsx:38` references `/manifest.json`; no manifest
-   exists → guaranteed 404, the app is not installable. Directly undermines the
-   "desk companion" product strategy. Fix: ship `app/manifest.ts`.
+### Operator actions still required (Render dashboard — not code)
+- **Set `SUPABASE_URL` + `SUPABASE_SERVICE_KEY`.** Until then every ML/analytics write
+  lands on the ephemeral disk and dies on deploy. Check `GET /api/ready` →
+  `"persistence": "supabase"`; the lifespan log also announces the active mode.
+- **Set `ANALYTICS_ADMIN_KEY`.** The gate is fail-closed on Render — `/api/ml/stats` and
+  `/api/analytics/summary` return **403** until it exists.
 
-### P1 — high value, small-to-medium effort
-3. **Admin gate open by default.** `require_admin_key` (`utils/auth.py:15`) only enforces
-   when `ANALYTICS_ADMIN_KEY` is set; unset in prod = `/api/ml/stats` and
-   `/api/analytics/summary` are world-readable. Fix: set the key; consider failing closed.
+### Resolved
+1. ~~Silent ephemeral fallback~~ — persistence mode now surfaced in `/api/ready`, logged
+   loudly from lifespan (2026-07-07 moved it after logging config so the INFO line is
+   visible), and documented in `render.yaml`. Durability itself still needs the dashboard
+   secrets above.
+2. ~~Broken PWA manifest~~ — `app/manifest.ts` + next-pwa shipped (Phase 0); the missing
+   `public/icons/` PNGs generated 2026-07-07 (placeholder art — replace with brand art).
+3. ~~Admin gate open by default~~ — fail-closed on Render + `tests/test_auth.py` (Phase 0).
+6. ~~Offline recipe parity gap~~ — `enhanceWithPaintRecipes` wired (Phase 0).
+7. ~~No proactive offline escape hatch~~ — "USE LOCAL AUSPEX" during warm-up (Phase 0).
+8. ~~CI gap~~ — `.github/workflows/ci.yml` runs full pytest + vitest (Phase 0).
+9. ~~`healthCheck()` timeout / plain-http fallback~~ — 8 s abort + HTTPS-only default
+   (Phase 0). Note: LAN-IP device testing now requires `NEXT_PUBLIC_API_URL`.
+10. ~~No security headers~~ — nosniff/frame-deny/referrer headers in `next.config.ts`
+    (Phase 0). CSP/HSTS still absent (open, minor).
+11. ~~British-English SEO violations~~ — fixed (Phase 0).
+12. ~~`/paints` stub + sitemap omission~~ — pages completed and in the sitemap (Phase 0).
+21. ~~CORS allowed ANY `*.vercel.app` with credentials~~ (introduced by 84d6cd9) —
+    narrowed 2026-07-07 to `schemestealer[a-z0-9-]*\.vercel\.app`. **Confirm the exact
+    preview hostname pattern against a real preview URL.**
+22. ~~Auspex Reveal spatial contract broken~~ (axis-swapped reticles, opaque 1-bit masks,
+    dropped crop offset) — rebuilt 2026-07-07: `reproject_to_frame` +
+    `crop_rect`/`frame_shape` in `mask_frame`, RGBA alpha masks, crop-rect compositing in
+    `AuspexReveal`/`lib/maskGeometry.ts`. Locked by `tests/test_spatial_contract.py` +
+    `lib/__tests__/maskGeometry.test.ts`.
+23. ~~Manufactured dark "Brown" card evicting vivid details~~ — darker-half base-coat
+    bias constrained to classifier-neutral clusters + vividness-protected display cap
+    (`config.Display`), 2026-07-07. Locked by `tests/test_display_cap.py`, bias tests in
+    `test_extraction_consistency.py`, and displayed-five guards in `test_real_scans.py`.
+24. ~~Mixed-encoding `schemestealer-react/.gitignore`~~ — the playwright-report/
+    test-results patterns were appended as UTF-16 (unparseable by git, which is why test
+    artifacts kept getting committed); rewritten as UTF-8, artifacts + `data/ml`/
+    `data/analytics`/`logs` untracked, stray `fix.js` codemod deleted (2026-07-07).
+
+### Still open
 4. **Spoofable rate limits on anonymous writers.** slowapi keys off client IP with
    `--forwarded-allow-ips="*"` — the ML/analytics ingest endpoints are floodable /
    poisonable best-effort only. Mitigation options: pin Render's proxy hops, add a shared
    client token, or cap per-session volume server-side.
 5. **Blocking file I/O in async handlers** (`routes/ml_data.py`, `routes/analytics.py`
    file-fallback mode) stalls the single event loop; wrap in `run_in_executor` or make the
-   fallback fully async.
-6. **Offline recipe parity gap.** `useScan.ts:137` never calls `enhanceWithPaintRecipes`,
-   so offline users get the legacy flat list instead of the shared recipe card.
-7. **No proactive offline escape hatch** during cold-start warm-up (the "USE LOCAL AUSPEX"
-   button only appears after a retryable failure).
-
-### P2 — correctness/polish
-8. **CI gap:** only the classifier-parity fixture test runs in CI; the other ~19 backend
-   test files and the rest of vitest run locally only.
-9. **`healthCheck()` has no timeout** (`lib/apiClient.ts:212-221`); **`API_BASE_URL` falls
-   back to plain `http://`** when `NEXT_PUBLIC_API_URL` is unset — mixed-content/hang risk.
-10. **No security headers / middleware** — `next.config.ts` is three lines.
-11. **British-English violations on the SEO surface:** `/convert` pages + OG images
-    (~18× "color"), `ForgeMixTab.tsx` "ALL COLORS".
-12. **`/paints/[brand]/[slug]` is a crawlable stub** and absent from `sitemap.ts` — either
-    finish it or `noindex` it until finished.
+   fallback fully async. (Moot once Supabase secrets are set.)
 13. **`run_all_tests.ps1` is PowerShell-7-only** (UTF-8 em dashes break PS 5.1's parser).
 14. **Pre-existing failing test on `main`:** `tests/test_real_scans.py::
     test_complex_neutral_display_labels` — the complex.png fixture now yields a single
     Grey card (7.7%), so the neutral subdivision (which needs ≥2 same-family neutral
     clusters) never fires and the expected Dark/Light Grey split is absent. Verified
-    unrelated to the 2026-07-06 cleanup (fails identically with the deleted files
-    restored). Either the extraction changed under this fixture since the test was
-    written, or the assertion over-specifies — needs a decision, not a blind fix.
+    unrelated to the cleanup and to the 2026-07-07 fixes. Either the extraction changed
+    under this fixture since the test was written, or the assertion over-specifies —
+    needs a decision, not a blind fix.
+25. **Stale harness baseline for clustering recovery.** `baseline_harness.json` (frozen
+    2026-07-03 11:12) predates d69686e's union-median extraction; module 3 now measures
+    `region_recovery_rate` 0.96 vs the recorded 1.0 — the `monochrome_greens` scene's
+    light-green plant merges into the mid-green ramp card (arguably by-design under
+    "one surface = one card"). Verified pre-existing at HEAD without the 2026-07-07
+    changes. Decide: re-freeze the baseline or adjust the scene.
+26. **PWA icons are generated placeholders** — replace with real brand art when it exists.
 
 ### P3 — hygiene (partially resolved by the 2026-07-06 cleanup)
 15. ~~20 tracked `.pyc`/`__pycache__` files (incl. an orphan for the deleted
@@ -435,7 +453,8 @@ changed during the audit except the P3 dead-file deletions noted as resolved.
     `skimage FutureWarning` (`bbox_area`) at `core/base_detector.py:120`.
 
 ### In-flight work (not debt, just unfinished)
-- **Auspex Reveal v2** (resilient-storm Part 2): mask-based reveal compositor — not
-  started; `services/miniature_scanner.py` still composites reticle JPEGs server-side.
+- **Auspex Reveal v2 shipped** (Phase 0 commits) and its spatial contract was rebuilt
+  2026-07-07 (item 22): the backend emits alpha masks + crop geometry, the frontend
+  composites client-side. The old server-side reticle JPEG path is gone.
 - **Premium tier re-enable path** documented in `PaintRecipeCard.tsx:180-191` (drop the
   `!b.isPremium` filter once payments exist).

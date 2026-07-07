@@ -103,6 +103,8 @@ async def _await_scanner_ready(timeout: int = 250):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    from utils.supabase_client import log_persistence_mode
+    log_persistence_mode()  # after logging is configured, so INFO is visible
     t = threading.Thread(target=_prewarm, daemon=True, name="scanner-prewarm")
     t.start()
     yield
@@ -127,7 +129,10 @@ app.add_middleware(
         "https://schemestealer.vercel.app",
         "http://localhost:3000",
     ],
-    allow_origin_regex=r"^(http://(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2[0-9]|3[0-1])\.\d+\.\d+|localhost):\d+|https://.*\.vercel\.app)$",
+    # Vercel previews are pinned to THIS project's hostnames
+    # (schemestealer-<hash>-<scope>.vercel.app). A bare .*\.vercel\.app would
+    # let any Vercel-hosted site make credentialed calls to this API.
+    allow_origin_regex=r"^(http://(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2[0-9]|3[0-1])\.\d+\.\d+|localhost):\d+|https://schemestealer[a-z0-9-]*\.vercel\.app)$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
