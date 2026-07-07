@@ -23,8 +23,8 @@ export interface Color {
   percentage?: number; // % of image this color represents
   family?: string; // Color family (e.g., "Blue", "Gold", "Red")
   reticle?: string | null; // Legacy: Base64 encoded JPEG showing color location on miniature
-  mask?: string | null; // Base64 encoded 1-bit PNG alpha mask (Auspex Reveal v2)
-  position?: { x: number; y: number }; // Normalised (0-1) centre of this colour's region
+  mask?: string | null; // Base64 encoded RGBA PNG whose ALPHA channel is the region (Auspex Reveal v2)
+  position?: { x: number; y: number }; // Normalised (0-1) marker point on the FULL uploaded frame
   paintRecipe?: PaintRecipe; // Structured recipe per brand
   // Legacy support for old paint matches format (offline mode only)
   paintMatches?: {
@@ -78,6 +78,22 @@ export interface Paint {
   deltaE?: number; // Distance from detected color (when used as a match)
 }
 
+// Spatial geometry for compositing masks onto the uploaded image. Masks are
+// analysis-resolution (width×height) and cover only the alpha-bbox CROP of
+// the full frame — cropX/Y/W/H locate that crop in frame pixels and
+// frameW/frameH are the full frame dims. Older responses lack the crop
+// fields; consumers fall back to treating the mask as full-frame.
+export interface MaskFrame {
+  width: number;
+  height: number;
+  cropX?: number;
+  cropY?: number;
+  cropW?: number;
+  cropH?: number;
+  frameW?: number;
+  frameH?: number;
+}
+
 export interface ScanResult {
   id: string;
   mode: ScanMode;
@@ -86,8 +102,8 @@ export interface ScanResult {
   detectedColors: Color[];
   recommendedPaints: Paint[];
   timestamp: string; // ISO 8601 — survives JSON.stringify in persist without type drift
-  // Mask alignment metadata: analysis resolution so frontend maps masks onto the image
-  maskFrame?: { width: number; height: number };
+  // Mask alignment metadata so the frontend maps masks onto the image
+  maskFrame?: MaskFrame;
   // Which engine produced this result. 'local' = in-browser fallback (reduced
   // accuracy); defaults to 'backend'. Used for the results badge and ML logging.
   analysisSource?: 'backend' | 'local';

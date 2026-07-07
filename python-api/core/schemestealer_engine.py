@@ -58,6 +58,24 @@ def resolve_paint_db_path(path: str = CANONICAL_PAINT_DB) -> str:
     return candidate
 
 
+def reproject_to_frame(col: float, row: float,
+                       analysis_w: int, analysis_h: int,
+                       crop_rect: Tuple[int, int, int, int],
+                       frame_shape: Tuple[int, int]) -> Tuple[float, float]:
+    """Map an analysis-space pixel (col, row) — a point on the alpha-bbox-
+    cropped, RESIZE_WIDTH-wide analysis image — to normalised (x, y) on the
+    FULL uploaded frame, which is the image the frontend composites onto.
+
+    ``col`` maps to x and ``row`` to y, always: the production marker bug was
+    an axis swap here (row/width fed to x), which pushed chips off-frame on
+    portrait crops."""
+    crop_x, crop_y, crop_w, crop_h = crop_rect
+    frame_h, frame_w = frame_shape
+    fx = (crop_x + (col / analysis_w) * crop_w) / frame_w
+    fy = (crop_y + (row / analysis_h) * crop_h) / frame_h
+    return float(np.clip(fx, 0.0, 1.0)), float(np.clip(fy, 0.0, 1.0))
+
+
 class SchemeStealerEngine:
     def __init__(self, paint_db_path: str = CANONICAL_PAINT_DB):
         logger.info(f"Initializing SchemeStealer Engine v2.6 (ML-Enhanced)")
@@ -187,11 +205,17 @@ class SchemeStealerEngine:
             x, y, w, h = cv2.boundingRect(coords)
             cropped_rgba = img_rgba[y:y+h, x:x+w]
             cropped_original = img_np[y:y+h, x:x+w]
+            # The frontend composites masks/markers onto the UNCROPPED
+            # uploaded image — record where the analysed crop sits in it.
+            crop_rect = (x, y, w, h)
+            frame_shape = img_rgba.shape[:2]
         else:
             h, w = img_np.shape[:2]
             alpha = np.ones((h, w), dtype=np.uint8) * 255
             cropped_rgba = np.dstack([img_np, alpha])
             cropped_original = img_np
+            crop_rect = (0, 0, w, h)
+            frame_shape = (h, w)
 
         # 4. Resize for analysis
         height, width = cropped_rgba.shape[:2]
@@ -211,7 +235,8 @@ class SchemeStealerEngine:
         
         # 7. Build Recipes with FULL ML FEATURES
         recipes = self._build_recipes_with_ml_features(
-            colors, resized_original, mini_mask, brands, new_w, new_h
+            colors, resized_original, mini_mask, brands, new_w, new_h,
+            crop_rect=crop_rect, frame_shape=frame_shape
         )
         recipes.sort(key=lambda x: (x.get('is_detail', False), -x['dominance']))
         
@@ -219,7 +244,9 @@ class SchemeStealerEngine:
 
     def _build_recipes_with_ml_features(self, colors: List[Dict], img_rgb: np.ndarray,
                       mini_mask: np.ndarray, brands: List[str],
-                      width: int, height: int) -> List[dict]:
+                      width: int, height: int,
+                      crop_rect: Tuple[int, int, int, int] = None,
+                      frame_shape: Tuple[int, int] = None) -> List[dict]:
         """
         Build recipes with comprehensive ML features
         
@@ -228,7 +255,16 @@ class SchemeStealerEngine:
         - Chroma, Coverage, Brightness_STD = 3 texture features
         - Position_Y, Is_Metallic, Is_Detail = 3 context features
         - Plus all the UI/matching data for display
+
+        crop_rect/frame_shape locate the analysed crop in the FULL uploaded
+        frame; reticle_x/reticle_y are emitted in full-frame normalised
+        coordinates (the space the frontend composites in). position_x/y
+        stay in analysis space — they are logged ML features.
         """
+        if crop_rect is None:
+            crop_rect = (0, 0, width, height)
+        if frame_shape is None:
+            frame_shape = (height, width)
         recipes = []
         
         neutral_counts = {}
@@ -368,8 +404,18 @@ class SchemeStealerEngine:
                 position_y = 0.5
                 position_x = 0.5
 
-            # Find optimal reticle position (for numbered chip placement)
+            # Find optimal reticle position (for numbered chip placement).
+            # find_optimal_reticle_position returns (x=col, y=row); reproject
+            # into FULL-FRAME normalised coords for the frontend.
             reticle_pos = self.viz_engine.find_optimal_reticle_position(spatial_mask)
+            if reticle_pos:
+                reticle_x, reticle_y = reproject_to_frame(
+                    reticle_pos[0], reticle_pos[1], width, height,
+                    crop_rect, frame_shape)
+            else:
+                reticle_x, reticle_y = reproject_to_frame(
+                    position_x * width, position_y * height, width, height,
+                    crop_rect, frame_shape)
 
             # Build comprehensive recipe with ML features
             recipe = {
@@ -384,6 +430,8 @@ class SchemeStealerEngine:
                 'shade_type': shade_type,
                 'spatial_mask': spatial_mask,   # raw boolean mask for client-side compositing
                 'analysis_shape': (height, width),  # analysis resolution for mask alignment
+                'crop_rect': crop_rect,         # (x, y, w, h) of the analysed crop in the full frame
+                'frame_shape': frame_shape,     # (h, w) of the full uploaded frame
                 'rgb_preview': median_rgb.astype(int),
                 'is_detail': color_data.get('is_detail', False),
                 
@@ -401,9 +449,9 @@ class SchemeStealerEngine:
                 'position_x': position_x,
                 'position_y': position_y,
                 
-                # Visual reticle positioning
-                'reticle_x': float(reticle_pos[1] / width) if reticle_pos else position_x,
-                'reticle_y': float(reticle_pos[0] / height) if reticle_pos else position_y,
+                # Visual reticle positioning — FULL-FRAME normalised (0-1)
+                'reticle_x': reticle_x,
+                'reticle_y': reticle_y,
                 
                 # Context features (2 features)
                 'is_metallic': is_metallic

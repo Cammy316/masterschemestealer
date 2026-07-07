@@ -7,7 +7,7 @@
  * and `instanceof ApiError` holds across module boundaries.
  */
 
-import type { ScanResult, Color, Paint } from './types';
+import type { ScanResult, Color, Paint, MaskFrame } from './types';
 import { generateScanId } from './utils';
 import { apiClient } from './apiClient';
 import { compressImage } from './imageUtils';
@@ -21,7 +21,7 @@ const PAINTS_TIMEOUT_MS = 30_000;
 interface ScanResponse {
   colors?: Color[];
   paints?: Paint[];
-  mask_frame?: { width: number; height: number };
+  mask_frame?: MaskFrame;
 }
 
 /**

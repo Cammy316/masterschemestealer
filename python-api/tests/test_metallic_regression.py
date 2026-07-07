@@ -89,6 +89,22 @@ def test_pink_figure_produces_no_metal_families(extractor):
     assert not dominant.get("is_metallic"), "dominant cluster flagged metallic"
 
 
+def test_pink_figure_recovers_the_yellow_beak(extractor):
+    """Why it matters: the scene paints a small high-chroma yellow beak
+    ((200,160,40), ~2% coverage). In production the beak was detected but a
+    manufactured dark 'Brown' card evicted it from the displayed colours —
+    the extractor must always surface it as a vivid Yellow cluster."""
+    img, mask = _pink_figure_scene()
+    clusters = extractor.extract_colors(img, mask)
+
+    yellows = [c for c in clusters if c["family"] == "Yellow"]
+    assert yellows, (
+        f"yellow beak lost: "
+        f"{[(c['family'], round(c['coverage'], 1)) for c in clusters]}")
+    assert max(c["chroma"] for c in yellows) > 40, (
+        "beak recovered but washed out — chroma must stay vivid")
+
+
 def test_matte_gradient_is_not_metallic_but_sparkle_is(extractor):
     """The core detector contract: a smooth lit-to-shadow gradient (huge
     cluster-wide brightness spread, tiny local variance) is MATTE; a

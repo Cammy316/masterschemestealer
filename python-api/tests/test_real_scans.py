@@ -202,8 +202,99 @@ def test_pinkhorror_union_median_accuracy(engine):
     recipes = _scan(engine, "pinkhorror")
     pink_cards = [r for r in recipes if (r.get("heuristic_family") or "").lower() in {"pink", "magenta"}]
     assert pink_cards, "no pink/magenta cards detected on pinkhorror"
-    
+
     best_card = max(pink_cards, key=lambda x: x.get("dominance", 0))
     assert best_card.get("chroma", 0) > 15.0, (
         f"Pink card chroma too low ({best_card.get('chroma')} <= 15), union-median failed to preserve saturation."
     )
+
+
+# ---------------------------------------------------------------------------
+# Displayed-response guards: what the USER sees (through _format_results),
+# not just what the engine detects. The production regression detected the
+# yellow beak but let a manufactured dark 'Brown' card evict it from the
+# five displayed colours.
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope="module")
+def scanner():
+    from services.miniature_scanner import MiniatureScannerService
+    return MiniatureScannerService()
+
+
+def _load_rgba_keyed(path: Path) -> np.ndarray:
+    """Approximate the PRODUCTION input (client-side ML background removal)
+    with a border-seeded flood-fill key. grabCut-with-rect (the `_load_rgba`
+    loader) keeps large backdrop regions as probable-foreground on these
+    studio shots (measured: 61% backdrop on pinkhorror), which fabricates
+    grey/white major cards that don't exist in the live flow — useless for
+    display-slot assertions. The studio backdrops are smooth, so the flood
+    key recovers a near-production mask (verified against the committed
+    production scan trace for capturepink)."""
+    img = Image.open(path)
+    if img.mode == "RGBA":
+        rgba = np.asarray(img)
+        if (rgba[:, :, 3] < 128).mean() > 0.02:
+            return rgba
+
+    rgb = np.asarray(img.convert("RGB"))
+    h, w = rgb.shape[:2]
+    ff_mask = np.zeros((h + 2, w + 2), np.uint8)
+    seeds = [(0, 0), (w - 1, 0), (0, h - 1), (w - 1, h - 1),
+             (w // 2, 0), (w // 2, h - 1), (0, h // 2), (w - 1, h // 2)]
+    scratch = rgb.copy()
+    for seed in seeds:
+        if ff_mask[seed[1] + 1, seed[0] + 1]:
+            continue
+        cv2.floodFill(scratch, ff_mask, seed, 0,
+                      loDiff=(10,) * 3, upDiff=(10,) * 3,
+                      flags=cv2.FLOODFILL_MASK_ONLY | 8)
+    fg = (~ff_mask[1:-1, 1:-1].astype(bool)).astype(np.uint8)
+    n, labels, stats, _ = cv2.connectedComponentsWithStats(fg, connectivity=8)
+    if n > 1:
+        largest = 1 + int(np.argmax(stats[1:, cv2.CC_STAT_AREA]))
+        fg = (labels == largest).astype(np.uint8)
+
+    fraction = fg.mean()
+    if not 0.05 <= fraction <= 0.6:
+        pytest.skip(f"{path.name}: flood key implausible "
+                    f"(foreground {fraction:.0%}) — cannot emulate the "
+                    f"production mask for a display-slot assertion")
+    return np.dstack([rgb, (fg * 255).astype(np.uint8)])
+
+
+def _scan_response(scanner, name: str) -> dict:
+    path = _find(name)
+    if path is None:
+        pytest.skip(f"real-photo fixture missing: {_FIXTURES / name}.png")
+    rgba = _load_rgba_keyed(path)
+    return scanner.scan(Image.fromarray(rgba))
+
+
+def test_yellow_beak_survives_the_displayed_five(scanner):
+    """The figure's beak is a real painted detail (vivid yellow). It must be
+    among the displayed colours — the production failure showed Pink,
+    Magenta, White, Cyan and a dark shadow 'Brown' instead.
+
+    capturepink only: the pinkhorror fixture is a 225px thumbnail whose beak
+    sits below reliable extraction resolution."""
+    result = _scan_response(scanner, "capturepink")
+    families = [(c.get("family") or "").lower() for c in result["colors"]]
+    assert "yellow" in families, (
+        f"capturepink: yellow beak missing from displayed colours: {families}")
+
+
+@pytest.mark.parametrize("fixture_name", ["capturepink", "pinkhorror"])
+def test_no_manufactured_dark_card_is_displayed(scanner, fixture_name):
+    """The darker-half-bias signature: a displayed 'Brown' that is dark and
+    near-neutral (L<30, LAB chroma<15) is a shadow artefact, not a paint —
+    this figure has no such painted surface."""
+    import math as _math
+    result = _scan_response(scanner, fixture_name)
+    for c in result["colors"]:
+        L, a, b = c["lab"]
+        chroma = _math.hypot(a, b)
+        assert not ((c.get("family") or "").lower() == "brown"
+                    and L < 30.0 and chroma < 15.0), (
+            f"{fixture_name}: manufactured dark card displayed: "
+            f"{c['family']} {c['hex']} (L={L:.1f}, chroma={chroma:.1f})")
