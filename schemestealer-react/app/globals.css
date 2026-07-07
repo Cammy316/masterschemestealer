@@ -708,6 +708,16 @@ h1, h2, h3, h4, h5, h6 {
   100% { transform: translateY(100vh); }
 }
 
+@keyframes scan-laser-alternate {
+  0% { transform: translateY(-10%); }
+  100% { transform: translateY(110%); }
+}
+
+@keyframes scan-laser {
+  0% { transform: translateY(-10%); }
+  100% { transform: translateY(110%); }
+}
+
 @keyframes searchlight-swing {
   0%, 100% { transform: translateX(-50%) rotate(-10deg) scaleY(0.6); }
   50% { transform: translateX(-50%) rotate(10deg) scaleY(1.2); }

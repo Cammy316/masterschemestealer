@@ -12,6 +12,7 @@ export function ServoSkull({ className = '', isScanning = false }: ServoSkullPro
     <div
       className={`relative ${className} ${isScanning ? 'animate-[float_1.5s_ease-in-out_infinite]' : 'animate-[float_3s_ease-in-out_infinite]'}`}
     >
+      <div style={isScanning ? { animation: 'patrol 4s ease-in-out infinite alternate' } : {}} className="relative w-full h-full flex items-center justify-center">
       <style>{`
         @keyframes svg-searchlight {
           0%   { transform: rotate(-15deg) scaleY(0.5); }
@@ -20,6 +21,10 @@ export function ServoSkull({ className = '', isScanning = false }: ServoSkullPro
           60%  { transform: rotate(15deg) scaleY(1.5); }
           80%  { transform: rotate(-2deg) scaleY(0.9); }
           100% { transform: rotate(-15deg) scaleY(0.5); }
+        }
+        @keyframes patrol {
+          0%   { transform: translateX(-40px); }
+          100% { transform: translateX(40px); }
         }
       `}</style>
 
@@ -154,6 +159,7 @@ export function ServoSkull({ className = '', isScanning = false }: ServoSkullPro
           </g>
         )}
       </svg>
+      </div>
     </div>
   );
 }

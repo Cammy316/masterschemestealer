@@ -54,19 +54,16 @@ export const useAppStore = create<AppStore>()(
         const currentMode = get().currentMode;
         if (currentMode && currentMode !== result.mode) {
           if (process.env.NODE_ENV === 'development') {
-             console.warn(`Discarding scan result for ${result.mode} because UI shifted to ${currentMode}`);
+            console.warn(`Discarding scan result for ${result.mode} because UI shifted to ${currentMode}`);
           }
           return;
         }
 
         // Revoke the previous scan's object URL before it is replaced so blob
         // URLs from earlier scans don't leak for the lifetime of the tab.
-        // Identity-guarded: in dev, StrictMode double-invoked effects can
-        // commit the same result twice — without the guard the second commit
-        // revoked the very URL it was storing and the results image went blank.
-        const previousUrl = get().currentScan?.imageUrl;
-        if (previousUrl && previousUrl !== result.imageUrl) {
-          revokeBlobUrl(previousUrl);
+        const prevUrl = get().currentScan?.imageUrl;
+        if (prevUrl && prevUrl !== result.imageUrl) {
+          revokeBlobUrl(prevUrl);
         }
         try {
           const persistableResult = toPersistableScan(result);
@@ -173,14 +170,14 @@ export const useAppStore = create<AppStore>()(
       clearCart: () => set({ cart: [] }),
 
       // Inventory actions
-      addToInventory: (paint: Paint) => 
+      addToInventory: (paint: Paint) =>
         set((state) => {
           const paintId = `${paint.brand}-${paint.name}`;
           const exists = state.inventory.some((p) => `${p.brand}-${p.name}` === paintId);
           if (exists) return { inventory: state.inventory };
           return { inventory: [...state.inventory, paint] };
         }),
-        
+
       removeFromInventory: (paintId: string) =>
         set((state) => ({
           inventory: state.inventory.filter((p) => `${p.brand}-${p.name}` !== paintId)

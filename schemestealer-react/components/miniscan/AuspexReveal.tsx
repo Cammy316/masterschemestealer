@@ -30,6 +30,37 @@ import { motion, AnimatePresence } from 'framer-motion';
 import type { Color, MaskFrame } from '@/lib/types';
 import { maskDestRect, layoutRailCallouts } from '@/lib/maskGeometry';
 
+function DecryptionText({ text, delay = 0, className = '' }: { text: string; delay?: number; className?: string }) {
+  const [displayText, setDisplayText] = useState(text.replace(/[a-zA-Z]/g, '0'));
+  
+  useEffect(() => {
+    let iterations = 0;
+    let interval: ReturnType<typeof setInterval>;
+    
+    const timeout = setTimeout(() => {
+      interval = setInterval(() => {
+        const scrambled = text.split('').map((char, index) => {
+          if (char === ' ' || char === '◆') return char;
+          if (index < iterations) return text[index];
+          return String.fromCharCode(65 + Math.floor(Math.random() * 26));
+        }).join('');
+        
+        setDisplayText(scrambled);
+        
+        if (iterations >= text.length) clearInterval(interval);
+        iterations += 1/3;
+      }, 30);
+    }, delay);
+
+    return () => {
+      clearTimeout(timeout);
+      clearInterval(interval);
+    };
+  }, [text, delay]);
+
+  return <span className={className}>{displayText}</span>;
+}
+
 interface AuspexRevealProps {
   /** "map" = tactical readout (top of results), "single" = per-colour reveal */
   mode: 'map' | 'single';
@@ -77,6 +108,8 @@ export function AuspexReveal({
   const [scanComplete, setScanComplete] = useState(false);
   const [isRevealed, setIsRevealed] = useState(mode === 'map');
   const [focusIndex, setFocusIndex] = useState<number | null>(null);
+  const [tappedIndex, setTappedIndex] = useState<number | null>(null);
+  const [tappedTime, setTappedTime] = useState<number>(0);
   const animFrameRef = useRef(0);
 
   // Decoded masks + pre-rendered layers (rebuilt when image/masks change)
@@ -162,7 +195,7 @@ export function AuspexReveal({
    *  its own hex rim. focusIdx set → greyscale base + ONLY that region in
    *  full colour at `glowBlur` (the pulse animates this value). */
   const composeFrame = useCallback(
-    (glowBlur: number, focusIdx: number | null) => {
+    (glowBlur: number, focusIdx: number | null, swell: number = 0) => {
       const canvas = canvasRef.current;
       const img = imgRef.current;
       const base = focusIdx === null ? baseLayerRef.current : greyLayerRef.current;
@@ -191,24 +224,33 @@ export function AuspexReveal({
       } else {
         const layer = regionLayersRef.current[focusIdx];
         const color = colors[focusIdx];
-        if (layer && color) {
-          // Wide soft halo first, then the region itself with a tight rim.
+        const pos = color?.position;
+        if (layer && color && pos) {
+          const px = pos.x * w;
+          const py = pos.y * h;
+          
           ctx.save();
-          ctx.globalAlpha = 0.55;
+          
+          // Clean, high-tech glow without messy layering
+          ctx.save();
+          ctx.globalAlpha = 0.9;
           ctx.shadowColor = color.hex;
-          ctx.shadowBlur = glowBlur * 2.2;
+          ctx.shadowBlur = glowBlur * 1.5;
           ctx.drawImage(layer, 0, 0);
           ctx.restore();
+          
+          // Core region
           ctx.save();
           ctx.shadowColor = color.hex;
-          ctx.shadowBlur = glowBlur;
+          ctx.shadowBlur = Math.max(glowBlur * 0.5, 4);
           ctx.drawImage(layer, 0, 0);
+          ctx.restore();
+
           ctx.restore();
         }
 
         // Crosshair at the region's marker point (single mode only — the
         // map's callout leader lines already point at the anchor).
-        const pos = color?.position;
         if (mode === 'single' && pos) {
           const px = pos.x * w;
           const py = pos.y * h;
@@ -287,11 +329,11 @@ export function AuspexReveal({
       const t = now - start;
       const swell = Math.sin((t / PULSE_DURATION_MS) * Math.PI * 4) * 0.5 + 0.5;
       if (mode === 'single' && t >= PULSE_DURATION_MS) {
-        composeFrame(baseGlow, focusIdx); // settle
+        composeFrame(baseGlow, focusIdx, 0); // settle
         return;
       }
       const decay = mode === 'single' ? 1 - t / PULSE_DURATION_MS : 1;
-      composeFrame(baseGlow * (1 + swell * decay * 0.9), focusIdx);
+      composeFrame(baseGlow * (1 + swell * decay * 0.9), focusIdx, swell * decay);
       animFrameRef.current = requestAnimationFrame(pulse);
     };
     animFrameRef.current = requestAnimationFrame(pulse);
@@ -336,11 +378,23 @@ export function AuspexReveal({
     });
   };
 
+  useEffect(() => {
+    if (mode === 'single' && activeIndex !== undefined) {
+      setFocusIndex(activeIndex);
+    }
+  }, [mode, activeIndex]);
+
   const handleChipActivate = (index: number) => {
-    // Touch has no hover: a tap focuses the region (plays the pulse) AND
-    // jumps to its paint card — one action.
-    setFocusIndex(index);
-    onChipClick?.(index);
+    // Option A: First tap focuses, second tap scrolls
+    const now = Date.now();
+    if (tappedIndex === index && now - tappedTime < 5000) {
+      onChipClick?.(index);
+      setTappedIndex(null);
+    } else {
+      setFocusIndex(index);
+      setTappedIndex(index);
+      setTappedTime(now);
+    }
   };
 
   // No mask data available — hide the component
@@ -478,8 +532,14 @@ export function AuspexReveal({
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             className="overflow-hidden"
           >
-            <div className="gothic-frame rounded-lg overflow-hidden bg-dark-gothic">
-              <div className="bg-dark-gothic p-1">
+            <div className="relative rounded-lg p-1 depth-3 border-2 border-brass/50 bg-gradient-to-br from-[#1a1510] to-[#2a2a2a] shadow-[inset_0_0_20px_rgba(0,0,0,0.8)]">
+              {/* Corner Brackets */}
+              <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-cogitator-green z-20 pointer-events-none" />
+              <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-cogitator-green z-20 pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-cogitator-green z-20 pointer-events-none" />
+              <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-cogitator-green z-20 pointer-events-none" />
+              
+              <div className="bg-dark-gothic rounded overflow-hidden relative shadow-[inset_0_0_30px_rgba(0,0,0,0.9)]">
                 <div
                   className="relative"
                   onMouseLeave={mode === 'map' ? () => setFocusIndex(null) : undefined}
@@ -548,26 +608,61 @@ export function AuspexReveal({
                         const color = colors[c.index];
                         if (!color) return null;
                         const x0 = c.side === 'left' ? RAIL_INSET_PCT : 100 - RAIL_INSET_PCT;
-                        const xElbow = c.side === 'left' ? x0 + 7 : x0 - 7;
+                        const y0 = c.railY * 100;
+                        const anchorX = c.anchorX * 100;
+                        const anchorY = c.anchorY * 100;
+                        
+                        // Circuit board routing
+                        const dir = c.side === 'left' ? 1 : -1;
+                        const x1 = x0 + dir * 5;
+                        const dy = Math.abs(anchorY - y0);
+                        const dx = Math.min(dy, 15);
+                        const x2 = x1 + dir * dx;
+                        const pathD = `M ${x0} ${y0} L ${x1} ${y0} L ${x2} ${anchorY} L ${anchorX} ${anchorY}`;
+
                         const dim = focusIndex !== null && focusIndex !== c.index;
+                        const isFocused = focusIndex === c.index;
+                        
                         return (
-                          <motion.path
-                            key={c.index}
-                            d={`M ${x0} ${c.railY * 100} L ${xElbow} ${c.railY * 100} L ${c.anchorX * 100} ${c.anchorY * 100}`}
-                            fill="none"
-                            stroke={color.hex}
-                            strokeWidth={focusIndex === c.index ? 2.5 : 1.5}
-                            style={{ vectorEffect: 'non-scaling-stroke' }}
-                            initial={{ pathLength: 0, opacity: 0 }}
-                            animate={{
-                              pathLength: 1,
-                              opacity: dim ? 0.15 : 0.8,
-                            }}
-                            transition={{
-                              pathLength: { delay: 1.0 + c.index * 0.12, duration: 0.45, ease: 'easeOut' },
-                              opacity: { duration: 0.25 },
-                            }}
-                          />
+                          <g key={c.index}>
+                            {/* Base Trace */}
+                            <motion.path
+                              d={pathD}
+                              fill="none"
+                              stroke={color.hex}
+                              strokeWidth={isFocused ? 2.5 : 1.5}
+                              style={{ vectorEffect: 'non-scaling-stroke' }}
+                              initial={{ pathLength: 0, opacity: 0 }}
+                              animate={{
+                                pathLength: 1,
+                                opacity: dim ? 0.15 : 0.8,
+                              }}
+                              transition={{
+                                pathLength: { delay: 1.0 + c.index * 0.12, duration: 0.45, ease: 'easeOut' },
+                                opacity: { duration: 0.25 },
+                              }}
+                            />
+                            {/* Animated Data Flow (only visible when focused) */}
+                            {isFocused && (
+                              <motion.path
+                                d={pathD}
+                                fill="none"
+                                stroke="#ffffff"
+                                strokeWidth={2}
+                                strokeDasharray="4 8"
+                                style={{ vectorEffect: 'non-scaling-stroke' }}
+                                initial={{ opacity: 0, strokeDashoffset: c.side === 'left' ? 24 : -24 }}
+                                animate={{ 
+                                  opacity: 0.9,
+                                  strokeDashoffset: 0 
+                                }}
+                                transition={{ 
+                                  opacity: { duration: 0.2 },
+                                  strokeDashoffset: { duration: 1, repeat: Infinity, ease: 'linear' }
+                                }}
+                              />
+                            )}
+                          </g>
                         );
                       })}
                     </svg>
@@ -613,41 +708,92 @@ export function AuspexReveal({
                     callouts.map((c) => {
                       const color = colors[c.index];
                       if (!color) return null;
+                      const isFocused = focusIndex === c.index;
+                      
                       return (
-                        <motion.button
-                          key={`chip-${c.index}`}
-                          onClick={() => handleChipActivate(c.index)}
-                          onMouseEnter={() => setFocusIndex(c.index)}
-                          onFocus={() => setFocusIndex(c.index)}
-                          onBlur={() => setFocusIndex(null)}
-                          aria-label={`Locate colour ${c.index + 1}: ${color.family ?? color.hex}`}
-                          className="absolute w-9 h-9 rounded-full font-mono font-bold text-sm flex items-center justify-center touch-target hover:animate-[pulse-glow_1.4s_ease-in-out_infinite] focus-visible:animate-[pulse-glow_1.4s_ease-in-out_infinite]"
-                          style={{
-                            left: `${c.side === 'left' ? RAIL_INSET_PCT : 100 - RAIL_INSET_PCT}%`,
-                            top: `${c.railY * 100}%`,
-                            // Centring via framer's x/y so it composes with the
-                            // scale animation (Tailwind translate classes would
-                            // be clobbered by framer's inline transform).
-                            x: '-50%',
-                            y: '-50%',
-                            background: 'rgba(0, 0, 0, 0.88)',
-                            border: `2px solid ${color.hex}`,
-                            color: color.hex, // pulse-glow keys off currentColor
-                            boxShadow: `0 0 8px ${color.hex}66`,
-                          }}
-                          initial={{ scale: 0, opacity: 0 }}
-                          animate={{ scale: 1, opacity: 1 }}
-                          transition={{
-                            delay: 0.9 + c.index * 0.12,
-                            type: 'spring',
-                            stiffness: 400,
-                            damping: 18,
-                          }}
-                          whileHover={{ scale: 1.18 }}
-                          whileTap={{ scale: 0.9 }}
-                        >
-                          <span className="text-cogitator-green">{c.index + 1}</span>
-                        </motion.button>
+                        <React.Fragment key={`chip-group-${c.index}`}>
+                          {/* Dynamic Neon Marker Ring (spawns when selected) */}
+                          {isFocused && (
+                            <motion.div
+                              className="absolute pointer-events-none rounded-full mix-blend-screen"
+                              style={{
+                                width: '3.5rem',
+                                height: '3.5rem',
+                                left: `${c.side === 'left' ? RAIL_INSET_PCT : 100 - RAIL_INSET_PCT}%`,
+                                top: `${c.railY * 100}%`,
+                                x: '-50%',
+                                y: '-50%',
+                                border: `2px dashed ${color.hex}`,
+                                boxShadow: `0 0 15px ${color.hex}`,
+                              }}
+                              animate={{ rotate: [0, 360], scale: [0.8, 1.1, 1] }}
+                              transition={{ 
+                                rotate: { duration: 6, repeat: Infinity, ease: 'linear' },
+                                scale: { duration: 0.4, ease: 'easeOut', times: [0, 0.7, 1] }
+                              }}
+                            />
+                          )}
+
+                          {/* Techno-Garble Color Name floating near chip */}
+                          <AnimatePresence>
+                            {isFocused && (
+                              <motion.div
+                                className="absolute pointer-events-none flex items-center z-30"
+                                style={{
+                                  left: `${c.side === 'left' ? RAIL_INSET_PCT + 6 : 100 - RAIL_INSET_PCT - 6}%`,
+                                  top: `${c.railY * 100}%`,
+                                  y: '-50%',
+                                  x: c.side === 'left' ? '0%' : '-100%',
+                                  color: color.hex,
+                                }}
+                                initial={{ opacity: 0, x: c.side === 'left' ? '-20%' : '-80%' }}
+                                animate={{ opacity: 1, x: c.side === 'left' ? '0%' : '-100%' }}
+                                exit={{ opacity: 0, transition: { duration: 0.1 } }}
+                              >
+                                <div className="bg-black/90 px-3 py-1.5 border border-cogitator-green/50 backdrop-blur-md shadow-[0_0_15px_rgba(0,255,65,0.2)]">
+                                  <DecryptionText 
+                                    text={(color.family || color.hex).toUpperCase()} 
+                                    className="cyber-text text-sm font-bold tracking-widest" 
+                                  />
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+
+                          <motion.button
+                            onClick={() => handleChipActivate(c.index)}
+                            onMouseEnter={() => setFocusIndex(c.index)}
+                            onFocus={() => setFocusIndex(c.index)}
+                            onBlur={() => setFocusIndex(null)}
+                            aria-label={`Locate colour ${c.index + 1}: ${color.family ?? color.hex}`}
+                            className="absolute w-9 h-9 rounded-full font-mono font-bold text-sm flex items-center justify-center touch-target z-20"
+                            style={{
+                              left: `${c.side === 'left' ? RAIL_INSET_PCT : 100 - RAIL_INSET_PCT}%`,
+                              top: `${c.railY * 100}%`,
+                              // Centring via framer's x/y so it composes with the
+                              // scale animation (Tailwind translate classes would
+                              // be clobbered by framer's inline transform).
+                              x: '-50%',
+                              y: '-50%',
+                              background: isFocused ? color.hex : 'rgba(0, 0, 0, 0.9)',
+                              border: `2px solid ${color.hex}`,
+                              color: isFocused ? '#000' : color.hex,
+                              boxShadow: isFocused ? `0 0 20px ${color.hex}` : `0 0 8px ${color.hex}66`,
+                            }}
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{
+                              delay: 0.9 + c.index * 0.12,
+                              type: 'spring',
+                              stiffness: 400,
+                              damping: 18,
+                            }}
+                            whileHover={{ scale: 1.15, transition: { duration: 0.1 } }}
+                            whileTap={{ scale: 0.9, transition: { duration: 0.1 } }}
+                          >
+                            <span className={isFocused ? 'text-black' : 'text-cogitator-green'}>{c.index + 1}</span>
+                          </motion.button>
+                        </React.Fragment>
                       );
                     })}
 
@@ -655,28 +801,29 @@ export function AuspexReveal({
                   {imgLoaded && !scanComplete && (
                     <>
                       <motion.div
-                        className="absolute inset-0 pointer-events-none"
-                        initial={{ y: '-100%' }}
-                        animate={{ y: '100%' }}
-                        transition={{ duration: 2, ease: [0.65, 0, 0.35, 1] }}
+                        className="absolute inset-0 pointer-events-none mix-blend-screen"
+                        initial={{ y: '-10%' }}
+                        animate={{ y: '110%' }}
+                        transition={{ duration: 1.5, ease: [0.65, 0, 0.35, 1] }}
                         onAnimationComplete={() => setScanComplete(true)}
-                        style={{
-                          background: 'linear-gradient(to bottom, transparent 0%, rgba(0, 255, 136, 0.1) 20%, rgba(0, 255, 136, 0.6) 50%, rgba(0, 255, 136, 0.1) 80%, transparent 100%)',
-                          height: '40%',
-                          boxShadow: '0 0 40px rgba(0, 255, 136, 0.8)',
-                        }}
-                      />
-                      <motion.div
-                        className="absolute left-0 right-0 pointer-events-none"
-                        initial={{ top: '-2px' }}
-                        animate={{ top: '100%' }}
-                        transition={{ duration: 2, ease: [0.65, 0, 0.35, 1] }}
-                        style={{
-                          height: '2px',
-                          background: 'rgba(0, 255, 136, 1)',
-                          boxShadow: '0 0 20px rgba(0, 255, 136, 1), 0 0 40px rgba(0, 255, 136, 0.6)',
-                        }}
-                      />
+                      >
+                        <div
+                          className="absolute bottom-0 left-0 right-0 h-[40px]"
+                          style={{
+                            background: 'linear-gradient(to top, rgba(0, 255, 136, 0.9), transparent)',
+                            borderBottom: '3px solid rgba(0, 255, 136, 1)',
+                            boxShadow: '0 5px 20px rgba(0, 255, 136, 0.8), 0 0 40px rgba(0, 255, 136, 0.5)',
+                          }}
+                        />
+                        <div 
+                          className="absolute bottom-[3px] left-0 right-0 h-[80px] opacity-50"
+                          style={{
+                            backgroundImage: `linear-gradient(to bottom, rgba(0, 255, 136, 0.4) 1px, transparent 1px), linear-gradient(to right, rgba(0, 255, 136, 0.4) 1px, transparent 1px)`,
+                            backgroundSize: '12px 12px',
+                            maskImage: 'linear-gradient(to top, black, transparent)'
+                          }}
+                        />
+                      </motion.div>
                     </>
                   )}
                 </div>
@@ -694,11 +841,15 @@ export function AuspexReveal({
                     <>
                       <span className="auspex-text text-xs font-bold">
                         {focusIndex !== null && colors[focusIndex]
-                          ? `TRACKING: ${(colors[focusIndex].family || colors[focusIndex].hex).toUpperCase()}`
+                          ? <DecryptionText key={`head-${focusIndex}`} text={`TRACKING: ${(colors[focusIndex].family || colors[focusIndex].hex).toUpperCase()}`} />
                           : `${colors.length} REGIONS IDENTIFIED`}
                       </span>
                       <span className="text-cogitator-green-dim text-xs cyber-text">
-                        Tap a number to inspect
+                        {focusIndex !== null ? (
+                          <DecryptionText key={`foot-${focusIndex}`} text="TAP AGAIN TO VIEW RECIPE" />
+                        ) : (
+                          "Tap a number to inspect"
+                        )}
                       </span>
                     </>
                   ) : (

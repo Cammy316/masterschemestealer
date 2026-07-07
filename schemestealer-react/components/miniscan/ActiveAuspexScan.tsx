@@ -129,17 +129,33 @@ export function ActiveAuspexScan({
             style={{ filter: 'sepia(100%) hue-rotate(70deg) saturate(300%) brightness(0.5) contrast(200%)' }} 
           />
           
-          {/* Volumetric Phosphor Sweep (Pure CSS animation to prevent main-thread freezing) */}
+          {/* Sharp Volumetric Laser Sweep (Hardware accelerated transforms) */}
           {(phase === 'loading' || phase === 'wind-down') && (
             <div 
-              className="absolute left-0 right-0 h-[150px] animate-[scan-line_2s_linear_infinite] pointer-events-none mix-blend-screen"
-            style={{
-              background: 'linear-gradient(to bottom, transparent, rgba(0,255,65,0.05) 50%, rgba(0,255,65,0.4) 95%, rgba(0,255,65,0.9) 100%)',
-              borderBottom: '3px solid var(--cogitator-green)',
-              boxShadow: '0 10px 20px rgba(0, 255, 65, 0.4)'
-            }}
-          />
-        )}
+              className="absolute left-0 right-0 pointer-events-none mix-blend-screen"
+              style={{
+                height: '100%',
+                animation: 'scan-laser-alternate 3s ease-in-out infinite alternate',
+              }}
+            >
+              <div
+                className="absolute bottom-0 left-0 right-0 h-[40px]"
+                style={{
+                  background: 'linear-gradient(to top, rgba(0,255,65,0.8), transparent)',
+                  borderBottom: '3px solid var(--cogitator-green)',
+                  boxShadow: '0 5px 15px rgba(0, 255, 65, 0.8), 0 0 30px rgba(0, 255, 65, 0.4)'
+                }}
+              />
+              <div 
+                className="absolute bottom-[3px] left-0 right-0 h-[80px] opacity-40"
+                style={{
+                  backgroundImage: `linear-gradient(to bottom, rgba(0,255,65,0.3) 1px, transparent 1px), linear-gradient(to right, rgba(0,255,65,0.3) 1px, transparent 1px)`,
+                  backgroundSize: '10px 10px',
+                  maskImage: 'linear-gradient(to top, black, transparent)'
+                }}
+              />
+            </div>
+          )}
 
         {/* CRT Scanlines */}
         <div className="absolute inset-0 pointer-events-none opacity-20 mix-blend-overlay" style={{ background: 'repeating-linear-gradient(to bottom, transparent, transparent 2px, #00FF41 2px, #00FF41 3px)' }} />

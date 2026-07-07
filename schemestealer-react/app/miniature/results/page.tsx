@@ -160,41 +160,56 @@ export default function MiniscanResultsPage() {
 
       <div className="max-w-2xl mx-auto space-y-6">
         {currentScan.analysisSource === 'local' && <LocalAuspexBadge />}
-        {/* Header */}
+        {/* Cogitator Dashboard Panel */}
         <motion.div
-          className="text-center"
+          className="gothic-frame rounded-lg p-1 depth-3"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className="text-[clamp(1.5rem,5vw,1.875rem)] text-balance font-bold gothic-text mb-2 auspex-text relative inline-block">
-            <DecryptionHeader text="◆ SCAN COMPLETE ◆" />
-            <motion.div 
-              className="absolute -inset-2 bg-cogitator-green/20 mix-blend-screen pointer-events-none"
-              animate={{ opacity: [0, 1, 0], scaleY: [0, 1.2, 0] }}
-              transition={{ duration: 0.5, times: [0, 0.5, 1] }}
-            />
-          </h1>
-          <p className="text-cogitator-green-dim tech-text">
-            Auspex has identified {currentScan.detectedColors.length} colour signatures
-          </p>
-          <motion.div
-            className="mt-2 text-xs text-brass cyber-text"
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            ◆ COGITATOR STATUS: ANALYSIS COMPLETE ◆
-          </motion.div>
-        </motion.div>
+          <div className="bg-dark-gothic rounded-lg p-6 textured relative overflow-hidden">
+            {/* CRT scanlines effect inside dashboard */}
+            <div className="absolute inset-0 pointer-events-none opacity-20 mix-blend-overlay" style={{ background: 'repeating-linear-gradient(to bottom, transparent, transparent 2px, #00FF41 2px, #00FF41 3px)' }} />
+            
+            {/* Header */}
+            <div className="text-center relative z-10 mb-8 border-b border-cogitator-green/20 pb-6">
+              <h1 className="text-[clamp(1.5rem,5vw,1.875rem)] text-balance font-bold gothic-text mb-2 auspex-text relative inline-block">
+                <DecryptionHeader text="◆ SCAN COMPLETE ◆" />
+                <motion.div 
+                  className="absolute -inset-2 bg-cogitator-green/20 mix-blend-screen pointer-events-none"
+                  animate={{ opacity: [0, 1, 0], scaleY: [0, 1.2, 0] }}
+                  transition={{ duration: 0.5, times: [0, 0.5, 1] }}
+                />
+              </h1>
+              <p className="text-cogitator-green-dim tech-text">
+                Auspex has identified {currentScan.detectedColors.length} colour signatures
+              </p>
+              <motion.div
+                className="mt-2 text-[10px] text-brass cyber-text"
+                animate={{ opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                ◆ COGITATOR STATUS: ANALYSIS COMPLETE ◆
+              </motion.div>
+            </div>
 
-        {/* Global Extracted Colors Overview */}
-        <HexPalette 
-          colors={currentScan.detectedColors.map(c => ({
-            hex: c.hex,
-            family: c.family,
-            percentage: c.percentage
-          }))} 
-        />
+            {/* Global Extracted Colors Overview */}
+            <div className="relative z-10">
+              <HexPalette 
+                title="" // Remove title since it's now part of the unified dashboard
+                colors={currentScan.detectedColors.map(c => ({
+                  hex: c.hex,
+                  family: c.family,
+                  percentage: c.percentage
+                }))} 
+                onColorClick={(index) => {
+                  const el = document.getElementById(`color-card-${index}`);
+                  el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }}
+              />
+            </div>
+          </div>
+        </motion.div>
 
         {/* TACTICAL READOUT — Auspex Reveal v2 map mode */}
         {currentScan.detectedColors.some(c => c.mask) && currentScan.imageUrl && (
@@ -431,20 +446,20 @@ export default function MiniscanResultsPage() {
           <KoFiBanner source="miniature_results" mode="miniature" />
         </motion.div>
 
-        {/* Cogitator Report - Enhanced parchment panel */}
+        {/* Cogitator Report - Terminal panel */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.6 }}
         >
-          <div className="parchment-bg rounded-lg p-5 text-sm depth-2 border-2 border-brass/30">
+          <div className="bg-dark-gothic rounded-lg p-5 text-sm depth-2 border-2 border-cogitator-green shadow-[inset_0_0_20px_rgba(0,255,65,0.05)]">
             <div className="flex items-center justify-center gap-2 mb-3">
               <svg
                 width="20"
                 height="20"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="var(--void-black)"
+                stroke="var(--cogitator-green)"
                 strokeWidth="2"
                 opacity="0.7"
               >
@@ -463,7 +478,7 @@ export default function MiniscanResultsPage() {
                   opacity="0.4"
                 />
               </svg>
-              <h3 className="font-bold text-void-black gothic-text text-center text-base">
+              <h3 className="font-bold auspex-text gothic-text text-center text-base">
                 COGITATOR REPORT
               </h3>
               <svg
@@ -471,7 +486,7 @@ export default function MiniscanResultsPage() {
                 height="20"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="var(--void-black)"
+                stroke="var(--cogitator-green)"
                 strokeWidth="2"
                 opacity="0.7"
               >
@@ -491,33 +506,33 @@ export default function MiniscanResultsPage() {
                 />
               </svg>
             </div>
-            <div className="w-16 h-px bg-void-black/30 mx-auto mb-3" />
-            <ul className="space-y-2 text-void-black/90 tech-text text-xs leading-relaxed">
+            <div className="w-16 h-px bg-cogitator-green/30 mx-auto mb-3" />
+            <ul className="space-y-2 text-cogitator-green-dim cyber-text text-xs leading-relaxed uppercase">
               <li className="flex items-start gap-2">
-                <span className="text-void-black/60 flex-shrink-0">►</span>
+                <span className="text-cogitator-green flex-shrink-0">►</span>
                 <span>Background removed via servo-skull image processing</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-void-black/60 flex-shrink-0">►</span>
+                <span className="text-cogitator-green flex-shrink-0">►</span>
                 <span>
                   {currentScan.detectedColors.length} dominant colour signatures identified
                 </span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-void-black/60 flex-shrink-0">►</span>
+                <span className="text-cogitator-green flex-shrink-0">►</span>
                 <span>
                   Paint recipes include BASE, SHADE, HIGHLIGHT, and WASH recommendations
                 </span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-void-black/60 flex-shrink-0">►</span>
+                <span className="text-cogitator-green flex-shrink-0">►</span>
                 <span>
                   Delta-E ({'\u0394'}E) indicates colour purity rating (lower = more accurate)
                 </span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-void-black/60 flex-shrink-0">►</span>
-                <span>Tap &quot;REVEAL LOCATION&quot; to view colour placement on miniature</span>
+                <span className="text-cogitator-green flex-shrink-0">►</span>
+                <span>Tap "REVEAL LOCATION" to view colour placement on miniature</span>
               </li>
             </ul>
           </div>
