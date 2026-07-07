@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-07-07 (later)
+### Fixed
+- **Duplicate neutral display labels**: the chaplain scan showed two indistinguishable
+  "White" cards (L\* 98.7 heraldry and L\* 77.1 trim). The neutral subdivision gate keyed
+  on the raw `is_metallic` flag — which over-triggers on edge-dense armour — instead of
+  on whether the metallic Silver/Gold relabel actually won; and L\* banding alone could
+  not guarantee distinct labels. The gate now checks the display family, and a
+  lightness-ordered tie-break (`_dedupe_neutral_display_labels`) guarantees same-family
+  neutral cards never share a label. `test_complex_neutral_display_labels` rewritten to
+  assert the real invariant (its two-Grey premise never matched this fixture) —
+  **the backend suite is now fully green**.
+- **Keep-warm workflow default URL** pointed at `schemestealer-api.onrender.com`, which
+  has no server behind it (the live service is `schemestealer.onrender.com`) — cold-start
+  pings were hitting a dead host unless the `KEEP_WARM_URL` repo variable was set.
+
+### Verified (live, 2026-07-07)
+- `/api/ready` reports `"persistence": "supabase"`; admin endpoints fail closed (403,
+  key configured); CORS blocks foreign `*.vercel.app` origins and admits
+  `schemestealer-*` previews; `manifest.webmanifest` + icons serve 200; security headers
+  present on the production site.
+
 ## [Unreleased] - 2026-07-07
 ### Fixed
 - **Yellow-detail regression (Pink Horror beak)**: the darker-half base-coat bias in
