@@ -70,7 +70,7 @@ Never introduce light-mode-style flat pastel UI.
 4. **Freemium boundaries in copy:** free tier sees the base match only; Pro unlocks the
    full 4-step recipe, brand-swapping, and inventory. Upsell copy is honest and specific —
    name exactly what Pro adds. No dark patterns, no fake urgency.
-5. **Zero Stahly attribution** anywhere in UI, metadata, alt text, or page source
+5. **Zero swatch-source attribution** anywhere in UI, metadata, alt text, or page source
    (core invariant 7).
 
 ## Data display conventions
@@ -95,5 +95,5 @@ Never introduce light-mode-style flat pastel UI.
 5. Verify mobile layout first (≈380 px), then desktop.
 6. Run `colorFamily.test.ts` if anything under `lib/` changed; run the app and click
    through **both** Miniscan and Inspiration for any shared-component change.
-7. Self-check: British English? No Stahly? No forked components? No TS colour maths for
-   content pages? Free/Pro gating respected?
+7. Self-check: British English? No swatch-source attribution? No forked components? No TS
+   colour maths for content pages? Free/Pro gating respected?

@@ -47,3 +47,18 @@ api.log
 # Local ML/analytics capture (contains session ids, user-agents and free-text
 # feedback incl. emails — must never be committed). Production uses Supabase.
 python-api/data/
+
+# Local reference material & archives — never publish (the swatch-source PDF
+# lives here; OLS/ is a local-only archive of superseded docs).
+Skills&rules/*.pdf
+Skills&rules/*.zip
+Skills&rules/OLS/
+
+# Bundled external audit plugin — has its own git repo, must not be embedded.
+frontend-design-audit/
+
+# Regenerable accuracy-harness outputs (baseline_harness.json IS tracked and
+# stays — it is the frozen reference the harness compares against).
+python-api/harness_report.json
+python-api/report_*.json
+python-api/synthetic_scenes/

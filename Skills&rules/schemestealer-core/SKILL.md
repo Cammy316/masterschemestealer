@@ -45,8 +45,9 @@ stop and say so instead of implementing.
    Inspiration simultaneously. Never fork the card per mode.
 6. **British English throughout** — all code comments, UI copy, docs, error messages,
    commit messages ("colour", "optimise", "licence" as a noun).
-7. **Zero Stahly attribution.** The swatch reference creator must never be credited,
-   named, or attributed anywhere in any output — code, comments, docs, UI, metadata.
+7. **Zero swatch-source attribution.** The swatch reference's creator must never be
+   credited, named, or attributed anywhere in any output — code, comments, docs, UI,
+   metadata. (That includes this rule: refer to them only as "the swatch source".)
 8. **One mixing authority (backend).** Any colour mix that feeds detection, matching, or
    recipes must live in the Python backend. Frontend mixing (The Forge preview) is
    display-only and must never feed matching.
@@ -121,7 +122,8 @@ Repo: Cammy316/masterschemestealer (monorepo)
    - frontend `colorFamily.test.ts`
    - harnesses `1_synthetic_sweep.py`, `2_distortion_robustness.py`,
      `3_clustering_sampling.py` for anything touching detection.
-7. Final self-check: British English? No Stahly? No Mixbox in prod paths? Parity green?
+7. Final self-check: British English? No swatch-source attribution? No Mixbox in prod
+   paths? Parity green?
 
 ## Roadmap context (so you don't build the wrong thing)
 

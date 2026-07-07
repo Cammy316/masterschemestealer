@@ -80,7 +80,7 @@ Hard rules:
 2. Slugs derive from `paint_id`; keep them stable — they become indexed URLs.
 3. Each conversion entry: source paint + per-brand top-5 matches with `delta_e` and
    `band`. Never fabricate a match; if a brand has no entry within range, omit it.
-4. Page copy: British English, no Stahly attribution, honest about `distant` matches.
+4. Page copy: British English, no swatch-source attribution, honest about `distant` matches.
 
 ## Step-by-step: any data change
 
@@ -96,5 +96,5 @@ Hard rules:
    `recipes.json` if partner-relevant → `conversions.json` if matching-relevant.
 6. Run the parity suites (Python + TS golden fixtures) if anchors or families changed;
    spot-check a few regenerated conversion entries against manual CIEDE2000.
-7. Self-check: counts sane (≈1,300 total)? No Scale75 added? No Stahly? Stable
-   `paint_id`s? British English in any generated copy?
+7. Self-check: counts sane (≈1,300 total)? No Scale75 added? No swatch-source
+   attribution? Stable `paint_id`s? British English in any generated copy?
