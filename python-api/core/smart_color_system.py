@@ -457,15 +457,30 @@ class SmartColorExtractor:
         union_lab = pixels_lab[all_local_indices]
         median_lab = np.median(union_lab, axis=0)
 
-        # 1b. Base-coat bias for dark neutral clusters
+        # 1b. Base-coat bias for dark NEUTRAL clusters only. The OKLab-chroma
+        # gate alone is too loose near black — a dark chromatic shadow merge
+        # (e.g. magenta shading at LAB a≈+12) slips under 0.05 and the bias
+        # then manufactured a spurious 'Brown' card in production, evicting a
+        # real painted detail from the display. Neutrality is decided by the
+        # single canonical classifier, and the bias is reverted if darkening
+        # would change the family (grey must not silently become black).
         ok_lab = lab_to_oklab(np.array([median_lab]))[0]
         ok_chroma = np.hypot(ok_lab[1], ok_lab[2])
         if median_lab[0] < 45 and ok_chroma < 0.05:
-            l_vals = union_lab[:, 0]
-            darker_half_mask = l_vals <= np.median(l_vals)
-            darker_pixels = union_lab[darker_half_mask]
-            if len(darker_pixels) > 0:
-                median_lab = np.median(darker_pixels, axis=0)
+            from core.color_engine import classify_family
+            union_family = classify_family(
+                median_lab, float(np.hypot(median_lab[1], median_lab[2])), False)
+            if union_family in ('grey', 'black', 'white'):
+                l_vals = union_lab[:, 0]
+                darker_half_mask = l_vals <= np.median(l_vals)
+                darker_pixels = union_lab[darker_half_mask]
+                if len(darker_pixels) > 0:
+                    biased_lab = np.median(darker_pixels, axis=0)
+                    biased_family = classify_family(
+                        biased_lab,
+                        float(np.hypot(biased_lab[1], biased_lab[2])), False)
+                    if biased_family == union_family:
+                        median_lab = biased_lab
 
         median_rgb = lab_to_rgb(median_lab)
         chroma = float(np.hypot(median_lab[1], median_lab[2]))
