@@ -125,8 +125,10 @@ def test_pink_figure_dominant_is_pink_not_bronze(engine):
     recipes = _scan(engine, "capturepink")
     cov = _coverage_by_family(recipes)
 
+    # Substring match so subdivided display labels ("dark grey", "off-white")
+    # are excluded as neutrals too.
     chromatic = {f: v for f, v in cov.items()
-                 if f not in {"grey", "white", "black", "bone"}}
+                 if not any(n in f for n in ("grey", "white", "black", "bone"))}
     assert chromatic, f"no chromatic families detected: {cov}"
     dominant = max(chromatic, key=chromatic.get)
     assert dominant in {"pink", "magenta"}, (
@@ -192,10 +194,25 @@ def test_complex_figure_is_not_a_silver_blob(engine):
             f"{metal} at {cov.get(metal, 0):.1f}% — trim cannot cover that: {cov}")
 
 def test_complex_neutral_display_labels(engine):
-    """The two neutral cards (dark armour, light heraldry) must carry distinct display labels."""
+    """Two cards of the same neutral family must be tellable apart. The
+    chaplain's white heraldry (L*~99) and its off-white trim cluster (L*~77)
+    both displayed as 'White' — two indistinguishable cards — because the
+    over-triggering metallic flag blocked the Off-White subdivision. The
+    invariant: any neutral family that keeps 2+ display cards carries
+    pairwise-distinct labels. (The original assertion demanded ≥2 GREY cards,
+    a premise this fixture never satisfied — its neutrals resolve as one
+    Grey, one Black and two Whites.)"""
     recipes = _scan(engine, "complex")
-    grey_labels = [r.get('family', '') for r in recipes if 'Grey' in r.get('family', '')]
-    assert len(set(grey_labels)) >= 2, f"Expected distinct grey display labels, got {grey_labels}"
+    neutral_labels = [r.get('family', '') for r in recipes
+                      if any(n in (r.get('family') or '').lower()
+                             for n in ('grey', 'white'))]
+    assert len(neutral_labels) == len(set(neutral_labels)), (
+        f"duplicate neutral display labels shown to the user: {neutral_labels}")
+
+    whites = [l for l in neutral_labels if 'white' in l.lower()]
+    assert len(whites) >= 2, (
+        f"fixture expectation drifted: the heraldry should produce two "
+        f"white-family cards, got {neutral_labels}")
 
 def test_pinkhorror_union_median_accuracy(engine):
     """pink card's chroma > 15, representing a real bright paint band, not a desaturated average."""
