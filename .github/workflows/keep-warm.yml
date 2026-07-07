@@ -28,7 +28,10 @@ jobs:
     steps:
       - name: Ping /health
         env:
-          KEEP_WARM_URL: ${{ vars.KEEP_WARM_URL || 'https://schemestealer-api.onrender.com' }}
+          # Default = the LIVE host (the Render service is deployed as
+          # "schemestealer", not render.yaml's "schemestealer-api" — verified
+          # 2026-07-07: the -api host returns x-render-routing: no-server).
+          KEEP_WARM_URL: ${{ vars.KEEP_WARM_URL || 'https://schemestealer.onrender.com' }}
         run: |
           echo "Pinging ${KEEP_WARM_URL}/health"
           # Render can take up to ~30s to wake; retry for up to ~2 minutes.

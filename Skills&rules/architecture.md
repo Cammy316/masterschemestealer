@@ -418,13 +418,16 @@ commits (`d53cc1a`..`b5ca2e9`) and the 2026-07-07 follow-up fixes; strikethrough
    file-fallback mode) stalls the single event loop; wrap in `run_in_executor` or make the
    fallback fully async. (Moot once Supabase secrets are set.)
 13. **`run_all_tests.ps1` is PowerShell-7-only** (UTF-8 em dashes break PS 5.1's parser).
-14. **Pre-existing failing test on `main`:** `tests/test_real_scans.py::
-    test_complex_neutral_display_labels` — the complex.png fixture now yields a single
-    Grey card (7.7%), so the neutral subdivision (which needs ≥2 same-family neutral
-    clusters) never fires and the expected Dark/Light Grey split is absent. Verified
-    unrelated to the cleanup and to the 2026-07-07 fixes. Either the extraction changed
-    under this fixture since the test was written, or the assertion over-specifies —
-    needs a decision, not a blind fix.
+14. ~~Pre-existing failing test `test_complex_neutral_display_labels`~~ — **resolved
+    2026-07-07.** Diagnosis: the test's premise (≥2 Grey cards on the chaplain) was
+    stale — the fixture's neutrals resolve as one Grey, one Black and two Whites — but
+    it accidentally pointed at a real defect: the two White cards (L\* 98.7 / 77.1) both
+    displayed 'White' because the subdivision gate keyed on the raw over-triggering
+    `is_metallic` flag instead of on whether the metallic relabel actually won. Fixed:
+    gate now `display_family == family`, plus `_dedupe_neutral_display_labels` (a
+    lightness-ordered band tie-break) guarantees same-family neutral cards never share a
+    label. Test rewritten to the real invariant; unit-locked by
+    `tests/test_neutral_display_labels.py`. **The backend suite is now fully green.**
 25. **Stale harness baseline for clustering recovery.** `baseline_harness.json` (frozen
     2026-07-03 11:12) predates d69686e's union-median extraction; module 3 now measures
     `region_recovery_rate` 0.96 vs the recorded 1.0 — the `monochrome_greens` scene's
