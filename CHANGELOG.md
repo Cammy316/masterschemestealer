@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-07-07 (reveal redesign)
+### Fixed
+- **Blank Tactical Readout in local dev**: React StrictMode's double-invoked effects made
+  the reveal complete twice, committing the same scan twice — and the store's
+  revoke-previous step then revoked the very blob URL it was storing, leaving the results
+  image permanently dark (prod builds were unaffected). Fixed three ways: the revoke is
+  identity-guarded, the reveal-wipe timeout chain is single-shot and cleared on unmount
+  only, and a dead image now shows a themed "PICT-FEED LOST" panel instead of an endless
+  skeleton. Locked by two new store lifecycle tests.
+
+### Changed
+- **Tactical Readout redesign**: the numbered chips no longer sit on (and hide) the
+  model — they dock on the left/right rails with colour-coded leader lines and pulsing
+  anchor dots pointing at each region. Hovering or focusing a chip drops the model to
+  greyscale and pulses that region in its true colour; tapping focuses the region and
+  jumps to its paint card. The flat black background is now a themed cogitator screen
+  (targeting grid, vignette) behind the model, whose backdrop shows through the canvas.
+  The per-colour "LOCATION ACTIVE" view uses the same greyscale-focus treatment for
+  consistency. Rail layout is a pure helper (`lib/maskGeometry.layoutRailCallouts`) with
+  its own collision tests.
+
 ## [Unreleased] - 2026-07-07 (later)
 ### Fixed
 - **Duplicate neutral display labels**: the chaplain scan showed two indistinguishable

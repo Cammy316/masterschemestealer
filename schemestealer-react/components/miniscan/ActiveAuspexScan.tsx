@@ -45,16 +45,32 @@ export function ActiveAuspexScan({
   const containerRef = useRef<HTMLDivElement>(null);
   const [normalizedReticles, setNormalizedReticles] = useState<(ColorPoint & { id: string })[]>([]);
 
+  // Timeout ids live in a ref cleared on UNMOUNT ONLY: `phase` is a dep of
+  // the wipe effect, so a per-run cleanup would cancel the in-flight chain
+  // the moment phase flips to 'wind-down'. The unmount clear also makes the
+  // chain single-shot under StrictMode's dev double-invoke (mount → cleanup
+  // → mount), which used to schedule TWO chains and fire onRevealComplete
+  // twice — double-committing the scan and revoking its live blob URL.
+  const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const completedRef = useRef(false);
+
+  useEffect(() => {
+    return () => {
+      timeoutsRef.current.forEach(clearTimeout);
+      timeoutsRef.current = [];
+    };
+  }, []);
+
   useEffect(() => {
     if (showReveal && phase === 'loading') {
       setPhase('wind-down');
-      
+
       // Calculate reticle positions based on actual rendered image size
       if (imgRef.current && containerRef.current) {
         const img = imgRef.current;
         const scaleX = img.clientWidth;
         const scaleY = img.clientHeight;
-        
+
         const mapped = reticleData.map((r, i) => ({
           ...r,
           id: `reticle-${i}`,
@@ -64,34 +80,32 @@ export function ActiveAuspexScan({
         setNormalizedReticles(mapped);
       }
 
-      // Start Wipe Animation
-      const startWipe = async () => {
-        // Wait for the wind-down phase to complete quickly
-        await new Promise(r => setTimeout(r, 300));
+      // Start the wipe: wind-down beat → wipe → done → complete (once).
+      timeoutsRef.current.push(setTimeout(() => {
         setPhase('wipe');
 
         // Spawn crosshairs based on Y-coordinate passing
         if (imgRef.current) {
-          const imgHeight = imgRef.current.clientHeight;
-          reticleData.forEach((r, i) => {
+          reticleData.forEach((r) => {
             // Rough estimate of when the sweep hits this point (0 to 3000ms)
             const yPercent = r.y / 1000;
-            setTimeout(() => {
+            timeoutsRef.current.push(setTimeout(() => {
               setCrosshairs(prev => [...prev, r]);
-            }, yPercent * 3000);
+            }, yPercent * 3000));
           });
         }
 
         // Complete
-        setTimeout(() => {
+        timeoutsRef.current.push(setTimeout(() => {
           setPhase('done');
-          setTimeout(() => {
-            onRevealComplete?.();
-          }, 1000);
-        }, 3200);
-      };
-
-      startWipe();
+          timeoutsRef.current.push(setTimeout(() => {
+            if (!completedRef.current) {
+              completedRef.current = true;
+              onRevealComplete?.();
+            }
+          }, 1000));
+        }, 3200));
+      }, 300));
     }
   }, [showReveal, phase, reticleData, wipeControls, onRevealComplete]);
 

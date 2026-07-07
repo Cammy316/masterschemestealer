@@ -2,32 +2,33 @@
  * AuspexReveal — Tactical map + per-colour region reveal
  *
  * Two modes:
- * - "map": full tactical readout — the model lit out of a dimmed frame,
- *   every detected region rimmed in its own colour, numbered DOM chips
- *   (staggered pop-in) marking each region's interior point.
- * - "single": per-colour reveal — the frame dims and ONLY that colour's
- *   region shows the user's real paint at full brightness, rimmed with a
- *   pulsing glow in the colour's own hue.
+ * - "map": full tactical readout — the model lit out of a themed cogitator
+ *   backdrop, every detected region rimmed in its own colour. Numbered
+ *   callout chips dock on the left/right rails (never on the model) with
+ *   leader lines to each region's anchor. Hovering/focusing a chip drops
+ *   the rest of the model to greyscale and pulses that region in colour;
+ *   tapping scrolls to the region's paint card.
+ * - "single": per-colour reveal — greyscale model, ONLY that colour's
+ *   region shown as the user's real paint, rimmed with a pulsing glow.
  *
  * Compositing contract (matches the backend spatial contract):
  * - `color.mask` is an RGBA PNG whose ALPHA channel is the region, at
  *   analysis resolution, covering only the alpha-bbox CROP of the frame.
- * - `maskFrame` carries the analysis dims + cropX/Y/W/H + frameW/frameH so
- *   the mask is drawn INTO its crop rectangle, never stretched over the
- *   whole photo (that stretch + an opaque mask caused the production
- *   whole-image tint).
+ * - `maskFrame` locates that crop (see lib/maskGeometry.maskDestRect).
  * - `color.position` is normalised to the FULL uploaded frame.
  *
- * Perf discipline: layers are pre-rendered once per image/mask change; the
- * single-mode pulse animates via rAF re-composing two cached layers only.
+ * Perf discipline: layers (dim base, greyscale base, per-region clips) are
+ * pre-rendered once per image/mask change; pulses re-compose two cached
+ * layers per rAF frame. The backdrop is pure CSS behind a canvas that keeps
+ * the model's background transparent.
  */
 
 'use client';
 
-import React, { useRef, useEffect, useCallback, useState } from 'react';
+import React, { useRef, useEffect, useCallback, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Color, MaskFrame } from '@/lib/types';
-import { maskDestRect } from '@/lib/maskGeometry';
+import { maskDestRect, layoutRailCallouts } from '@/lib/maskGeometry';
 
 interface AuspexRevealProps {
   /** "map" = tactical readout (top of results), "single" = per-colour reveal */
@@ -58,6 +59,8 @@ async function decodeMask(base64: string): Promise<ImageBitmap | null> {
 }
 
 const PULSE_DURATION_MS = 2600;
+/** Rail chips sit centred at this % from their frame edge (SVG x = 6 / 94). */
+const RAIL_INSET_PCT = 6;
 
 export function AuspexReveal({
   mode,
@@ -70,36 +73,60 @@ export function AuspexReveal({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const [imgLoaded, setImgLoaded] = useState(false);
+  const [imgFailed, setImgFailed] = useState(false);
   const [scanComplete, setScanComplete] = useState(false);
   const [isRevealed, setIsRevealed] = useState(mode === 'map');
+  const [focusIndex, setFocusIndex] = useState<number | null>(null);
   const animFrameRef = useRef(0);
 
   // Decoded masks + pre-rendered layers (rebuilt when image/masks change)
   const masksRef = useRef<(ImageBitmap | null)[]>([]);
   const masksDecodedRef = useRef(false);
   const baseLayerRef = useRef<HTMLCanvasElement | null>(null);
+  const greyLayerRef = useRef<HTMLCanvasElement | null>(null);
   const regionLayersRef = useRef<(HTMLCanvasElement | null)[]>([]);
 
-  /** Dimmed base image + scanline texture, rendered once. */
-  const buildBaseLayer = useCallback((img: HTMLImageElement, w: number, h: number) => {
-    const layer = document.createElement('canvas');
-    layer.width = w;
-    layer.height = h;
-    const ctx = layer.getContext('2d');
-    if (!ctx) return null;
-    ctx.drawImage(img, 0, 0);
-    ctx.fillStyle = 'rgba(5, 12, 10, 0.78)';
-    ctx.fillRect(0, 0, w, h);
-    for (let y = 0; y < h; y += 4) {
-      ctx.fillStyle = 'rgba(0, 255, 65, 0.03)';
-      ctx.fillRect(0, y, w, 1);
-    }
-    return layer;
-  }, []);
+  // Rail callout layout: chips at the frame edges, leader lines to anchors.
+  const callouts = useMemo(
+    () =>
+      mode === 'map'
+        ? layoutRailCallouts(
+            colors.map((c) => ({ x: c.position?.x ?? 0.5, y: c.position?.y ?? 0.5 }))
+          ).filter((c) => colors[c.index]?.position)
+        : [],
+    [mode, colors]
+  );
+
+  /** The model dimmed IN PLACE (source-atop keeps the RGBA background
+   *  transparent so the CSS backdrop shows through) + CRT scanlines. */
+  const buildBaseLayer = useCallback(
+    (img: HTMLImageElement, w: number, h: number, greyscale: boolean) => {
+      const layer = document.createElement('canvas');
+      layer.width = w;
+      layer.height = h;
+      const ctx = layer.getContext('2d');
+      if (!ctx) return null;
+      if (greyscale) {
+        ctx.filter = 'grayscale(1) brightness(0.5)';
+        ctx.drawImage(img, 0, 0);
+        ctx.filter = 'none';
+      } else {
+        ctx.drawImage(img, 0, 0);
+      }
+      ctx.globalCompositeOperation = 'source-atop'; // model pixels only
+      ctx.fillStyle = greyscale ? 'rgba(4, 8, 6, 0.45)' : 'rgba(5, 12, 10, 0.72)';
+      ctx.fillRect(0, 0, w, h);
+      for (let y = 0; y < h; y += 4) {
+        ctx.fillStyle = 'rgba(0, 255, 65, 0.03)';
+        ctx.fillRect(0, y, w, 1);
+      }
+      return layer;
+    },
+    []
+  );
 
   /** The user's REAL image clipped to one region (alpha-keyed mask drawn
-   *  into its crop rect). No tinting — the whole point is showing the
-   *  actual paint. */
+   *  into its crop rect). No tinting — the point is showing actual paint. */
   const buildRegionLayer = useCallback(
     (img: HTMLImageElement, mask: ImageBitmap, w: number, h: number) => {
       const dst = maskDestRect(maskFrame, w, h);
@@ -122,20 +149,23 @@ export function AuspexReveal({
     if (!masksDecodedRef.current) return false;
     const w = img.naturalWidth;
     const h = img.naturalHeight;
-    baseLayerRef.current = buildBaseLayer(img, w, h);
+    baseLayerRef.current = buildBaseLayer(img, w, h, false);
+    greyLayerRef.current = buildBaseLayer(img, w, h, true);
     regionLayersRef.current = masksRef.current.map((mask) =>
       mask ? buildRegionLayer(img, mask, w, h) : null
     );
     return true;
   }, [buildBaseLayer, buildRegionLayer]);
 
-  /** Compose one frame: dimmed base, revealed region(s) with rim glow,
-   *  crosshair (single mode) and corner brackets. */
+  /** Compose one frame.
+   *  focusIdx === null → idle map: dim colour base + every region lit with
+   *  its own hex rim. focusIdx set → greyscale base + ONLY that region in
+   *  full colour at `glowBlur` (the pulse animates this value). */
   const composeFrame = useCallback(
-    (glowBlur: number) => {
+    (glowBlur: number, focusIdx: number | null) => {
       const canvas = canvasRef.current;
       const img = imgRef.current;
-      const base = baseLayerRef.current;
+      const base = focusIdx === null ? baseLayerRef.current : greyLayerRef.current;
       if (!canvas || !img || !base) return;
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
@@ -148,10 +178,7 @@ export function AuspexReveal({
       ctx.clearRect(0, 0, w, h);
       ctx.drawImage(base, 0, 0);
 
-      if (mode === 'map') {
-        // Every region revealed at full brightness with its own colour rim —
-        // the model emerges from the dark readout, regions distinguishable
-        // by their rims and the numbered chips.
+      if (focusIdx === null) {
         regionLayersRef.current.forEach((layer, i) => {
           const color = colors[i];
           if (!layer || !color) return;
@@ -162,8 +189,8 @@ export function AuspexReveal({
           ctx.restore();
         });
       } else {
-        const layer = regionLayersRef.current[activeIndex];
-        const color = colors[activeIndex];
+        const layer = regionLayersRef.current[focusIdx];
+        const color = colors[focusIdx];
         if (layer && color) {
           // Wide soft halo first, then the region itself with a tight rim.
           ctx.save();
@@ -179,9 +206,10 @@ export function AuspexReveal({
           ctx.restore();
         }
 
-        // Crosshair at the region's marker point (full-frame normalised)
+        // Crosshair at the region's marker point (single mode only — the
+        // map's callout leader lines already point at the anchor).
         const pos = color?.position;
-        if (pos) {
+        if (mode === 'single' && pos) {
           const px = pos.x * w;
           const py = pos.y * h;
           const size = Math.max(20, w * 0.04);
@@ -235,36 +263,39 @@ export function AuspexReveal({
       ctx.lineTo(w - inset, h - inset - bracketSize);
       ctx.stroke();
     },
-    [colors, mode, activeIndex]
+    [colors, mode]
   );
 
-  /** Full render: (re)build layers, draw, and in single mode run the
-   *  settle-glow pulse (rAF over two cached layers — cheap). */
+  /** Full render for the current interaction state.
+   *  - map, nothing focused: static idle frame.
+   *  - map, chip focused: continuous colour pulse while focused.
+   *  - single: settle pulse on mount/toggle, then rest at base glow. */
   const renderScene = useCallback(() => {
     if (!prepareLayers()) return;
     cancelAnimationFrame(animFrameRef.current);
 
     const baseGlow = Math.max(10, (imgRef.current?.naturalWidth ?? 600) * 0.015);
-    if (mode !== 'single') {
-      composeFrame(baseGlow);
+    const focusIdx = mode === 'single' ? activeIndex : focusIndex;
+
+    if (mode === 'map' && focusIdx === null) {
+      composeFrame(baseGlow, null);
       return;
     }
 
     const start = performance.now();
     const pulse = (now: number) => {
       const t = now - start;
-      if (t >= PULSE_DURATION_MS) {
-        composeFrame(baseGlow);
+      const swell = Math.sin((t / PULSE_DURATION_MS) * Math.PI * 4) * 0.5 + 0.5;
+      if (mode === 'single' && t >= PULSE_DURATION_MS) {
+        composeFrame(baseGlow, focusIdx); // settle
         return;
       }
-      // Two soft swells that decay into the resting glow
-      const decay = 1 - t / PULSE_DURATION_MS;
-      const swell = Math.sin((t / PULSE_DURATION_MS) * Math.PI * 4) * 0.5 + 0.5;
-      composeFrame(baseGlow * (1 + swell * decay * 0.9));
+      const decay = mode === 'single' ? 1 - t / PULSE_DURATION_MS : 1;
+      composeFrame(baseGlow * (1 + swell * decay * 0.9), focusIdx);
       animFrameRef.current = requestAnimationFrame(pulse);
     };
     animFrameRef.current = requestAnimationFrame(pulse);
-  }, [prepareLayers, composeFrame, mode]);
+  }, [prepareLayers, composeFrame, mode, activeIndex, focusIndex]);
 
   // Decode all masks once per colour set
   useEffect(() => {
@@ -288,7 +319,7 @@ export function AuspexReveal({
     }
   }, [isRevealed]);
 
-  // Redraw when the image loads or the highlighted colour changes
+  // Redraw when the image loads or the interaction state changes
   useEffect(() => {
     if (imgLoaded) renderScene();
     return () => cancelAnimationFrame(animFrameRef.current);
@@ -303,6 +334,13 @@ export function AuspexReveal({
       }
       return next;
     });
+  };
+
+  const handleChipActivate = (index: number) => {
+    // Touch has no hover: a tap focuses the region (plays the pulse) AND
+    // jumps to its paint card — one action.
+    setFocusIndex(index);
+    onChipClick?.(index);
   };
 
   // No mask data available — hide the component
@@ -442,10 +480,25 @@ export function AuspexReveal({
           >
             <div className="gothic-frame rounded-lg overflow-hidden bg-dark-gothic">
               <div className="bg-dark-gothic p-1">
-                <div className="relative">
-                  {/* Loading skeleton */}
-                  {!imgLoaded && (
-                    <div className="w-full aspect-square bg-charcoal animate-pulse rounded" />
+                <div
+                  className="relative"
+                  onMouseLeave={mode === 'map' ? () => setFocusIndex(null) : undefined}
+                >
+                  {/* Themed cogitator backdrop — shows through the canvas's
+                      transparent background around the model */}
+                  <div className="auspex-backdrop rounded" aria-hidden />
+
+                  {/* Loading skeleton / dead-image fallback */}
+                  {!imgLoaded && !imgFailed && (
+                    <div className="relative w-full aspect-square bg-charcoal animate-pulse rounded" />
+                  )}
+                  {imgFailed && (
+                    <div className="relative w-full aspect-square rounded flex flex-col items-center justify-center gap-2 bg-charcoal">
+                      <span className="auspex-text text-sm font-bold">◇ PICT-FEED LOST ◇</span>
+                      <span className="text-cogitator-green-dim text-xs cyber-text">
+                        Run the scan again to restore the tactical readout
+                      </span>
+                    </div>
                   )}
 
                   {/* Hidden source image */}
@@ -457,13 +510,21 @@ export function AuspexReveal({
                       alt="Source miniature"
                       className="hidden"
                       onLoad={() => setImgLoaded(true)}
+                      onError={() => {
+                        // A dead blob URL fires error, not load — without this
+                        // the skeleton pulsed forever (the dev blank-readout bug).
+                        if (process.env.NODE_ENV === 'development') {
+                          console.warn('AuspexReveal: source image failed to load (revoked blob URL?)');
+                        }
+                        setImgFailed(true);
+                      }}
                     />
                   )}
 
-                  {/* Main canvas */}
+                  {/* Main canvas (transparent background over the backdrop) */}
                   <motion.canvas
                     ref={canvasRef}
-                    className="w-full rounded"
+                    className="relative w-full rounded"
                     initial={{ scale: 1.1, filter: 'blur(10px)', opacity: 0 }}
                     animate={{
                       scale: imgLoaded ? 1 : 1.1,
@@ -473,46 +534,122 @@ export function AuspexReveal({
                     transition={{ duration: 0.6, ease: [0.43, 0.13, 0.23, 0.96] }}
                   />
 
-                  {/* Numbered chips (map mode): DOM overlay positioned by the
-                      full-frame normalised marker points — percentage
-                      positioning survives any canvas scaling, and DOM chips
-                      get real tap targets + staggered pop-in. */}
+                  {/* Leader lines: chip rail → elbow → region anchor. The SVG
+                      stretches with the frame; strokes stay crisp via
+                      non-scaling-stroke. */}
+                  {mode === 'map' && imgLoaded && (
+                    <svg
+                      className="absolute inset-0 w-full h-full pointer-events-none"
+                      viewBox="0 0 100 100"
+                      preserveAspectRatio="none"
+                      aria-hidden
+                    >
+                      {callouts.map((c) => {
+                        const color = colors[c.index];
+                        if (!color) return null;
+                        const x0 = c.side === 'left' ? RAIL_INSET_PCT : 100 - RAIL_INSET_PCT;
+                        const xElbow = c.side === 'left' ? x0 + 7 : x0 - 7;
+                        const dim = focusIndex !== null && focusIndex !== c.index;
+                        return (
+                          <motion.path
+                            key={c.index}
+                            d={`M ${x0} ${c.railY * 100} L ${xElbow} ${c.railY * 100} L ${c.anchorX * 100} ${c.anchorY * 100}`}
+                            fill="none"
+                            stroke={color.hex}
+                            strokeWidth={focusIndex === c.index ? 2.5 : 1.5}
+                            style={{ vectorEffect: 'non-scaling-stroke' }}
+                            initial={{ pathLength: 0, opacity: 0 }}
+                            animate={{
+                              pathLength: 1,
+                              opacity: dim ? 0.15 : 0.8,
+                            }}
+                            transition={{
+                              pathLength: { delay: 1.0 + c.index * 0.12, duration: 0.45, ease: 'easeOut' },
+                              opacity: { duration: 0.25 },
+                            }}
+                          />
+                        );
+                      })}
+                    </svg>
+                  )}
+
+                  {/* Anchor dots at each region's marker point */}
                   {mode === 'map' && imgLoaded &&
-                    colors.map((color, i) =>
-                      color.position ? (
-                        <motion.button
-                          key={i}
-                          onClick={() => onChipClick?.(i)}
-                          aria-label={`Locate colour ${i + 1}: ${color.family ?? color.hex}`}
-                          className="absolute w-9 h-9 rounded-full font-mono font-bold text-base flex items-center justify-center touch-target"
+                    callouts.map((c) => {
+                      const color = colors[c.index];
+                      if (!color) return null;
+                      const dim = focusIndex !== null && focusIndex !== c.index;
+                      return (
+                        <motion.div
+                          key={`dot-${c.index}`}
+                          className="absolute w-2 h-2 rounded-full pointer-events-none"
                           style={{
-                            left: `${color.position.x * 100}%`,
-                            top: `${color.position.y * 100}%`,
+                            left: `${c.anchorX * 100}%`,
+                            top: `${c.anchorY * 100}%`,
+                            x: '-50%',
+                            y: '-50%',
+                            background: color.hex,
+                            boxShadow: `0 0 6px ${color.hex}`,
+                          }}
+                          initial={{ scale: 0, opacity: 0 }}
+                          animate={{
+                            scale: focusIndex === c.index ? [1, 1.6, 1] : 1,
+                            opacity: dim ? 0.25 : 1,
+                          }}
+                          transition={{
+                            scale: focusIndex === c.index
+                              ? { duration: 1.2, repeat: Infinity, ease: 'easeInOut' }
+                              : { delay: 1.3 + c.index * 0.12, type: 'spring', stiffness: 300, damping: 15 },
+                            opacity: { duration: 0.25 },
+                          }}
+                        />
+                      );
+                    })}
+
+                  {/* Rail callout chips: number + colour ring, docked at the
+                      frame edges — the model stays unobscured. Hover/focus
+                      pulses the region; tap also jumps to the paint card. */}
+                  {mode === 'map' && imgLoaded &&
+                    callouts.map((c) => {
+                      const color = colors[c.index];
+                      if (!color) return null;
+                      return (
+                        <motion.button
+                          key={`chip-${c.index}`}
+                          onClick={() => handleChipActivate(c.index)}
+                          onMouseEnter={() => setFocusIndex(c.index)}
+                          onFocus={() => setFocusIndex(c.index)}
+                          onBlur={() => setFocusIndex(null)}
+                          aria-label={`Locate colour ${c.index + 1}: ${color.family ?? color.hex}`}
+                          className="absolute w-9 h-9 rounded-full font-mono font-bold text-sm flex items-center justify-center touch-target hover:animate-[pulse-glow_1.4s_ease-in-out_infinite] focus-visible:animate-[pulse-glow_1.4s_ease-in-out_infinite]"
+                          style={{
+                            left: `${c.side === 'left' ? RAIL_INSET_PCT : 100 - RAIL_INSET_PCT}%`,
+                            top: `${c.railY * 100}%`,
                             // Centring via framer's x/y so it composes with the
                             // scale animation (Tailwind translate classes would
                             // be clobbered by framer's inline transform).
                             x: '-50%',
                             y: '-50%',
-                            background: 'rgba(0, 0, 0, 0.85)',
-                            border: '2px solid #00ff41',
-                            color: '#00ff41',
-                            boxShadow: `0 0 10px rgba(0, 255, 65, 0.5), 0 0 4px ${color.hex}`,
+                            background: 'rgba(0, 0, 0, 0.88)',
+                            border: `2px solid ${color.hex}`,
+                            color: color.hex, // pulse-glow keys off currentColor
+                            boxShadow: `0 0 8px ${color.hex}66`,
                           }}
                           initial={{ scale: 0, opacity: 0 }}
                           animate={{ scale: 1, opacity: 1 }}
                           transition={{
-                            delay: 0.9 + i * 0.12,
+                            delay: 0.9 + c.index * 0.12,
                             type: 'spring',
                             stiffness: 400,
                             damping: 18,
                           }}
-                          whileHover={{ scale: 1.2 }}
+                          whileHover={{ scale: 1.18 }}
                           whileTap={{ scale: 0.9 }}
                         >
-                          {i + 1}
+                          <span className="text-cogitator-green">{c.index + 1}</span>
                         </motion.button>
-                      ) : null
-                    )}
+                      );
+                    })}
 
                   {/* Scan sweep animation */}
                   {imgLoaded && !scanComplete && (
@@ -556,10 +693,12 @@ export function AuspexReveal({
                   {mode === 'map' ? (
                     <>
                       <span className="auspex-text text-xs font-bold">
-                        {colors.length} REGIONS IDENTIFIED
+                        {focusIndex !== null && colors[focusIndex]
+                          ? `TRACKING: ${(colors[focusIndex].family || colors[focusIndex].hex).toUpperCase()}`
+                          : `${colors.length} REGIONS IDENTIFIED`}
                       </span>
                       <span className="text-cogitator-green-dim text-xs cyber-text">
-                        Tap number to locate
+                        Tap a number to inspect
                       </span>
                     </>
                   ) : (
