@@ -12,6 +12,12 @@ services:
     # on the per-endpoint limits + memory monitoring (M-9) as the real backstop.
     startCommand: gunicorn main:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --forwarded-allow-ips="*" --bind 0.0.0.0:$PORT --timeout 300
     healthCheckPath: /
+    # REQUIRED DASHBOARD SECRETS (set in the Render dashboard, never here):
+    #   SUPABASE_URL / SUPABASE_SERVICE_KEY — without them every ML/analytics
+    #     write silently falls back to this container's EPHEMERAL disk and is
+    #     wiped on deploy. /api/ready reports "persistence" so it's checkable.
+    #   ANALYTICS_ADMIN_KEY — /api/ml/stats and /api/analytics/summary are
+    #     fail-closed on Render (403) until this is set.
     envVars:
       - key: PYTHON_VERSION
         value: "3.11"

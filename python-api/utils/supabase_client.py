@@ -5,10 +5,18 @@ logger = logging.getLogger(__name__)
 
 _client = None
 
-if os.getenv("SUPABASE_URL") and os.getenv("SUPABASE_SERVICE_KEY"):
-    logger.info("PERSISTENCE: supabase")
-else:
-    logger.warning("PERSISTENCE: EPHEMERAL FILES")
+
+def log_persistence_mode() -> None:
+    """Log which persistence backend is active. Called from the app's
+    lifespan handler — at module import time logging.basicConfig has not run
+    yet, so an import-time INFO line is silently dropped by the last-resort
+    handler and the 'loud' observability goal is defeated."""
+    if supabase_enabled():
+        logger.info("PERSISTENCE: supabase")
+    else:
+        logger.warning(
+            "PERSISTENCE: EPHEMERAL FILES — ML/analytics writes will be lost "
+            "on the next deploy. Set SUPABASE_URL and SUPABASE_SERVICE_KEY.")
 
 
 def get_supabase():
