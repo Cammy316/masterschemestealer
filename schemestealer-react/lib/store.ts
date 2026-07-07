@@ -61,7 +61,13 @@ export const useAppStore = create<AppStore>()(
 
         // Revoke the previous scan's object URL before it is replaced so blob
         // URLs from earlier scans don't leak for the lifetime of the tab.
-        revokeBlobUrl(get().currentScan?.imageUrl ?? undefined);
+        // Identity-guarded: in dev, StrictMode double-invoked effects can
+        // commit the same result twice — without the guard the second commit
+        // revoked the very URL it was storing and the results image went blank.
+        const previousUrl = get().currentScan?.imageUrl;
+        if (previousUrl && previousUrl !== result.imageUrl) {
+          revokeBlobUrl(previousUrl);
+        }
         try {
           const persistableResult = toPersistableScan(result);
 

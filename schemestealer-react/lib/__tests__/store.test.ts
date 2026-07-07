@@ -11,7 +11,7 @@
  * mlDataLogger is mocked because it pulls in apiClient, which touches `window` at
  * module load — irrelevant to state logic and unavailable in the node test env.
  */
-import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
 
 vi.mock('../mlDataLogger', () => ({
   mlLogger: { logCartAction: vi.fn() },
@@ -108,5 +108,49 @@ describe('Zustand scan-result race guard', () => {
     const after = useAppStore.getState();
     expect(after.currentScan).toBeNull();
     expect(after.currentMode).toBeNull();
+  });
+});
+
+describe('blob URL lifecycle on commit', () => {
+  // The dev-only blank-readout bug: StrictMode double-invoked effects can
+  // commit the SAME result twice; the store's revoke-previous step then
+  // revoked the very URL it was storing, and the results image went dark.
+  //
+  // revokeBlobUrl no-ops without `window` (this suite runs in the node
+  // env), so a browser-like global is stubbed — otherwise both tests pass
+  // vacuously and guard nothing.
+
+  let revoke: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(() => {
+    vi.stubGlobal('window', globalThis);
+    revoke = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    revoke.mockRestore();
+    vi.unstubAllGlobals();
+  });
+
+  it('committing the same result twice never revokes its own imageUrl', () => {
+    const scan = { ...makeScan('miniature', 'twice'), imageUrl: 'blob:live-url' };
+    const s = useAppStore.getState();
+    s.setMode('miniature');
+    s.setScanResult(scan);
+    s.setScanResult(scan); // dev double-commit
+
+    expect(useAppStore.getState().currentScan?.imageUrl).toBe('blob:live-url');
+    expect(revoke).not.toHaveBeenCalledWith('blob:live-url');
+  });
+
+  it('replacing with a NEW result still revokes the previous blob URL', () => {
+    const s = useAppStore.getState();
+    s.setMode('miniature');
+    s.setScanResult({ ...makeScan('miniature', 'old'), imageUrl: 'blob:old-url' });
+    s.setScanResult({ ...makeScan('miniature', 'new'), imageUrl: 'blob:new-url' });
+
+    expect(revoke).toHaveBeenCalledWith('blob:old-url');
+    expect(revoke).not.toHaveBeenCalledWith('blob:new-url');
+    expect(useAppStore.getState().currentScan?.imageUrl).toBe('blob:new-url');
   });
 });
