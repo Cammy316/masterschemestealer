@@ -106,6 +106,19 @@ class Visualization:
     STYLE_HEATMAP = "heatmap"
 
 
+class Display:
+    """Scanner display-cap rules — which detected colours the user sees.
+
+    A vivid dropped card may reclaim a display slot from a dull DARK card of
+    minor coverage (production: a shadow-artefact 'Brown' at 5.6% evicted the
+    figure's vivid yellow beak). Genuine dark majors (black armour at 20-50%)
+    sit above the coverage bound and are never displaced."""
+    VIVID_MIN_CHROMA = 30.0        # LAB chroma above which a card is a real painted detail
+    DULL_DARK_MAX_CHROMA = 15.0    # near-neutral ...
+    DULL_DARK_MAX_L = 40.0         # ... and dark ...
+    DULL_DARK_MAX_COVERAGE = 10.0  # ... at minor coverage may yield its slot
+
+
 # ============================================================================
 # SHADE TYPE DECISION RULES
 # ============================================================================

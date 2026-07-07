@@ -95,6 +95,75 @@ def test_combined_rgb_and_lab_describe_the_same_colour(extractor):
 
 
 # ---------------------------------------------------------------------------
+# _combine_clusters: the darker-half base-coat bias must stay neutral-only
+# ---------------------------------------------------------------------------
+
+def _ramp_pixels(l_lo: float, l_hi: float, a: float, b: float, n: int = 40):
+    """A lightness ramp at fixed (a, b) — one shaded surface's pixels."""
+    return np.column_stack([
+        np.linspace(l_lo, l_hi, n), np.full(n, a), np.full(n, b)])
+
+
+def _pixel_cluster(pixels_lab: np.ndarray, lo: int, hi: int) -> dict:
+    """A cluster owning pixels_lab[lo:hi], with consistent representatives."""
+    from core.colour_maths import lab_to_rgb
+    lab = np.median(pixels_lab[lo:hi], axis=0)
+    return {
+        "coverage": 10.0,
+        "median_rgb": lab_to_rgb(lab),
+        "median_lab": lab,
+        "chroma": float(math.hypot(lab[1], lab[2])),
+        "brightness_std": 5.0,
+        "median_hsv": np.array([0.0, 0.2, 0.3]),
+        "pixel_indices": np.arange(lo, hi),
+        "local_indices": np.arange(lo, hi),
+    }
+
+
+def test_darker_half_bias_skips_chromatic_shadows(extractor):
+    """The darker-half base-coat bias exists for dark NEUTRAL base coats
+    (black/grey armour). It must never fire on a dark CHROMATIC cluster —
+    in production it re-medianed a magenta-shadow merge onto its darker half
+    and manufactured a 'Brown' card (#50383f) that evicted the vivid yellow
+    beak from the five displayed colours.
+
+    LAB (28, 12, 0) sits inside the old gate (L<45, OKLab chroma 0.036<0.05)
+    but classifies 'brown' — chromatic, so the union median must be kept."""
+    pixels = np.vstack([
+        _ramp_pixels(20.0, 28.0, 12.0, 0.0),   # shadow end
+        _ramp_pixels(28.0, 36.0, 12.0, 0.0),   # lit end
+    ])
+    shadow = _pixel_cluster(pixels, 0, 40)
+    lit = _pixel_cluster(pixels, 40, 80)
+
+    combined = extractor._combine_clusters([shadow, lit], pixels)
+
+    # Union median L = 28. The darker-half bias would drag it to ~24.
+    assert combined["median_lab"][0] == pytest.approx(28.0, abs=1.0), (
+        f"darker-half bias fired on a chromatic shadow cluster: "
+        f"L={combined['median_lab'][0]:.1f} (union median is 28.0)")
+
+
+def test_darker_half_bias_still_applies_to_neutral_base_coats(extractor):
+    """The counterpart guard: a genuinely neutral dark merge (grey armour,
+    L ramp 20→40 at a≈1) must STILL receive the base-coat bias — that
+    behaviour is what fixed dark-armour base picks in the first place."""
+    pixels = np.vstack([
+        _ramp_pixels(20.0, 30.0, 1.0, 0.0),
+        _ramp_pixels(30.0, 40.0, 1.0, 0.0),
+    ])
+    shadow = _pixel_cluster(pixels, 0, 40)
+    lit = _pixel_cluster(pixels, 40, 80)
+
+    combined = extractor._combine_clusters([shadow, lit], pixels)
+
+    # Union median L = 30; the darker-half median is ~25.
+    assert combined["median_lab"][0] < 28.0, (
+        f"base-coat bias no longer applies to neutral dark merges: "
+        f"L={combined['median_lab'][0]:.1f} (expected ~25)")
+
+
+# ---------------------------------------------------------------------------
 # _merge_perceptually_similar: result must not depend on cluster order
 # ---------------------------------------------------------------------------
 

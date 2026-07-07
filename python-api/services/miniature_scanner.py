@@ -9,11 +9,48 @@ from typing import Dict, List, Any, Optional
 import base64
 import io
 import cv2
+import math
 from core.schemestealer_engine import SchemeStealerEngine
 from core.colour_maths import ciede2000_single
 from services.recipe_builder import build_paint_recipe
-from config import Affiliate
+from config import Affiliate, Display
 logger = logging.getLogger(__name__)
+
+
+def _protect_vivid_details(colors: List[Dict], limit: int = 5) -> List[Dict]:
+    """Apply the display cap, but never let a dull DARK card of minor
+    coverage displace a vivid painted detail (production: a shadow-artefact
+    'Brown' at 5.6% evicted the figure's yellow beak from the five shown).
+
+    Vivid dropped cards reclaim slots from qualifying dull dark cards,
+    weakest coverage first. Genuine dark majors sit above
+    Display.DULL_DARK_MAX_COVERAGE and are never touched."""
+    if len(colors) <= limit:
+        return colors
+
+    def _chroma(c: Dict) -> float:
+        return math.hypot(float(c['lab'][1]), float(c['lab'][2]))
+
+    def _is_dull_dark_minor(c: Dict) -> bool:
+        return (_chroma(c) < Display.DULL_DARK_MAX_CHROMA
+                and float(c['lab'][0]) < Display.DULL_DARK_MAX_L
+                and float(c['percentage']) < Display.DULL_DARK_MAX_COVERAGE)
+
+    kept = colors[:limit]
+    for vivid in colors[limit:]:
+        if _chroma(vivid) <= Display.VIVID_MIN_CHROMA:
+            continue
+        candidates = [k for k in kept if _is_dull_dark_minor(k)]
+        if not candidates:
+            break
+        weakest = min(candidates, key=lambda c: float(c['percentage']))
+        swapped_out = kept[kept.index(weakest)]
+        kept[kept.index(weakest)] = vivid
+        logger.info(
+            f"Display cap: vivid {vivid['family']} ({vivid['percentage']:.1f}%) "
+            f"reclaims the slot of dull dark {swapped_out['family']} "
+            f"({swapped_out['percentage']:.1f}%)")
+    return kept
 class MiniatureScannerService:
     """
     Service for scanning painted miniatures
@@ -101,8 +138,10 @@ class MiniatureScannerService:
         colors = []
         paints = []  # Legacy format
         seen_paints = set()
-        # All recipes share the same analysis resolution
+        # All recipes share the same analysis resolution and crop geometry
         analysis_shape = None
+        crop_rect = None
+        frame_shape = None
         for recipe in recipes:
             # Extract color info
             rgb = recipe.get('rgb', recipe.get('rgb_preview', [0, 0, 0]))
@@ -116,11 +155,13 @@ class MiniatureScannerService:
                 int(rgb[0]), int(rgb[1]), int(rgb[2])
             )
             family = recipe.get('family', 'Unknown')
-            # Encode spatial mask as lightweight 1-bit PNG (replaces JPEG composite)
+            # Encode spatial mask as a lightweight alpha PNG (replaces JPEG composite)
             mask_base64 = self._encode_mask(recipe.get('spatial_mask'), hex_color)
-            # Capture analysis resolution from the first recipe
+            # Capture spatial geometry from the first recipe (shared by all)
             if analysis_shape is None:
                 analysis_shape = recipe.get('analysis_shape')
+                crop_rect = recipe.get('crop_rect')
+                frame_shape = recipe.get('frame_shape')
             # Build structured paint recipe for each brand
             paint_recipe = self._build_paint_recipe(recipe, family, lab)
             # Add color with mask data and paintRecipe
@@ -159,17 +200,30 @@ class MiniatureScannerService:
                             'rgb': paint_rgb,
                             'lab': paint_lab,
                         })
-        # Limit results
-        colors = colors[:5]
+        # Limit results (vivid painted details may not be displaced by
+        # dull dark minor cards — see _protect_vivid_details)
+        colors = _protect_vivid_details(colors, limit=5)
         paints = paints[:12]
-        # Build mask_frame: analysis resolution metadata so the frontend can
-        # map the 1-bit masks onto the user's uploaded image.
+        # Build mask_frame: full spatial geometry so the frontend can place
+        # the analysis-resolution masks onto the user's uploaded image —
+        # masks live in the alpha-bbox CROP, so the crop rect and the full
+        # frame dims are required (the crop offset was previously dropped,
+        # stretching masks across the whole frame).
         mask_frame = None
         if analysis_shape:
             mask_frame = {
                 'height': int(analysis_shape[0]),
                 'width': int(analysis_shape[1]),
             }
+            if crop_rect and frame_shape:
+                mask_frame.update({
+                    'cropX': int(crop_rect[0]),
+                    'cropY': int(crop_rect[1]),
+                    'cropW': int(crop_rect[2]),
+                    'cropH': int(crop_rect[3]),
+                    'frameW': int(frame_shape[1]),
+                    'frameH': int(frame_shape[0]),
+                })
         return {
             'mode': mode,
             'colors': colors,
@@ -186,17 +240,22 @@ class MiniatureScannerService:
         base/shade/highlight + graph-or-WashMapping wash)."""
         return build_paint_recipe(recipe, family, color_lab, self.wash_db)
     def _encode_mask(self, spatial_mask, hex_color: str) -> Optional[str]:
-        """Encode a boolean spatial mask as a 1-bit PNG (base64).
-        Typically 1–4 KB vs 50–100 KB for the old JPEG composite."""
+        """Encode a boolean spatial mask as an RGBA PNG (base64) whose ALPHA
+        channel is the mask (opaque inside the region, transparent outside).
+
+        The frontend clips its reveal/tint layers with canvas
+        `destination-in`, which keys off alpha — the previous 1-bit encoding
+        was opaque everywhere, so nothing was clipped and the whole frame got
+        tinted. Binary-alpha PNGs still compress to a few KB."""
         if spatial_mask is None:
             return None
         try:
             if isinstance(spatial_mask, np.ndarray):
-                # Convert boolean mask to 8-bit for PIL (0 or 255)
                 mask_uint8 = (spatial_mask.astype(np.uint8)) * 255
-                img = Image.fromarray(mask_uint8, mode='L')
-                # Convert to 1-bit (dramatically smaller)
-                img = img.convert('1')
+                rgba = np.zeros((*spatial_mask.shape, 4), dtype=np.uint8)
+                rgba[..., 0:3] = 255          # white — colour comes from compositing
+                rgba[..., 3] = mask_uint8     # alpha IS the region
+                img = Image.fromarray(rgba, mode='RGBA')
                 buf = io.BytesIO()
                 img.save(buf, format='PNG', optimize=True)
                 mask_b64 = base64.b64encode(buf.getvalue()).decode('utf-8')
