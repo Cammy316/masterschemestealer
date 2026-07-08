@@ -214,7 +214,8 @@ class SchemeStealerEngine:
                          remove_base: bool = True, use_awb: bool = True,
                          detect_details: bool = True,
                          brands: List[str] = None,
-                         precomputed_rgba: np.ndarray = None) -> Tuple[List[dict], np.ndarray, Dict]:
+                         precomputed_rgba: np.ndarray = None,
+                         inventory: set = None) -> Tuple[List[dict], np.ndarray, Dict]:
 
         if brands is None:
             brands = Affiliate.SUPPORTED_BRANDS
@@ -280,7 +281,7 @@ class SchemeStealerEngine:
         # 7. Build Recipes with FULL ML FEATURES
         recipes = self._build_recipes_with_ml_features(
             colors, resized_original, mini_mask, brands, new_w, new_h,
-            crop_rect=crop_rect, frame_shape=frame_shape
+            crop_rect=crop_rect, frame_shape=frame_shape, inventory=inventory
         )
         recipes.sort(key=lambda x: (x.get('is_detail', False), -x['dominance']))
         
@@ -290,7 +291,8 @@ class SchemeStealerEngine:
                       mini_mask: np.ndarray, brands: List[str],
                       width: int, height: int,
                       crop_rect: Tuple[int, int, int, int] = None,
-                      frame_shape: Tuple[int, int] = None) -> List[dict]:
+                      frame_shape: Tuple[int, int] = None,
+                      inventory: set = None) -> List[dict]:
         """
         Build recipes with comprehensive ML features
         
@@ -368,14 +370,22 @@ class SchemeStealerEngine:
                                                       context=context,
                                                       target_family=target_family,
                                                       target_lab=median_lab)
-                base_matches[b] = self._format_paint(base_paint)
+                                                      
+                base_alt = self._find_owned_alt(base_paint, b, 'dominant', target_family, inventory)
+                base_matches[b] = self._format_paint(base_paint, owned_alt=base_alt)
+                
                 if base_paint is not None:
                     hp, hs = self._recipe_partner(base_paint, 'highlight', b)
                     sp, ss = self._recipe_partner(base_paint, 'shade', b)
                     wp, ws = self._recipe_wash(base_paint)
-                    highlight_matches[b] = self._format_paint(hp, hs)
-                    shade_matches[b] = self._format_paint(sp, ss)
-                    wash_matches[b] = self._format_paint(wp, ws, is_wash=True)
+                    
+                    hp_alt = self._find_owned_alt(hp, b, 'highlight', target_family, inventory)
+                    sp_alt = self._find_owned_alt(sp, b, 'shade', target_family, inventory)
+                    wp_alt = self._find_owned_alt(wp, b, 'wash', target_family, inventory)
+                    
+                    highlight_matches[b] = self._format_paint(hp, hs, owned_alt=hp_alt)
+                    shade_matches[b] = self._format_paint(sp, ss, owned_alt=sp_alt)
+                    wash_matches[b] = self._format_paint(wp, ws, is_wash=True, owned_alt=wp_alt)
                 else:
                     highlight_matches[b] = shade_matches[b] = wash_matches[b] = None
 
@@ -514,7 +524,25 @@ class SchemeStealerEngine:
         _dedupe_neutral_display_labels(recipes)
         return recipes
 
-    def _format_paint(self, paint, source: str = None, is_wash: bool = False):
+    def _find_owned_alt(self, paint: 'Paint', brand: str, role: str, target_family: str, inventory: set) -> Optional[dict]:
+        if not paint or not inventory:
+            return None
+        if paint.paint_id in inventory:
+            return None
+            
+        candidates = self.matcher.match_top_n(paint.lab, brand, role=role, target_family=target_family, n=20)
+        from core.color_engine import annotate_ownership
+        info = annotate_ownership(candidates, inventory)
+        alt = info.get("owned_alternative")
+        if alt:
+            alt_paint, alt_de = alt
+            alt_dict = self._format_paint(alt_paint)
+            if alt_dict:
+                alt_dict['deltaE'] = round(float(alt_de), 1)
+            return alt_dict
+        return None
+
+    def _format_paint(self, paint, source: str = None, is_wash: bool = False, owned_alt: dict = None):
         """Format a Paint for the recipe dict (incl. optional relationship source)."""
         if paint is None:
             return None
@@ -527,6 +555,8 @@ class SchemeStealerEngine:
         }
         if source:
             out['source'] = source   # 'official' | 'computed'
+        if owned_alt:
+            out['owned_alternative'] = owned_alt
         return out
 
     @staticmethod

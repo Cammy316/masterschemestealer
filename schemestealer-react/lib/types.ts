@@ -45,6 +45,7 @@ export interface PaintMatch {
   // Relationship provenance for highlight/shade/wash slots from the backend
   // recipe graph: 'official' (curated chain) or 'computed' (algorithmic).
   source?: 'official' | 'computed';
+  owned_alternative?: PaintMatch;
 }
 
 export interface BrandRecipe {

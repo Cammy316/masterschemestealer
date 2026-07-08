@@ -24,7 +24,7 @@ import threading
 import asyncio
 from contextlib import asynccontextmanager
 from pathlib import Path
-from fastapi import FastAPI, File, UploadFile, HTTPException, Request
+from fastapi import FastAPI, File, UploadFile, HTTPException, Request, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from slowapi import _rate_limit_exceeded_handler
@@ -41,6 +41,7 @@ os.chdir(Path(__file__).parent)
 
 from routes.ml_data import router as ml_data_router
 from routes.analytics import router as analytics_router
+from routes.forge import router as forge_router
 
 # Configure logging
 logging.basicConfig(
@@ -140,6 +141,7 @@ app.add_middleware(
 
 app.include_router(ml_data_router)
 app.include_router(analytics_router)
+app.include_router(forge_router)
 
 
 @app.get("/")
@@ -211,7 +213,7 @@ def _validate_upload(file: UploadFile, contents: bytes) -> None:
 
 @app.post("/api/scan/miniature")
 @limiter.limit("10/minute")
-async def scan_miniature(request: Request, file: UploadFile = File(...)):
+async def scan_miniature(request: Request, file: UploadFile = File(...), inventory: str = Form(None)):
     """
     Scan a painted miniature to detect colors.
     Background removal is done client-side, so the upload must be a transparent
@@ -249,8 +251,11 @@ async def scan_miniature(request: Request, file: UploadFile = File(...)):
         logger.info(f"Processing miniature scan: {file.filename}, size: {image.size}, mode: {image.mode}")
 
         loop = asyncio.get_running_loop()
+        
+        inventory_set = set(json.loads(inventory)) if inventory else None
+        
         async with _scan_semaphore:
-            result = await loop.run_in_executor(None, _miniature_scanner.scan, image)
+            result = await loop.run_in_executor(None, _miniature_scanner.scan, image, inventory_set)
 
         logger.info(f"Miniature scan complete: {len(result['colors'])} colors detected")
         return JSONResponse(content=result)
@@ -269,7 +274,7 @@ async def scan_miniature(request: Request, file: UploadFile = File(...)):
 
 @app.post("/api/scan/inspiration")
 @limiter.limit("10/minute")
-async def scan_inspiration(request: Request, file: UploadFile = File(...)):
+async def scan_inspiration(request: Request, file: UploadFile = File(...), inventory: str = Form(None)):
     """
     Extract color palette from any image for inspiration.
     No background removal — analyses entire image.
@@ -299,8 +304,11 @@ async def scan_inspiration(request: Request, file: UploadFile = File(...)):
         logger.info(f"Processing inspiration scan: {file.filename}, size: {image.size}")
 
         loop = asyncio.get_running_loop()
+        
+        inventory_set = set(json.loads(inventory)) if inventory else None
+        
         async with _scan_semaphore:
-            result = await loop.run_in_executor(None, _inspiration_scanner.scan, image)
+            result = await loop.run_in_executor(None, _inspiration_scanner.scan, image, inventory_set)
 
         logger.info(f"Inspiration scan complete: {len(result['colors'])} colors detected")
         return JSONResponse(content=result)

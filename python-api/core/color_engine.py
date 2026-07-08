@@ -19,9 +19,35 @@ from skimage.color import deltaE_ciede2000
 from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass, field
 
-from config import ColorDetection, Visualization, ShadeRules
+from config import ColorDetection, Visualization, ShadeRules, Matching
 from utils.logging_config import logger
 from core.recipe_geometry import allowed_families
+
+
+def annotate_ownership(candidates: List[Tuple['Paint', float]], owned_ids: set) -> Dict[str, Optional[Tuple['Paint', float]]]:
+    """
+    Post-process ranked matches to identify the best overall candidate and the 
+    best owned alternative within the allowed deltaE threshold.
+    """
+    if not candidates:
+        return {"recommended": None, "owned_alternative": None}
+        
+    recommended = candidates[0]
+    owned_alternative = None
+    
+    for paint, delta_e in candidates:
+        if paint.paint_id in owned_ids and delta_e <= Matching.OWNED_SUBSTITUTE_DELTA_E:
+            owned_alternative = (paint, delta_e)
+            break
+            
+    # If the recommended paint is already owned, no separate alternative is needed
+    if owned_alternative and owned_alternative[0].paint_id == recommended[0].paint_id:
+        owned_alternative = None
+        
+    return {
+        "recommended": recommended,
+        "owned_alternative": owned_alternative
+    }
 
 
 # ============================================================================

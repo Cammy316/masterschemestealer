@@ -85,7 +85,7 @@ class MiniatureScannerService:
         except Exception as e:
             logger.warning(f"Failed to load wash database: {e}")
             self.wash_db = []
-    def scan(self, image: Image.Image) -> Dict[str, Any]:
+    def scan(self, image: Image.Image, inventory: set = None) -> Dict[str, Any]:
         """
         Scan a painted miniature image
         Args:
@@ -110,6 +110,7 @@ class MiniatureScannerService:
                     detect_details=True,
                     brands=Affiliate.SUPPORTED_BRANDS,
                     precomputed_rgba=img_rgba_np,
+                    inventory=inventory,
                 )
             else:
                 img_rgb = np.array(image.convert('RGB'))
@@ -121,6 +122,7 @@ class MiniatureScannerService:
                     use_awb=True,
                     detect_details=True,
                     brands=Affiliate.SUPPORTED_BRANDS,
+                    inventory=inventory,
                 )
             logger.info(f"Detected {len(recipes)} color regions")
             # Format results for API response
