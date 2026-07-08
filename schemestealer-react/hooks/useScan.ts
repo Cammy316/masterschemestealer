@@ -96,10 +96,12 @@ export function useScan(mode: ScanMode, options: UseScanOptions = {}): UseScanRe
 
       try {
         const fileToScan = preprocessRef.current ? await preprocessRef.current(file) : file;
+        const inventoryIds = useAppStore.getState().inventory.map(p => p.id || (p as any).paint_id || `${p.brand}-${p.name}`);
+        
         const scanResult =
           mode === 'miniature' 
-            ? await scanMiniature(fileToScan, controller.signal) 
-            : await scanInspiration(fileToScan, controller.signal);
+            ? await scanMiniature(fileToScan, controller.signal, inventoryIds) 
+            : await scanInspiration(fileToScan, controller.signal, inventoryIds);
             
         if (controller.signal.aborted) return;
         

@@ -27,12 +27,15 @@ interface ScanResponse {
 /**
  * Scan a miniature image (with background removal).
  */
-export async function scanMiniature(imageFile: File, signal?: AbortSignal): Promise<ScanResult> {
+export async function scanMiniature(imageFile: File, signal?: AbortSignal, inventoryIds?: string[]): Promise<ScanResult> {
   // Skip JPEG compression for PNG files — bg-removed images are PNG with an
   // alpha channel that must not be re-encoded to JPEG (which strips alpha).
   const compressed = imageFile.type === 'image/png' ? imageFile : await compressImage(imageFile);
   const formData = new FormData();
   formData.append('file', compressed);
+  if (inventoryIds && inventoryIds.length > 0) {
+    formData.append('inventory', JSON.stringify(inventoryIds));
+  }
 
   const data = await apiClient.postForm<ScanResponse>('/api/scan/miniature', formData, {
     timeout: SCAN_TIMEOUT_MS,
@@ -56,10 +59,13 @@ export async function scanMiniature(imageFile: File, signal?: AbortSignal): Prom
 /**
  * Scan an inspiration image (without background removal).
  */
-export async function scanInspiration(imageFile: File, signal?: AbortSignal): Promise<ScanResult> {
+export async function scanInspiration(imageFile: File, signal?: AbortSignal, inventoryIds?: string[]): Promise<ScanResult> {
   const compressed = await compressImage(imageFile);
   const formData = new FormData();
   formData.append('file', compressed);
+  if (inventoryIds && inventoryIds.length > 0) {
+    formData.append('inventory', JSON.stringify(inventoryIds));
+  }
 
   const data = await apiClient.postForm<ScanResponse>('/api/scan/inspiration', formData, {
     timeout: SCAN_TIMEOUT_MS,
