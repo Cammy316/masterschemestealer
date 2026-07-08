@@ -11,7 +11,7 @@
 
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { PaintRecipe, BrandRecipe, PaintMatch } from '@/lib/types';
 import { useAppStore } from '@/lib/store';
@@ -550,9 +550,14 @@ function RecipeStepRow({
   onToggleOwned,
 }: RecipeStepRowProps) {
   const isWarp = theme === 'warp';
+  const [activePaint, setActivePaint] = useState(paint);
+  
+  useEffect(() => {
+    setActivePaint(paint);
+  }, [paint]);
 
   // Empty slot — dashed, dimmed, greyed spine.
-  if (!paint) {
+  if (!activePaint) {
     return (
       <div className={`overflow-hidden border border-dashed opacity-60 ${isWarp ? 'rounded-xl border-purple-500/20' : 'rounded-sm border-cogitator-green/30 bg-[#0a150c]'}`}>
         <div className="flex items-stretch">
@@ -571,8 +576,10 @@ function RecipeStepRow({
     );
   }
 
-  const isPerfectMatch = paint.deltaE !== undefined && paint.deltaE < 3;
-  const quality = deltaQuality(paint.deltaE);
+  const isPerfectMatch = activePaint.deltaE !== undefined && activePaint.deltaE < 3;
+  const quality = deltaQuality(activePaint.deltaE);
+  
+  const hasAlt = !isOwned && activePaint.owned_alternative;
 
   const rowClass = isWarp
     ? `rounded-xl overflow-hidden border bg-warp-purple/10 backdrop-blur-md ${isOwned ? 'ring-2 ring-purple-500/50' : ''}`
@@ -593,7 +600,7 @@ function RecipeStepRow({
           <div className="relative flex-shrink-0">
             <div
               className={`w-[46px] h-[46px] border ${isWarp ? 'border-gray-600 rounded-full shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]' : 'border-cogitator-green/50 rounded-none shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]'}`}
-              style={{ backgroundColor: paint.hex }}
+              style={{ backgroundColor: activePaint.hex }}
             />
             {/* Owned tick */}
             {isOwned && (
@@ -602,13 +609,13 @@ function RecipeStepRow({
               </div>
             )}
             {/* ΔE badge, colour-coded by match quality */}
-            {paint.deltaE !== undefined && (
+            {activePaint.deltaE !== undefined && (
               <div
                 className="absolute -bottom-1.5 -right-1.5 min-w-[26px] h-5 px-1 rounded-full flex items-center justify-center text-[10px] font-bold leading-none"
                 style={{ background: 'var(--void-black)', border: `1px solid ${quality.color}`, color: quality.color }}
-                aria-label={`Delta E ${paint.deltaE.toFixed(1)}, ${quality.label} match`}
+                aria-label={`Delta E ${activePaint.deltaE.toFixed(1)}, ${quality.label} match`}
               >
-                {paint.deltaE.toFixed(1)}
+                {activePaint.deltaE.toFixed(1)}
               </div>
             )}
           </div>
@@ -620,8 +627,8 @@ function RecipeStepRow({
               {isPerfectMatch && (
                 <span className="text-[10px] bg-green-500 text-white px-1.5 py-0.5 rounded-full font-semibold">✓ Perfect</span>
               )}
-              {paint.discontinued && (
-                <Tooltip content={paint.alternativeName ? `Try ${paint.alternativeName} instead` : 'This paint may be discontinued'}>
+              {activePaint.discontinued && (
+                <Tooltip content={activePaint.alternativeName ? `Try ${activePaint.alternativeName} instead` : 'This paint may be discontinued'}>
                   <span className="text-[10px] bg-red-500/20 text-red-400 px-1.5 py-0.5 rounded cursor-help">Discontinued</span>
                 </Tooltip>
               )}
@@ -637,8 +644,18 @@ function RecipeStepRow({
                 lineHeight: 1.2,
               }}
             >
-              {paint.name}
+              {activePaint.name}
             </p>
+            {hasAlt && (
+              <button
+                onClick={() => setActivePaint(activePaint.owned_alternative!)}
+                className="mt-1 flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-semibold text-amber-300 bg-amber-900/40 rounded border border-amber-500/30 hover:bg-amber-800/60 transition-colors"
+                title={`Swap to owned: ${activePaint.owned_alternative!.name} (ΔE ${activePaint.owned_alternative!.deltaE})`}
+              >
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M8 17l-4-4 4-4M16 7l4 4-4 4 M4 13h16 M4 11h16" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                Swap to Owned ({activePaint.owned_alternative!.name})
+              </button>
+            )}
           </div>
 
           {/* Icon-only actions */}
@@ -663,9 +680,9 @@ function RecipeStepRow({
               <Tooltip content={isOwned ? 'Already owned — add anyway' : 'Add to requisition'}>
                 <GhostButton
                   theme={theme}
-                  onClick={onAddToCart}
+                  onClick={() => onAddToCart(activePaint)}
                   className={`w-9 h-9 flex items-center justify-center ${isOwned ? 'opacity-70' : ''}`}
-                  aria-label={`Add ${paint.name} to cart`}
+                  aria-label={`Add ${activePaint.name} to cart`}
                 >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14" strokeLinecap="round" /></svg>
                 </GhostButton>

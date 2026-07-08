@@ -53,7 +53,7 @@ class InspirationScannerService:
             logger.warning(f"Failed to load wash database: {e}")
             self.wash_db = []
 
-    def scan(self, image: Image.Image) -> Dict[str, Any]:
+    def scan(self, image: Image.Image, inventory: set = None) -> Dict[str, Any]:
         """
         Extract color palette from an inspiration image
 
@@ -76,11 +76,12 @@ class InspirationScannerService:
             # mode="inspiration" disables background removal
             recipes, _, quality_report = self.engine.analyze_miniature(
                 img_np=img_rgb,
-                mode="inspiration",  # NO background removal
+                mode="inspiration",
                 remove_base=False,
                 use_awb=True,
                 detect_details=False,
                 brands=Affiliate.SUPPORTED_BRANDS,
+                inventory=inventory,
             )
 
             logger.info(f"Detected {len(recipes)} colors")
