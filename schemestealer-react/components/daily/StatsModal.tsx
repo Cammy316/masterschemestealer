@@ -26,7 +26,8 @@ export function StatsModal({ gameState, onClose, onShare }: StatsModalProps) {
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
-      const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+      const tomorrow = new Date(now);
+      tomorrow.setHours(24, 0, 0, 0);
       const diff = tomorrow.getTime() - now.getTime();
       
       const h = Math.floor(diff / (1000 * 60 * 60));
