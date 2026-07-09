@@ -24,7 +24,10 @@ export type AnalyticsEventName =
   | 'daily_played'
   | 'daily_won'
   | 'daily_shared'
-  | 'daily_streak_continued';
+  | 'daily_streak_continued'
+  | 'session_started'
+  | 'step_completed'
+  | 'session_finished';
 
 export interface AnalyticsEvent {
   event_name: AnalyticsEventName;
@@ -293,6 +296,22 @@ class AnalyticsService {
 
   trackDailyStreakContinued(streak: number): void {
     this.track('daily_streak_continued', { streak });
+  }
+
+  // ============================================================================
+  // Session Forge Tracking
+  // ============================================================================
+
+  trackSessionStarted(scanId: string, colourCount: number): void {
+    this.track('session_started', { scan_id: scanId, colour_count: colourCount });
+  }
+
+  trackStepCompleted(role: string, paintName: string): void {
+    this.track('step_completed', { role, paint_name: paintName });
+  }
+
+  trackSessionFinished(scanId: string, durationMinutes: number): void {
+    this.track('session_finished', { scan_id: scanId, duration_minutes: durationMinutes });
   }
 
   /**
