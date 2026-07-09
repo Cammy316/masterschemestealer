@@ -2,8 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - 2026-07-08 (Phase 2 Forge Integration)
+## [Unreleased] - 2026-07-09 (Phase 3 The Daily Augury)
 ### Added
+- **Daily Puzzle Generator**: Added Python script to pre-generate 400 days of Daily Augury Wordle-style puzzles deterministically. Puzzles avoid repeats within 60 days and omit washes/neutrals.
+- **Generated Puzzles**: Output `daily_puzzles.json` with puzzle metadata, answers, and family adjacency matrices for frontend feedback.
+
+## [Unreleased] - 2026-07-08 (Phase 2 Forge Integration)
 - **Forge Inventory Integration**: Complete Phase 2. Integrated the Forge inventory system directly into the miniature and inspiration scan pipelines. 
 - **Owned Paint Prioritization**: The backend ML engine now intelligently retrieves and prioritizes user-owned alternative paints when finding colour matches.
 - **Frontend Inventory Sync**: The frontend `useScan` hook automatically includes the user's saved inventory set in API requests.
