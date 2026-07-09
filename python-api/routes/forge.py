@@ -57,7 +57,7 @@ async def rack_analysis(req: RackAnalysisRequest) -> Dict[str, Any]:
     # Precompute distances from unowned to owned
     min_dists = np.zeros(len(unowned))
     for i, u_lab in enumerate(unowned_labs):
-        dists = deltaE_ciede2000(u_lab, owned_labs)
+        dists = deltaE_ciede2000(u_lab.reshape(1, 3), owned_labs)
         min_dists[i] = np.min(dists)
         
     # Gamut coverage
@@ -84,7 +84,7 @@ async def rack_analysis(req: RackAnalysisRequest) -> Dict[str, Any]:
         })
         
         new_lab = unowned_labs[farthest_idx]
-        new_dists = deltaE_ciede2000(unowned_labs, new_lab)
+        new_dists = deltaE_ciede2000(unowned_labs, new_lab.reshape(1, 3))
         min_dists = np.minimum(min_dists, new_dists)
         
         unowned.pop(farthest_idx)
