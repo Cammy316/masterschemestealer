@@ -479,7 +479,7 @@ export function PaintRecipeCard({
                   paint={paint}
                   theme={theme}
                   spineColor={SPINE_TOKENS[theme][step.key]}
-                  onAddToCart={paint ? () => handleAddToCart(paint) : undefined}
+                  onAddToCart={paint ? handleAddToCart : undefined}
                   isOwned={paint ? isOwned(paintId) : false}
                   onToggleOwned={paint ? () => toggleOwnedPaint(paintId) : undefined}
                 />
@@ -535,7 +535,7 @@ interface RecipeStepRowProps {
   paint: PaintMatch | null;
   theme: UITheme;
   spineColor: string;
-  onAddToCart?: () => void;
+  onAddToCart?: (paint: PaintMatch) => void;
   isOwned?: boolean;
   onToggleOwned?: () => void;
 }
