@@ -312,6 +312,17 @@ export function ModeSelector() {
           <p className="responsive-label text-gray-500 tech-text">
             SELECT YOUR PROTOCOL
           </p>
+          
+          {/* Active Session Banner */}
+          {useAppStore((s) => s.activeSession) && (
+            <button
+              onClick={() => router.push('/session')}
+              className="mt-6 px-6 py-3 border border-[var(--imperial-gold)]/50 bg-[var(--imperial-gold)]/10 hover:bg-[var(--imperial-gold)]/20 text-[var(--imperial-gold)] rounded-sm tech-text flex items-center gap-2 mx-auto transition-colors"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 9.36l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 9.36-7.94l-3.77 3.77z"></path></svg>
+              RESUME ACTIVE SESSION
+            </button>
+          )}
         </motion.div>
       </div>
     </div>

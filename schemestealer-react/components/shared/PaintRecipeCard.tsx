@@ -29,6 +29,7 @@ interface PaintRecipeCardProps {
   mode: 'miniature' | 'inspiration';
   /** Detected-colour coverage %, surfaced in the copied recipe header. */
   coverage?: number;
+  onStartPainting?: (brand: string) => void;
 }
 
 // The six supported brands (those with measured-swatch ground truth). Scale75 is
@@ -157,6 +158,7 @@ export function PaintRecipeCard({
   paintRecipe,
   mode,
   coverage,
+  onStartPainting,
 }: PaintRecipeCardProps) {
   const [selectedBrand, setSelectedBrand] = useState<BrandKey>('citadel');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -335,6 +337,20 @@ export function PaintRecipeCard({
               </>
             )}
           </motion.button>
+          
+          {/* Start Painting Button */}
+          {onStartPainting && (
+            <motion.button
+              onClick={() => onStartPainting(effectiveBrand)}
+              className="px-2.5 py-2 rounded text-xs font-bold transition-colors flex items-center gap-1.5 ml-1"
+              style={{ background: 'var(--imperial-gold)', color: 'var(--void-black)' }}
+              whileTap={{ scale: 0.95 }}
+              aria-label="Start painting session"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14" strokeLinecap="round" /></svg>
+              Start Painting
+            </motion.button>
+          )}
         </div>
       </div>
 
