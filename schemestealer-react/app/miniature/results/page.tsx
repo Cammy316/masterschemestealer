@@ -62,6 +62,8 @@ export default function MiniscanResultsPage() {
     rawCurrentScan && rawCurrentScan.mode === 'miniature'
       ? rawCurrentScan
       : scanHistory.find((s) => s.mode === 'miniature') ?? null;
+  const activeSession = useAppStore((s) => s.activeSession);
+  const setActiveSession = useAppStore((s) => s.setActiveSession);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [showKoFiPrompt, setShowKoFiPrompt] = useState(false);
@@ -151,6 +153,49 @@ export default function MiniscanResultsPage() {
   const handleScanAnother = () => {
     clearCurrentScan();
     router.push('/miniature');
+  };
+
+  const handleStartPainting = (colorIndex: number, brand: string) => {
+    if (!currentScan) return;
+    
+    if (activeSession && activeSession.scanId !== currentScan.id) {
+      if (!window.confirm("You have an active painting session. Replace it?")) return;
+    }
+
+    const colours = currentScan.detectedColors.map((c, idx) => {
+      // Pick the best brand or default to the one clicked if it's the clicked colour
+      let bestBrand = 'citadel' as 'citadel' | 'vallejo' | 'army_painter' | 'ak' | 'pro_acryl' | 'two_thin_coats';
+      if (idx === colorIndex) {
+        bestBrand = brand as typeof bestBrand;
+      } else if (c.paintRecipe && Object.keys(c.paintRecipe).length > 0) {
+        // Just pick the first available brand for others
+        bestBrand = Object.keys(c.paintRecipe)[0] as typeof bestBrand;
+      }
+      
+      const recipe = c.paintRecipe?.[bestBrand];
+      const steps = [];
+      if (recipe) {
+        if (recipe.base) steps.push({ role: 'base' as const, paintName: recipe.base.name, status: 'pending' as const });
+        if (recipe.shade) steps.push({ role: 'shade' as const, paintName: recipe.shade.name, status: 'pending' as const });
+        if (recipe.highlight) steps.push({ role: 'highlight' as const, paintName: recipe.highlight.name, status: 'pending' as const });
+        if (recipe.wash) steps.push({ role: 'wash' as const, paintName: recipe.wash.name, status: 'pending' as const });
+      }
+
+      return {
+        colourIndex: idx,
+        brand: bestBrand,
+        steps,
+      };
+    });
+
+    setActiveSession({
+      scanId: currentScan.id,
+      startedAt: new Date().toISOString(),
+      colours,
+      dryTimeOverrides: {},
+    });
+
+    router.push('/session');
   };
 
   return (
@@ -301,6 +346,7 @@ export default function MiniscanResultsPage() {
                         paintRecipe={color.paintRecipe}
                         mode="miniature"
                         coverage={color.percentage}
+                        onStartPainting={(brand) => handleStartPainting(index, brand)}
                       />
                     </div>
                   ) : color.paintMatches ? (
