@@ -20,7 +20,11 @@ export type AnalyticsEventName =
   | 'share_initiated'
   | 'feedback_submitted'
   | 'pro_upgrade_clicked'
-  | 'ko_fi_clicked';
+  | 'ko_fi_clicked'
+  | 'daily_played'
+  | 'daily_won'
+  | 'daily_shared'
+  | 'daily_streak_continued';
 
 export interface AnalyticsEvent {
   event_name: AnalyticsEventName;
@@ -269,6 +273,26 @@ class AnalyticsService {
    */
   trackKoFiClicked(source: string): void {
     this.track('ko_fi_clicked', { source });
+  }
+
+  // ============================================================================
+  // Daily Augury Tracking
+  // ============================================================================
+
+  trackDailyPlayed(): void {
+    this.track('daily_played', {});
+  }
+
+  trackDailyWon(guessCount: number): void {
+    this.track('daily_won', { guess_count: guessCount });
+  }
+
+  trackDailyShared(): void {
+    this.track('daily_shared', {});
+  }
+
+  trackDailyStreakContinued(streak: number): void {
+    this.track('daily_streak_continued', { streak });
   }
 
   /**
