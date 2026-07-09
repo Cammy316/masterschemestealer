@@ -45,6 +45,33 @@ function getDeltaEBand(de: number) {
   return 'distant';
 }
 
+function generateShareGrid(guesses: Guess[]) {
+  let grid = '';
+  for (const g of guesses) {
+    // 1. Brand: green/red
+    grid += g.brandMatch ? '🟩' : '🟥';
+    
+    // 2. Family: green/yellow/red
+    if (g.familyMatch === 'exact') grid += '🟩';
+    else if (g.familyMatch === 'adjacent') grid += '🟨';
+    else grid += '🟥';
+    
+    // 3. Lightness: Up/Down arrow or green square
+    if (g.lightnessDirection === 'match') grid += '🟩';
+    else if (g.lightnessDirection === 'lighter') grid += '🔼';
+    else grid += '🔽';
+    
+    // 4. DeltaE: perfect=green, close=blue, fair=yellow, distant=red
+    if (g.deltaEBand === 'perfect') grid += '🟩';
+    else if (g.deltaEBand === 'close') grid += '🟦';
+    else if (g.deltaEBand === 'fair') grid += '🟨';
+    else grid += '🟥';
+    
+    grid += '\n';
+  }
+  return grid;
+}
+
 export function DailyGameUI() {
   const [mounted, setMounted] = useState(false);
   const [gameState, setGameState] = useState<GameState>({
@@ -195,29 +222,7 @@ export function DailyGameUI() {
     const dayNumber = Object.keys(dailyPuzzles.days).sort().indexOf(localDateStr) + 1;
     const score = gameState.status === 'won' ? gameState.guesses.length : 'X';
     
-    let grid = '';
-    for (const g of gameState.guesses) {
-      // 1. Brand: green/red
-      grid += g.brandMatch ? '🟩' : '🟥';
-      
-      // 2. Family: green/yellow/red
-      if (g.familyMatch === 'exact') grid += '🟩';
-      else if (g.familyMatch === 'adjacent') grid += '🟨';
-      else grid += '🟥';
-      
-      // 3. Lightness: Up/Down arrow or green square
-      if (g.lightnessDirection === 'match') grid += '🟩';
-      else if (g.lightnessDirection === 'lighter') grid += '🔼';
-      else grid += '🔽';
-      
-      // 4. DeltaE: perfect=green, close=blue, fair=yellow, distant=red
-      if (g.deltaEBand === 'perfect') grid += '🟩';
-      else if (g.deltaEBand === 'close') grid += '🟦';
-      else if (g.deltaEBand === 'fair') grid += '🟨';
-      else grid += '🟥';
-      
-      grid += '\n';
-    }
+    const grid = generateShareGrid(gameState.guesses);
 
     const shareText = `The Daily Augury #${dayNumber}  ${score}/6  🔥${gameState.streak}\n\n${grid}\nhttps://schemestealer.com/daily`;
 
@@ -344,14 +349,26 @@ export function DailyGameUI() {
               {gameState.status === 'won' ? 'MISSION SUCCESSFUL' : 'MISSION FAILED'}
             </h2>
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-16 h-16 rounded-sm border-2 border-white/20" style={{ backgroundColor: targetPaint.hex }} />
+              <motion.div 
+                initial={{ filter: "blur(15px)" }}
+                animate={{ filter: "blur(0px)" }}
+                transition={{ duration: 1.5, ease: "easeOut" }}
+                className="w-16 h-16 rounded-sm border-2 border-white/20" 
+                style={{ backgroundColor: targetPaint.hex }} 
+              />
               <div>
                 <p className="text-sm text-gray-400 mb-1">TARGET COGNO-MEME IDENTIFIED:</p>
                 <p className="text-xl font-bold text-white">{targetPaint.name}</p>
                 <p className="text-[var(--imperial-gold)] tracking-widest uppercase">{targetPaint.brand}</p>
               </div>
             </div>
-            
+            <div className="flex flex-col items-center gap-2 mb-6">
+              <div className="bg-black/80 border border-gray-600 rounded-sm p-4 text-center font-mono text-xs whitespace-pre">
+                <p className="text-[var(--cogitator-green)] mb-2">The Daily Augury #{Object.keys(dailyPuzzles.days).sort().indexOf(localDateStr) + 1} {gameState.status === 'won' ? gameState.guesses.length : 'X'}/6 🔥{gameState.streak}</p>
+                {generateShareGrid(gameState.guesses)}
+              </div>
+            </div>
+
             <div className="flex flex-wrap gap-4 justify-center">
               <button 
                 onClick={handleShare}
