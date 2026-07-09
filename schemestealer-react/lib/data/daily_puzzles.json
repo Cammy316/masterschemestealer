@@ -1,0 +1,1311 @@
+{
+  "salt_version": 1,
+  "familyAdjacency": {
+    "red": [
+      "pink",
+      "red",
+      "magenta",
+      "brown",
+      "orange"
+    ],
+    "orange": [
+      "brown",
+      "red",
+      "yellow",
+      "orange"
+    ],
+    "yellow": [
+      "bone",
+      "yellow",
+      "green",
+      "brown",
+      "orange"
+    ],
+    "green": [
+      "cyan",
+      "yellow",
+      "green"
+    ],
+    "cyan": [
+      "cyan",
+      "blue",
+      "green"
+    ],
+    "blue": [
+      "cyan",
+      "blue",
+      "purple"
+    ],
+    "purple": [
+      "pink",
+      "magenta",
+      "blue",
+      "purple"
+    ],
+    "magenta": [
+      "pink",
+      "magenta",
+      "red",
+      "purple"
+    ],
+    "pink": [
+      "pink",
+      "magenta",
+      "red",
+      "purple"
+    ],
+    "brown": [
+      "red",
+      "bone",
+      "yellow",
+      "brown",
+      "orange"
+    ],
+    "bone": [
+      "grey",
+      "bone",
+      "yellow",
+      "white",
+      "brown"
+    ],
+    "white": [
+      "white",
+      "grey",
+      "bone"
+    ],
+    "grey": [
+      "black",
+      "grey",
+      "white",
+      "silver"
+    ],
+    "black": [
+      "black",
+      "grey"
+    ],
+    "silver": [
+      "grey",
+      "bronze",
+      "gold",
+      "silver",
+      "white"
+    ],
+    "gold": [
+      "grey",
+      "bronze",
+      "gold",
+      "yellow",
+      "silver",
+      "brown"
+    ],
+    "bronze": [
+      "grey",
+      "bronze",
+      "gold",
+      "silver",
+      "brown"
+    ]
+  },
+  "days": {
+    "2026-07-09": {
+      "answer": "vallejo-model-color-green-brown"
+    },
+    "2026-07-10": {
+      "answer": "two-thin-coats-mantichore-ochre"
+    },
+    "2026-07-11": {
+      "answer": "ak-3gen-reflective-green"
+    },
+    "2026-07-12": {
+      "answer": "vallejo-game-color-gold-yellow"
+    },
+    "2026-07-13": {
+      "answer": "pro-acryl-warm-yellow"
+    },
+    "2026-07-14": {
+      "answer": "pro-acryl-copper"
+    },
+    "2026-07-15": {
+      "answer": "vallejo-model-color-dark-rose"
+    },
+    "2026-07-16": {
+      "answer": "vallejo-model-color-carmine-red"
+    },
+    "2026-07-17": {
+      "answer": "pro-acryl-dark-blue"
+    },
+    "2026-07-18": {
+      "answer": "vallejo-game-color-hammered-copper"
+    },
+    "2026-07-19": {
+      "answer": "vallejo-game-color-scorpy-green"
+    },
+    "2026-07-20": {
+      "answer": "citadel-caledor-sky"
+    },
+    "2026-07-21": {
+      "answer": "two-thin-coats-talisman-green"
+    },
+    "2026-07-22": {
+      "answer": "pro-acryl-bright-pale-green"
+    },
+    "2026-07-23": {
+      "answer": "two-thin-coats-relic-blue"
+    },
+    "2026-07-24": {
+      "answer": "vallejo-model-color-medium-olive"
+    },
+    "2026-07-25": {
+      "answer": "citadel-thunderhawk-blue"
+    },
+    "2026-07-26": {
+      "answer": "two-thin-coats-dark-arts-divination-white"
+    },
+    "2026-07-27": {
+      "answer": "citadel-zamesi-desert"
+    },
+    "2026-07-28": {
+      "answer": "citadel-macragge-blue"
+    },
+    "2026-07-29": {
+      "answer": "ak-3gen-black-red"
+    },
+    "2026-07-30": {
+      "answer": "two-thin-coats-boot-strap-brown"
+    },
+    "2026-07-31": {
+      "answer": "ak-3gen-ivory"
+    },
+    "2026-08-01": {
+      "answer": "vallejo-game-color-lustful-purple"
+    },
+    "2026-08-02": {
+      "answer": "vallejo-model-color-yellow-green"
+    },
+    "2026-08-03": {
+      "answer": "army-painter-temple-gate-teal"
+    },
+    "2026-08-04": {
+      "answer": "two-thin-coats-spartan-bronze"
+    },
+    "2026-08-05": {
+      "answer": "ak-3gen-carmine"
+    },
+    "2026-08-06": {
+      "answer": "army-painter-necrotic-flesh"
+    },
+    "2026-08-07": {
+      "answer": "pro-acryl-dark-emerald"
+    },
+    "2026-08-08": {
+      "answer": "two-thin-coats-serpent-eye-yellow"
+    },
+    "2026-08-09": {
+      "answer": "pro-acryl-white-blue"
+    },
+    "2026-08-10": {
+      "answer": "citadel-mournfang-brown"
+    },
+    "2026-08-11": {
+      "answer": "army-painter-eternal-hunt"
+    },
+    "2026-08-12": {
+      "answer": "vallejo-game-color-barbarian-skin"
+    },
+    "2026-08-13": {
+      "answer": "ak-3gen-mint-green"
+    },
+    "2026-08-14": {
+      "answer": "two-thin-coats-dark-sun-yellow"
+    },
+    "2026-08-15": {
+      "answer": "two-thin-coats-scarab-red"
+    },
+    "2026-08-16": {
+      "answer": "pro-acryl-yellow-ochre"
+    },
+    "2026-08-17": {
+      "answer": "ak-3gen-burn-orange"
+    },
+    "2026-08-18": {
+      "answer": "army-painter-weapon-bronze"
+    },
+    "2026-08-19": {
+      "answer": "pro-acryl-yellow-green"
+    },
+    "2026-08-20": {
+      "answer": "vallejo-model-color-scarlet"
+    },
+    "2026-08-21": {
+      "answer": "two-thin-coats-enchantress-purple"
+    },
+    "2026-08-22": {
+      "answer": "army-painter-rainforest"
+    },
+    "2026-08-23": {
+      "answer": "vallejo-model-color-buff"
+    },
+    "2026-08-24": {
+      "answer": "army-painter-vivid-volt"
+    },
+    "2026-08-25": {
+      "answer": "two-thin-coats-panzer-yellow"
+    },
+    "2026-08-26": {
+      "answer": "vallejo-model-color-black-green"
+    },
+    "2026-08-27": {
+      "answer": "two-thin-coats-septic-green"
+    },
+    "2026-08-28": {
+      "answer": "army-painter-hydra-turquoise"
+    },
+    "2026-08-29": {
+      "answer": "citadel-gal-vorbak-red"
+    },
+    "2026-08-30": {
+      "answer": "two-thin-coats-skeleton-legion"
+    },
+    "2026-08-31": {
+      "answer": "vallejo-model-color-gold"
+    },
+    "2026-09-01": {
+      "answer": "pro-acryl-amp-red-orange"
+    },
+    "2026-09-02": {
+      "answer": "vallejo-model-color-dark-yellow"
+    },
+    "2026-09-03": {
+      "answer": "vallejo-game-color-scurvy-green"
+    },
+    "2026-09-04": {
+      "answer": "army-painter-jb-tainted-garden"
+    },
+    "2026-09-05": {
+      "answer": "citadel-khorne-red"
+    },
+    "2026-09-06": {
+      "answer": "vallejo-model-color-khaki-grey"
+    },
+    "2026-09-07": {
+      "answer": "citadel-gorthor-brown"
+    },
+    "2026-09-08": {
+      "answer": "pro-acryl-tan-flesh"
+    },
+    "2026-09-09": {
+      "answer": "army-painter-figgy-pink"
+    },
+    "2026-09-10": {
+      "answer": "citadel-skarsnik-green"
+    },
+    "2026-09-11": {
+      "answer": "two-thin-coats-orange-flare"
+    },
+    "2026-09-12": {
+      "answer": "two-thin-coats-fire-opal"
+    },
+    "2026-09-13": {
+      "answer": "ak-3gen-pastel-yellow"
+    },
+    "2026-09-14": {
+      "answer": "ak-3gen-wine-red"
+    },
+    "2026-09-15": {
+      "answer": "two-thin-coats-dark-arts-dystopian-dust"
+    },
+    "2026-09-16": {
+      "answer": "ak-3gen-pastel-peach"
+    },
+    "2026-09-17": {
+      "answer": "ak-3gen-emerald-metallic-green"
+    },
+    "2026-09-18": {
+      "answer": "vallejo-model-color-deep-sky-blue"
+    },
+    "2026-09-19": {
+      "answer": "army-painter-warpaints-mud-splatter"
+    },
+    "2026-09-20": {
+      "answer": "pro-acryl-blue"
+    },
+    "2026-09-21": {
+      "answer": "two-thin-coats-argonaut-skin"
+    },
+    "2026-09-22": {
+      "answer": "citadel-wazdakka-red"
+    },
+    "2026-09-23": {
+      "answer": "army-painter-basilisk-red"
+    },
+    "2026-09-24": {
+      "answer": "two-thin-coats-evil-eye-red"
+    },
+    "2026-09-25": {
+      "answer": "two-thin-coats-glistening-gums"
+    },
+    "2026-09-26": {
+      "answer": "vallejo-game-color-polished-gold"
+    },
+    "2026-09-27": {
+      "answer": "citadel-skrag-brown"
+    },
+    "2026-09-28": {
+      "answer": "ak-3gen-pale-sand"
+    },
+    "2026-09-29": {
+      "answer": "two-thin-coats-dark-arts-divination-white"
+    },
+    "2026-09-30": {
+      "answer": "citadel-evil-sunz-scarlet"
+    },
+    "2026-10-01": {
+      "answer": "two-thin-coats-rust-orange"
+    },
+    "2026-10-02": {
+      "answer": "two-thin-coats-abyss-blue"
+    },
+    "2026-10-03": {
+      "answer": "ak-3gen-intense-pink"
+    },
+    "2026-10-04": {
+      "answer": "army-painter-wolf-grey"
+    },
+    "2026-10-05": {
+      "answer": "army-painter-warpaints-german-camo-green"
+    },
+    "2026-10-06": {
+      "answer": "two-thin-coats-sandstone"
+    },
+    "2026-10-07": {
+      "answer": "pro-acryl-amp-orange-yellow"
+    },
+    "2026-10-08": {
+      "answer": "army-painter-bright-sapphire"
+    },
+    "2026-10-09": {
+      "answer": "citadel-balthasar-gold"
+    },
+    "2026-10-10": {
+      "answer": "army-painter-pink-potion"
+    },
+    "2026-10-11": {
+      "answer": "two-thin-coats-boot-strap-brown"
+    },
+    "2026-10-12": {
+      "answer": "two-thin-coats-cursed-blue"
+    },
+    "2026-10-13": {
+      "answer": "two-thin-coats-paladin-flesh"
+    },
+    "2026-10-14": {
+      "answer": "army-painter-buffed-hide"
+    },
+    "2026-10-15": {
+      "answer": "army-painter-jb-thicket-grove"
+    },
+    "2026-10-16": {
+      "answer": "vallejo-model-color-sky-blue"
+    },
+    "2026-10-17": {
+      "answer": "vallejo-game-color-earth"
+    },
+    "2026-10-18": {
+      "answer": "vallejo-model-color-sand-yellow"
+    },
+    "2026-10-19": {
+      "answer": "pro-acryl-amp-burnt-umber"
+    },
+    "2026-10-20": {
+      "answer": "two-thin-coats-scarab-red"
+    },
+    "2026-10-21": {
+      "answer": "two-thin-coats-cyber-pink"
+    },
+    "2026-10-22": {
+      "answer": "vallejo-model-color-prussian-blue"
+    },
+    "2026-10-23": {
+      "answer": "army-painter-ruddy-umber"
+    },
+    "2026-10-24": {
+      "answer": "vallejo-game-color-scrofulous-brown"
+    },
+    "2026-10-25": {
+      "answer": "ak-3gen-medium-sand"
+    },
+    "2026-10-26": {
+      "answer": "vallejo-game-color-toxic-yellow"
+    },
+    "2026-10-27": {
+      "answer": "ak-3gen-cobalt-blue"
+    },
+    "2026-10-28": {
+      "answer": "pro-acryl-warm-flesh"
+    },
+    "2026-10-29": {
+      "answer": "army-painter-burning-ore"
+    },
+    "2026-10-30": {
+      "answer": "two-thin-coats-spartan-bronze"
+    },
+    "2026-10-31": {
+      "answer": "two-thin-coats-flaming-forge-orange"
+    },
+    "2026-11-01": {
+      "answer": "ak-3gen-luminous-green"
+    },
+    "2026-11-02": {
+      "answer": "ak-3gen-yellow"
+    },
+    "2026-11-03": {
+      "answer": "ak-3gen-alga-green"
+    },
+    "2026-11-04": {
+      "answer": "army-painter-warpaints-camo-sand"
+    },
+    "2026-11-05": {
+      "answer": "citadel-ungor-flesh"
+    },
+    "2026-11-06": {
+      "answer": "pro-acryl-dark-purple"
+    },
+    "2026-11-07": {
+      "answer": "ak-3gen-golden-olive"
+    },
+    "2026-11-08": {
+      "answer": "two-thin-coats-bard-skin"
+    },
+    "2026-11-09": {
+      "answer": "ak-3gen-black-green"
+    },
+    "2026-11-10": {
+      "answer": "pro-acryl-amp-dark-navy-blue"
+    },
+    "2026-11-11": {
+      "answer": "ak-3gen-ocher-orange"
+    },
+    "2026-11-12": {
+      "answer": "ak-3gen-pistachio"
+    },
+    "2026-11-13": {
+      "answer": "vallejo-model-color-yellow-green"
+    },
+    "2026-11-14": {
+      "answer": "army-painter-warpaints-webbing-green"
+    },
+    "2026-11-15": {
+      "answer": "army-painter-magecast-magenta"
+    },
+    "2026-11-16": {
+      "answer": "vallejo-game-color-sunset-orange"
+    },
+    "2026-11-17": {
+      "answer": "pro-acryl-red-oxide"
+    },
+    "2026-11-18": {
+      "answer": "citadel-phalanx-yellow"
+    },
+    "2026-11-19": {
+      "answer": "vallejo-model-color-medium-blue"
+    },
+    "2026-11-20": {
+      "answer": "army-painter-marine-mist"
+    },
+    "2026-11-21": {
+      "answer": "vallejo-game-color-goblin-green"
+    },
+    "2026-11-22": {
+      "answer": "two-thin-coats-carapace-green"
+    },
+    "2026-11-23": {
+      "answer": "army-painter-enchanted-pink"
+    },
+    "2026-11-24": {
+      "answer": "army-painter-jb-blood-thorn"
+    },
+    "2026-11-25": {
+      "answer": "army-painter-jb-dewpath"
+    },
+    "2026-11-26": {
+      "answer": "citadel-phoenician-purple"
+    },
+    "2026-11-27": {
+      "answer": "army-painter-jb-gladeshard"
+    },
+    "2026-11-28": {
+      "answer": "vallejo-model-color-medium-grey"
+    },
+    "2026-11-29": {
+      "answer": "vallejo-model-color-deep-yellow"
+    },
+    "2026-11-30": {
+      "answer": "ak-3gen-deep-orange"
+    },
+    "2026-12-01": {
+      "answer": "ak-3gen-amaranth-red"
+    },
+    "2026-12-02": {
+      "answer": "two-thin-coats-sword-hilt-burgundy"
+    },
+    "2026-12-03": {
+      "answer": "two-thin-coats-berserker-red"
+    },
+    "2026-12-04": {
+      "answer": "pro-acryl-orange-oxide"
+    },
+    "2026-12-05": {
+      "answer": "two-thin-coats-gravestone-blue"
+    },
+    "2026-12-06": {
+      "answer": "two-thin-coats-sentient-turquoise"
+    },
+    "2026-12-07": {
+      "answer": "two-thin-coats-wasteland-brown"
+    },
+    "2026-12-08": {
+      "answer": "vallejo-game-color-dirty-grey"
+    },
+    "2026-12-09": {
+      "answer": "pro-acryl-amp-green-brown"
+    },
+    "2026-12-10": {
+      "answer": "ak-3gen-old-rose"
+    },
+    "2026-12-11": {
+      "answer": "vallejo-model-color-brown-sand"
+    },
+    "2026-12-12": {
+      "answer": "army-painter-bright-sapphire"
+    },
+    "2026-12-13": {
+      "answer": "vallejo-model-color-dark-sand"
+    },
+    "2026-12-14": {
+      "answer": "citadel-squig-orange"
+    },
+    "2026-12-15": {
+      "answer": "two-thin-coats-dark-sun-yellow"
+    },
+    "2026-12-16": {
+      "answer": "pro-acryl-dark-orange-brown"
+    },
+    "2026-12-17": {
+      "answer": "pro-acryl-light-bronze"
+    },
+    "2026-12-18": {
+      "answer": "vallejo-game-color-elfic-flesh"
+    },
+    "2026-12-19": {
+      "answer": "ak-3gen-dark-rust"
+    },
+    "2026-12-20": {
+      "answer": "ak-3gen-black-red"
+    },
+    "2026-12-21": {
+      "answer": "army-painter-red-copper"
+    },
+    "2026-12-22": {
+      "answer": "vallejo-game-color-sun-yellow"
+    },
+    "2026-12-23": {
+      "answer": "pro-acryl-amp-orange-yellow"
+    },
+    "2026-12-24": {
+      "answer": "citadel-evil-sunz-scarlet"
+    },
+    "2026-12-25": {
+      "answer": "ak-3gen-lime-green"
+    },
+    "2026-12-26": {
+      "answer": "two-thin-coats-ancient-gold"
+    },
+    "2026-12-27": {
+      "answer": "army-painter-warpaints-boot-brown"
+    },
+    "2026-12-28": {
+      "answer": "army-painter-dorado-skin"
+    },
+    "2026-12-29": {
+      "answer": "army-painter-emerald-forest"
+    },
+    "2026-12-30": {
+      "answer": "pro-acryl-bold-pyrrole-red"
+    },
+    "2026-12-31": {
+      "answer": "vallejo-model-color-flat-yellow"
+    },
+    "2027-01-01": {
+      "answer": "citadel-blue-horror"
+    },
+    "2027-01-02": {
+      "answer": "vallejo-model-color-salmon-rose"
+    },
+    "2027-01-03": {
+      "answer": "two-thin-coats-glistening-gold"
+    },
+    "2027-01-04": {
+      "answer": "vallejo-model-color-buff"
+    },
+    "2027-01-05": {
+      "answer": "vallejo-model-color-sunny-skin-tone"
+    },
+    "2027-01-06": {
+      "answer": "vallejo-model-color-medium-olive"
+    },
+    "2027-01-07": {
+      "answer": "army-painter-raging-rouge"
+    },
+    "2027-01-08": {
+      "answer": "vallejo-model-color-canvas"
+    },
+    "2027-01-09": {
+      "answer": "citadel-genestealer-purple"
+    },
+    "2027-01-10": {
+      "answer": "army-painter-wilted-rose"
+    },
+    "2027-01-11": {
+      "answer": "two-thin-coats-frost-blue"
+    },
+    "2027-01-12": {
+      "answer": "ak-3gen-ruby"
+    },
+    "2027-01-13": {
+      "answer": "ak-3gen-middle-stone"
+    },
+    "2027-01-14": {
+      "answer": "two-thin-coats-mythic-turquoise"
+    },
+    "2027-01-15": {
+      "answer": "vallejo-model-color-amaranth-red"
+    },
+    "2027-01-16": {
+      "answer": "citadel-cadian-fleshtone"
+    },
+    "2027-01-17": {
+      "answer": "army-painter-inner-light"
+    },
+    "2027-01-18": {
+      "answer": "ak-3gen-archaic-turquoise"
+    },
+    "2027-01-19": {
+      "answer": "vallejo-game-color-earth"
+    },
+    "2027-01-20": {
+      "answer": "vallejo-model-color-dark-prussian-blue"
+    },
+    "2027-01-21": {
+      "answer": "ak-3gen-light-green"
+    },
+    "2027-01-22": {
+      "answer": "ak-3gen-dark-sand"
+    },
+    "2027-01-23": {
+      "answer": "citadel-retributor-armour"
+    },
+    "2027-01-24": {
+      "answer": "citadel-warpfiend-grey"
+    },
+    "2027-01-25": {
+      "answer": "army-painter-warpaints-mud-splatter"
+    },
+    "2027-01-26": {
+      "answer": "two-thin-coats-jade-green"
+    },
+    "2027-01-27": {
+      "answer": "ak-3gen-decomposed-flesh"
+    },
+    "2027-01-28": {
+      "answer": "two-thin-coats-abyss-blue"
+    },
+    "2027-01-29": {
+      "answer": "vallejo-model-color-german-yellow"
+    },
+    "2027-01-30": {
+      "answer": "two-thin-coats-battle-axe-brass"
+    },
+    "2027-01-31": {
+      "answer": "two-thin-coats-dark-arts-grindhouse-orange"
+    },
+    "2027-02-01": {
+      "answer": "army-painter-glowing-inferno"
+    },
+    "2027-02-02": {
+      "answer": "citadel-fenrisian-grey"
+    },
+    "2027-02-03": {
+      "answer": "army-painter-wasteland-clay"
+    },
+    "2027-02-04": {
+      "answer": "ak-3gen-dark-flesh"
+    },
+    "2027-02-05": {
+      "answer": "pro-acryl-bismuth-yellow"
+    },
+    "2027-02-06": {
+      "answer": "army-painter-warlock-magenta"
+    },
+    "2027-02-07": {
+      "answer": "ak-3gen-purple"
+    },
+    "2027-02-08": {
+      "answer": "pro-acryl-dark-plum"
+    },
+    "2027-02-09": {
+      "answer": "citadel-zandri-dust"
+    },
+    "2027-02-10": {
+      "answer": "vallejo-model-color-dark-flesh"
+    },
+    "2027-02-11": {
+      "answer": "army-painter-violent-vermillion"
+    },
+    "2027-02-12": {
+      "answer": "pro-acryl-blue"
+    },
+    "2027-02-13": {
+      "answer": "vallejo-model-color-turquoise"
+    },
+    "2027-02-14": {
+      "answer": "army-painter-regal-blue"
+    },
+    "2027-02-15": {
+      "answer": "citadel-screamer-pink"
+    },
+    "2027-02-16": {
+      "answer": "vallejo-model-color-magenta"
+    },
+    "2027-02-17": {
+      "answer": "vallejo-model-color-luftwaffe-green"
+    },
+    "2027-02-18": {
+      "answer": "vallejo-model-color-gunmetal-blue"
+    },
+    "2027-02-19": {
+      "answer": "ak-3gen-ocean-blue"
+    },
+    "2027-02-20": {
+      "answer": "army-painter-leafy-green"
+    },
+    "2027-02-21": {
+      "answer": "two-thin-coats-rust-orange"
+    },
+    "2027-02-22": {
+      "answer": "ak-3gen-intermediate-green"
+    },
+    "2027-02-23": {
+      "answer": "two-thin-coats-dwarven-skin"
+    },
+    "2027-02-24": {
+      "answer": "ak-3gen-pastel-violet"
+    },
+    "2027-02-25": {
+      "answer": "army-painter-stratos-blue"
+    },
+    "2027-02-26": {
+      "answer": "ak-3gen-deep-violet"
+    },
+    "2027-02-27": {
+      "answer": "ak-3gen-sahara-yellow"
+    },
+    "2027-02-28": {
+      "answer": "pro-acryl-tan-flesh"
+    },
+    "2027-03-01": {
+      "answer": "citadel-kislev-flesh"
+    },
+    "2027-03-02": {
+      "answer": "vallejo-model-color-chestnut-brown"
+    },
+    "2027-03-03": {
+      "answer": "vallejo-game-color-electric-blue"
+    },
+    "2027-03-04": {
+      "answer": "two-thin-coats-dark-arts-malign-yellow"
+    },
+    "2027-03-05": {
+      "answer": "vallejo-game-color-khaki"
+    },
+    "2027-03-06": {
+      "answer": "ak-3gen-dead-red"
+    },
+    "2027-03-07": {
+      "answer": "vallejo-model-color-purple"
+    },
+    "2027-03-08": {
+      "answer": "pro-acryl-orange-brown"
+    },
+    "2027-03-09": {
+      "answer": "army-painter-tainted-gold"
+    },
+    "2027-03-10": {
+      "answer": "army-painter-turquoise-siren"
+    },
+    "2027-03-11": {
+      "answer": "two-thin-coats-cursed-blue"
+    },
+    "2027-03-12": {
+      "answer": "vallejo-model-color-sunny-skin-tone"
+    },
+    "2027-03-13": {
+      "answer": "ak-3gen-ducat-blue"
+    },
+    "2027-03-14": {
+      "answer": "vallejo-model-color-emerald"
+    },
+    "2027-03-15": {
+      "answer": "army-painter-frost-blue"
+    },
+    "2027-03-16": {
+      "answer": "citadel-tau-light-ochre"
+    },
+    "2027-03-17": {
+      "answer": "two-thin-coats-dark-arts-archon-orange"
+    },
+    "2027-03-18": {
+      "answer": "vallejo-model-color-royal-purple"
+    },
+    "2027-03-19": {
+      "answer": "ak-3gen-deep-blue"
+    },
+    "2027-03-20": {
+      "answer": "army-painter-autumn-sage"
+    },
+    "2027-03-21": {
+      "answer": "citadel-elysian-green"
+    },
+    "2027-03-22": {
+      "answer": "ak-3gen-pastel-green"
+    },
+    "2027-03-23": {
+      "answer": "two-thin-coats-apocalypse-sky"
+    },
+    "2027-03-24": {
+      "answer": "ak-3gen-light-brown"
+    },
+    "2027-03-25": {
+      "answer": "ak-3gen-dark-brown"
+    },
+    "2027-03-26": {
+      "answer": "ak-3gen-radiant-flesh"
+    },
+    "2027-03-27": {
+      "answer": "vallejo-model-color-scarlet"
+    },
+    "2027-03-28": {
+      "answer": "citadel-temple-guard-blue"
+    },
+    "2027-03-29": {
+      "answer": "two-thin-coats-traitor-green"
+    },
+    "2027-03-30": {
+      "answer": "two-thin-coats-dark-arts-divination-white"
+    },
+    "2027-03-31": {
+      "answer": "pro-acryl-bright-yellow-ochre"
+    },
+    "2027-04-01": {
+      "answer": "vallejo-model-color-park-green-flat"
+    },
+    "2027-04-02": {
+      "answer": "ak-3gen-sky-blue"
+    },
+    "2027-04-03": {
+      "answer": "vallejo-model-color-vermilion"
+    },
+    "2027-04-04": {
+      "answer": "vallejo-model-color-sunset-red"
+    },
+    "2027-04-05": {
+      "answer": "citadel-loren-forest"
+    },
+    "2027-04-06": {
+      "answer": "citadel-barak-nar-burgundy"
+    },
+    "2027-04-07": {
+      "answer": "citadel-kabalite-green"
+    },
+    "2027-04-08": {
+      "answer": "pro-acryl-khaki"
+    },
+    "2027-04-09": {
+      "answer": "army-painter-deep-azure"
+    },
+    "2027-04-10": {
+      "answer": "citadel-macragge-blue"
+    },
+    "2027-04-11": {
+      "answer": "vallejo-model-color-pastel-blue"
+    },
+    "2027-04-12": {
+      "answer": "vallejo-model-color-german-orange"
+    },
+    "2027-04-13": {
+      "answer": "citadel-baharroth-blue"
+    },
+    "2027-04-14": {
+      "answer": "citadel-moot-green"
+    },
+    "2027-04-15": {
+      "answer": "ak-3gen-cold-green"
+    },
+    "2027-04-16": {
+      "answer": "vallejo-model-color-uniform-green"
+    },
+    "2027-04-17": {
+      "answer": "two-thin-coats-ambush-yellow"
+    },
+    "2027-04-18": {
+      "answer": "vallejo-metal-color-gold"
+    },
+    "2027-04-19": {
+      "answer": "two-thin-coats-pale-skin"
+    },
+    "2027-04-20": {
+      "answer": "army-painter-lava-orange"
+    },
+    "2027-04-21": {
+      "answer": "ak-3gen-grass-green"
+    },
+    "2027-04-22": {
+      "answer": "pro-acryl-turquoise"
+    },
+    "2027-04-23": {
+      "answer": "two-thin-coats-amulet-purple"
+    },
+    "2027-04-24": {
+      "answer": "ak-3gen-emerald-metallic-green"
+    },
+    "2027-04-25": {
+      "answer": "vallejo-model-color-deep-green"
+    },
+    "2027-04-26": {
+      "answer": "army-painter-patagon-pine"
+    },
+    "2027-04-27": {
+      "answer": "pro-acryl-yellow-green"
+    },
+    "2027-04-28": {
+      "answer": "citadel-xv-88"
+    },
+    "2027-04-29": {
+      "answer": "pro-acryl-blue"
+    },
+    "2027-04-30": {
+      "answer": "pro-acryl-dark-yellow-green"
+    },
+    "2027-05-01": {
+      "answer": "ak-3gen-tan-earth"
+    },
+    "2027-05-02": {
+      "answer": "citadel-fulgrim-pink"
+    },
+    "2027-05-03": {
+      "answer": "pro-acryl-amp-dark-navy-blue"
+    },
+    "2027-05-04": {
+      "answer": "army-painter-flickering-flame"
+    },
+    "2027-05-05": {
+      "answer": "vallejo-game-color-leather-brown"
+    },
+    "2027-05-06": {
+      "answer": "ak-3gen-deep-green"
+    },
+    "2027-05-07": {
+      "answer": "ak-3gen-salmon"
+    },
+    "2027-05-08": {
+      "answer": "army-painter-grotesque-green"
+    },
+    "2027-05-09": {
+      "answer": "pro-acryl-bright-green"
+    },
+    "2027-05-10": {
+      "answer": "vallejo-model-color-us-dark-green"
+    },
+    "2027-05-11": {
+      "answer": "army-painter-guardian-green"
+    },
+    "2027-05-12": {
+      "answer": "vallejo-model-color-amaranth-red"
+    },
+    "2027-05-13": {
+      "answer": "vallejo-game-color-hexed-lichen"
+    },
+    "2027-05-14": {
+      "answer": "army-painter-barbarian-flesh-wph-rosy-skin"
+    },
+    "2027-05-15": {
+      "answer": "vallejo-model-color-turquoise"
+    },
+    "2027-05-16": {
+      "answer": "ak-3gen-copper"
+    },
+    "2027-05-17": {
+      "answer": "vallejo-model-color-lime-green"
+    },
+    "2027-05-18": {
+      "answer": "two-thin-coats-solar-flare"
+    },
+    "2027-05-19": {
+      "answer": "army-painter-pink-potion"
+    },
+    "2027-05-20": {
+      "answer": "army-painter-warpaints-german-camo-green"
+    },
+    "2027-05-21": {
+      "answer": "vallejo-model-color-mahogany-brown"
+    },
+    "2027-05-22": {
+      "answer": "two-thin-coats-scabbard-brown"
+    },
+    "2027-05-23": {
+      "answer": "pro-acryl-dark-plum"
+    },
+    "2027-05-24": {
+      "answer": "two-thin-coats-twin-suns-yellow"
+    },
+    "2027-05-25": {
+      "answer": "army-painter-ice-yellow"
+    },
+    "2027-05-26": {
+      "answer": "two-thin-coats-eldar-robe"
+    },
+    "2027-05-27": {
+      "answer": "ak-3gen-slime-green"
+    },
+    "2027-05-28": {
+      "answer": "ak-3gen-vermillion"
+    },
+    "2027-05-29": {
+      "answer": "vallejo-model-color-fern-green"
+    },
+    "2027-05-30": {
+      "answer": "army-painter-dryad-brown"
+    },
+    "2027-05-31": {
+      "answer": "ak-3gen-russian-green"
+    },
+    "2027-06-01": {
+      "answer": "vallejo-game-color-desert-yellow"
+    },
+    "2027-06-02": {
+      "answer": "pro-acryl-pale-yellow"
+    },
+    "2027-06-03": {
+      "answer": "army-painter-baron-blue"
+    },
+    "2027-06-04": {
+      "answer": "ak-3gen-brown-rose"
+    },
+    "2027-06-05": {
+      "answer": "ak-3gen-tan-yelow"
+    },
+    "2027-06-06": {
+      "answer": "vallejo-model-color-us-field-drab"
+    },
+    "2027-06-07": {
+      "answer": "army-painter-augur-blue"
+    },
+    "2027-06-08": {
+      "answer": "two-thin-coats-dark-arts-diabolical-green"
+    },
+    "2027-06-09": {
+      "answer": "ak-3gen-cork"
+    },
+    "2027-06-10": {
+      "answer": "vallejo-game-color-sombre-grey"
+    },
+    "2027-06-11": {
+      "answer": "two-thin-coats-sorceror-s-cloak"
+    },
+    "2027-06-12": {
+      "answer": "army-painter-wild-green"
+    },
+    "2027-06-13": {
+      "answer": "army-painter-warpaints-mid-battle-dress"
+    },
+    "2027-06-14": {
+      "answer": "two-thin-coats-skeleton-legion"
+    },
+    "2027-06-15": {
+      "answer": "vallejo-model-color-blue-green"
+    },
+    "2027-06-16": {
+      "answer": "citadel-temple-guard-blue"
+    },
+    "2027-06-17": {
+      "answer": "vallejo-model-color-oxford-blue"
+    },
+    "2027-06-18": {
+      "answer": "vallejo-model-color-leather-brown"
+    },
+    "2027-06-19": {
+      "answer": "vallejo-model-color-luftwaffe-green"
+    },
+    "2027-06-20": {
+      "answer": "two-thin-coats-orange-flare"
+    },
+    "2027-06-21": {
+      "answer": "army-painter-tundra-taupe"
+    },
+    "2027-06-22": {
+      "answer": "ak-3gen-magenta"
+    },
+    "2027-06-23": {
+      "answer": "ak-3gen-dirty-red"
+    },
+    "2027-06-24": {
+      "answer": "army-painter-jb-sunburst-ochre"
+    },
+    "2027-06-25": {
+      "answer": "ak-3gen-gunship-green"
+    },
+    "2027-06-26": {
+      "answer": "ak-3gen-reflective-green"
+    },
+    "2027-06-27": {
+      "answer": "vallejo-model-color-park-green-flat"
+    },
+    "2027-06-28": {
+      "answer": "army-painter-onyx-skin"
+    },
+    "2027-06-29": {
+      "answer": "two-thin-coats-skulker-yellow"
+    },
+    "2027-06-30": {
+      "answer": "ak-3gen-pale-sand"
+    },
+    "2027-07-01": {
+      "answer": "ak-3gen-basic-skin-tone"
+    },
+    "2027-07-02": {
+      "answer": "army-painter-dorado-skin"
+    },
+    "2027-07-03": {
+      "answer": "two-thin-coats-traitor-green"
+    },
+    "2027-07-04": {
+      "answer": "two-thin-coats-emperors-purple"
+    },
+    "2027-07-05": {
+      "answer": "ak-3gen-ochre"
+    },
+    "2027-07-06": {
+      "answer": "army-painter-runic-cobalt"
+    },
+    "2027-07-07": {
+      "answer": "two-thin-coats-enchantment-blue"
+    },
+    "2027-07-08": {
+      "answer": "pro-acryl-orange-brown"
+    },
+    "2027-07-09": {
+      "answer": "vallejo-game-color-gorgon-brown"
+    },
+    "2027-07-10": {
+      "answer": "two-thin-coats-dark-arts-archon-orange"
+    },
+    "2027-07-11": {
+      "answer": "ak-3gen-deep-sky-blue"
+    },
+    "2027-07-12": {
+      "answer": "citadel-bestigor-flesh"
+    },
+    "2027-07-13": {
+      "answer": "two-thin-coats-enticing-purple"
+    },
+    "2027-07-14": {
+      "answer": "army-painter-jb-gladeshard"
+    },
+    "2027-07-15": {
+      "answer": "vallejo-model-color-green-brown"
+    },
+    "2027-07-16": {
+      "answer": "two-thin-coats-elven-skin"
+    },
+    "2027-07-17": {
+      "answer": "pro-acryl-amp-beige-grey"
+    },
+    "2027-07-18": {
+      "answer": "vallejo-game-color-scrofulous-brown"
+    },
+    "2027-07-19": {
+      "answer": "two-thin-coats-relic-blue"
+    },
+    "2027-07-20": {
+      "answer": "citadel-elysian-green"
+    },
+    "2027-07-21": {
+      "answer": "army-painter-greenskin"
+    },
+    "2027-07-22": {
+      "answer": "pro-acryl-orange"
+    },
+    "2027-07-23": {
+      "answer": "citadel-ogryn-camo"
+    },
+    "2027-07-24": {
+      "answer": "pro-acryl-amp-dark-navy-blue"
+    },
+    "2027-07-25": {
+      "answer": "pro-acryl-dark-crimson"
+    },
+    "2027-07-26": {
+      "answer": "ak-3gen-beige-red"
+    },
+    "2027-07-27": {
+      "answer": "vallejo-game-color-squid-pink"
+    },
+    "2027-07-28": {
+      "answer": "two-thin-coats-battle-axe-brass"
+    },
+    "2027-07-29": {
+      "answer": "army-painter-warpaints-medium-drab"
+    },
+    "2027-07-30": {
+      "answer": "citadel-dorn-yellow"
+    },
+    "2027-07-31": {
+      "answer": "army-painter-tourmaline-skin"
+    },
+    "2027-08-01": {
+      "answer": "vallejo-model-color-sky-blue"
+    },
+    "2027-08-02": {
+      "answer": "pro-acryl-burnt-sienna"
+    },
+    "2027-08-03": {
+      "answer": "vallejo-model-color-saddle-brown"
+    },
+    "2027-08-04": {
+      "answer": "army-painter-mulled-berry"
+    },
+    "2027-08-05": {
+      "answer": "citadel-warpfiend-grey"
+    },
+    "2027-08-06": {
+      "answer": "army-painter-doomfire-drab"
+    },
+    "2027-08-07": {
+      "answer": "two-thin-coats-dark-arts-malign-yellow"
+    },
+    "2027-08-08": {
+      "answer": "two-thin-coats-ion-blue"
+    },
+    "2027-08-09": {
+      "answer": "ak-3gen-green-sky"
+    },
+    "2027-08-10": {
+      "answer": "citadel-gauss-blaster-green"
+    },
+    "2027-08-11": {
+      "answer": "two-thin-coats-zombie-rot"
+    },
+    "2027-08-12": {
+      "answer": "two-thin-coats-legion-green"
+    }
+  }
+}
