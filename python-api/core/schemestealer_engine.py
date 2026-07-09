@@ -9,7 +9,7 @@ import json
 import re
 import unicodedata
 from PIL import Image
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Optional
 from skimage import color as sk_color
 
 from config import ColorDetection, Affiliate
