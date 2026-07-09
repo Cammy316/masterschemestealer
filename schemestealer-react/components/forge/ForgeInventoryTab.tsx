@@ -22,6 +22,7 @@ interface RackAnalysisResult {
 function RackAnalysisPanel({ inventory }: { inventory: Paint[] }) {
   const [result, setResult] = useState<RackAnalysisResult | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   React.useEffect(() => {
     const analyze = async () => {
@@ -32,8 +33,10 @@ function RackAnalysisPanel({ inventory }: { inventory: Paint[] }) {
           inventory: inventoryIds
         });
         setResult(data);
+        setError(null);
       } catch (err) {
         console.error('Rack analysis failed', err);
+        setError("Failed to analyse rack. The server might be unavailable.");
       } finally {
         setLoading(false);
       }
@@ -43,7 +46,7 @@ function RackAnalysisPanel({ inventory }: { inventory: Paint[] }) {
     return () => clearTimeout(timeout);
   }, [inventory]);
 
-  if (!result && !loading) return null;
+  if (!result && !loading && !error) return null;
 
   return (
     <div className="mt-8 p-6 bg-void-black/40 border border-imperial-gold/20 rounded-xl relative overflow-hidden">
@@ -54,6 +57,8 @@ function RackAnalysisPanel({ inventory }: { inventory: Paint[] }) {
       
       {loading ? (
         <p className="text-sm text-gray-400">Analyzing collection geometry...</p>
+      ) : error ? (
+        <p className="text-sm text-red-400">{error}</p>
       ) : result && (
         <>
           <p className="text-sm text-gray-400 mb-6">Gamut Coverage: <span className="text-white font-bold">{result.coverage_pct}%</span></p>
