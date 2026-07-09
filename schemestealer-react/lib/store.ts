@@ -45,6 +45,7 @@ export const useAppStore = create<AppStore>()(
       offlineMode: false,
       preferredBrands: ['all'], // Default to showing all brands
       preferredRegion: 'global', // Default region
+      activeSession: null,
 
       // Mode and scan actions
       setMode: (mode: ScanMode) => set({ currentMode: mode, error: null }),
@@ -192,12 +193,48 @@ export const useAppStore = create<AppStore>()(
 
       // Offline mode
       setOfflineMode: (enabled: boolean) => set({ offlineMode: enabled }),
-
-      // Brand preferences
       setPreferredBrands: (brands: string[]) => set({ preferredBrands: brands }),
-
-      // Region preferences
       setPreferredRegion: (region: string) => set({ preferredRegion: region }),
+
+      // Session Forge actions
+      setActiveSession: (session) => set({ activeSession: session }),
+      
+      updateSessionStep: (colourIndex, role, status, dryUntil) => set((state) => {
+        if (!state.activeSession) return state;
+        
+        const newColours = [...state.activeSession.colours];
+        const colourMatches = newColours.find(c => c.colourIndex === colourIndex);
+        if (colourMatches) {
+          const stepIndex = colourMatches.steps.findIndex(s => s.role === role);
+          if (stepIndex !== -1) {
+            colourMatches.steps[stepIndex] = {
+              ...colourMatches.steps[stepIndex],
+              status,
+              ...(dryUntil !== undefined ? { dryUntil } : {})
+            };
+          }
+        }
+        
+        return {
+          activeSession: {
+            ...state.activeSession,
+            colours: newColours
+          }
+        };
+      }),
+      
+      updateSessionOverride: (role, minutes) => set((state) => {
+        if (!state.activeSession) return state;
+        return {
+          activeSession: {
+            ...state.activeSession,
+            dryTimeOverrides: {
+              ...state.activeSession.dryTimeOverrides,
+              [role]: minutes
+            }
+          }
+        };
+      }),
     }),
     {
       name: 'schemestealer-storage', // LocalStorage key
@@ -211,6 +248,7 @@ export const useAppStore = create<AppStore>()(
         currentScan: state.currentScan ? toPersistableScan(state.currentScan) : null,
         preferredBrands: state.preferredBrands,
         preferredRegion: state.preferredRegion,
+        activeSession: state.activeSession,
       }),
     }
   )

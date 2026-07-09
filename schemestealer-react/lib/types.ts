@@ -138,6 +138,23 @@ export interface AppState {
   offlineMode: boolean;
   preferredBrands: string[]; // ['all'], ['citadel'], ['vallejo'], ['army-painter'], or combinations
   preferredRegion: string; // 'uk', 'us', 'eu', 'au', 'global'
+
+  // Session Forge state
+  activeSession: {
+    scanId: string;
+    startedAt: string;
+    colours: Array<{
+      colourIndex: number;
+      brand: string;
+      steps: Array<{
+        role: 'base' | 'highlight' | 'shade' | 'wash';
+        paintName: string;
+        status: 'pending' | 'painting' | 'drying' | 'done';
+        dryUntil?: number;
+      }>;
+    }>;
+    dryTimeOverrides: Partial<Record<'base' | 'highlight' | 'shade' | 'wash', number>>;
+  } | null;
 }
 
 export interface AppActions {
@@ -162,6 +179,11 @@ export interface AppActions {
   setOfflineMode: (enabled: boolean) => void;
   setPreferredBrands: (brands: string[]) => void;
   setPreferredRegion: (region: string) => void;
+
+  // Session Forge actions
+  setActiveSession: (session: AppState['activeSession']) => void;
+  updateSessionStep: (colourIndex: number, role: 'base' | 'highlight' | 'shade' | 'wash', status: 'pending' | 'painting' | 'drying' | 'done', dryUntil?: number) => void;
+  updateSessionOverride: (role: 'base' | 'highlight' | 'shade' | 'wash', minutes: number) => void;
 }
 
 export type AppStore = AppState & AppActions;
