@@ -85,7 +85,9 @@ export default async function PaintHubPage({ params }: Props) {
   });
 
   return (
-    <main className="min-h-dvh bg-void-black text-white pb-nav-safe">
+    {/* div, not <main>: the root layout already renders the page inside a
+        <main> with pb-nav-safe — nesting doubled both */}
+    <div className="min-h-dvh bg-void-black text-white">
       <div className="max-w-4xl mx-auto px-4 py-12">
         {/* SCHEMESTEALER BRANDING */}
         <div className="flex justify-center mb-12">
@@ -174,6 +176,6 @@ export default async function PaintHubPage({ params }: Props) {
           </Link>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

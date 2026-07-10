@@ -29,7 +29,9 @@ export function DeltaEBadge({ deltaE, band, className = '' }: DeltaEBadgeProps) 
       label = "FAIR MATCH";
       colorClass = "text-warning";
       borderClass = "border-warning";
-      glowClass = "shadow-[0_0_10px_var(--warning)] crt-flicker";
+      // No crt-flicker here: a 10Hz infinite flash on body copy is a
+      // photosensitivity risk and reads as a rendering glitch.
+      glowClass = "shadow-[0_0_10px_var(--warning)]";
       break;
     case 'distant':
     default:
