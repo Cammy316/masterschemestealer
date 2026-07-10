@@ -146,6 +146,8 @@ export interface AppState {
     colours: Array<{
       colourIndex: number;
       brand: string;
+      /** Detected colour hex for the target swatch in the runner */
+      hex?: string;
       steps: Array<{
         role: 'base' | 'highlight' | 'shade' | 'wash';
         paintName: string;
