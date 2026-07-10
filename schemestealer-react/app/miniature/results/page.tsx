@@ -129,7 +129,7 @@ export default function MiniscanResultsPage() {
   if (!currentScan) {
     return (
       <div
-        className="min-h-screen flex items-center justify-center px-6"
+        className="min-h-dvh flex items-center justify-center px-6"
         style={{ background: 'var(--void-black)' }}
       >
         <div className="border-b border-cogitator-green-dim/30 pb-4 mb-6">
@@ -199,7 +199,7 @@ export default function MiniscanResultsPage() {
   };
 
   return (
-    <div className="min-h-screen pb-24 pt-8 px-6" style={{ background: 'var(--void-black)' }}>
+    <div className="min-h-dvh pb-24 pt-8 px-6" style={{ background: 'var(--void-black)' }}>
       {/* Scanline effect */}
       <div className="scanline" />
 

@@ -429,7 +429,7 @@ function ColourCorrectionRow({ colour, index, correction, onChange, mode }: Colo
                 id={`family-select-${index}`}
                 value={correction.correctedFamily || ''}
                 onChange={(e) => onChange({ ...correction, correctedFamily: e.target.value })}
-                className={`w-full ${theme.inputBg} border ${theme.inputBorder} rounded px-3 py-2 ${theme.accentColor} ${theme.inputFocus} outline-none`}
+                className={`w-full text-base ${theme.inputBg} border ${theme.inputBorder} rounded px-3 py-2 ${theme.accentColor} ${theme.inputFocus} outline-none`}
               >
                 <option value="">Select family...</option>
                 {COLOUR_FAMILIES.map((family) => (
@@ -448,7 +448,7 @@ function ColourCorrectionRow({ colour, index, correction, onChange, mode }: Colo
                 value={correction.actualPaintUsed || ''}
                 onChange={(e) => onChange({ ...correction, actualPaintUsed: e.target.value })}
                 placeholder="e.g., Kantor Blue"
-                className={`w-full ${theme.inputBg} border ${theme.inputBorder} rounded px-3 py-2 ${theme.accentColor} ${theme.inputFocus} outline-none placeholder-opacity-30`}
+                className={`w-full text-base ${theme.inputBg} border ${theme.inputBorder} rounded px-3 py-2 ${theme.accentColor} ${theme.inputFocus} outline-none placeholder-opacity-30`}
                 style={{ '::placeholder': { opacity: 0.3 } } as React.CSSProperties}
               />
             </div>
@@ -563,7 +563,7 @@ export function FeedbackModal({
           static
           open={isOpen}
           onClose={handleClose}
-          className="relative z-50"
+          className="relative z-[var(--z-modal)]"
         >
           {/* Backdrop */}
           <motion.div
@@ -747,7 +747,7 @@ export function FeedbackModal({
                           onChange={(e) => setComment(e.target.value)}
                           placeholder="Any other feedback..."
                           rows={2}
-                          className={`w-full ${theme.inputBg} border ${theme.inputBorder} rounded px-3 py-2 ${theme.accentColor} ${theme.inputFocus} outline-none resize-none`}
+                          className={`w-full text-base ${theme.inputBg} border ${theme.inputBorder} rounded px-3 py-2 ${theme.accentColor} ${theme.inputFocus} outline-none resize-none`}
                         />
                       </div>
 
@@ -761,7 +761,7 @@ export function FeedbackModal({
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           placeholder="your@email.com"
-                          className={`w-full ${theme.inputBg} border ${theme.inputBorder} rounded px-3 py-2 ${theme.accentColor} ${theme.inputFocus} outline-none`}
+                          className={`w-full text-base ${theme.inputBg} border ${theme.inputBorder} rounded px-3 py-2 ${theme.accentColor} ${theme.inputFocus} outline-none`}
                         />
                       </div>
                     </div>

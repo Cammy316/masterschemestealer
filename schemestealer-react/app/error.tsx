@@ -45,7 +45,7 @@ export default function Error({
   }, [error]);
 
   return (
-    <main className="min-h-screen bg-void-black text-white flex flex-col items-center justify-center p-4">
+    <main className="min-h-dvh bg-void-black text-white flex flex-col items-center justify-center p-4">
       <div className="max-w-md w-full text-center space-y-6 border border-error/50 p-8 bg-[#2a0000]/40 rounded relative overflow-hidden">
         {/* Scanline overlay for aesthetic */}
         <div className="absolute inset-0 pointer-events-none" style={{

@@ -221,6 +221,17 @@ export function KoFiPrompt({ trigger, forceShow = false, onDismiss, mode = 'mini
   const [isVisible, setIsVisible] = useState(false);
   const theme = useThemeColors(mode);
 
+  // Lock body scroll while the overlay is open (this is a plain fixed div,
+  // not a HeadlessUI Dialog, so the page scrolls beneath it otherwise).
+  useEffect(() => {
+    if (!isVisible) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [isVisible]);
+
   useEffect(() => {
     // Don't show if already dismissed this session
     if (wasDismissedThisSession() && !forceShow) {
@@ -270,7 +281,7 @@ export function KoFiPrompt({ trigger, forceShow = false, onDismiss, mode = 'mini
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-void-black/80 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-void-black/80 z-[var(--z-modal)] flex items-center justify-center p-4"
           onClick={handleDismiss}
         >
           <motion.div
@@ -310,7 +321,7 @@ export function KoFiPrompt({ trigger, forceShow = false, onDismiss, mode = 'mini
 
                 <button
                   onClick={handleDismiss}
-                  className={`w-full py-2 px-4 ${theme.accentColorDim} text-sm hover:${theme.accentColor} transition-colors`}
+                  className={`w-full touch-target py-2 px-4 ${theme.accentColorDim} text-sm hover:${theme.accentColor} transition-colors`}
                 >
                   {theme.dismissLabel}
                 </button>

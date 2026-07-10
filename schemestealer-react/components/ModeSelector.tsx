@@ -21,7 +21,7 @@ export function ModeSelector() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-transparent relative overflow-x-hidden overflow-y-auto">
+    <div className="min-h-dvh flex flex-col bg-transparent relative overflow-x-hidden overflow-y-auto">
       {/* Vignette effect */}
       <div
         className="fixed inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.5)_100%)]"
