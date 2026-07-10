@@ -152,7 +152,11 @@ function CartItem({ item, index, onRemove, onUpdateQuantity }: CartItemProps) {
   };
 
   return (
-    <div className="flex items-center gap-3 p-3 border border-gray-800 bg-charcoal/60 rounded hover:bg-charcoal transition-colors">
+    // flex-wrap + min-w on the name block: one line where space allows,
+    // controls drop to a second right-aligned line on narrow phones —
+    // previously the fixed stepper/remove cluster crushed the name to ~2px
+    // at 360px.
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-2 p-3 border border-gray-800 bg-charcoal/60 rounded hover:bg-charcoal transition-colors">
       {/* Manifest number */}
       <div className="text-gray-600 font-mono text-[10px]">
         [{String(index + 1).padStart(2, '0')}]
@@ -165,21 +169,22 @@ function CartItem({ item, index, onRemove, onUpdateQuantity }: CartItemProps) {
       />
 
       {/* Paint info */}
-      <div className="flex-1 min-w-0 ml-2">
+      <div className="flex-1 min-w-[140px]">
         <div className="text-white font-bold text-sm sm:text-base truncate">
           {item.paint.name}
         </div>
-        <div className="text-gray-400 text-[10px] sm:text-xs uppercase tracking-widest">
+        <div className="text-gray-400 text-[11px] sm:text-xs uppercase tracking-widest">
           {item.paint.brand} {item.addedFrom && `• ${modeIcons[item.addedFrom]}`}
         </div>
       </div>
 
-      {/* Quantity controls */}
-      <div className="flex items-center gap-2 flex-shrink-0">
+      {/* Quantity + remove cluster (wraps under the name when tight) */}
+      <div className="flex items-center gap-2 flex-shrink-0 ml-auto">
         <button
           onClick={handleDecrement}
           disabled={item.quantity <= 1}
-          className="w-8 h-8 rounded-sm bg-black/80 hover:bg-charcoal active:bg-gray-800 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all border-y-2 border-x border-b-gray-900 border-t-gray-600 border-x-gray-800 shadow-inner active:scale-95"
+          aria-label="Decrease quantity"
+          className="w-10 h-10 rounded-sm bg-black/80 hover:bg-charcoal active:bg-gray-800 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all border-y-2 border-x border-b-gray-900 border-t-gray-600 border-x-gray-800 shadow-inner active:scale-95"
         >
           <span className="text-imperial-gold font-bold drop-shadow-[0_0_2px_rgba(184,134,11,0.5)]">−</span>
         </button>
@@ -190,20 +195,20 @@ function CartItem({ item, index, onRemove, onUpdateQuantity }: CartItemProps) {
 
         <button
           onClick={handleIncrement}
-          className="w-8 h-8 rounded-sm bg-black/80 hover:bg-charcoal active:bg-gray-800 flex items-center justify-center transition-all border-y-2 border-x border-b-gray-900 border-t-gray-600 border-x-gray-800 shadow-inner active:scale-95"
+          aria-label="Increase quantity"
+          className="w-10 h-10 rounded-sm bg-black/80 hover:bg-charcoal active:bg-gray-800 flex items-center justify-center transition-all border-y-2 border-x border-b-gray-900 border-t-gray-600 border-x-gray-800 shadow-inner active:scale-95"
         >
           <span className="text-imperial-gold font-bold drop-shadow-[0_0_2px_rgba(184,134,11,0.5)]">+</span>
         </button>
-      </div>
 
-      {/* Remove button */}
-      <button
-        onClick={onRemove}
-        className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-sm bg-red-950/20 text-red-900 hover:bg-red-950/60 hover:text-red-500 border border-transparent hover:border-red-900/50 transition-all ml-1 active:scale-95"
-        aria-label="Remove item"
-      >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-      </button>
+        <button
+          onClick={onRemove}
+          className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-sm bg-red-950/20 text-red-900 hover:bg-red-950/60 hover:text-red-500 border border-transparent hover:border-red-900/50 transition-all ml-1 active:scale-95"
+          aria-label="Remove item"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
     </div>
   );
 }
@@ -232,7 +237,7 @@ function CostSummary({ cart }: CostSummaryProps) {
   const totalCost = Object.values(brandTotals).reduce((sum, b) => sum + b.cost, 0);
 
   return (
-    <div className="mt-6 p-5 border border-gray-800 bg-charcoal/40 rounded-lg">
+    <div className="mt-4 p-4 border border-gray-800 bg-charcoal/40 rounded-lg">
       <h4 className="text-sm font-bold text-brass gothic-text text-center mb-4 tracking-widest">
         ESTIMATED COSTS
       </h4>
