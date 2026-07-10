@@ -184,6 +184,7 @@ export default function MiniscanResultsPage() {
       return {
         colourIndex: idx,
         brand: bestBrand,
+        hex: c.hex,
         steps,
       };
     });

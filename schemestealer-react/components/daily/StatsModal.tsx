@@ -47,18 +47,29 @@ export function StatsModal({ gameState, onClose, onShare }: StatsModalProps) {
   const winPercent = gameState.played > 0 ? Math.round((gameState.won / gameState.played) * 100) : 0;
   const maxGuessCount = Math.max(...gameState.guessDistribution, 1); // Avoid division by zero
 
+  // Lock body scroll while open (plain fixed overlay, not a Dialog).
+  useEffect(() => {
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, []);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={onClose}>
-      <motion.div 
+    // z-modal token: raw z-50 sat BELOW the z-100 bottom nav, which stayed
+    // visible and tappable through the backdrop.
+    <div className="fixed inset-0 z-[var(--z-modal)] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={onClose}>
+      <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
         onClick={e => e.stopPropagation()}
-        className="bg-[#0a0f0a] border-2 border-[var(--cogitator-green)]/50 p-6 rounded-sm max-w-sm w-full shadow-[0_0_30px_rgba(0,255,65,0.2)]"
+        className="bg-[#0a0f0a] border-2 border-[var(--cogitator-green)]/50 p-6 rounded-sm max-w-sm w-full max-h-[90dvh] overflow-y-auto shadow-[0_0_30px_rgba(0,255,65,0.2)]"
       >
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl gothic-text text-[var(--cogitator-green)]">SERVICE RECORD</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-white">✕</button>
+          <button onClick={onClose} aria-label="Close" className="text-gray-500 hover:text-white touch-target flex items-center justify-center">✕</button>
         </div>
 
         <div className="flex justify-between mb-8 text-center text-gray-300 tech-text">

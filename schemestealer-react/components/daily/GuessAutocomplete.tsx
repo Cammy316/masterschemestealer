@@ -12,10 +12,20 @@ interface GuessAutocompleteProps {
 export function GuessAutocomplete({ onSelect, disabled }: GuessAutocompleteProps) {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
+  const [openUp, setOpenUp] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
+
+  // The input sits low on the page: opening downward runs the list into the
+  // on-screen keyboard and under the bottom nav. Flip upward when there is
+  // less than a list-height of room below.
+  useEffect(() => {
+    if (!isOpen) return;
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (rect) setOpenUp(window.innerHeight - rect.bottom < 288);
+  }, [isOpen, query]);
 
   // Filter paints based on query (search brand and name)
   const filteredPaints = React.useMemo(() => {
@@ -100,7 +110,7 @@ export function GuessAutocomplete({ onSelect, disabled }: GuessAutocompleteProps
           }}
           disabled={disabled}
           placeholder="Enter a paint name (e.g. Mephiston Red)"
-          className="w-full px-4 py-3 bg-[#0a0f0a] border-2 border-[var(--cogitator-green)]/30 text-[var(--cogitator-green)] rounded-sm focus:outline-none focus:border-[var(--cogitator-green)] transition-colors placeholder-[var(--cogitator-green)]/30 gothic-frame tech-text disabled:opacity-50"
+          className="w-full px-4 py-3 text-base bg-[#0a0f0a] border-2 border-[var(--cogitator-green)]/30 text-[var(--cogitator-green)] rounded-sm focus:outline-none focus:border-[var(--cogitator-green)] transition-colors placeholder-[var(--cogitator-green)]/30 gothic-frame tech-text disabled:opacity-50"
           autoComplete="off"
           spellCheck="false"
         />
@@ -111,7 +121,7 @@ export function GuessAutocomplete({ onSelect, disabled }: GuessAutocompleteProps
               setIsOpen(false);
               inputRef.current?.focus();
             }}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--cogitator-green)]/50 hover:text-[var(--cogitator-green)] p-1"
+            className="absolute right-1 top-1/2 -translate-y-1/2 text-[var(--cogitator-green)]/50 hover:text-[var(--cogitator-green)] touch-target flex items-center justify-center"
             aria-label="Clear search"
           >
             ✕
@@ -127,7 +137,7 @@ export function GuessAutocomplete({ onSelect, disabled }: GuessAutocompleteProps
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.15 }}
-            className="absolute z-50 w-full mt-1 max-h-60 overflow-y-auto bg-[#0a0f0a] border border-[var(--cogitator-green)]/50 rounded-sm shadow-[0_4px_20px_rgba(0,0,0,0.8)] scrollbar-thin scrollbar-thumb-[var(--cogitator-green)]/30 scrollbar-track-transparent"
+            className={`absolute z-[var(--z-dropdown)] w-full ${openUp ? 'bottom-full mb-1' : 'top-full mt-1'} max-h-60 overflow-y-auto bg-[#0a0f0a] border border-[var(--cogitator-green)]/50 rounded-sm shadow-[0_4px_20px_rgba(0,0,0,0.8)] scrollbar-thin scrollbar-thumb-[var(--cogitator-green)]/30 scrollbar-track-transparent`}
           >
             {filteredPaints.map((paint, index) => (
               <li
@@ -157,7 +167,7 @@ export function GuessAutocomplete({ onSelect, disabled }: GuessAutocompleteProps
       </AnimatePresence>
       
       {isOpen && query && filteredPaints.length === 0 && (
-        <div className="absolute z-50 w-full mt-1 p-4 bg-[#0a0f0a] border border-red-500/50 text-red-400 rounded-sm shadow-xl text-center tech-text text-sm">
+        <div className={`absolute z-[var(--z-dropdown)] w-full ${openUp ? 'bottom-full mb-1' : 'top-full mt-1'} p-4 bg-[#0a0f0a] border border-red-500/50 text-red-400 rounded-sm shadow-xl text-center tech-text text-sm`}>
           NO MATCHING PAINTS IN DATABASE
         </div>
       )}

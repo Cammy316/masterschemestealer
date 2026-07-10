@@ -27,7 +27,8 @@ export type AnalyticsEventName =
   | 'daily_streak_continued'
   | 'session_started'
   | 'step_completed'
-  | 'session_finished';
+  | 'session_finished'
+  | 'session_notification_optin';
 
 export interface AnalyticsEvent {
   event_name: AnalyticsEventName;
@@ -312,6 +313,12 @@ class AnalyticsService {
 
   trackSessionFinished(scanId: string, durationMinutes: number): void {
     this.track('session_finished', { scan_id: scanId, duration_minutes: durationMinutes });
+  }
+
+  trackNotificationOptIn(): void {
+    // SessionRunner called this without a definition — the Phase 3 build
+    // gate was skipped and the missing method broke the production build.
+    this.track('session_notification_optin', {});
   }
 
   /**

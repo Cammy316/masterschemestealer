@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PAINT_DATABASE, PaintData } from '@/lib/paintDatabase';
 import { GuessAutocomplete } from './GuessAutocomplete';
@@ -87,7 +87,17 @@ export function DailyGameUI() {
   const [showStats, setShowStats] = useState(false);
 
   const localDateStr = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD in local time
-  const puzzle = dailyPuzzles.days[localDateStr as keyof typeof dailyPuzzles.days];
+  // Fall back to the nearest available puzzle day rather than a dead
+  // "INITIALISING AUSPEX…" screen — the file is date-keyed from a fixed
+  // generation date, so devices ahead/behind that timezone (or beyond the
+  // generated window) would otherwise find no entry for "today".
+  const puzzleKey = useMemo(() => {
+    if (dailyPuzzles.days[localDateStr as keyof typeof dailyPuzzles.days]) return localDateStr;
+    const keys = Object.keys(dailyPuzzles.days).sort();
+    const past = keys.filter((k) => k <= localDateStr);
+    return past[past.length - 1] ?? keys[0];
+  }, [localDateStr]);
+  const puzzle = dailyPuzzles.days[puzzleKey as keyof typeof dailyPuzzles.days];
   const targetPaint = puzzle ? PAINT_DATABASE.find(p => p.paint_id === puzzle.answer) : null;
 
   useEffect(() => {
@@ -254,13 +264,16 @@ export function DailyGameUI() {
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4 flex flex-col min-h-dvh">
-      
+    // max-w-xl: the four-cell grid is phone-shaped — at max-w-4xl each cell
+    // stretched to ~215px on desktop
+    <div className="w-full max-w-xl mx-auto p-4 flex flex-col min-h-dvh">
+
       <div className="flex justify-between items-center mb-8">
         <h1 className="gothic-text text-[var(--cogitator-green)] text-3xl drop-shadow-[0_0_8px_rgba(0,255,65,0.4)]">The Daily Augury</h1>
-        <button 
+        <button
           onClick={() => setShowStats(true)}
-          className="p-2 bg-[var(--cogitator-green)]/10 text-[var(--cogitator-green)] border border-[var(--cogitator-green)]/30 rounded-sm hover:bg-[var(--cogitator-green)]/20 transition-colors"
+          aria-label="Service record"
+          className="touch-target bg-[var(--cogitator-green)]/10 text-[var(--cogitator-green)] border border-[var(--cogitator-green)]/30 rounded-sm hover:bg-[var(--cogitator-green)]/20 transition-colors flex items-center justify-center"
         >
           📊
         </button>
@@ -320,16 +333,18 @@ export function DailyGameUI() {
                 </div>
 
                 {/* 3. Lightness */}
-                <div className={`flex flex-col items-center justify-center border ${guess.lightnessDirection === 'match' ? 'bg-[var(--cogitator-green)]/20 border-[var(--cogitator-green)] text-[var(--cogitator-green)]' : 'bg-yellow-600/20 border-yellow-500/50 text-yellow-400'} rounded-sm`}>
+                <div className={`flex flex-col items-center justify-center border ${guess.lightnessDirection === 'match' ? 'bg-[var(--cogitator-green)]/20 border-[var(--cogitator-green)] text-[var(--cogitator-green)]' : 'bg-yellow-600/20 border-yellow-500/50 text-yellow-400'} rounded-sm px-1`}>
                   <div className="text-xs opacity-70 mb-1">LIGHTNESS</div>
-                  {guess.lightnessDirection === 'match' && <span className="font-bold">✓ MATCH</span>}
-                  {guess.lightnessDirection === 'lighter' && <span className="font-bold">▲ GO LIGHTER</span>}
-                  {guess.lightnessDirection === 'darker' && <span className="font-bold">▼ GO DARKER</span>}
+                  {/* Short labels at text-xs: "▲ GO LIGHTER" at text-sm wrapped
+                      out of the fixed h-16 cell at ≤400px */}
+                  {guess.lightnessDirection === 'match' && <span className="font-bold text-xs whitespace-nowrap">✓ MATCH</span>}
+                  {guess.lightnessDirection === 'lighter' && <span className="font-bold text-xs whitespace-nowrap">▲ LIGHTER</span>}
+                  {guess.lightnessDirection === 'darker' && <span className="font-bold text-xs whitespace-nowrap">▼ DARKER</span>}
                 </div>
 
                 {/* 4. Match Band */}
-                <div className="flex items-center justify-center relative">
-                  <div className="absolute top-1 left-2 text-[10px] opacity-70 z-10 tech-text">{paint.name}</div>
+                <div className="flex items-center justify-center relative overflow-hidden">
+                  <div className="absolute top-1 left-2 right-2 text-[11px] opacity-70 z-10 tech-text truncate">{paint.name}</div>
                   <DeltaEBadge deltaE={guess.deltaE} band={guess.deltaEBand} className="w-full h-full" />
                 </div>
               </motion.div>
@@ -370,9 +385,9 @@ export function DailyGameUI() {
             </div>
 
             <div className="flex flex-wrap gap-4 justify-center">
-              <button 
+              <button
                 onClick={handleShare}
-                className="px-6 py-2 bg-[#2ea043] text-white font-bold rounded-sm flex items-center gap-2 hover:bg-[#3fb950] transition-colors"
+                className="touch-target px-6 py-2 bg-[#2ea043] text-white font-bold rounded-sm flex items-center gap-2 hover:bg-[#3fb950] transition-colors"
               >
                 <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path fillRule="evenodd" d="M1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0zM8 0a8 8 0 100 16A8 8 0 008 0zM6.379 5.227A.25.25 0 006 5.442v3.992a.25.25 0 00.379.214l3.12-1.996a.25.25 0 000-.428L6.379 5.227z"></path></svg>
                 SHARE TACTICAL REPORT

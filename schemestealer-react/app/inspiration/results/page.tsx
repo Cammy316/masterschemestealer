@@ -164,6 +164,7 @@ export default function InspirationResultsPage() {
       return {
         colourIndex: idx,
         brand: bestBrand,
+        hex: c.hex,
         steps,
       };
     });

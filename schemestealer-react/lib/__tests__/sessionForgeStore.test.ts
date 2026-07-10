@@ -115,10 +115,30 @@ describe('Session Forge state management', () => {
       ...createMockSession(),
       scanId: 'scan-2'
     };
-    
+
     s.setActiveSession(newSession);
-    
+
     const active = useAppStore.getState().activeSession!;
     expect(active.scanId).toBe('scan-2');
+  });
+
+  it('updateSessionStep replaces nested objects immutably', () => {
+    // The original implementation mutated the colour's steps array in place
+    // on a shallow-copied colours list — identity-based subscribers (and
+    // React memoisation) never saw nested changes.
+    const s = useAppStore.getState();
+    s.setActiveSession(createMockSession());
+    const before = useAppStore.getState().activeSession!;
+    const untouchedColourBefore = before.colours[1];
+
+    s.updateSessionStep(0, 'wash', 'drying', Date.now() + 60_000);
+
+    const after = useAppStore.getState().activeSession!;
+    expect(after).not.toBe(before);
+    expect(after.colours[0]).not.toBe(before.colours[0]);        // changed colour: new object
+    expect(after.colours[0].steps).not.toBe(before.colours[0].steps);
+    expect(after.colours[0].steps[1].status).toBe('drying');
+    expect(before.colours[0].steps[1].status).toBe('pending');   // old snapshot untouched
+    expect(after.colours[1]).toBe(untouchedColourBefore);        // unrelated colour: same ref
   });
 });
