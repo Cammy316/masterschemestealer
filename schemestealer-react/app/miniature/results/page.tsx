@@ -203,7 +203,7 @@ export default function MiniscanResultsPage() {
       {/* Scanline effect */}
       <div className="scanline" />
 
-      <div className="max-w-2xl mx-auto space-y-6">
+      <div className="max-w-2xl lg:max-w-5xl mx-auto space-y-6">
         {currentScan.analysisSource === 'local' && <LocalAuspexBadge />}
         {/* Cogitator Dashboard Panel */}
         <motion.div
@@ -270,8 +270,10 @@ export default function MiniscanResultsPage() {
           />
         )}
 
-        {/* Detected Colors with ReticleReveal and PaintRecipeCard */}
-        <div className="space-y-6">
+        {/* Detected Colors with ReticleReveal and PaintRecipeCard —
+            two-column grid on desktop; the single 672px ribbon wasted
+            everything beyond 1280px */}
+        <div className="space-y-6 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-6 lg:items-start">
           {currentScan.detectedColors.map((color, index) => (
             <motion.div
               key={index}

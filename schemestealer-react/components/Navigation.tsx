@@ -220,7 +220,7 @@ function NavLink({ href, icon, label, isActive, theme }: NavLinkProps) {
 
         {/* Label */}
         <motion.span
-          className="text-xs font-medium relative z-10 tech-text mt-1"
+          className="text-[11px] sm:text-xs font-medium relative z-10 tech-text mt-1 whitespace-nowrap"
           animate={{
             color: isActive ? colors.active : 'var(--text-tertiary)',
             fontWeight: isActive ? 600 : 500,
