@@ -58,7 +58,16 @@ function DecryptionText({ text, delay = 0, className = '' }: { text: string; del
     };
   }, [text, delay]);
 
-  return <span className={className}>{displayText}</span>;
+  // Reserve the final width up front: proportional glyphs made the garble
+  // transiently wider than the resolved text, jittering the layout.
+  return (
+    <span
+      className={className}
+      style={{ display: 'inline-block', minWidth: `${text.length}ch`, whiteSpace: 'nowrap' }}
+    >
+      {displayText}
+    </span>
+  );
 }
 
 interface AuspexRevealProps {
@@ -548,9 +557,11 @@ export function AuspexReveal({
                       transparent background around the model */}
                   <div className="auspex-backdrop rounded" aria-hidden />
 
-                  {/* Loading skeleton / dead-image fallback */}
+                  {/* Loading skeleton / dead-image fallback (portrait-leaning
+                      ratio: miniature photos are tall — the old square
+                      skeleton caused a big square→tall layout jump) */}
                   {!imgLoaded && !imgFailed && (
-                    <div className="relative w-full aspect-square bg-charcoal animate-pulse rounded" />
+                    <div className="relative w-full aspect-[4/5] max-h-[65vh] bg-charcoal animate-pulse rounded" />
                   )}
                   {imgFailed && (
                     <div className="relative w-full aspect-square rounded flex flex-col items-center justify-center gap-2 bg-charcoal">
@@ -581,10 +592,15 @@ export function AuspexReveal({
                     />
                   )}
 
+                  {/* Shrink-to-fit wrapper: the canvas is height-capped for
+                      portrait photos, and every overlay is anchored to THIS
+                      box so % positions always match the drawn image
+                      (object-fit letterboxing would break the anchors). */}
+                  <div className="relative mx-auto w-fit max-w-full">
                   {/* Main canvas (transparent background over the backdrop) */}
                   <motion.canvas
                     ref={canvasRef}
-                    className="relative w-full rounded"
+                    className="relative block w-auto h-auto max-w-full max-h-[65vh] rounded"
                     initial={{ scale: 1.1, filter: 'blur(10px)', opacity: 0 }}
                     animate={{
                       scale: imgLoaded ? 1 : 1.1,
@@ -719,9 +735,13 @@ export function AuspexReveal({
                               style={{
                                 width: '3.5rem',
                                 height: '3.5rem',
-                                left: `${c.side === 'left' ? RAIL_INSET_PCT : 100 - RAIL_INSET_PCT}%`,
+                                // max(…, 26px): touch-target inflates chips to
+                                // 44px, so a pure % inset clipped them at the
+                                // frame edge on phones.
+                                left: c.side === 'left' ? `max(${RAIL_INSET_PCT}%, 26px)` : undefined,
+                                right: c.side === 'right' ? `max(${RAIL_INSET_PCT}%, 26px)` : undefined,
                                 top: `${c.railY * 100}%`,
-                                x: '-50%',
+                                x: c.side === 'left' ? '-50%' : '50%',
                                 y: '-50%',
                                 border: `2px dashed ${color.hex}`,
                                 boxShadow: `0 0 15px ${color.hex}`,
@@ -738,22 +758,22 @@ export function AuspexReveal({
                           <AnimatePresence>
                             {isFocused && (
                               <motion.div
-                                className="absolute pointer-events-none flex items-center z-30"
+                                className="absolute pointer-events-none flex items-center z-30 max-w-[60%]"
                                 style={{
-                                  left: `${c.side === 'left' ? RAIL_INSET_PCT + 6 : 100 - RAIL_INSET_PCT - 6}%`,
+                                  left: c.side === 'left' ? `calc(max(${RAIL_INSET_PCT}%, 26px) + 30px)` : undefined,
+                                  right: c.side === 'right' ? `calc(max(${RAIL_INSET_PCT}%, 26px) + 30px)` : undefined,
                                   top: `${c.railY * 100}%`,
                                   y: '-50%',
-                                  x: c.side === 'left' ? '0%' : '-100%',
                                   color: color.hex,
                                 }}
-                                initial={{ opacity: 0, x: c.side === 'left' ? '-20%' : '-80%' }}
-                                animate={{ opacity: 1, x: c.side === 'left' ? '0%' : '-100%' }}
+                                initial={{ opacity: 0, x: c.side === 'left' ? -10 : 10 }}
+                                animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, transition: { duration: 0.1 } }}
                               >
-                                <div className="bg-black/90 px-3 py-1.5 border border-cogitator-green/50 backdrop-blur-md shadow-[0_0_15px_rgba(0,255,65,0.2)]">
-                                  <DecryptionText 
-                                    text={(color.family || color.hex).toUpperCase()} 
-                                    className="cyber-text text-sm font-bold tracking-widest" 
+                                <div className="bg-black/90 px-3 py-1.5 border border-cogitator-green/50 backdrop-blur-md shadow-[0_0_15px_rgba(0,255,65,0.2)] max-w-full overflow-hidden">
+                                  <DecryptionText
+                                    text={(color.family || color.hex).toUpperCase()}
+                                    className="cyber-text text-sm font-bold tracking-widest"
                                   />
                                 </div>
                               </motion.div>
@@ -768,12 +788,13 @@ export function AuspexReveal({
                             aria-label={`Locate colour ${c.index + 1}: ${color.family ?? color.hex}`}
                             className="absolute w-9 h-9 rounded-full font-mono font-bold text-sm flex items-center justify-center touch-target z-20"
                             style={{
-                              left: `${c.side === 'left' ? RAIL_INSET_PCT : 100 - RAIL_INSET_PCT}%`,
+                              left: c.side === 'left' ? `max(${RAIL_INSET_PCT}%, 26px)` : undefined,
+                              right: c.side === 'right' ? `max(${RAIL_INSET_PCT}%, 26px)` : undefined,
                               top: `${c.railY * 100}%`,
                               // Centring via framer's x/y so it composes with the
                               // scale animation (Tailwind translate classes would
                               // be clobbered by framer's inline transform).
-                              x: '-50%',
+                              x: c.side === 'left' ? '-50%' : '50%',
                               y: '-50%',
                               background: isFocused ? color.hex : 'rgba(0, 0, 0, 0.9)',
                               border: `2px solid ${color.hex}`,
@@ -815,7 +836,7 @@ export function AuspexReveal({
                             boxShadow: '0 5px 20px rgba(0, 255, 136, 0.8), 0 0 40px rgba(0, 255, 136, 0.5)',
                           }}
                         />
-                        <div 
+                        <div
                           className="absolute bottom-[3px] left-0 right-0 h-[80px] opacity-50"
                           style={{
                             backgroundImage: `linear-gradient(to bottom, rgba(0, 255, 136, 0.4) 1px, transparent 1px), linear-gradient(to right, rgba(0, 255, 136, 0.4) 1px, transparent 1px)`,
@@ -826,6 +847,7 @@ export function AuspexReveal({
                       </motion.div>
                     </>
                   )}
+                  </div>
                 </div>
               </div>
 
@@ -835,18 +857,18 @@ export function AuspexReveal({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5 }}
-                  className="px-4 py-3 flex items-center justify-between bg-gradient-to-b from-dark-gothic to-void-black border-t border-brass"
+                  className="px-4 py-3 flex items-center justify-between gap-2 bg-gradient-to-b from-dark-gothic to-void-black border-t border-brass"
                 >
                   {mode === 'map' ? (
                     <>
-                      <span className="auspex-text text-xs font-bold">
+                      <span className="auspex-text text-xs font-bold min-w-0 flex-1 truncate">
                         {focusIndex !== null && colors[focusIndex]
                           ? <DecryptionText key={`head-${focusIndex}`} text={`TRACKING: ${(colors[focusIndex].family || colors[focusIndex].hex).toUpperCase()}`} />
                           : `${colors.length} REGIONS IDENTIFIED`}
                       </span>
-                      <span className="text-cogitator-green-dim text-xs cyber-text">
+                      <span className="text-cogitator-green-dim text-xs cyber-text flex-shrink-0 whitespace-nowrap">
                         {focusIndex !== null ? (
-                          <DecryptionText key={`foot-${focusIndex}`} text="TAP AGAIN TO VIEW RECIPE" />
+                          <DecryptionText key={`foot-${focusIndex}`} text="TAP TO VIEW" />
                         ) : (
                           "Tap a number to inspect"
                         )}

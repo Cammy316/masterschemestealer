@@ -199,7 +199,7 @@ export default function MiniscanResultsPage() {
   };
 
   return (
-    <div className="min-h-dvh pb-24 pt-8 px-6" style={{ background: 'var(--void-black)' }}>
+    <div className="min-h-dvh pt-8 px-6" style={{ background: 'var(--void-black)' }}>
       {/* Scanline effect */}
       <div className="scanline" />
 
