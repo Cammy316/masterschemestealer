@@ -130,7 +130,7 @@ export default async function ConversionPage({ params }: Props) {
       {faqSchema && (
         <Script id="faq-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       )}
-      <main className="min-h-screen bg-void-black text-white pb-nav-safe">
+      <main className="min-h-dvh bg-void-black text-white pb-nav-safe">
         <div className="max-w-4xl mx-auto px-4 py-12">
           
           {/* SCHEMESTEALER BRANDING */}

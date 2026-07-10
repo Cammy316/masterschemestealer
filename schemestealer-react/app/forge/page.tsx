@@ -55,7 +55,7 @@ export default function ForgePage() {
   }, [isAddModalOpen, newlyAddedQueue]);
 
   return (
-    <div className="min-h-screen bg-void-black text-white pb-24 pt-8 px-4 relative overflow-hidden">
+    <div className="min-h-dvh bg-void-black text-white pb-24 pt-8 px-4 relative overflow-hidden">
       <ForgeBackground />
 
       <div className="max-w-3xl mx-auto space-y-6 relative z-10">
