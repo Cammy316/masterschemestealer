@@ -201,25 +201,30 @@ export const useAppStore = create<AppStore>()(
       
       updateSessionStep: (colourIndex, role, status, dryUntil) => set((state) => {
         if (!state.activeSession) return state;
-        
-        const newColours = [...state.activeSession.colours];
-        const colourMatches = newColours.find(c => c.colourIndex === colourIndex);
-        if (colourMatches) {
-          const stepIndex = colourMatches.steps.findIndex(s => s.role === role);
-          if (stepIndex !== -1) {
-            colourMatches.steps[stepIndex] = {
-              ...colourMatches.steps[stepIndex],
-              status,
-              ...(dryUntil !== undefined ? { dryUntil } : {})
-            };
-          }
-        }
-        
+
+        // Fully immutable: the previous version mutated the nested colour's
+        // steps array in place on a shallow-copied list, so subscribers
+        // comparing object identity never saw nested changes.
         return {
           activeSession: {
             ...state.activeSession,
-            colours: newColours
-          }
+            colours: state.activeSession.colours.map((colour) =>
+              colour.colourIndex !== colourIndex
+                ? colour
+                : {
+                    ...colour,
+                    steps: colour.steps.map((step) =>
+                      step.role !== role
+                        ? step
+                        : {
+                            ...step,
+                            status,
+                            ...(dryUntil !== undefined ? { dryUntil } : {}),
+                          }
+                    ),
+                  }
+            ),
+          },
         };
       }),
       

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
-export function DailyAuguryBanner() {
+export function DailyAuguryBanner({ className }: { className?: string }) {
   const router = useRouter();
   const [playedToday, setPlayedToday] = useState(true); // Default to true to prevent flash
   
@@ -28,7 +28,7 @@ export function DailyAuguryBanner() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.5, duration: 0.6 }}
-      className="w-full max-w-4xl mx-auto px-4 mt-8 mb-12"
+      className={`w-full max-w-4xl mx-auto px-4 ${className ?? 'mt-8 mb-12'}`}
     >
       <button 
         onClick={() => router.push('/daily')}

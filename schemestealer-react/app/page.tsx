@@ -4,14 +4,14 @@
 
 import { ModeSelector } from '@/components/ModeSelector';
 import { AdMechBackground } from '@/components/shared/AdMechBackground';
-import { DailyAuguryBanner } from '@/components/daily/DailyAuguryBanner';
 
 export default function Home() {
   return (
     <>
       <AdMechBackground />
+      {/* The Daily Augury banner now lives inside ModeSelector's first
+          viewport — rendered after it, it sat below the fold. */}
       <ModeSelector />
-      <DailyAuguryBanner />
     </>
   );
 }

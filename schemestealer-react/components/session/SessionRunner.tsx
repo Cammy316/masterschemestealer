@@ -15,6 +15,10 @@ const DEFAULT_DRY_TIMES = {
   wash: 20,
 };
 
+/** Snap-carousel item width: 80vw on phones, capped on desktop — an
+ *  uncapped 80vw made each target card ~1150px wide at 1440px. */
+const itemWidthPx = () => Math.min(window.innerWidth * 0.8, 420);
+
 function formatTimeLeft(ms: number) {
   if (ms <= 0) return '00:00';
   const totalSeconds = Math.floor(ms / 1000);
@@ -34,7 +38,7 @@ export function SessionRunner() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   
   // Force re-render every second for timers
-  const [, setTick] = useState(0);
+  const [tick, setTick] = useState(0);
   useEffect(() => {
     const interval = setInterval(() => setTick(t => t + 1), 1000);
     return () => clearInterval(interval);
@@ -111,13 +115,30 @@ export function SessionRunner() {
     }
   };
 
+  // Reconcile ALL drying timers every tick — completion/notification used to
+  // run only inside the focused target's render, so a wash started on
+  // Target 1 never finished (or notified) while you worked on Target 2,
+  // defeating the whole "while that dries" batching flow.
+  useEffect(() => {
+    if (!activeSession) return;
+    activeSession.colours.forEach((colour) => {
+      colour.steps.forEach((step) => {
+        if (step.status === 'drying' && step.dryUntil && step.dryUntil - Date.now() <= 0) {
+          updateSessionStep(colour.colourIndex, step.role, 'done');
+          analytics.trackStepCompleted(step.role, step.paintName);
+          notifyDryingComplete(step.paintName, step.role);
+        }
+      });
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tick, activeSession]);
+
   // Handle snap scroll to update focused index
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const container = e.currentTarget;
     const scrollLeft = container.scrollLeft;
-    const itemWidth = window.innerWidth * 0.8; // 80vw
-    const newIndex = Math.round(scrollLeft / itemWidth);
-    
+    const newIndex = Math.round(scrollLeft / itemWidthPx());
+
     if (activeSession && newIndex >= 0 && newIndex < activeSession.colours.length) {
       setFocusedIndex(newIndex);
     }
@@ -151,16 +172,16 @@ export function SessionRunner() {
         </div>
         <div className="flex items-center gap-3">
           {(!('Notification' in window) || Notification.permission !== 'granted') && (
-            <button 
+            <button
               onClick={requestNotificationPermission}
-              className="px-3 py-1.5 border border-yellow-500/50 text-yellow-500 text-[10px] tech-text rounded-sm hover:bg-yellow-500/10 transition-colors"
+              className="touch-target px-3 border border-yellow-500/50 text-yellow-500 text-[11px] tech-text rounded-sm hover:bg-yellow-500/10 transition-colors"
             >
               ENABLE ALERTS
             </button>
           )}
-          <button 
+          <button
             onClick={finishSession}
-            className="px-4 py-2 border border-red-500/50 text-red-400 text-xs tech-text rounded-sm hover:bg-red-500/10 transition-colors"
+            className="touch-target px-4 border border-red-500/50 text-red-400 text-xs tech-text rounded-sm hover:bg-red-500/10 transition-colors"
           >
             ABORT MISSION
           </button>
@@ -171,22 +192,22 @@ export function SessionRunner() {
       <div 
         ref={scrollContainerRef}
         onScroll={handleScroll}
-        className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar py-6 z-10"
+        className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide py-6 z-10"
         style={{ scrollBehavior: 'smooth' }}
       >
         {/* Padding items to center the first and last */}
-        <div className="w-[10vw] flex-shrink-0 snap-center" />
-        
+        <div className="w-[calc((100%-min(80vw,420px))/2)] flex-shrink-0 snap-center" />
+
         {activeSession.colours.map((colour, idx) => {
           const isFocused = idx === focusedIndex;
           return (
-            <div 
+            <div
               key={colour.colourIndex}
-              className={`w-[80vw] flex-shrink-0 snap-center px-2 transition-all duration-300 ${isFocused ? 'opacity-100 scale-100' : 'opacity-40 scale-95'}`}
+              className={`w-[min(80vw,420px)] flex-shrink-0 snap-center px-2 transition-all duration-300 ${isFocused ? 'opacity-100 scale-100' : 'opacity-40 scale-95'}`}
             >
               <div className="border border-[var(--cogitator-green)]/40 bg-black/40 p-4 rounded-sm shadow-[0_0_15px_rgba(0,255,65,0.1)] h-full flex flex-col items-center">
                 <div className="text-xs uppercase tracking-widest opacity-60 mb-1">{colour.brand}</div>
-                <div className="w-12 h-12 rounded-full border border-white/20 mb-3 shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]" style={{ background: '#333' /* Ideally the target color hex could be mapped here if we stored it */ }} />
+                <div className="w-12 h-12 rounded-full border border-white/20 mb-3 shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]" style={{ background: colour.hex ?? '#333' }} />
                 <div className="font-bold text-sm tech-text text-center text-balance">
                   TARGET {colour.colourIndex + 1}
                 </div>
@@ -194,8 +215,8 @@ export function SessionRunner() {
             </div>
           );
         })}
-        
-        <div className="w-[10vw] flex-shrink-0 snap-center" />
+
+        <div className="w-[calc((100%-min(80vw,420px))/2)] flex-shrink-0 snap-center" />
       </div>
 
       {/* Pagination indicators */}
@@ -242,11 +263,10 @@ export function SessionRunner() {
               onClick={() => {
                 setFocusedIndex(suggested.colourIndex);
                 if (scrollContainerRef.current) {
-                  const itemWidth = window.innerWidth * 0.8;
-                  scrollContainerRef.current.scrollTo({ left: suggested.colourIndex * itemWidth, behavior: 'smooth' });
+                  scrollContainerRef.current.scrollTo({ left: suggested.colourIndex * itemWidthPx(), behavior: 'smooth' });
                 }
               }}
-              className="mt-2 text-xs border border-[var(--imperial-gold)]/50 px-3 py-1 rounded-sm hover:bg-[var(--imperial-gold)]/20 transition-colors"
+              className="touch-target mt-2 text-xs border border-[var(--imperial-gold)]/50 px-3 rounded-sm hover:bg-[var(--imperial-gold)]/20 transition-colors"
             >
               JUMP TO TARGET {suggested.target}
             </button>
@@ -255,7 +275,7 @@ export function SessionRunner() {
       })()}
 
       {/* Vertical Steps Stack */}
-      <div className="flex-1 overflow-y-auto px-4 pb-20 z-10">
+      <div className="flex-1 overflow-y-auto px-4 pb-40 z-10">
         <AnimatePresence mode="wait">
           <motion.div 
             key={focusedIndex}
@@ -272,18 +292,12 @@ export function SessionRunner() {
               const isDone = step.status === 'done';
               const isDrying = step.status === 'drying';
               
+              // Completion/notification is handled by the global tick effect
+              // above (for ALL targets, not just the focused one) — this is
+              // display maths only.
               let timeLeftMs = 0;
               if (isDrying && step.dryUntil) {
                 timeLeftMs = Math.max(0, step.dryUntil - Date.now());
-                if (timeLeftMs === 0) {
-                  // Timer popped
-                  // Use setTimeout to avoid updating state during render
-                  setTimeout(() => {
-                    updateSessionStep(focusedColour.colourIndex, step.role, 'done');
-                    analytics.trackStepCompleted(step.role, step.paintName);
-                    notifyDryingComplete(step.paintName, step.role);
-                  }, 0);
-                }
               }
 
               const handleTap = () => {
@@ -310,8 +324,8 @@ export function SessionRunner() {
                   className={`relative w-full p-4 rounded-sm border text-left flex items-center justify-between transition-all group overflow-hidden ${
                     isDone 
                       ? 'border-[var(--imperial-gold)] bg-[var(--imperial-gold)]/10 text-[var(--imperial-gold)]' 
-                      : isDrying 
-                        ? 'border-[var(--warning)] bg-[var(--warning)]/10 text-[var(--warning)] crt-flicker'
+                      : isDrying
+                        ? 'border-[var(--warning)] bg-[var(--warning)]/10 text-[var(--warning)]'
                         : 'border-[var(--cogitator-green)]/40 bg-[#0a0f0a] text-[var(--cogitator-green)] hover:bg-[var(--cogitator-green)]/10'
                   }`}
                 >
@@ -352,12 +366,13 @@ export function SessionRunner() {
         </AnimatePresence>
       </div>
 
-      {/* Global Finish Button */}
+      {/* Global Finish Button — offset above the fixed bottom nav (z-100),
+          which previously covered it exactly when it appeared */}
       {activeSession.colours.every(c => c.steps.every(s => s.status === 'done')) && (
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
-          className="absolute bottom-6 left-4 right-4 z-20"
+          className="absolute bottom-[calc(var(--nav-height)+env(safe-area-inset-bottom)+1rem)] left-4 right-4 z-[var(--z-dropdown)]"
         >
           <button
             onClick={finishSession}

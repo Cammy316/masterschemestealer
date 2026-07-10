@@ -10,6 +10,7 @@ import { motion } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
 import type { ScanMode } from '@/lib/types';
 import { GrimdarkSkullIcon } from '@/components/icons/GrimdarkSkull';
+import { DailyAuguryBanner } from '@/components/daily/DailyAuguryBanner';
 
 export function ModeSelector() {
   const router = useRouter();
@@ -72,6 +73,11 @@ export function ModeSelector() {
             Chromatic Analysis & Pattern Recognition System
           </motion.p>
         </motion.div>
+
+        {/* Daily Augury entry — hoisted into the first viewport: rendered
+            after the full-height mode cards it sat below the fold on every
+            device, hiding the retention feature's only entry point. */}
+        <DailyAuguryBanner className="mt-0 mb-5 max-w-2xl" />
 
         {/* Mission Select Cards - Stack on mobile, side-by-side on desktop */}
         <motion.div
