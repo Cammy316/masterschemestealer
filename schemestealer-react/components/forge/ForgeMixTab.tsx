@@ -188,7 +188,7 @@ export default function ForgeMixTab({ inventory, addToInventory, addToCart, setL
                   value={customName}
                   onChange={(e) => setCustomName(e.target.value)}
                   placeholder="Name your mix..."
-                  className="flex-1 bg-[#050505] border border-gray-800 rounded-sm px-2 py-1.5 text-xs text-imperial-gold placeholder-gray-600 focus:outline-none focus:border-brass/50 transition-colors min-w-0 shadow-inner"
+                  className="flex-1 bg-[#050505] border border-gray-800 rounded-sm px-2 py-1.5 text-base text-imperial-gold placeholder-gray-600 focus:outline-none focus:border-brass/50 transition-colors min-w-0 shadow-inner"
                 />
                 <button
                   disabled={!customName.trim()}
@@ -298,43 +298,47 @@ export default function ForgeMixTab({ inventory, addToInventory, addToCart, setL
                       <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent pointer-events-none" />
                     </div>
                     <div className="truncate">
-                      <div className="text-[10px] font-bold text-white uppercase truncate">{ingredient.paint.name}</div>
-                      <div className="text-[8px] text-brass uppercase tracking-widest truncate">{ingredient.paint.brand}</div>
+                      <div className="text-[11px] font-bold text-white uppercase truncate">{ingredient.paint.name}</div>
+                      <div className="text-[10px] text-brass uppercase tracking-widest truncate">{ingredient.paint.brand}</div>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-2 flex-shrink-0">
-                    <div className="flex items-center gap-1 border-r border-gray-800 pr-2">
+                    <div className="flex items-center border-r border-gray-800 pr-1">
                       <button
                         disabled={idx === 0}
+                        aria-label="Move up"
                         onClick={() => setRecipe(prev => { const n = [...prev]; [n[idx-1], n[idx]] = [n[idx], n[idx-1]]; return n; })}
-                        className="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-white disabled:opacity-30 disabled:hover:text-gray-500"
+                        className="w-9 h-9 flex items-center justify-center text-gray-500 hover:text-white disabled:opacity-30 disabled:hover:text-gray-500"
                       >
                         ↑
                       </button>
                       <button
                         disabled={idx === recipe.length - 1}
+                        aria-label="Move down"
                         onClick={() => setRecipe(prev => { const n = [...prev]; [n[idx+1], n[idx]] = [n[idx], n[idx+1]]; return n; })}
-                        className="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-white disabled:opacity-30 disabled:hover:text-gray-500"
+                        className="w-9 h-9 flex items-center justify-center text-gray-500 hover:text-white disabled:opacity-30 disabled:hover:text-gray-500"
                       >
                         ↓
                       </button>
                     </div>
-                    
-                    <div className="flex items-center gap-2 bg-void-black/80 rounded border border-gray-800 px-1 py-0.5">
-                      <button 
+
+                    <div className="flex items-center gap-1 bg-void-black/80 rounded border border-gray-800 px-1 py-0.5">
+                      <button
+                        aria-label="Fewer parts"
                         onClick={() => {
                           if (ingredient.parts <= 1) setRecipe(prev => prev.filter(r => getPaintId(r.paint) !== paintId));
                           else setRecipe(prev => prev.map(r => getPaintId(r.paint) === paintId ? { ...r, parts: r.parts - 1 } : r));
                         }}
-                        className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 rounded"
+                        className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 rounded"
                       >-</button>
-                      <div className="text-[10px] font-mono font-bold text-imperial-gold w-10 text-center select-none">
+                      <div className="text-[11px] font-mono font-bold text-imperial-gold w-10 text-center select-none">
                         {ingredient.parts} PT
                       </div>
-                      <button 
+                      <button
+                        aria-label="More parts"
                         onClick={() => setRecipe(prev => prev.map(r => getPaintId(r.paint) === paintId ? { ...r, parts: r.parts + 1 } : r))}
-                        className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 rounded"
+                        className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 rounded"
                       >+</button>
                     </div>
                   </div>
@@ -357,17 +361,17 @@ export default function ForgeMixTab({ inventory, addToInventory, addToCart, setL
                     <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent pointer-events-none" />
                   </div>
                   <div className="text-left truncate">
-                    <div className="text-[9px] font-bold text-white uppercase truncate">{match.name}</div>
-                    <div className="text-[8px] text-brass uppercase tracking-widest">{match.brand}</div>
+                    <div className="text-[11px] font-bold text-white uppercase truncate">{match.name}</div>
+                    <div className="text-[10px] text-brass uppercase tracking-widest">{match.brand}</div>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 flex-shrink-0">
-                  <div className={`text-[9px] font-bold tech-text ${Number(match.delta_e) < 2 ? 'text-green-400' : Number(match.delta_e) < 4 ? 'text-amber-400' : 'text-red-400'}`}>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <div className={`text-[11px] font-bold tech-text ${Number(match.delta_e) < 2 ? 'text-green-400' : Number(match.delta_e) < 4 ? 'text-amber-400' : 'text-red-400'}`}>
                     ΔE: {match.delta_e}
                   </div>
                   <button
                     onClick={() => addToCart(match as any)}
-                    className="text-[8px] px-1.5 py-0.5 bg-charcoal border border-gray-700 hover:border-brass hover:text-brass text-gray-400 rounded uppercase tracking-widest transition-colors"
+                    className="touch-target text-[11px] px-2 bg-charcoal border border-gray-700 hover:border-brass hover:text-brass text-gray-400 rounded uppercase tracking-widest transition-colors"
                   >
                     + CART
                   </button>
@@ -433,7 +437,7 @@ export default function ForgeMixTab({ inventory, addToInventory, addToCart, setL
                     )}
                   </div>
                   <div className="text-left max-w-[80px] sm:max-w-[100px]">
-                    <div className="text-[9px] font-bold text-white uppercase truncate">{paint.name}</div>
+                    <div className="text-[11px] font-bold text-white uppercase truncate">{paint.name}</div>
                   </div>
                 </button>
               );
