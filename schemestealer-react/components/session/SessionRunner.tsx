@@ -44,11 +44,10 @@ export function SessionRunner() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    if (!activeSession) {
-      router.push('/');
-    }
-  }, [activeSession, router]);
+  // No auto-redirect: the old `router.push('/')`-when-null bounced users out
+  // of perfectly resumable sessions on reload/deep-link, because the check
+  // raced zustand persist's rehydration. An in-place empty state with a
+  // return button is race-free and clearer.
 
   // Robust Wake Lock
   useEffect(() => {
@@ -155,7 +154,17 @@ export function SessionRunner() {
   };
 
   if (!activeSession) {
-    return <div className="min-h-dvh bg-void-black text-[var(--cogitator-green)] flex items-center justify-center tech-text">NO ACTIVE SESSION</div>;
+    return (
+      <div className="min-h-dvh bg-void-black text-[var(--cogitator-green)] flex flex-col gap-6 items-center justify-center tech-text px-6">
+        <span>NO ACTIVE SESSION</span>
+        <button
+          onClick={() => router.push('/')}
+          className="touch-target px-6 border border-[var(--cogitator-green)]/50 rounded-sm hover:bg-[var(--cogitator-green)]/10 transition-colors tracking-widest"
+        >
+          RETURN TO BASE
+        </button>
+      </div>
+    );
   }
 
   const focusedColour = activeSession.colours[focusedIndex];

@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-07-09 (Mobile Optimisation Audit)
+### Fixed
+- **Full-app responsive audit (52 findings, 5 batches).** Highlights:
+  - `viewport-fit=cover` was missing, so every iOS safe-area inset resolved to zero (the
+    nav sat under the home indicator despite all the `pb-nav-safe` plumbing).
+  - All modals (Share/Feedback/Ko-fi/AddPaint/Stats) rendered *under* the bottom nav
+    (raw `z-50` vs the nav's 100) — now on the `--z-modal` token, with scroll regions,
+    body-scroll locks and 44px close targets where missing.
+  - Requisition cart rows crushed paint names to ~2px at 360px (fixed stepper/remove
+    cluster) — rows now wrap with a minimum name width; same wrap treatment for the
+    recipe card's step rows, whose 44px action buttons broke names mid-word.
+  - iOS input auto-zoom eliminated (16px form controls everywhere).
+  - Auspex Reveal: rail chips no longer clip at the frame edge or sit on the model
+    (26px minimum edge inset for the real 44px targets); portrait photos height-capped
+    without breaking overlay anchors; garble text no longer jitters layout.
+  - Daily Augury: autocomplete flips upward instead of opening into the keyboard/nav;
+    guess cells no longer overflow at ≤400px; board capped on desktop; entry banner
+    hoisted into the home page's first viewport (it sat below the fold on all devices);
+    nearest-day puzzle fallback replaces the dead "INITIALISING AUSPEX" screen.
+  - Session Forge: drying timers now complete and notify for ALL targets, not just the
+    focused one (the batching flow was broken); CONCLUDE MISSION no longer hidden
+    behind the nav; target cards capped at 420px on desktop and show the real detected
+    colour; `updateSessionStep` made immutable; missing
+    `analytics.trackNotificationOptIn` defined (it broke the production build).
+  - Desktop: results pages gain a two-column colour-card grid ≥1024px; nested `<main>`
+    landmarks removed from the SEO pages; 10Hz `crt-flicker` removed from body copy
+    (photosensitivity); sub-11px informational text raised app-wide; Forge touch
+    targets brought to standard.
+- New `tests/responsive.spec.ts`: screenshots every key route at 320/360/390/768/1440
+  (+ landscape) with a blanket no-horizontal-scroll assertion; store seeding covers the
+  cart and a running session.
+
 ## [Unreleased] - 2026-07-09 (Phase 3 The Daily Augury)
 ### Added
 - **Daily Puzzle Generator**: Added Python script to pre-generate 400 days of Daily Augury Wordle-style puzzles deterministically. Puzzles avoid repeats within 60 days and omit washes/neutrals.
