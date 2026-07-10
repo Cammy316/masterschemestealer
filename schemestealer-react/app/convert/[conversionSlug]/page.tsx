@@ -130,7 +130,9 @@ export default async function ConversionPage({ params }: Props) {
       {faqSchema && (
         <Script id="faq-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       )}
-      <main className="min-h-dvh bg-void-black text-white pb-nav-safe">
+      {/* div, not <main>: the root layout already renders the page inside a
+          <main> with pb-nav-safe — nesting doubled both */}
+      <div className="min-h-dvh bg-void-black text-white">
         <div className="max-w-4xl mx-auto px-4 py-12">
           
           {/* SCHEMESTEALER BRANDING */}
@@ -205,12 +207,12 @@ export default async function ConversionPage({ params }: Props) {
                   <h3 className="tech-text text-lg text-brass border-b border-brass/20 pb-3 mb-6 uppercase tracking-widest">Alternative Matches</h3>
                   <div className="space-y-3">
                     {otherMatches.map((m: any) => (
-                      <div key={m.paint_id} className="flex items-center justify-between bg-charcoal/40 border border-gray-800/80 p-3 sm:p-4 rounded-sm hover:bg-charcoal/60 transition-colors">
-                        <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-gray-600 shadow-inner" style={{ backgroundColor: m.hex }}></div>
-                          <div>
-                            <p className="font-bold text-base sm:text-lg tracking-tight">{m.name}</p>
-                            <p className="text-[10px] sm:text-xs text-gray-400 uppercase tracking-wider">{targetBrandName}</p>
+                      <div key={m.paint_id} className="flex items-center justify-between gap-2 bg-charcoal/40 border border-gray-800/80 p-3 sm:p-4 rounded-sm hover:bg-charcoal/60 transition-colors">
+                        <div className="flex items-center gap-4 min-w-0">
+                          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-gray-600 shadow-inner flex-shrink-0" style={{ backgroundColor: m.hex }}></div>
+                          <div className="min-w-0">
+                            <p className="font-bold text-base sm:text-lg tracking-tight truncate">{m.name}</p>
+                            <p className="text-[11px] sm:text-xs text-gray-400 uppercase tracking-wider truncate">{targetBrandName}</p>
                           </div>
                         </div>
                         <DeltaEBadge deltaE={m.delta_e} band={m.band} className="scale-75 origin-right" />
@@ -235,7 +237,7 @@ export default async function ConversionPage({ params }: Props) {
             </Link>
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 }

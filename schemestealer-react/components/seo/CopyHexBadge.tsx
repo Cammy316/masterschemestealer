@@ -14,7 +14,7 @@ export function CopyHexBadge({ hex }: { hex: string }) {
   return (
     <button 
       onClick={handleCopy}
-      className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 border border-gray-800 bg-charcoal/30 hover:bg-charcoal/50 hover:border-gray-600 active:scale-95 transition-all rounded-sm mt-4 cursor-pointer group shadow-sm"
+      className="inline-flex items-center gap-2 min-h-[44px] px-3 py-1.5 sm:px-4 border border-gray-800 bg-charcoal/30 hover:bg-charcoal/50 hover:border-gray-600 active:scale-95 transition-all rounded-sm mt-4 cursor-pointer group shadow-sm"
       aria-label="Copy hex code"
     >
       <span className="text-gray-400 uppercase tracking-widest text-[10px] sm:text-xs">Hex:</span>

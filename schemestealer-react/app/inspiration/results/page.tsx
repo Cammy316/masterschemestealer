@@ -183,7 +183,7 @@ export default function InspirationResultsPage() {
       {/* Starfield background */}
       <div className="starfield-bg fixed inset-0 -z-10" />
 
-      <div className="max-w-2xl mx-auto space-y-8">
+      <div className="max-w-2xl lg:max-w-5xl mx-auto space-y-8">
         {currentScan.analysisSource === 'local' && <LocalAuspexBadge />}
         {/* Header */}
         <motion.div
@@ -253,7 +253,9 @@ export default function InspirationResultsPage() {
           </motion.div>
         )}
 
-        {/* Paint Recommendations - Per Color with PaintRecipeCard */}
+        {/* Paint Recommendations - Per Color with PaintRecipeCard —
+            two-column grid on desktop */}
+        <div className="lg:grid lg:grid-cols-2 lg:gap-6 lg:items-start">
         {currentScan.detectedColors.map((color, index) => {
           // Show if color has paintRecipe (new format) or paintMatches (legacy)
           if (!color.paintRecipe && !color.paintMatches) return null;
@@ -316,6 +318,7 @@ export default function InspirationResultsPage() {
             </motion.div>
           );
         })}
+        </div>
 
         {/* Fallback: Old-style paint recommendations if no paintRecipe or paintMatches */}
         {currentScan.recommendedPaints &&
