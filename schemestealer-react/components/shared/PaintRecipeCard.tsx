@@ -333,11 +333,13 @@ export function PaintRecipeCard({
             ) : (
               <>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                Copy recipe
+                {/* Icon-only below sm — with Start Painting added, the full
+                    labels overflow the header row at ≤400px */}
+                <span className="hidden sm:inline">Copy recipe</span>
               </>
             )}
           </motion.button>
-          
+
           {/* Start Painting Button */}
           {onStartPainting && (
             <motion.button
@@ -348,7 +350,7 @@ export function PaintRecipeCard({
               aria-label="Start painting session"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14" strokeLinecap="round" /></svg>
-              Start Painting
+              <span className="hidden sm:inline">Start Painting</span>
             </motion.button>
           )}
         </div>
@@ -611,7 +613,10 @@ function RecipeStepRow({
         {/* Role spine */}
         <div className="w-[5px] flex-shrink-0" style={{ background: spineColor }} aria-hidden />
 
-        <div className="flex items-center gap-3 flex-1 min-w-0 py-2.5 px-2.5">
+        {/* flex-wrap + min-w on the info block: the 44px action buttons were
+            crushing long paint names to ~55px at 360px, breaking them
+            mid-word. Actions drop under the name when the row is tight. */}
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 flex-1 min-w-0 py-2.5 px-2.5">
           {/* Swatch + ΔE badge */}
           <div className="relative flex-shrink-0">
             <div
@@ -627,7 +632,7 @@ function RecipeStepRow({
             {/* ΔE badge, colour-coded by match quality */}
             {activePaint.deltaE !== undefined && (
               <div
-                className="absolute -bottom-1.5 -right-1.5 min-w-[26px] h-5 px-1 rounded-full flex items-center justify-center text-[10px] font-bold leading-none"
+                className="absolute -bottom-1.5 -right-1.5 min-w-[26px] h-5 px-1 rounded-full flex items-center justify-center text-[11px] font-bold leading-none"
                 style={{ background: 'var(--void-black)', border: `1px solid ${quality.color}`, color: quality.color }}
                 aria-label={`Delta E ${activePaint.deltaE.toFixed(1)}, ${quality.label} match`}
               >
@@ -637,15 +642,15 @@ function RecipeStepRow({
           </div>
 
           {/* Info */}
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-[130px]">
             <div className="flex items-center gap-2 flex-wrap">
               <RoleTag theme={theme}>{step.label}</RoleTag>
               {isPerfectMatch && (
-                <span className="text-[10px] bg-green-500 text-white px-1.5 py-0.5 rounded-full font-semibold">✓ Perfect</span>
+                <span className="text-[11px] bg-green-500 text-white px-1.5 py-0.5 rounded-full font-semibold">✓ Perfect</span>
               )}
               {activePaint.discontinued && (
                 <Tooltip content={activePaint.alternativeName ? `Try ${activePaint.alternativeName} instead` : 'This paint may be discontinued'}>
-                  <span className="text-[10px] bg-red-500/20 text-red-400 px-1.5 py-0.5 rounded cursor-help">Discontinued</span>
+                  <span className="text-[11px] bg-red-500/20 text-red-400 px-1.5 py-0.5 rounded cursor-help">Discontinued</span>
                 </Tooltip>
               )}
             </div>
@@ -665,17 +670,17 @@ function RecipeStepRow({
             {hasAlt && (
               <button
                 onClick={() => setActivePaint(activePaint.owned_alternative!)}
-                className="mt-1 flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-semibold text-amber-300 bg-amber-900/40 rounded border border-amber-500/30 hover:bg-amber-800/60 transition-colors"
+                className="mt-1 flex items-center gap-1 px-1.5 py-1 text-[11px] font-semibold text-amber-300 bg-amber-900/40 rounded border border-amber-500/30 hover:bg-amber-800/60 transition-colors max-w-full"
                 title={`Swap to owned: ${activePaint.owned_alternative!.name} (ΔE ${activePaint.owned_alternative!.deltaE})`}
               >
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M8 17l-4-4 4-4M16 7l4 4-4 4 M4 13h16 M4 11h16" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                Swap to Owned ({activePaint.owned_alternative!.name})
+                <svg className="flex-shrink-0" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M8 17l-4-4 4-4M16 7l4 4-4 4 M4 13h16 M4 11h16" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                <span className="truncate">Swap to Owned ({activePaint.owned_alternative!.name})</span>
               </button>
             )}
           </div>
 
-          {/* Icon-only actions */}
-          <div className="flex items-center gap-1.5 flex-shrink-0">
+          {/* Icon-only actions (wrap under the name when tight) */}
+          <div className="flex items-center gap-1.5 flex-shrink-0 ml-auto">
             {onToggleOwned && (
               <Tooltip content={isOwned ? 'Mark as not owned' : 'I own this paint'}>
                 <GhostButton

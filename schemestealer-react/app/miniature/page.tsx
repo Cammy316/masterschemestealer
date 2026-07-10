@@ -110,7 +110,7 @@ export default function MiniscanPage() {
 
 
   return (
-    <div className="min-h-dvh pb-24 pt-[clamp(0.75rem,3vh,2rem)] px-4 cogitator-screen" style={{ background: 'var(--void-black)' }}>
+    <div className="min-h-dvh pt-[clamp(0.75rem,3vh,2rem)] px-4 cogitator-screen" style={{ background: 'var(--void-black)' }}>
       {apiWarmupBanner}
       {/* Targeting brackets - corner overlays */}
       <div className="fixed inset-4 pointer-events-none z-20">

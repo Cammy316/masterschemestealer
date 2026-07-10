@@ -179,7 +179,7 @@ export default function InspirationResultsPage() {
   };
 
   return (
-    <div className="min-h-dvh pb-24 pt-8 px-6 void-bg">
+    <div className="min-h-dvh pt-8 px-6 void-bg">
       {/* Starfield background */}
       <div className="starfield-bg fixed inset-0 -z-10" />
 
@@ -225,7 +225,7 @@ export default function InspirationResultsPage() {
               <div className="bg-dark-gothic rounded-xl overflow-hidden">
                 {/* User's source image (object URL) — next/image not applicable. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={currentScan.imageUrl} alt="Inspiration source" className="w-full h-auto" />
+                <img src={currentScan.imageUrl} alt="Inspiration source" className="w-full h-auto max-h-[65vh] object-contain" />
               </div>
             </div>
             <motion.p

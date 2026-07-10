@@ -96,7 +96,7 @@ export default function InspirationPage() {
   // prop to transition into its "Hyper-Drive" loading state!
 
   return (
-    <div className="min-h-dvh pb-24 void-bg overflow-x-hidden">
+    <div className="min-h-dvh void-bg overflow-x-hidden">
       {apiWarmupBanner}
       {/* Full-page fixed starfield */}
       <CosmicBackground />

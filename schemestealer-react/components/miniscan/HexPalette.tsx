@@ -89,7 +89,7 @@ export function HexPalette({ colors, title = '◆ DATA CORE EXTRACT ◆', onColo
 
               {/* Percentage badge */}
               {color.percentage !== undefined && (
-                <div className="absolute -bottom-1 -right-1 bg-black border border-cogitator-green text-cogitator-green text-[10px] font-mono px-1 font-bold shadow-[0_0_5px_rgba(0,255,65,0.5)]">
+                <div className="absolute -bottom-1 -right-1 bg-black border border-cogitator-green text-cogitator-green text-[11px] font-mono px-1 font-bold shadow-[0_0_5px_rgba(0,255,65,0.5)]">
                   {color.percentage.toFixed(0)}%
                 </div>
               )}
@@ -100,7 +100,7 @@ export function HexPalette({ colors, title = '◆ DATA CORE EXTRACT ◆', onColo
               <div className="text-xs font-bold text-white/90 gothic-text tracking-wider uppercase mb-1">
                 {color.family || 'Unknown'}
               </div>
-              <div className="text-[10px] text-cogitator-green-dim font-mono flex items-center gap-1 justify-center">
+              <div className="text-[11px] text-cogitator-green-dim font-mono flex items-center gap-1 justify-center">
                 <span className="w-1 h-1 bg-cogitator-green rounded-full animate-pulse" />
                 {color.hex}
               </div>
@@ -111,7 +111,7 @@ export function HexPalette({ colors, title = '◆ DATA CORE EXTRACT ◆', onColo
 
       {/* Summary text */}
       <motion.p
-        className="text-center text-[10px] text-cogitator-green-dim font-mono tracking-widest uppercase"
+        className="text-center text-[11px] text-cogitator-green-dim font-mono tracking-widest uppercase"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.8 }}

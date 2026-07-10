@@ -19,7 +19,7 @@ export function RoleTag({ theme, children, className = '', style }: RoleTagProps
   const c = getThemeColors(theme);
   return (
     <span
-      className={`inline-block text-[10px] font-medium uppercase tracking-wider px-2 py-0.5 rounded ${className}`}
+      className={`inline-block text-[11px] font-medium uppercase tracking-wider px-2 py-0.5 rounded ${className}`}
       style={{
         border: `1px solid ${c.primary}`,
         color: c.primary,
