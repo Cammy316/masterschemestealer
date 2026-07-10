@@ -130,19 +130,19 @@ export default function ForgeInventoryTab({
   return (
     <motion.div key="inventory" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="mt-8 space-y-6">
       {/* Filters and Tooltip */}
-      <div className="flex justify-between items-center relative z-50">
+      <div className="flex flex-wrap gap-2 justify-between items-center relative z-50">
         {inventory.length > 0 ? (
-          <div className="flex gap-2">
-            <CustomDropdown 
+          <div className="flex flex-wrap gap-2 min-w-0">
+            <CustomDropdown
               value={filterBrand}
               options={dynamicBrandFilters}
               onChange={setFilterBrand}
             />
-            <CustomDropdown 
+            <CustomDropdown
               value={filterColor}
               options={dynamicColorFilters}
               onChange={setFilterColor}
-              formatOption={(val) => val === 'ALL' ? 'ALL COLORS' : val}
+              formatOption={(val) => val === 'ALL' ? 'ALL COLOURS' : val}
             />
           </div>
         ) : <div />}

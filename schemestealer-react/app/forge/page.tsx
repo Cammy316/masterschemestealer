@@ -55,7 +55,7 @@ export default function ForgePage() {
   }, [isAddModalOpen, newlyAddedQueue]);
 
   return (
-    <div className="min-h-dvh bg-void-black text-white pb-24 pt-8 px-4 relative overflow-hidden">
+    <div className="min-h-dvh bg-void-black text-white pt-8 px-4 relative overflow-hidden">
       <ForgeBackground />
 
       <div className="max-w-3xl mx-auto space-y-6 relative z-10">
@@ -72,7 +72,7 @@ export default function ForgePage() {
              <button 
                key={tab}
                onClick={() => setActiveTab(tab as any)}
-               className={`flex-1 py-3 text-[10px] sm:text-xs font-bold tracking-widest uppercase z-10 transition-colors ${activeTab === tab ? 'text-void-black' : 'text-gray-400 hover:text-brass'}`}
+               className={`flex-1 py-3 text-[11px] sm:text-xs font-bold tracking-wide sm:tracking-widest uppercase z-10 transition-colors whitespace-nowrap ${activeTab === tab ? 'text-void-black' : 'text-gray-400 hover:text-brass'}`}
              >
                {tab === 'forgemix' ? 'FORGE MIX' : tab}
                {tab === 'inventory' && inventory.length > 0 && ` (${inventory.length})`}

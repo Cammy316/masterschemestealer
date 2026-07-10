@@ -343,9 +343,9 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
                       initial={{ opacity: 0, y: 10, scale: 0.9 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.9 }}
-                      className="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-charcoal/95 border border-brass/50 p-3 rounded-sm shadow-[0_0_15px_rgba(184,134,11,0.15)] whitespace-nowrap z-50 flex flex-col items-center pointer-events-auto backdrop-blur-sm min-w-[120px]"
+                      className="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-charcoal/95 border border-brass/50 p-3 rounded-sm shadow-[0_0_15px_rgba(184,134,11,0.15)] z-50 flex flex-col items-center pointer-events-auto backdrop-blur-sm min-w-[120px] max-w-[70vw] text-center"
                     >
-                      <div className="font-bold text-imperial-gold text-xs uppercase tracking-wider drop-shadow-[0_0_8px_rgba(184,134,11,0.6)]"><ScrambleString text={node.paint.name} /></div>
+                      <div className="font-bold text-imperial-gold text-xs uppercase tracking-wider drop-shadow-[0_0_8px_rgba(184,134,11,0.6)] break-words"><ScrambleString text={node.paint.name} /></div>
                       <div className="text-[10px] text-brass uppercase tracking-widest mt-0.5"><ScrambleString text={node.paint.brand} /></div>
                       
                       {onRemovePaint && (
@@ -384,9 +384,9 @@ export function InventoryHexGrid({ inventory, onAddPaint, onRemovePaint, lastAdd
             
             {/* Zoom Controls Overlay */}
             <div className="absolute bottom-4 right-4 flex flex-col gap-2 z-20">
-              <button onClick={() => zoomIn()} className="w-8 h-8 bg-black/80 border border-brass/50 hover:bg-brass/20 hover:border-brass text-imperial-gold rounded-sm flex items-center justify-center backdrop-blur-sm transition-all shadow-[0_0_10px_rgba(184,134,11,0.1)] hover:shadow-[0_0_15px_rgba(184,134,11,0.3)] active:scale-95">+</button>
-              <button onClick={() => zoomOut()} className="w-8 h-8 bg-black/80 border border-brass/50 hover:bg-brass/20 hover:border-brass text-imperial-gold rounded-sm flex items-center justify-center backdrop-blur-sm transition-all shadow-[0_0_10px_rgba(184,134,11,0.1)] hover:shadow-[0_0_15px_rgba(184,134,11,0.3)] active:scale-95">-</button>
-              <button onClick={() => resetTransform()} className="w-8 h-8 bg-black/80 border border-brass/50 hover:bg-brass/20 hover:border-brass text-imperial-gold rounded-sm flex items-center justify-center backdrop-blur-sm transition-all shadow-[0_0_10px_rgba(184,134,11,0.1)] hover:shadow-[0_0_15px_rgba(184,134,11,0.3)] active:scale-95">
+              <button onClick={() => zoomIn()} aria-label="Zoom in" className="w-11 h-11 bg-black/80 border border-brass/50 hover:bg-brass/20 hover:border-brass text-imperial-gold rounded-sm flex items-center justify-center backdrop-blur-sm transition-all shadow-[0_0_10px_rgba(184,134,11,0.1)] hover:shadow-[0_0_15px_rgba(184,134,11,0.3)] active:scale-95">+</button>
+              <button onClick={() => zoomOut()} aria-label="Zoom out" className="w-11 h-11 bg-black/80 border border-brass/50 hover:bg-brass/20 hover:border-brass text-imperial-gold rounded-sm flex items-center justify-center backdrop-blur-sm transition-all shadow-[0_0_10px_rgba(184,134,11,0.1)] hover:shadow-[0_0_15px_rgba(184,134,11,0.3)] active:scale-95">-</button>
+              <button onClick={() => resetTransform()} aria-label="Reset zoom" className="w-11 h-11 bg-black/80 border border-brass/50 hover:bg-brass/20 hover:border-brass text-imperial-gold rounded-sm flex items-center justify-center backdrop-blur-sm transition-all shadow-[0_0_10px_rgba(184,134,11,0.1)] hover:shadow-[0_0_15px_rgba(184,134,11,0.3)] active:scale-95">
                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
               </button>
             </div>
