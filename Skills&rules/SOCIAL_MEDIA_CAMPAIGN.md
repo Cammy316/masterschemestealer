@@ -1,187 +1,166 @@
-# SchemeStealer — Social Media & Growth Campaign
+# SchemeStealer — Social Launch Plan v2 (Ground Zero → 90 Days)
 
-*Multi-channel plan targeting miniature painters, Warhammer hobbyists, and competition
-(Golden Demon) painters. Written 2026-07-06, aligned with the revised roadmap: the
-campaign assumes Phase 0 hardening is done (installable PWA, `/paints` SEO pages live)
-and ramps alongside Phases 2–5. Scoped for a solo developer: every channel below states
-its weekly time cost — cut from the bottom, never the top.*
+*Rewritten 2026-07-09. Situation: every account exists (TikTok, Instagram, Facebook,
+X/Twitter, YouTube), **zero posts anywhere**. The product is fully live (scans,
+substitutions, Daily Augury, Session Forge, SEO pages). This is the from-nothing plan
+to start marketing heavily, built on current-platform research (sources in the
+appendix) and on the automated video factory specced in `VIDEO_AUTOMATION_PIPELINE.md`.
+Solo-operator scoped: the factory produces; Cam fronts, engages and posts.*
 
 ---
 
-## 1. Positioning & Voice
+## 0. The one-paragraph strategy
 
-**One-liner:** *"Point your phone at any miniature and get the exact paint recipe — matched
-against a physically measured database of 1,300+ paints across six brands."*
+SchemeStealer's unfair advantage is that its **data can be turned into video by code**:
+every scan is a cinematic reveal, every puzzle day is a quiz short, every conversion row
+is a "budget swap" clip. Nobody else in the niche can generate a month of content in an
+afternoon. So: bank two weeks of factory-made videos BEFORE the first post, launch on
+TikTok+Reels with our five strongest clips (the first 3–5 posts define the account's
+"content DNA" to the 2026 algorithm), convert viewers into daily players of the Augury
+(a reason to return that no competitor has), and let the in-app share-video feature
+(Phase 3.5) turn users themselves into the distribution network.
 
-**What makes the claim defensible (say this constantly):** the recommendations come from
-measured colour values and CIEDE2000 colour science, not name-matching or guesswork. Every
-match shows its ΔE — we tell you *how close* the match is, including when it's only fair.
-Honesty about imperfect matches is the brand.
+## 1. Algorithm rules — baked into every single video
 
-**Voice:** the in-app Mechanicus/Warp theming carries into social copy — playful grimdark
-("the Auspex has identified your pigments"), but always attached to a genuinely useful
-result. British English throughout. Never name or credit any third-party swatch reference
-source in any content, caption, or reply — the database is described only as "our measured
-swatch database".
+These are the 2026 rules of the game; treat them as acceptance criteria per clip:
 
-**Audience segments**
-| Segment | Hook | Channel centre of gravity |
+| Rule | Number | Applies as |
 |---|---|---|
-| New/returning painters ("what paints do I need?") | Scan a box-art photo → shopping list | TikTok, YouTube Shorts, Google search |
-| Hobbyist regulars (batch painters, slap-choppers) | Budget swaps, inventory substitutions, speedpaint translator | Instagram, Reddit, Discord |
-| Competition painters | NMM ramps, precise colour theory, ΔE rigour | Instagram, YouTube long-form, events |
+| Primary hook lands | ≤ 2.5–3.0 s | First frame = the payoff tease (swatch macro, price tag, scan flash) — never a logo card |
+| Secondary hook | ~14 s | A twist, reveal-step or "but here's the weird part" |
+| Completion bar for viral distribution | **≥ 70%** | Keep Shorts/Reels cuts at 20–35 s; TikTok can run 60–180 s ONLY when the format earns it (scan reactions, story posts) |
+| Rewatch weighting | ~2× a view | **Loop endings**: last frame flows into the first (the reveal answer is visible on second watch behind the hook) |
+| First 3–5 posts | Set the account's content DNA | Launch week = the five best clips, all on-niche; no "welcome to my channel" |
+| Consistency > spikes | 3–5 posts/week minimum | The factory makes 1/day trivial on TikTok for the first 30 days |
+| Original audio rewarded | — | Cam voiceover where possible; TTS acceptable for factory clips; never bare trending-audio reposts |
+| Comment bait | — | Deliberate gaps: "name it before the reveal", a *slightly* imperfect swap ("ΔE 2.4 — close enough?"), unanswered "which brand wins?" |
+| Cross-posting | No foreign watermarks, ever | Factory exports clean per-platform masters; hooks/captions re-written per platform (+40–60% reach vs identical posts); always native uploads |
 
----
+## 2. Positioning & voice (unchanged, restated)
 
-## 2. Content Pillars (Instagram / TikTok / YouTube Shorts)
+*"Point your phone at any miniature and get the exact paint recipe — matched against a
+physically measured database of 1,300+ paints across six brands."* Honesty is the
+brand: every match shows its ΔE, including the bad ones. Mechanicus/grimdark voice,
+British English. **Never name or credit the swatch reference source anywhere** — it is
+only ever "our measured swatch database". No GW imagery/logos in our own renders;
+user-submitted and self-painted minis only, credited.
 
-Rule of thumb: film once, cut for all three platforms. Target cadence at cruise:
-**4 shorts + 1 carousel per week ≈ 4–5 h/week.**
+## 3. Content pillars → production source
 
-### Pillar A — "Guess the Recipe" (flagship, feeds the app feature)
-Show a gorgeous painted mini (with the painter's permission and credit), freeze on one
-surface: *"What's the base coat?"* — 3-second countdown — reveal the app's scan with ΔE
-badges. Viewers comment guesses before the reveal; engagement bait that is also a product
-demo. When the `/daily` puzzle ships (Phase 3), every clip ends with "play today's round —
-link in bio", converting a content format into a retention loop.
+| # | Pillar | Made by | Cadence at cruise |
+|---|---|---|---|
+| P1 | **Guess the Paint** — daily quiz short; answer at the loop point; "beat me at schemestealer.com/daily" | Factory T1 (auto from `daily_puzzles.json`) | Daily on TikTok, 3×/wk elsewhere |
+| P2 | **Budget Swap** — "Citadel charges £4.75 for this. This is ΔE 1.8 away for £2.60." | Factory T2 (auto from `conversions.json`) | 3×/wk |
+| P3 | **Scan Reveals** — real minis (Cam's, community-submitted with credit, famous studio schemes) going through the Auspex; honest misses included | Engine A exports + Playwright screen-records | 2–3×/wk |
+| P4 | **Recipe in 15 Seconds** — famous scheme as a base→shade→highlight→wash swatch cascade | Factory T3 | 2×/wk |
+| P5 | **Build-in-public** — "I measured 1,300 paints so you don't have to"; solo-dev story, feature drops, honest metrics | Cam, manual (X-first, clipped for TikTok) | 2×/wk |
 
-### Pillar B — "Scan my mini" (reaction/UGC format)
-Followers submit photos; we scan them live and react to the results — including the misses
-("the Auspex read this weathered bronze as leather — here's why: chipped metallics scatter
-the specular signature"). Publishing honest failure analysis builds more trust than a
-highlight reel, and the explanations write themselves from the colour science.
+Formats proven in the painttok niche that these map onto: speed-paint satisfaction,
+brand-specific recipes, grimdark scheme storytelling, beginner tips — P1–P4 hit all of
+them without filming a single brushstroke.
 
-### Pillar C — Budget Swap / "Same colour, half the price"
-Side-by-side: a Citadel paint vs its ΔE<2 equivalent from Army Painter/Vallejo, with the
-price difference on screen. Pure value content, endlessly repeatable (the conversion DB is
-the script), and it points straight at the `/convert` SEO pages. This is also the affiliate
-revenue pillar once real retailer links exist (Phase 4).
+## 4. Per-platform playbooks (ground zero)
 
-### Pillar D — Kitbash & Scheme Showcases
-Take a famous scheme (Ultramarines, Death Guard, Blood Angels grimdark) or a community
-kitbash and break it into the four-step recipe card, then show the *same scheme in another
-brand entirely*. When the Army Scheme Planner ships, this pillar demos mapping one scheme
-across a whole army.
+### TikTok — primary channel
+- **Cadence:** 1/day for the first 30 days (batched), then 5/wk.
+- **Launch five (in order):** P1 Augury (strongest puzzle), P3 scan reveal of a
+  showstopper mini, P2 budget swap on the most-searched Citadel paint, P1 again,
+  P5 founder story ("I spent a year measuring 1,300 paints…").
+- Native captions + 3–5 niche hashtags (#paintingwarhammer #miniaturepainting
+  #warhammer40k + one format tag); keyword-rich on-screen text (TikTok search indexes it).
+- **Engagement SOP week 1–2:** reply to EVERY comment within the hour where feasible
+  (new-account engagement compounding); pin the best guess on P1 posts; follow/engage
+  20 niche accounts daily from the account (genuine comments, no spam).
+- Duet/stitch ON — invite painters to duet their own mini being scanned.
 
-### Pillar E — Craft/Competition (NMM & colour theory)
-Golden Demon-adjacent content: what makes NMM read as metal (lightness ramps, not colour),
-warm vs cool highlights, why pure black is almost never the answer. Launches properly with
-the NMM Ramp Forge (Phase 5): before/after ramps are the most shareable asset the product
-can generate. Longer YouTube cuts live here (one 8–12 min video/month, only at cruise).
+### Instagram (Reels + grid + Stories)
+- Same masters, **rewritten captions/hooks**, IG hashtag sets per pillar; 4–5 Reels/wk.
+- Grid rhythm: P3 beauty frame / P2 swap card / P1 puzzle — so the profile reads as a
+  painter's tool, not a spam feed. Stories: daily Augury result reshares (players tag
+  us), polls ("which swap wins?"), behind-the-scenes.
+- Never upload a TikTok download (watermark suppression + IG's 2026 unoriginal-content
+  penalty) — factory masters only.
 
----
+### YouTube Shorts — the search channel
+- 4–5/wk, **keyword-first titles** that mirror our SEO pages: "Citadel Mephiston Red
+  Vallejo equivalent (ΔE-matched)", "What paint is this? Daily paint quiz #41".
+  Shorts search is real discovery; each description links the matching /convert page.
+- 20–35 s cuts here (completion bar); loop endings mandatory.
 
-## 3. Organic SEO (the compounding channel)
+### X/Twitter — build-in-public HQ
+- 2 threads/wk (P5): metrics, failures, colour-science nuggets ("why your gold reads
+  brown on camera"); daily ritual: quote-post the Augury share grid each morning.
+- Clips attached natively; link once per thread, not every tweet.
 
-The programmatic pages are the landing surface; social exists to feed them authority.
+### Facebook — lowest effort, real reach in this hobby's demographics
+- Crosspost Reels natively 3×/wk; join the 3 largest miniature-painting groups and the
+  main Warhammer buy/sell/trade groups — value-first posts (a genuinely useful swap
+  chart screenshot beats a link), one soft link per week max, per group rules.
 
-- **Keyword families:** "X paint equivalent" / "X vallejo equivalent" (per-paint,
-  `/convert/...` — live), "X vs Y paint" comparisons, "what colour is [unit] painted",
-  "[scheme] paint recipe", "contrast paint equivalent of X" (Phase 6 translator pages).
-- **Finish the `/paints/[brand]/[slug]` pages first** (Phase 0.3) — thin stub pages that
-  are indexed *hurt* ranking; complete them or `noindex` until complete. Add them to
-  `sitemap.ts` at the same time.
-- **On-page trust:** every page shows measured swatch, ΔE table, FAQ JSON-LD (already
-  built on `/convert`). British English (Phase 0.6) — the target audience notices.
-- **Link-earning assets:** the daily puzzle (`/daily`) and the NMM ramp results are the
-  two page types hobby sites and Discords will link to organically. Publish a monthly
-  "most-scanned paints" mini-report post once analytics data is durable (Phase 0.1) —
-  original data earns links.
+### Reddit + Discord (unchanged from v1 — they are launch beats, not feeds)
+- Week 2: "I built a thing" maker post — r/minipainting first (honest write-up: what it
+  does, what it can't, the measuring story), then spaced cross-posts (r/Warhammer40k,
+  r/ageofsigmar). Reply to everything for 48 h.
+- Discords: participate as Cam-the-painter; run "guess the paint" nights with mod
+  blessing; never drive-by link.
 
----
+## 5. The 90-day calendar
 
-## 4. Community Channels (Reddit / Discord / Forums)
+**Days −14 → 0 (the bank):** factory templates T1+T2 built; ≥ 25 clips rendered and
+QA'd against §1 acceptance criteria; profiles dressed (bio: "Scan your mini → get the
+recipe · 1,300 measured paints · free", link → schemestealer.com; matching avatars/
+banners); pinned-post drafts ready; Search Console verified + sitemap submitted.
 
-**Norms first: these communities ban drive-by promotion.** The account posts as Cam the
-painter-developer, not as a brand. Value-first ratio ~10:1.
+**Days 1–14 (soft launch):** TikTok daily + IG 4/wk + Shorts 4/wk from the bank; the
+launch-five in order; engagement SOP daily (30–45 min); X founder thread on day 3;
+Reddit maker post day 10–12 (after the accounts look alive, not empty).
 
-- **Reddit** (r/minipainting 1M+, r/Warhammer40k, r/ageofsigmar, r/PaintSlam): answer
-  "what paint is this?" threads with a genuinely helpful reply *including the reasoning*;
-  the tool link goes in a comment only when asked or clearly welcome. One "I built a
-  thing" launch post per subreddit per major release (see §6) — these perform when they
-  read as a maker's story with honest limitations, not a pitch.
-- **Discords** (painting servers, GW store communities, slap-chop groups): be a resident
-  expert; run "guess the recipe" nights with mod blessing. Later: a lightweight bot that
-  answers `!match <paint>` with the conversion table is a Phase 6+ idea — only into
-  servers that invite it.
-- **Forums/blogs** (Dakka, Bolter & Chainsword): a signature link and participation in
-  colour-theory threads; slow-burn but high-trust audience that overlaps with judges and
-  event organisers.
+**Days 15–30 (first signal):** double down on the best-performing pillar (kill/scale
+call at day 21); Facebook groups begin; first community scan-submission call-to-action
+("send me your mini, I'll scan it live"); baseline metrics recorded.
 
-**Time cost: ~2 h/week**, folded into normal hobby participation.
+**Days 31–60 (share loop):** Phase 3.5 ships → every P3 post ends with "made with the
+in-app share button — post yours with #SchemeStealer"; creator seeding wave (10 painters
+5k–100k, early access + founders promise, no strings); duet/stitch prompts weekly;
+first "most-scanned paints this month" data post (link-earning asset).
 
----
+**Days 61–90 (compound):** UGC reshares become a sixth content source; NMM/prestige
+teasers if Phase 5 starts; assess for Phase 4 go/no-go against the KPI gate below.
 
-## 5. Creator Seeding & Partnerships
+## 6. Measurement (first-party + native, weekly 30-min ritual)
 
-- **Target tier:** 5k–100k-subscriber painting channels (mid-tier converts better and
-  actually replies). Shortlist ~20; offer early access + a founders' licence, ask for
-  nothing beyond honest use — if the tool is good it appears in their workflow videos
-  naturally.
-- **The demo that sells itself:** creator films scanning *their own* display piece and the
-  app returning a credible recipe. Provide a one-page "how to get a good scan" sheet
-  (lighting, background removal behaviour) so first impressions aren't sabotaged by a bad
-  photo.
-- **Event angle:** Golden Demon / Armies on Parade seasons — printable QR recipe cards for
-  display boards (Army Scheme Planner output, Phase 5+) put the product physically at
-  events without a booth.
-- **B2B seeds:** the same outreach list doubles for Phase 4 B2B — challenger paint brands'
-  community managers see the creator content before the sales email arrives.
-
----
-
-## 6. Launch Sequences (repeat per major release)
-
-Each launch follows the same four-beat pattern over ~2 weeks:
-
-1. **Quiet beta** — 2 painting Discords, feedback channel open, fix the top 3 complaints.
-2. **Reddit maker post** — "I spent a year measuring 1,300 paints so you don't have to" —
-   honest write-up: what it does, what it can't, what's next. Cross-post spaced across
-   subreddits (per-sub rules), reply to every comment for 48 h.
-3. **Social burst** — the launch feature cut into the relevant pillar for 10 consecutive
-   days (e.g. NMM Forge → Pillar E daily ramps).
-4. **Creator wave** — early-access creators are unembargoed the same week; their videos
-   land while search interest from beats 2–3 is warm.
-
-**Calendar (aligned to roadmap phases):**
-| Release | Beat-2 headline |
-|---|---|
-| Phase 0/2: substitutions + rack analysis | "The app now tells you what you can paint with what you already own" |
-| Phase 3: `/daily` puzzle | "Wordle for paint nerds" |
-| Phase 4: tokens/founders | "Free stays free; power users can now fund the servers" (soft touch — never lead with monetisation) |
-| Phase 5: NMM Forge | "A colour-science engine that teaches you NMM" |
-
----
-
-## 7. Measurement (first-party only)
-
-All measurable with the existing consent-gated analytics pipeline once persistence is
-durable (Phase 0.1). No third-party pixels.
-
-| Metric | Event source | Healthy signal (first 6 months) |
+| KPI | Source | 90-day healthy signal |
 |---|---|---|
-| Scan conversion (visit → scan) | `page_view` → `scan_completed` | >25% on mobile |
-| D7 return rate | session_id recurrence | >10%, rising after Session Forge |
-| SEO landings | referrer on `/convert` + `/paints` | Doubling quarter-on-quarter |
-| Daily puzzle plays + share rate | new `daily_played`, `daily_shared` events | Share rate >8% |
-| Ko-fi / (later) token conversion | `kofi_clicked`, `pro_upgrade_clicked` (event exists — needs call sites) | Establish baseline first |
-| Affiliate clicks | `affiliate_link_clicked` (event exists — needs call sites + real URLs) | Phase 4 KPI |
+| Completion rate per clip | platform natives | ≥ 60% avg, ≥ 70% on winners |
+| Follower growth | natives | TikTok 1k+, combined 2.5k+ |
+| Site sessions from social | referrers in first-party analytics | ≥ 25% of traffic |
+| Daily Augury players + share rate | `daily_played` / `daily_shared` | 100+ DAU, share ≥ 8% |
+| Scan conversion (visit → scan) | `page_view` → `scan_completed` | > 25% mobile |
+| Reveal videos exported (post-3.5) | `reveal_video_exported` | The share loop's pulse |
+| Ko-fi clicks | `kofi_clicked` | Baseline for Phase 4 sizing |
 
-**Weekly ritual (30 min):** one dashboard pass — which pillar drove scans, which SEO pages
-gained impressions (Search Console), one experiment queued for next week. Kill any pillar
-that underperforms for 6 consecutive weeks; double down on the best one.
+Kill/double-down: any pillar below the account average for 6 consecutive weeks is cut;
+the best pillar gets its cadence doubled. **Phase 4 gate:** ≥ 100 daily Augury players
++ ≥ 500 combined followers + rising scan counts = start Clerk/Stripe.
 
----
+## 7. Guardrails (hard)
+- Zero swatch-source attribution, in any channel, ever — including casual replies.
+- No GW-owned imagery/marks in our renders; "Warhammer" used descriptively only.
+- Honesty beats reach: never doctor a match; the ΔE badge is the brand.
+- British English everywhere.
+- Burnout floor: if life happens, the minimum viable week is 3 factory clips on TikTok
+  + the daily X Augury ritual. Everything else is additive.
 
-## 8. Risks & Guardrails
-
-- **IP care:** never use Games Workshop imagery/logos in ads or thumbnails; user-submitted
-  and self-painted minis only, with credit. "Warhammer" is used descriptively, never in
-  the product name.
-- **Attribution rule (hard):** the measured swatch database is never attributed to any
-  third-party source, in any channel, ever — including casual replies.
-- **Honesty beats reach:** never post a doctored "perfect match". The ΔE badge is the
-  brand; a faked demo that a 100k-sub creator debunks would be terminal.
-- **Solo-dev burnout:** the cadence above is the *ceiling*. The minimum viable presence is
-  Pillar C (budget swaps — cheapest to produce, best search overlap) plus the Reddit
-  launch beats. Everything else is additive.
+## Appendix — research sources (July 2026)
+- TikTok algorithm/completion/new-account meta: socialync.io (2026 what-works +
+  new-account tips), sproutsocial.com/insights/tiktok-algorithm, mickyweis.com.
+- Rewatch/loop weighting + viral tactics: darkroomagency.com "How TikTok's algorithm
+  works in 2026 and 15 tactics", joyspace.ai looping guide.
+- Hooks/timing/Shorts: vidiq.com viral-hooks-youtube-shorts, prapermedia.com,
+  posteverywhere.ai how-to-go-viral-on-tiktok.
+- Cross-posting/watermark penalties: shortsync.app, gpt.social repurposing guide,
+  tubefilter.com (Instagram's 2026 unoriginal-content de-recommendation).
+- Niche formats: tiktok.com/tag/paintingwarhammer + discover pages for
+  warhammer-painting content.
+- Automation stack: remotion (programmatic React video, Claude Code skill available),
+  dev.to self-hosted faceless-shorts pipelines (FFmpeg + faster-whisper captions).

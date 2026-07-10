@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-07-09 (Roadmap Sync + Growth Plan)
+### Changed
+- **Roadmap trued up**: Phases 0–3 marked shipped (with verification dates); a
+  Debt & Deferred table calls out the skipped barcode scanner (blocked on EAN data),
+  the reveal hover-sync stretch goal, placeholder PWA icons and the remaining register
+  items; next stages re-sequenced — Phase 3.5 "Broadcast Update" (in-app scan-reveal
+  video export) + a 90-day Growth Sprint before Phase 4 monetisation. SEO assessed:
+  no further SEO build needed until the Phase 6 Librarium.
+- **`SOCIAL_MEDIA_CAMPAIGN.md` v2**: complete ground-zero launch plan for the empty
+  accounts, built on July-2026 platform research (70% completion bar, first-five-posts
+  content DNA, loop/rewatch mechanics, cross-posting watermark penalties), with content
+  pillars mapped to automated production, per-platform playbooks, a 90-day calendar,
+  KPI gates and a Phase 4 go/no-go rule.
+
+### Added
+- **`VIDEO_AUTOMATION_PIPELINE.md`**: Engine A — in-app scan-reveal video export
+  (MediaRecorder over the existing reveal layers, loop-ending 9:16 composition,
+  share-sheet integration) as the Phase 3.5 build spec; Engine B — a local Remotion +
+  FFmpeg + faster-whisper content factory rendering Daily-Augury quiz shorts, Budget
+  Swap clips, recipe cascades and Playwright scan-reactions straight from the app's
+  data files, with per-platform caption variants and a manual-native-upload checklist.
+
 ## [Unreleased] - 2026-07-09 (Mobile Optimisation Audit)
 ### Fixed
 - **Full-app responsive audit (52 findings, 5 batches).** Highlights:

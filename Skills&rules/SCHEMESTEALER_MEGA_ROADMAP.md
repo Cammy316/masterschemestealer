@@ -16,37 +16,40 @@ this distribute or monetise the measured data?* New compute is not the moat — 
 
 ---
 
-## State of the Union (2026-07-06 audit)
+## State of the Union (updated 2026-07-09 — everything below SHIPPED)
 
-**What's genuinely strong right now:**
-- Engine accuracy is measured and locked: synthetic-sweep hard-miss 9.4%, zero
-  classifier disagreements between backend and offline frontend, clustering recovery 1.0.
-  One classifier, one rgb→lab, golden parity fixtures on both sides, frozen harness
-  baseline. This is a defensible core.
-- The Forge (inventory HexGrid + spectral.js Kubelka–Munk mixing + requisition cart)
-  **already shipped** — the old "Phase 2: build the Armoury" framing is out of date.
-- `/convert/[slug]` programmatic SEO pages are live with structured data and OG images.
-- Test culture is real: ~640 backend + ~616 frontend tests, Playwright E2E, CI parity gate.
+**Live in production:**
+- **Phase 0 hardening complete and verified against prod** (2026-07-07): Supabase
+  persistence confirmed (`/api/ready` → `"persistence": "supabase"`), admin endpoints
+  fail closed with the key configured, CORS pinned to our origins, PWA manifest + icons
+  serving, security headers live, offline scans render the real recipe card, full-suite
+  CI, backend test suite fully green.
+- **Phase 1 SEO complete**: `/convert` + `/paints` programmatic pages live with
+  structured data and OG images, all in the sitemap.
+- **Phase 2 core loop complete (except barcode — see Debt & Deferred)**:
+  inventory-aware substitutions in scans, owned-alternative swaps on the recipe card,
+  Rack Gap Analysis endpoint + Forge panel.
+- **Phase 3 daily-habit complete**: The Daily Augury (`/daily`, 400-day puzzle file,
+  streaks/stats/share) and the Session Forge (whole-scan sessions, parallel drying
+  timers with global reconciliation, notifications, wake lock).
+- **Mobile optimisation sprint complete** (2026-07-09): 52-finding responsive audit
+  fixed across the whole UI; `tests/responsive.spec.ts` guards 9 routes × 6 viewports
+  with screenshots; desktop results are two-column; Auspex Reveal redesigned (rail
+  callouts, greyscale focus, themed backdrop) with its spatial contract locked by tests.
+- Engine accuracy measured and locked: hard-miss 9.4%, zero cross-stack classifier
+  disagreements, parity fixtures green, frozen harness baseline.
 
-**What's holding the strategy back (full detail in `architecture.md` §9):**
-- **All monetisation is scaffolding.** No auth, no Stripe, no tokens; the premium gate is
-  deliberately hidden; affiliate events exist with zero call sites; the only live money
-  path is Ko-fi. Every revenue line below has Clerk + Stripe as a hard prerequisite.
-- **Data collection can silently evaporate** (P0): Supabase secrets aren't in
-  `render.yaml`; without them, ML/analytics writes land on Render's ephemeral disk and
-  die on deploy. The accuracy flywheel (Wave 5) is running on sand until this is fixed.
-- **The PWA manifest 404s** (P0) — the app literally cannot be installed, which
-  contradicts the whole "daily desk companion" thesis.
-- `/paints/[brand]/[slug]` SEO pages are a crawlable stub and missing from the sitemap —
-  "Phase 1 SEO done" was only half true.
-- Offline scans render a degraded legacy list instead of the recipe card.
+**What's still holding the strategy back:**
+- **All monetisation remains scaffolding** — no auth, no Stripe, no tokens; Ko-fi is
+  the only money path. Phase 4's hard prerequisite is unchanged: Clerk + Stripe.
+- **Zero marketing has ever run.** Accounts exist on every platform with no posts —
+  the growth sprint (see `SOCIAL_MEDIA_CAMPAIGN.md` v2) is now the critical path.
 
 ---
 
-## Phase 0 — Hardening Sprint (do first; days, not weeks)
+## Phase 0 — Hardening Sprint ✅ COMPLETE (2026-07-07, verified live)
 
-Each item maps to an audit finding. Nothing here is speculative; it is repairing the
-foundations the rest of the roadmap stands on.
+Kept for the record; every row landed.
 
 | # | Item | Why it gates growth |
 |---|------|---------------------|
@@ -67,16 +70,14 @@ foundations the rest of the roadmap stands on.
 *Goal: evolve from an occasional "lookup tool" to a persistent app that stays open during
 3-hour painting sessions.*
 
-### 1.1 The Armoury — COMPLETE THE LOOP (inventory shipped; intelligence missing)
-* **Shipped:** inventory entry (HexGrid), custom mixes, requisition cart.
-* **Missing (the actual keystone):** recipes do not yet re-rank against what you own.
-  Build **inventory-aware substitutions**: *"You're missing Mephiston Red, but you own
-  Vallejo Bloody Red (ΔE 2.1) — use that instead."* Plus a rapid client-side barcode
-  scanner for bulk inventory entry.
-* **Effort/Impact:** Medium / Massive. This converts the Forge from a toy into the reason
-  the app stays installed.
+### 1.1 The Armoury ✅ SHIPPED (2026-07-08, except barcode)
+* **Shipped:** inventory entry (HexGrid), custom mixes, requisition cart, and the
+  keystone — **inventory-aware substitutions** ("you own Vallejo Bloody Red at ΔE 2.1 —
+  use that instead") wired through scans and the recipe card's owned-swap chips.
+* **Deferred:** the client-side barcode scanner (see Debt & Deferred — blocked on EAN
+  data collection, not code).
 
-### 1.2 Rack Gap Analysis (NEW — audit-driven)
+### 1.2 Rack Gap Analysis ✅ SHIPPED (2026-07-08)
 * **The Concept:** compute how much of colour space the user's rack actually covers
   (nearest-owned-paint distance over the 1,312-paint cloud) and recommend the 3–5
   purchases that close the biggest gaps. *"Your 42 paints cover 61% of the gamut; adding
@@ -85,11 +86,11 @@ foundations the rest of the roadmap stands on.
   impossible to copy without measured LAB data.
 * **Effort/Impact:** Low-Medium / High.
 
-### 1.3 Session Forge (Interactive Recipe Runner)
-* **The Concept:** a "Start Painting" mode that turns a recipe into a checklist with
-  built-in dry-time timers (*Wash applied → 20 min timer starts*). PWA notifications when
-  the model is ready for the next layer. Depends on Phase 0.2 (manifest).
-* **Effort/Impact:** Low / High. Pure frontend state that drastically increases session length.
+### 1.3 Session Forge ✅ SHIPPED (2026-07-08/09)
+* Whole-scan painting sessions with parallel drying timers (globally reconciled — a
+  timer finishes even while you work another target), "while that dries" batching
+  suggestions, notification opt-in via the service worker, wake-lock toggle, reload
+  resume. Entry from every recipe card and the results page.
 
 ### 1.4 Wet Palette Oracle (Long-term)
 * **The Concept:** snap a photo of a wet palette mid-session; the extraction pipeline
@@ -156,14 +157,11 @@ it re-enables by dropping one filter.*
 
 *Goal: turn users into the marketing engine.*
 
-### 4.1 "Guess the Recipe" Daily Challenge (NEW)
-* **The Concept:** a daily Wordle-style puzzle — a zoomed swatch or mini crop; guess the
-  paint with family/brand/ΔE-temperature feedback per guess; shareable spoiler-free score
-  grid; local-storage streaks. Generated at build time from the paint DB — **no backend, no
-  auth needed**, shippable early.
-* **Why it wins:** daily-active habit + organic social sharing + doubles as the social
-  content pillar (see `SOCIAL_MEDIA_CAMPAIGN.md`).
-* **Effort/Impact:** Low / High.
+### 4.1 "The Daily Augury" ✅ SHIPPED (2026-07-08/09)
+* Live at `/daily`: 400-day deterministic puzzle file, four-cell feedback grid
+  (brand/family/lightness/ΔE band), streaks + stats + guess distribution, spoiler-free
+  emoji share, win-screen funnel to the `/paints` dossier + scan CTA, home-screen entry
+  banner in the first viewport. The flagship social content pillar.
 
 ### 4.2 The Public Librarium (User-Generated Recipes)
 * **The Concept:** "Publish to Librarium" generates a public, SEO-indexed page
@@ -181,20 +179,42 @@ it re-enables by dropping one filter.*
 
 ---
 
-## Proposed Rollout Sequence (revised 2026-07-06)
+## Rollout Sequence (revised 2026-07-09)
 
 | Phase | Focus | Key Deliverables | Status |
 | :--- | :--- | :--- | :--- |
-| **Phase 0** | Hardening | Supabase persistence, PWA manifest, `/paints` pages + sitemap, offline recipe parity, admin key, full-suite CI | **NOT STARTED — do first** |
-| **Phase 1** | SEO Foundation | `/convert` pages | Shipped; `/paints` completion moved to Phase 0 |
-| **Phase 2** | Core Loop completion | Inventory-aware substitutions, barcode scanner, Rack Gap Analysis | Inventory/mix/cart shipped; intelligence missing |
-| **Phase 3** | Early growth (no-auth) | "Guess the Recipe" daily, Session Forge timers, social launch (see campaign doc) | New |
-| **Phase 4** | Monetisation | Clerk auth → Stripe → Auspex tokens + Founders licence → re-enable premium brands → real affiliate links | Blocked on auth |
-| **Phase 5** | Craft prestige | NMM Ramp Forge, Contrast Translator, Army Scheme Planner | New |
-| **Phase 6** | UGC scale | Public Librarium, Recipe Kitbashing, Swatch Exchange | Needs auth + Phase 0.1 |
+| **Phase 0** | Hardening | Supabase persistence, PWA, `/paints` + sitemap, offline parity, admin key, full-suite CI | ✅ **DONE — verified live 2026-07-07** |
+| **Phase 1** | SEO Foundation | `/convert` + `/paints` programmatic pages | ✅ **DONE** |
+| **Phase 2** | Core Loop | Inventory-aware substitutions, Rack Gap Analysis | ✅ **DONE** (barcode → Debt & Deferred) |
+| **Phase 3** | Daily habit | Daily Augury, Session Forge, mobile-optimisation sprint | ✅ **DONE 2026-07-09** |
+| **Phase 3.5** | The Broadcast Update | In-app scan-reveal **video export** (the marketing feature), Search Console submission, OG polish | **NEXT BUILD (~1 week)** — spec in `VIDEO_AUTOMATION_PIPELINE.md` |
+| **Growth Sprint** | Marketing execution | 90-day from-zero social launch + automated video factory | **STARTS NOW, runs alongside** — `SOCIAL_MEDIA_CAMPAIGN.md` v2 |
+| **Phase 4** | Monetisation | Clerk auth → Stripe → Auspex tokens + Founders licence → premium brands → real affiliate links | Next-but-one: start once socials show a returning audience |
+| **Phase 5** | Craft prestige | NMM Ramp Forge, Contrast Translator, Army Scheme Planner | Queued (NMM Forge times with a Golden Demon season push) |
+| **Phase 6** | UGC scale | Public Librarium, Recipe Kitbashing, Swatch Exchange | Needs Phase 4 auth |
 | **Phase 7** | Advanced | Wet Palette Oracle, B2B API pilots | Long-term |
 
-**Sequencing logic:** Phase 0 protects the data and the install path; Phase 2 makes the
-app indispensable; Phase 3 builds an audience *before* the paywall exists (tokens sell
-better to an audience that already loves the tool); Phases 4–6 convert that audience.
-Engineering detail for the new items lives in `NEW_IDEAS_IMPLEMENTATION.md`.
+**Sequencing logic:** the product is ahead of its audience — every retention feature is
+live and nobody knows the app exists. Phase 3.5 turns scans into shareable video (users
+become the ad network) while the Growth Sprint runs the channels; Phase 4's paywall
+waits for fans because tokens sell to fans, not strangers. **SEO:** no further SEO
+build is needed — `/convert`, `/paints`, `/daily` and the sitemap cover the surface;
+remaining work is Search Console monitoring and link-earning content, and the next real
+SEO unlock is the Librarium's UGC pages in Phase 6.
+
+---
+
+## Debt & Deferred (called out, not forgotten)
+
+| Item | Why deferred | Unblocks when |
+| :--- | :--- | :--- |
+| **Barcode scanner** (Phase 2.3) | Code is small (`BarcodeDetector` + zxing fallback); the real cost is sourcing EAN→paint_id data per brand | Start with Citadel/Vallejo published EANs; graceful name-search fallback already exists |
+| Card-hover ↔ tactical-map focus sync | Stretch goal from the reveal redesign, skipped for scope | Any polish pass on the results page |
+| PWA icons are generated placeholders | Awaiting real brand art | Cam supplies art (or a commissioned set) |
+| Ingest rate limits spoofable via X-Forwarded-For; file-fallback blocking I/O | Largely moot with Supabase live; small prompt when touched next | Any backend hardening pass |
+| Module-3 harness baseline stale (`region_recovery` 0.96 vs recorded 1.0) | Pre-dates the neutral fixes; the greens scene arguably tests against the deliberate ramp-merge design | Decide: re-freeze baseline or adjust the scene |
+| `run_all_tests.ps1` is PowerShell-7-only | Em-dash encoding breaks PS 5.1's parser | One-line re-save as UTF-8-BOM |
+| Next dev-overlay reports "1 Issue" in dev | Dev-only indicator, invisible in production; likely a hydration warning | Identify next time the dev server is open |
+| Full details | — | `architecture.md` §9 register |
+
+Engineering detail for future feature items lives in `NEW_IDEAS_IMPLEMENTATION.md`.

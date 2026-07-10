@@ -435,6 +435,16 @@ commits (`d53cc1a`..`b5ca2e9`) and the 2026-07-07 follow-up fixes; strikethrough
     "one surface = one card"). Verified pre-existing at HEAD without the 2026-07-07
     changes. Decide: re-freeze the baseline or adjust the scene.
 26. **PWA icons are generated placeholders** — replace with real brand art when it exists.
+27. **Barcode scanner (roadmap Phase 2.3) deliberately deferred** (2026-07-09): the
+    client code is small (`BarcodeDetector` + zxing fallback per
+    `NEW_IDEAS_IMPLEMENTATION.md` §1) but it is blocked on collecting EAN→`paint_id`
+    data per brand. Inventory falls back to name search, so nothing is broken — this is
+    backlog, not a bug.
+28. **Card-hover ↔ tactical-map focus sync** — reveal-redesign stretch goal, skipped
+    for scope; pick up in any results-page polish pass.
+29. **Next dev-overlay shows "1 Issue" in dev** (observed during the responsive spec
+    runs; invisible in production builds) — likely a hydration warning; identify next
+    time the dev server is open with the console visible.
 
 ### P3 — hygiene (partially resolved by the 2026-07-06 cleanup)
 15. ~~20 tracked `.pyc`/`__pycache__` files (incl. an orphan for the deleted
