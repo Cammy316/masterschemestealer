@@ -35,13 +35,16 @@ const fontOrbitron = Orbitron({
 export const metadata: Metadata = {
   title: "SchemeStealer - Paint Colour Detection for Miniatures",
   description: "Scan miniatures and find colour inspiration with AI-powered paint matching for Warhammer and miniature painters",
-  manifest: "/manifest.json",
+  manifest: "/manifest.webmanifest",
 };
 
 export const viewport: Viewport = {
   themeColor: "#050505",
   width: "device-width",
   initialScale: 1,
+  // Without cover, env(safe-area-inset-*) is 0 on iOS and every pb-nav-safe /
+  // safe-area utility in the app silently does nothing.
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -54,7 +57,7 @@ export default function RootLayout({
       <body className="antialiased bg-[#050505] font-sans">
         <ClientProvider>
           <Navigation />
-          <main className="min-h-screen pb-nav-safe">
+          <main className="min-h-dvh pb-nav-safe">
             {children}
           </main>
           <ConsentBanner />

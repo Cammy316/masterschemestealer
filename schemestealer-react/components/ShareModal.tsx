@@ -93,18 +93,21 @@ export function ShareModal({ mode, data, onClose }: ShareModalProps) {
   };
 
   return (
-    <Dialog open={true} onClose={onClose} className="relative z-50">
+    <Dialog open={true} onClose={onClose} className="relative z-[var(--z-modal)]">
       <div className="fixed inset-0 bg-black/80" aria-hidden="true" />
-      
+
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <DialogPanel
-          className={`w-full max-w-lg bg-gray-900 rounded-lg border-2 ${themeColors.border} p-6 max-h-[90vh] flex flex-col`}
+          className={`w-full max-w-lg bg-gray-900 rounded-lg border-2 ${themeColors.border} p-6 max-h-[90dvh] flex flex-col`}
         >
           <div className="flex justify-between items-center mb-6 shrink-0">
             <DialogTitle className={`text-2xl font-bold ${themeColors.text}`}>Share Results</DialogTitle>
-          <button onClick={onClose} className="text-gray-400 hover:text-white text-2xl w-8 h-8">×</button>
+          <button onClick={onClose} aria-label="Close" className="text-gray-400 hover:text-white text-2xl touch-target flex items-center justify-center">×</button>
         </div>
 
+        {/* Scroll region: the generated preview image can exceed the panel
+            height on phones — without this the actions overflow off-screen. */}
+        <div className="flex-1 min-h-0 overflow-y-auto">
         {/* Platform buttons */}
         <div className="space-y-3 mb-6">
           <button
@@ -179,6 +182,7 @@ export function ShareModal({ mode, data, onClose }: ShareModalProps) {
               </div>
             </div>
           )}
+        </div>
         </div>
         </DialogPanel>
       </div>

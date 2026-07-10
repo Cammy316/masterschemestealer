@@ -16,7 +16,7 @@ export function ModelDownloadProgress({ percent }: ModelDownloadProgressProps) {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center cogitator-screen px-6"
+      className="min-h-dvh flex items-center justify-center cogitator-screen px-6"
       style={{ background: 'var(--void-black)' }}
     >
       <div className="text-center w-full max-w-xs">

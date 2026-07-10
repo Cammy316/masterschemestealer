@@ -134,13 +134,13 @@ export function SessionRunner() {
   };
 
   if (!activeSession) {
-    return <div className="min-h-screen bg-void-black text-[var(--cogitator-green)] flex items-center justify-center tech-text">NO ACTIVE SESSION</div>;
+    return <div className="min-h-dvh bg-void-black text-[var(--cogitator-green)] flex items-center justify-center tech-text">NO ACTIVE SESSION</div>;
   }
 
   const focusedColour = activeSession.colours[focusedIndex];
 
   return (
-    <div className="min-h-screen bg-void-black flex flex-col relative overflow-hidden text-[var(--cogitator-green)]">
+    <div className="min-h-dvh bg-void-black flex flex-col relative overflow-hidden text-[var(--cogitator-green)]">
       {/* Header */}
       <div className="pt-6 px-4 pb-2 border-b border-[var(--cogitator-green)]/30 flex justify-between items-center bg-black/50 backdrop-blur-sm z-10">
         <div>

@@ -254,7 +254,7 @@ export function DailyGameUI() {
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4 flex flex-col min-h-screen">
+    <div className="w-full max-w-4xl mx-auto p-4 flex flex-col min-h-dvh">
       
       <div className="flex justify-between items-center mb-8">
         <h1 className="gothic-text text-[var(--cogitator-green)] text-3xl drop-shadow-[0_0_8px_rgba(0,255,65,0.4)]">The Daily Augury</h1>

@@ -149,7 +149,7 @@ export default function AddPaintModal({ isOpen, onClose, onAddPaint }: AddPaintM
   return (
     <AnimatePresence>
       {isOpen && (
-        <Dialog static open={isOpen} onClose={onClose} className="relative z-50">
+        <Dialog static open={isOpen} onClose={onClose} className="relative z-[var(--z-modal)]">
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -168,7 +168,7 @@ export default function AddPaintModal({ isOpen, onClose, onAddPaint }: AddPaintM
             {/* Header */}
             <div className="p-4 border-b border-gray-800 flex justify-between items-center bg-void-black shrink-0">
               <DialogTitle className="text-lg text-imperial-gold/80 cyber-text tracking-[0.2em] drop-shadow-[0_0_8px_rgba(255,215,0,0.4)] uppercase">ACQUISITION LOG</DialogTitle>
-              <button onClick={onClose} className="text-gray-500 hover:text-white transition-colors">✕</button>
+              <button onClick={onClose} aria-label="Close" className="text-gray-500 hover:text-white transition-colors touch-target flex items-center justify-center">✕</button>
             </div>
 
             {/* Tabs */}
@@ -199,7 +199,7 @@ export default function AddPaintModal({ isOpen, onClose, onAddPaint }: AddPaintM
                     placeholder="Search by name or brand (e.g. Mephiston Red)" 
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full bg-void-black border border-gray-700 text-white p-3 rounded focus:outline-none focus:border-brass tech-text text-sm"
+                    className="w-full bg-void-black border border-gray-700 text-white p-3 rounded focus:outline-none focus:border-brass tech-text text-base"
                   />
                   
                   {searchQuery.trim() === '' ? (

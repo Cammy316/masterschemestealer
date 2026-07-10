@@ -85,7 +85,7 @@ export default async function PaintHubPage({ params }: Props) {
   });
 
   return (
-    <main className="min-h-screen bg-void-black text-white pb-nav-safe">
+    <main className="min-h-dvh bg-void-black text-white pb-nav-safe">
       <div className="max-w-4xl mx-auto px-4 py-12">
         {/* SCHEMESTEALER BRANDING */}
         <div className="flex justify-center mb-12">
