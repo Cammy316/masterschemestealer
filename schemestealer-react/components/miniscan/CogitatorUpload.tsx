@@ -191,7 +191,7 @@ export function CogitatorUpload({
 
             {/* Info text */}
             <motion.p
-              className="text-center text-[10px] text-cogitator-green-dim mt-6 tech-text uppercase tracking-widest"
+              className="text-center text-[11px] text-cogitator-green-dim mt-6 tech-text uppercase tracking-widest"
               animate={{ opacity: [0.3, 0.8, 0.3] }}
               transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
             >

@@ -65,17 +65,35 @@ export function ActiveAuspexScan({
     if (showReveal && phase === 'loading') {
       setPhase('wind-down');
 
-      // Calculate reticle positions based on actual rendered image size
+      // Calculate reticle positions against the CONTAINED image content box.
+      // The img is object-contain with a max-height, so its element box can
+      // include letterbox/pillarbox padding — using clientWidth/Height
+      // directly drifted the crosshairs off portrait photos.
       if (imgRef.current && containerRef.current) {
         const img = imgRef.current;
-        const scaleX = img.clientWidth;
-        const scaleY = img.clientHeight;
+        const naturalRatio = img.naturalWidth / Math.max(1, img.naturalHeight);
+        const boxRatio = img.clientWidth / Math.max(1, img.clientHeight);
+        let contentW = img.clientWidth;
+        let contentH = img.clientHeight;
+        let offsetX = 0;
+        let offsetY = 0;
+        if (boxRatio > naturalRatio) {
+          contentW = img.clientHeight * naturalRatio;   // pillarboxed
+          offsetX = (img.clientWidth - contentW) / 2;
+        } else {
+          contentH = img.clientWidth / naturalRatio;    // letterboxed
+          offsetY = (img.clientHeight - contentH) / 2;
+        }
+        const imgRect = img.getBoundingClientRect();
+        const contRect = containerRef.current.getBoundingClientRect();
+        const baseX = imgRect.left - contRect.left + offsetX;
+        const baseY = imgRect.top - contRect.top + offsetY;
 
         const mapped = reticleData.map((r, i) => ({
           ...r,
           id: `reticle-${i}`,
-          x: r.x * scaleX,
-          y: r.y * scaleY,
+          x: baseX + r.x * contentW,
+          y: baseY + r.y * contentH,
         }));
         setNormalizedReticles(mapped);
       }
@@ -167,7 +185,7 @@ export function ActiveAuspexScan({
         {phase === 'loading' && (
           <div className="absolute inset-0 pointer-events-none p-2 flex flex-col justify-between">
             {/* Top Bar */}
-            <div className="flex justify-between items-start text-[10px] text-cogitator-green font-mono">
+            <div className="flex justify-between items-start text-[11px] text-cogitator-green font-mono">
               <div className="bg-black/50 px-2 py-1 border border-cogitator-green/30 backdrop-blur-sm">
                 {progress ? (
                   <div>DOWNLOADING PATTERNS... {Math.round(progress * 100)}%</div>
@@ -185,7 +203,7 @@ export function ActiveAuspexScan({
             </div>
             
             {/* Bottom Bar */}
-            <div className="flex justify-between items-end text-[9px] text-cogitator-green-dim font-mono">
+            <div className="flex justify-between items-end text-[10px] text-cogitator-green-dim font-mono">
               <div className="flex flex-col gap-0.5">
                 {loadSeqs.map((seq, i) => (
                   <div key={i} className="opacity-50">SEQ_{i}: {seq}</div>
