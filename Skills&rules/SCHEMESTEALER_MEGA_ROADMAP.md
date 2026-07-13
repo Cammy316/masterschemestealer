@@ -187,8 +187,10 @@ it re-enables by dropping one filter.*
 | **Phase 1** | SEO Foundation | `/convert` + `/paints` programmatic pages | ✅ **DONE** |
 | **Phase 2** | Core Loop | Inventory-aware substitutions, Rack Gap Analysis | ✅ **DONE** (barcode → Debt & Deferred) |
 | **Phase 3** | Daily habit | Daily Augury, Session Forge, mobile-optimisation sprint | ✅ **DONE 2026-07-09** |
-| **Phase 3.5** | The Broadcast Update | In-app scan-reveal **video export** (the marketing feature), Search Console submission, OG polish | **NEXT BUILD (~1 week)** — spec in `VIDEO_AUTOMATION_PIPELINE.md` |
-| **Growth Sprint** | Marketing execution | 90-day from-zero social launch + automated video factory | **STARTS NOW, runs alongside** — `SOCIAL_MEDIA_CAMPAIGN.md` v2 |
+| **Content Bank Sprint** | Build the factory, fill the bank | `video-factory` T2+T1 templates, automated QA, **25-clip bank rendered BEFORE the first post** | **NEXT — do first** (synthesis directive; runbook Steps 1–4) |
+| **Launch Support Sprint** | Small pre-Phase-4 bridges | Ko-fi "Fuel the Auspex" on the Augury win screen + recipe cards (+ Early Founder badge preview); answer-free Discord daily-puzzle webhook + setup guide; Supabase feedback triage script (<3★ / "wrong family" flags); "Featured Reveals" site section (after Engine A) | Small items, slot between bank batches |
+| **Phase 3.5** | The Broadcast Update | In-app scan-reveal **video export with audio bed + virality modal**, Search Console submission, OG polish | After the bank is full — posting runs from the bank while this builds |
+| **Growth Sprint** | Marketing execution | 90-day from-zero social launch (launches when the bank is full) | `SOCIAL_MEDIA_CAMPAIGN.md` v2 + `LAUNCH_RUNBOOK.md` |
 | **Phase 4** | Monetisation | Clerk auth → Stripe → Auspex tokens + Founders licence → premium brands → real affiliate links | Next-but-one: start once socials show a returning audience |
 | **Phase 5** | Craft prestige | NMM Ramp Forge, Contrast Translator, Army Scheme Planner | Queued (NMM Forge times with a Golden Demon season push) |
 | **Phase 6** | UGC scale | Public Librarium, Recipe Kitbashing, Swatch Exchange | Needs Phase 4 auth |

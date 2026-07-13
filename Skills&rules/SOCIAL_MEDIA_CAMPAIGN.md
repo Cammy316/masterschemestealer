@@ -51,9 +51,21 @@ user-submitted and self-painted minis only, credited.
 |---|---|---|---|
 | P1 | **Guess the Paint** — daily quiz short; answer at the loop point; "beat me at schemestealer.com/daily" | Factory T1 (auto from `daily_puzzles.json`) | Daily on TikTok, 3×/wk elsewhere |
 | P2 | **Budget Swap** — "Citadel charges £4.75 for this. This is ΔE 1.8 away for £2.60." | Factory T2 (auto from `conversions.json`) | 3×/wk |
-| P3 | **Scan Reveals** — real minis (Cam's, community-submitted with credit, famous studio schemes) going through the Auspex; honest misses included | Engine A exports + Playwright screen-records | 2–3×/wk |
+| P3 | **Roast My Scan / Scan Reveals** — HEADLINE format for days 1–30 (synthesis): real minis through the Auspex WITH Cam's voiceover breaking down hits AND failures — invite the community to submit scans where the app got it wrong and explain the colour science of *why* (harsh lighting, gloss varnish, chipped metallics). Radical transparency is the trust engine. Capped at 2–3/wk — it needs a real voice | OBS screen-records + VO now; Engine A exports later | 2–3×/wk |
 | P4 | **Recipe in 15 Seconds** — famous scheme as a base→shade→highlight→wash swatch cascade | Factory T3 | 2×/wk |
-| P5 | **Build-in-public** — "I measured 1,300 paints so you don't have to"; solo-dev story, feature drops, honest metrics | Cam, manual (X-first, clipped for TikTok) | 2×/wk |
+| P5 | **Build-in-public** — the honest underdog story (wording below); solo-dev drops, real metrics | Cam, manual (X-first, clipped for TikTok) | 2×/wk |
+
+**The underdog hook — canonical honest wording (use everywhere):**
+> *"I built a colour engine on 1,312 physically measured paint swatches — so we never
+> have to guess a match again."*
+Never claim personal spectrophotometry or embellish the origin story: this community
+fact-checks, and honesty is the brand. Variants may reference "a year of building",
+"measured LAB values", "six brands cross-matched by CIEDE2000" — all true.
+
+**Comment-bait spec (deliberate, per clip):** end T2 swaps on an unresolved judgement
+— *"ΔE 2.8: close enough or absolute heresy? Tell me below."* T1 puzzles: pin the best
+guess every day (ritual). T4 roasts: end one beat before the fix — "the fix takes one
+lamp — guess which".
 
 Formats proven in the painttok niche that these map onto: speed-paint satisfaction,
 brand-specific recipes, grimdark scheme storytelling, beginner tips — P1–P4 hit all of
@@ -86,6 +98,9 @@ them without filming a single brushstroke.
   Vallejo equivalent (ΔE-matched)", "What paint is this? Daily paint quiz #41".
   Shorts search is real discovery; each description links the matching /convert page.
 - 20–35 s cuts here (completion bar); loop endings mandatory.
+- **Monthly compilation (synthesis):** once ≥10 Shorts exist, cut the top performers
+  into a 3–5 min long-form ("Top 7 Budget Swaps This Month") — long-form feeds YouTube
+  search proper and gives the channel a spine beyond Shorts.
 
 ### X/Twitter — build-in-public HQ
 - 2 threads/wk (P5): metrics, failures, colour-science nuggets ("why your gold reads
@@ -143,8 +158,19 @@ Kill/double-down: any pillar below the account average for 6 consecutive weeks i
 the best pillar gets its cadence doubled. **Phase 4 gate:** ≥ 100 daily Augury players
 + ≥ 500 combined followers + rising scan counts = start Clerk/Stripe.
 
-## 7. Guardrails (hard)
+## 7. Ops hardening (synthesis directives)
+- **Content calendar** (sheet template in `LAUNCH_RUNBOOK.md` Step 5): every clip gets
+  a row before it is rendered; batch days are calendar-blocked; posting is a checklist,
+  not a decision.
+- **Engagement cap: 45 min/day**, time-blocked (post-window + one evening sweep).
+  The cap is a burnout guard, not a target.
+- **Creator seeding via Google Form** (name, channel, mini they'd scan, address for a
+  future founders code) — one link to share, no manual DM tracking.
+
+## 8. Guardrails (hard)
 - Zero swatch-source attribution, in any channel, ever — including casual replies.
+- **No fabricated origin claims** — the canonical hook wording in §3 only; never
+  "I measured them with a spectrophotometer" or any embellishment that isn't true.
 - No GW-owned imagery/marks in our renders; "Warhammer" used descriptively only.
 - Honesty beats reach: never doctor a match; the ΔE badge is the brand.
 - British English everywhere.

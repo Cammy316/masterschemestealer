@@ -1,11 +1,22 @@
 # SchemeStealer — Automated Video Pipeline (Engines A + B)
 
-*Written 2026-07-09. Two systems that turn the app's data into short-form video:
-**Engine A** ships in the app (Phase 3.5 "Broadcast Update") and lets every user export
-their scan as a share-ready vertical clip; **Engine B** is Cam's local content factory
-that batch-renders channel content straight from the data files. Both obey the
-campaign's acceptance criteria (hook ≤3 s, loop ending, 9:16 masters, no foreign
-watermarks — see `SOCIAL_MEDIA_CAMPAIGN.md` §1).*
+*Written 2026-07-09; revised same day per `LAUNCH_STRATEGY_SYNTHESIS.md`. Two systems
+that turn the app's data into short-form video: **Engine B** is Cam's local content
+factory that batch-renders channel content straight from the data files — it is built
+FIRST (the Content Bank Sprint); **Engine A** ships in the app (Phase 3.5 "Broadcast
+Update") and lets every user export their scan as a share-ready vertical clip. Both
+obey the campaign's acceptance criteria (hook ≤3 s, loop ending, 9:16 masters, no
+foreign watermarks — see `SOCIAL_MEDIA_CAMPAIGN.md` §1). The literal how-to lives in
+`LAUNCH_RUNBOOK.md`.*
+
+**Build order (the Content Bank Sprint — synthesis directive 1):**
+1. `video-factory/` scaffold + **T2 Budget Swap** (simplest data → instant content).
+2. **T1 Daily Augury** template.
+3. **`factory qa`** automated QA script (below).
+4. **Render the 25-clip bank** — channels launch only when the bank is full
+   (≥14 days of runway; no daily-posting stress while Engine A is built).
+5. **Engine A** (Phase 3.5), calmly, while posts run from the bank.
+6. T3, then T4 tooling (T4 clips are producible earlier with OBS — see runbook).
 
 ---
 
@@ -37,11 +48,25 @@ carries the brand. Users become the distribution network.
   `video/webm;codecs=vp9`. Every target platform accepts both. Drive the animation with
   a deterministic timeline (t-parameterised, not rAF-dependent) so dropped frames don't
   desync audio-free output.
-- **UI:** "EXPORT PICT-CAST" button in the existing `ShareModal` (both modes) →
-  progress ring while recording (~real-time 15 s) → `navigator.share({ files })` where
-  supported, download fallback. Disabled gracefully when `MediaRecorder` is absent.
-- **Analytics:** `reveal_video_exported` (+ duration, format) via the existing
-  consent-gated pipeline.
+- **Audio bed (synthesis directive — silent video is penalised):**
+  `canvas.captureStream()` is video-only, so audio is mixed in via WebAudio: an
+  `AudioContext` renders a low cogitator hum (filtered brown noise + slow LFO), a sweep
+  whine tracking the scan pass, per-region reveal chimes and an outro stamp — routed to
+  a `MediaStreamAudioDestinationNode`, whose track is combined with the canvas track
+  into the single stream handed to `MediaRecorder`. Synthesised = tiny, deterministic
+  and royalty-free by construction; keep the mix quiet (bed, not soundtrack) so
+  creators can voiceover on top in-platform.
+- **UI / virality modal (synthesis directive):** "EXPORT PICT-CAST" button in the
+  existing `ShareModal` (both modes) → progress ring while recording (~real-time 15 s)
+  → post-export modal with: (a) 2–3 **caption style presets** burned into the canvas
+  timeline as lightweight text ("IDENTIFIED IN 4.2s", "The Machine Spirit knows your
+  recipe", none); (b) a **copy-ready caption block** per platform (pre-filled hashtags +
+  `schemestealer.com/daily` link); (c) `navigator.share({ files })` — the OS share
+  sheet surfaces TikTok/IG when installed (no direct-post API exists for new accounts;
+  be honest in the UI: "Save & share"), download fallback. Disabled gracefully when
+  `MediaRecorder` is absent.
+- **Analytics:** `reveal_video_exported` (+ duration, format, caption preset) via the
+  existing consent-gated pipeline.
 - **Guardrails:** our own small brand plate is fine (penalties target *other*
   platforms' watermarks); no GW marks; British English copy ("PICT-CAST READY").
 
@@ -107,15 +132,19 @@ factory t2 --paint mephiston…     tiktok.txt, reels.txt, shorts.txt, checklist
 - Per-platform text files carry the REWRITTEN hook/caption/hashtags per platform
   (never identical), plus a Shorts keyword title mirroring the /convert page.
 - `checklist.md` per batch: upload natively, platform order, pin-comment text.
-- QA gate (manual, 2 min/clip): §1 acceptance criteria — hook timing, loop join,
-  legibility at phone size, British English.
+- **`factory qa <clip>` — automated QA (synthesis directive):** post-render script
+  that (a) ffmpeg-extracts the first and last 3 s as frame strips, (b) pixel-diffs the
+  final frame against frame 1 and fails if loop similarity is under threshold,
+  (c) checks the template manifest's hook-beat timestamps landed within tolerance,
+  (d) emits platform thumbnails (first-frame + reveal-frame crops) and title variants
+  into the output folder. Manual QA drops to ~30 s/clip: eyeball legibility at phone
+  size + British English, tick the checklist.
 
 ### Build order
-1. `video-factory` scaffold + **T2** (simplest data, instant launch content) — 1–2 sessions.
-2. **T1** (needs the garble/ticker components) — 1–2 sessions.
-3. Engine A (with Phase 3.5) — 4–6 sessions.
-4. T3, then T4 — 1–2 sessions each.
-The day the factory renders its first T2 batch, the 14-day content bank starts filling.
+See the **Content Bank Sprint** order at the top of this document (T2 → T1 → QA script
+→ 25-clip bank → Engine A → T3/T4). Effort: T2 1–2 sessions, T1 1–2, QA script 1,
+Engine A 4–6, T3/T4 1–2 each. The day the factory renders its first T2 batch, the
+14-day content bank starts filling.
 
 ### Non-goals (v1)
 Auto-POSTING (every platform punishes or gates API posting for new accounts — uploads

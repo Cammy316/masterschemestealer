@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-07-09 (Launch Synthesis + Runbook)
+### Added
+- **`LAUNCH_RUNBOOK.md`**: the step-by-step operator guide from zero to launch week —
+  account dressing, a literal footage-afternoon shot list (turntables, swap pot pairs,
+  the hands-in-frame live scan, first roast voiceovers), factory build order with
+  delegation prompts, the launch five with drafted hooks, the 25-clip bank mix, the
+  content-calendar template and the daily launch-week SOP.
+- `LAUNCH_STRATEGY_SYNTHESIS.md` committed as the Grok/Gemini feedback provenance.
+
+### Changed
+- Growth docs updated per the synthesis: **Content Bank Sprint** now precedes
+  Phase 3.5 (build the factory and bank 25 clips before the first post; Engine A ships
+  while posts run from the bank); Engine A gains a WebAudio-synthesised audio bed and a
+  post-export virality modal; Engine B gains an automated `factory qa` script (loop
+  similarity, hook timing, thumbnails); "Roast My Scan" promoted to a headline format
+  including community-submitted failures; a Launch Support Sprint added (Ko-fi "Fuel
+  the Auspex" placements, answer-free Discord daily-puzzle webhook, feedback triage
+  script, Featured Reveals section post-Engine-A); ops hardening (calendar, 45-min
+  engagement cap, seeding form). **Corrected the synthesis' fabricated
+  spectrophotometer origin claim** to the honest canonical hook ("a colour engine on
+  1,312 physically measured paint swatches") — now a hard guardrail.
+
 ## [Unreleased] - 2026-07-09 (Roadmap Sync + Growth Plan)
 ### Changed
 - **Roadmap trued up**: Phases 0–3 marked shipped (with verification dates); a
