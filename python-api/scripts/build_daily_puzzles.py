@@ -31,11 +31,10 @@ def is_eligible(paint):
     return True
 
 def generate_puzzles():
-    db_path = os.path.join(os.path.dirname(__file__), '..', 'paints_groundtruth.json')
-    with open(db_path, 'r', encoding='utf-8') as f:
-        paints = json.load(f)
+    pool_path = os.path.join(os.path.dirname(__file__), 'curated_pool.json')
+    with open(pool_path, 'r', encoding='utf-8') as f:
+        pool = json.load(f)
         
-    pool = sorted([p for p in paints if is_eligible(p)], key=lambda x: x['paint_id'])
     if not pool:
         raise ValueError("No eligible paints found!")
         
@@ -52,7 +51,7 @@ def generate_puzzles():
         
         for offset in range(len(pool)):
             idx = (base_hash + offset) % len(pool)
-            candidate = pool[idx]['paint_id']
+            candidate = pool[idx]
             if candidate not in used_60_days:
                 days[date_iso] = {"answer": candidate}
                 used_60_days.append(candidate)
@@ -61,7 +60,7 @@ def generate_puzzles():
                 break
                 
     output = {
-        "salt_version": 1,
+        "salt_version": 2,
         "familyAdjacency": {k: list(v) for k, v in FAMILY_ADJACENCY.items()},
         "days": days
     }
