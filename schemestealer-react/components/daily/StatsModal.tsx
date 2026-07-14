@@ -111,7 +111,7 @@ export function StatsModal({ gameState, onClose, onShare }: StatsModalProps) {
         {gameState.status !== 'playing' && (
           <div className="flex justify-between items-center border-t border-[var(--cogitator-green)]/30 pt-6">
             <div className="text-center w-1/2 border-r border-[var(--cogitator-green)]/30">
-              <p className="text-xs text-[var(--cogitator-green)]/70 mb-1 tech-text">NEXT AUGURY IN</p>
+              <p className="text-xs text-[var(--cogitator-green)]/70 mb-1 tech-text">NEXT SWATCHLE IN</p>
               <p className="text-xl font-mono text-[var(--cogitator-green)]">{timeToMidnight}</p>
             </div>
             <div className="w-1/2 flex justify-center pl-4">

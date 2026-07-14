@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-07-14 (Swatchle UI Overhaul)
+### Changed
+- **Rebranded The Daily Augury to Swatchle**: Updated naming across the app banner, stats modal, share grid text, and game identifiers.
+- **Mobile Grid Redesign**: Removed the header row and stacked paint names *above* clue boxes for each guess. Clue boxes are now completely visual (square icons, colors, arrows, and Delta E values without large labels), eliminating text crushing and overflow on mobile viewports.
+- **Completion Screen Overhauled**: Replaced the bulky "Mission Failed/Successful" text and buttons with a sleek glassmorphism card, centered target paint visual, and streamlined side-by-side action buttons.
+- **Visual Share Grid**: Replaced the raw emoji text block in the UI with a real CSS grid visual for the share graphic (clipboard copy remains emojis for cross-platform sharing).
+
+### Added
+- **CleanThematicBackground**: Created a new vignette/tech-grid background specifically for Swatchle to reduce visual noise compared to the heavy spinning AdMech background.
+- **PaintSearchModal**: Replaced the clunky bottom-anchored autocomplete with a full-screen, mobile-friendly Wordle-style search modal (triggered by tapping an active guess row).
+- **HowToPlayModal**: Added a dedicated `[ ? ]` button and modal explaining the game rules, clue colors, and Delta E mechanics for new users.
+- **Share Toast Notification**: Replaced the cheap browser `alert()` with a sleek sliding toast notification when the tactical report is copied.
+
 ## [Unreleased] - 2026-07-09 (Launch Synthesis + Runbook)
 ### Added
 - **`LAUNCH_RUNBOOK.md`**: the step-by-step operator guide from zero to launch week —

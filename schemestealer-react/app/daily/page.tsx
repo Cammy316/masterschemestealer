@@ -1,12 +1,12 @@
 import { Metadata } from 'next';
 import { DailyGameUI } from '@/components/daily/DailyGameUI';
-import { AdMechBackground } from '@/components/shared/AdMechBackground';
+import { CleanThematicBackground } from '@/components/shared/CleanThematicBackground';
 
 export const metadata: Metadata = {
-  title: 'The Daily Augury | SchemeStealer',
+  title: 'Swatchle | SchemeStealer',
   description: 'Identify the daily target cogno-meme paint in 6 guesses or fewer.',
   openGraph: {
-    title: 'The Daily Augury | SchemeStealer',
+    title: 'Swatchle | SchemeStealer',
     description: 'Identify the daily target cogno-meme paint in 6 guesses or fewer.',
   }
 };
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default function DailyPage() {
   return (
     <>
-      <AdMechBackground />
+      <CleanThematicBackground />
       <DailyGameUI />
     </>
   );

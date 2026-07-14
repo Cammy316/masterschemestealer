@@ -47,7 +47,7 @@ export function DailyAuguryBanner({ className }: { className?: string }) {
             )}
           </div>
           <div className="text-left">
-            <h3 className="gothic-text text-xl text-[var(--cogitator-green)] mb-1">THE DAILY AUGURY</h3>
+            <h3 className="gothic-text text-xl text-[var(--cogitator-green)] mb-1">SWATCHLE</h3>
             <p className="tech-text text-xs text-[var(--cogitator-green)]/60">Identify the daily cogno-meme paint</p>
           </div>
         </div>

@@ -53,8 +53,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${fontInter.variable} ${fontRajdhani.variable} ${fontCinzel.variable} ${fontOrbitron.variable}`}>
-      <body className="antialiased bg-[#050505] font-sans">
+    <html lang="en" suppressHydrationWarning className={`${fontInter.variable} ${fontRajdhani.variable} ${fontCinzel.variable} ${fontOrbitron.variable}`}>
+      <body suppressHydrationWarning className="antialiased bg-[#050505] font-sans">
         <ClientProvider>
           <Navigation />
           <main className="min-h-dvh pb-nav-safe">
