@@ -70,6 +70,17 @@ export function CogitatorUpload({
             className="absolute inset-0 opacity-15 pointer-events-none bg-[linear-gradient(to_right,rgba(0,255,0,0.4)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,255,0,0.4)_1px,transparent_1px)] bg-[size:24px_24px]"
           />
 
+          {/* Machine Spirit Status Bar */}
+          <div className="absolute top-2 left-0 right-0 flex justify-center pointer-events-none z-30">
+            <motion.div
+              className="text-[9px] text-[var(--cogitator-green)]/80 cyber-text font-mono tracking-widest uppercase bg-[#051005]/80 px-3 py-1 rounded-full border border-[var(--cogitator-green)]/30 backdrop-blur-sm shadow-[0_0_10px_rgba(0,255,65,0.2)]"
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              ⚙ MACHINE SPIRIT: ACTIVE ⚙
+            </motion.div>
+          </div>
+
           {/* CRT Scanline overlay */}
           <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%] pointer-events-none mix-blend-overlay z-10" />
 
@@ -98,7 +109,7 @@ export function CogitatorUpload({
           </div>
 
           {/* Main Content Area */}
-          <div className="relative z-10 sm:px-6">
+          <div className="relative z-10 sm:px-6 pt-6">
             
             {(isProcessing || showReveal) && localImageUrl ? (
               <div className="flex flex-col items-center">
