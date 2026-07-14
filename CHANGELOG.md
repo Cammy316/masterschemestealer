@@ -8,6 +8,8 @@ All notable changes to this project will be documented in this file.
 - **Mobile Grid Redesign**: Removed the header row and stacked paint names *above* clue boxes for each guess. Clue boxes are now completely visual (square icons, colors, arrows, and Delta E values without large labels), eliminating text crushing and overflow on mobile viewports.
 - **Completion Screen Overhauled**: Replaced the bulky "Mission Failed/Successful" text and buttons with a sleek glassmorphism card, centered target paint visual, and streamlined side-by-side action buttons.
 - **Visual Share Grid**: Replaced the raw emoji text block in the UI with a real CSS grid visual for the share graphic (clipboard copy remains emojis for cross-platform sharing).
+- **Home Screen Overhaul**: completely redesigned `ModeSelector` to feature a premium Miniscan Hero card containing an automated recipe proof strip. Added premium-styled gallery buttons for Inspiration and Swatchle modes.
+- **Scan Page Instructions**: Removed bulky instruction blocks at the bottom of the Miniscan and Inspiration upload screens. Integrated subtle, thematic `[ ? ]` text links under the main headers that trigger a new unified `HowToScanModal`.
 
 ### Added
 - **CleanThematicBackground**: Created a new vignette/tech-grid background specifically for Swatchle to reduce visual noise compared to the heavy spinning AdMech background.
