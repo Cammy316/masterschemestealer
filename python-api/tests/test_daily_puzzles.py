@@ -63,10 +63,20 @@ def test_daily_puzzles_rules(run_generator):
         window = [days[d]['answer'] for d in sorted_dates[i:i+60]]
         assert len(window) == len(set(window)), f"Found duplicate answers in a 60-day window starting at {sorted_dates[i]}"
         
-    # (c) Every answer passes eligibility
+    # (c) Every answer passes eligibility and is in curated pool
+    curated_path = os.path.join(os.path.dirname(__file__), '..', 'scripts', 'curated_pool.json')
+    with open(curated_path, 'r', encoding='utf-8') as f:
+        curated_pool = set(json.load(f))
+
+    # Verify curated pool subset of eligibility
+    for p_id in curated_pool:
+        assert p_id in paints, f"Curated paint {p_id} not in DB"
+        assert is_eligible(paints[p_id]), f"Curated paint {p_id} fails eligibility check"
+
     for d, puzzle in days.items():
         ans = puzzle['answer']
         assert ans in paints, f"Answer {ans} not in DB"
+        assert ans in curated_pool, f"Answer {ans} not in curated pool"
         assert is_eligible(paints[ans]), f"Answer {ans} fails eligibility check"
 
 def test_daily_puzzles_coverage_guard():
