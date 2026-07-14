@@ -6,22 +6,12 @@ import { PAINT_DATABASE, PaintData } from '@/lib/paintDatabase';
 import { PaintSearchModal } from './PaintSearchModal';
 import dailyPuzzles from '@/lib/data/daily_puzzles.json';
 import { deltaE2000 } from '@/lib/deltaE';
-import { DeltaEBadge } from '@/components/seo/DeltaEBadge';
+import { hueDirection, HueDirection, proximityPercentage, proximityLabel, Guess, generateShareGrid } from '@/lib/colourClues';
 import analytics from '@/lib/analytics';
 import { StatsModal } from './StatsModal';
 import { HowToPlayModal } from './HowToPlayModal';
-import Link from 'next/link';
 
-interface Guess {
-  paint_id: string;
-  brandMatch: boolean;
-  familyMatch: 'exact' | 'adjacent' | 'far';
-  lightnessDirection: 'match' | 'lighter' | 'darker';
-  deltaE: number;
-  deltaEBand: 'perfect' | 'close' | 'fair' | 'distant';
-}
-
-interface GameState {
+export interface GameState {
   guesses: Guess[];
   status: 'playing' | 'won' | 'lost';
   lastPlayedDate: string;
@@ -29,49 +19,10 @@ interface GameState {
   maxStreak: number;
   played: number;
   won: number;
-  guessDistribution: number[]; // Index 0 is 1 guess, 1 is 2 guesses, etc.
+  guessDistribution: number[];
 }
 
 const MAX_GUESSES = 6;
-const DELTA_E_THRESHOLDS = {
-  perfect: 1.0,
-  close: 2.0,
-  fair: 10.0,
-};
-
-function getDeltaEBand(de: number) {
-  if (de <= DELTA_E_THRESHOLDS.perfect) return 'perfect';
-  if (de <= DELTA_E_THRESHOLDS.close) return 'close';
-  if (de <= DELTA_E_THRESHOLDS.fair) return 'fair';
-  return 'distant';
-}
-
-function generateShareGrid(guesses: Guess[]) {
-  let grid = '';
-  for (const g of guesses) {
-    // 1. Brand: green/red
-    grid += g.brandMatch ? '🟩' : '🟥';
-    
-    // 2. Family: green/yellow/red
-    if (g.familyMatch === 'exact') grid += '🟩';
-    else if (g.familyMatch === 'adjacent') grid += '🟨';
-    else grid += '🟥';
-    
-    // 3. Lightness: Up/Down arrow or green square
-    if (g.lightnessDirection === 'match') grid += '🟩';
-    else if (g.lightnessDirection === 'lighter') grid += '🔼';
-    else grid += '🔽';
-    
-    // 4. DeltaE: perfect=green, close=blue, fair=yellow, distant=red
-    if (g.deltaEBand === 'perfect') grid += '🟩';
-    else if (g.deltaEBand === 'close') grid += '🟦';
-    else if (g.deltaEBand === 'fair') grid += '🟨';
-    else grid += '🟥';
-    
-    grid += '\n';
-  }
-  return grid;
-}
 
 export function DailyGameUI() {
   const [mounted, setMounted] = useState(false);
@@ -90,11 +41,8 @@ export function DailyGameUI() {
   const [showToast, setShowToast] = useState(false);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
-  const localDateStr = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD in local time
-  // Fall back to the nearest available puzzle day rather than a dead
-  // "INITIALISING AUSPEX…" screen — the file is date-keyed from a fixed
-  // generation date, so devices ahead/behind that timezone (or beyond the
-  // generated window) would otherwise find no entry for "today".
+  const localDateStr = new Date().toLocaleDateString('en-CA');
+  
   const puzzleKey = useMemo(() => {
     if (dailyPuzzles.days[localDateStr as keyof typeof dailyPuzzles.days]) return localDateStr;
     const keys = Object.keys(dailyPuzzles.days).sort();
@@ -103,6 +51,10 @@ export function DailyGameUI() {
   }, [localDateStr]);
   const puzzle = dailyPuzzles.days[puzzleKey as keyof typeof dailyPuzzles.days];
   const targetPaint = puzzle ? PAINT_DATABASE.find(p => p.paint_id === puzzle.answer) : null;
+  
+  const dayNumber = useMemo(() => {
+    return Object.keys(dailyPuzzles.days).sort().indexOf(puzzleKey) + 1;
+  }, [puzzleKey]);
 
   useEffect(() => {
     setMounted(true);
@@ -110,17 +62,14 @@ export function DailyGameUI() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved) as GameState;
-        
-        // Reset state for a new day if necessary
         if (parsed.lastPlayedDate !== localDateStr) {
-          // If the last played date was exactly yesterday, keep the streak
           const yesterday = new Date();
           yesterday.setDate(yesterday.getDate() - 1);
           const yesterdayStr = yesterday.toLocaleDateString('en-CA');
           
           let streak = parsed.streak;
           if (parsed.lastPlayedDate !== yesterdayStr) {
-            streak = 0; // Streak broken
+            streak = 0;
           }
           
           setGameState({
@@ -134,14 +83,13 @@ export function DailyGameUI() {
           setGameState(parsed);
         }
       } catch (e) {
-        console.error("Failed to parse daily augury state", e);
+        console.error("Failed to parse daily state", e);
       }
     } else {
       setGameState(prev => ({ ...prev, lastPlayedDate: localDateStr }));
     }
   }, [localDateStr]);
 
-  // Save to local storage whenever game state changes
   useEffect(() => {
     if (mounted) {
       localStorage.setItem('schemestealer-daily-augury', JSON.stringify(gameState));
@@ -151,9 +99,6 @@ export function DailyGameUI() {
   const handleGuess = (paint: PaintData) => {
     if (!targetPaint || gameState.status !== 'playing' || gameState.guesses.length >= MAX_GUESSES) return;
 
-    const brandMatch = paint.brand === targetPaint.brand;
-    
-    // Family match logic using the adjacency matrix
     let familyMatch: 'exact' | 'adjacent' | 'far' = 'far';
     if (paint.colorFamily === targetPaint.colorFamily) {
       familyMatch = 'exact';
@@ -164,27 +109,25 @@ export function DailyGameUI() {
       }
     }
 
-    // Lightness direction: comparing lab.l
     let lightnessDirection: 'match' | 'lighter' | 'darker' = 'match';
     const diff = targetPaint.lab.l - paint.lab.l;
     if (Math.abs(diff) < 1.0) {
       lightnessDirection = 'match';
     } else if (diff > 0) {
-      lightnessDirection = 'lighter'; // Target is lighter, so player needs to go lighter
+      lightnessDirection = 'lighter';
     } else {
-      lightnessDirection = 'darker'; // Target is darker
+      lightnessDirection = 'darker';
     }
 
+    const hueDir = hueDirection(paint.lab, targetPaint.lab);
     const de = deltaE2000(paint.lab, targetPaint.lab);
-    const deltaEBand = getDeltaEBand(de);
 
     const guess: Guess = {
       paint_id: paint.paint_id,
-      brandMatch,
       familyMatch,
+      hueDirection: hueDir,
       lightnessDirection,
       deltaE: de,
-      deltaEBand,
     };
 
     const newGuesses = [...gameState.guesses, guess];
@@ -211,10 +154,8 @@ export function DailyGameUI() {
         analytics.trackDailyWon(newGuesses.length);
         analytics.trackDailyStreakContinued(streak);
       } else {
-        streak = 0; // Lost, streak broken
+        streak = 0;
       }
-      
-      // Auto-show stats after a brief delay
       setTimeout(() => setShowStats(true), 1500);
     }
 
@@ -232,12 +173,8 @@ export function DailyGameUI() {
 
   const handleShare = async () => {
     if (gameState.status === 'playing') return;
-    
-    const dayNumber = Object.keys(dailyPuzzles.days).sort().indexOf(localDateStr) + 1;
     const score = gameState.status === 'won' ? gameState.guesses.length : 'X';
-    
     const grid = generateShareGrid(gameState.guesses);
-
     const shareText = `Swatchle #${dayNumber}  ${score}/6  🔥${gameState.streak}\n\n${grid}\nhttps://schemestealer.com/daily`;
 
     analytics.trackDailyShared();
@@ -249,9 +186,7 @@ export function DailyGameUI() {
           text: shareText,
         });
         return;
-      } catch (err) {
-        // Fallback to clipboard
-      }
+      } catch (err) {}
     }
     
     try {
@@ -268,10 +203,7 @@ export function DailyGameUI() {
   }
 
   return (
-    // max-w-xl: the four-cell grid is phone-shaped — at max-w-4xl each cell
-    // stretched to ~215px on desktop
     <div className="w-full max-w-xl mx-auto p-4 flex flex-col min-h-dvh">
-
       <div className="flex justify-between items-center mb-8">
         <h1 className="gothic-text text-[var(--cogitator-green)] text-4xl drop-shadow-[0_0_8px_rgba(0,255,65,0.4)] tracking-wider">Swatchle</h1>
         <div className="flex gap-2">
@@ -292,9 +224,17 @@ export function DailyGameUI() {
         </div>
       </div>
       
-      {/* Game Board */}
       <div className="flex-1">
-        {/* Header row removed to save vertical space on mobile */}
+        {gameState.status === 'playing' && (
+          <div className="flex flex-col items-center mb-8 animate-in fade-in slide-in-from-top-4 duration-500">
+            <div 
+              className="w-24 h-24 rounded-3xl shadow-[0_0_20px_rgba(0,0,0,0.5)] mb-4 border-2 border-white/10" 
+              style={{ backgroundColor: targetPaint.hex }} 
+            />
+            <h2 className="text-xl text-white font-bold tracking-widest mb-1">IDENTIFY THIS PAINT</h2>
+            <p className="text-sm text-[var(--cogitator-green)]/70">Swatchle #{dayNumber} · 6 guesses</p>
+          </div>
+        )}
 
         <div className="flex flex-col gap-3 mb-8">
           {Array.from({ length: MAX_GUESSES }).map((_, i) => {
@@ -323,51 +263,77 @@ export function DailyGameUI() {
             const paint = PAINT_DATABASE.find(p => p.paint_id === guess.paint_id);
             if (!paint) return null;
 
+            const proxPct = proximityPercentage(guess.deltaE);
+            const proxLbl = proximityLabel(guess.deltaE);
+
+            let trend = '—';
+            if (i > 0) {
+              const prevDe = gameState.guesses[i-1].deltaE;
+              if (guess.deltaE < prevDe) trend = '▲';
+              else if (guess.deltaE > prevDe) trend = '▼';
+            }
+
+            const getBarColor = (lbl: string) => {
+              if (lbl === 'WIN') return '#2ea043';
+              if (lbl === 'HOT') return '#ff9800';
+              if (lbl === 'WARM') return '#ffc107';
+              return '#f44336';
+            };
+
             return (
               <motion.div 
                 key={i}
                 initial={{ rotateX: -90, opacity: 0 }}
                 animate={{ rotateX: 0, opacity: 1 }}
                 transition={{ duration: 0.4 }}
-                className="flex flex-col gap-1 mb-2"
+                className="flex flex-col gap-1.5 mb-2"
               >
-                {/* Paint Name Header */}
-                <div className="flex items-center justify-between px-1">
-                  <span className="text-sm font-bold text-white truncate">{paint.name}</span>
-                  <span className="text-[10px] text-[var(--cogitator-green)]/70 uppercase tracking-wider">{paint.brand}</span>
+                <div className="flex w-full h-6 rounded-sm overflow-hidden border border-white/10 shadow-sm">
+                  <div className="flex-1 relative flex items-center justify-center" style={{ backgroundColor: paint.hex }}>
+                    <span className="bg-black/60 text-white/90 px-2 py-0.5 rounded-sm text-[8px] font-bold tracking-widest backdrop-blur-sm">YOU</span>
+                  </div>
+                  <div className="w-0.5 bg-black/50 z-10" />
+                  <div className="flex-1 relative flex items-center justify-center" style={{ backgroundColor: targetPaint.hex }}>
+                    <span className="bg-black/60 text-white/90 px-2 py-0.5 rounded-sm text-[8px] font-bold tracking-widest backdrop-blur-sm">TARGET</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between px-0.5">
+                  <span className="text-sm font-bold text-white truncate max-w-[70%]">{paint.name}</span>
+                  <div className={`px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-widest ${
+                    guess.familyMatch === 'exact' ? 'bg-[#2ea043]/20 border border-[#2ea043]/50 text-[#2ea043]' : 
+                    guess.familyMatch === 'adjacent' ? 'bg-[#d29922]/20 border border-[#d29922]/50 text-[#d29922]' : 
+                    'bg-red-900/20 border border-red-500/30 text-red-400'
+                  }`}>
+                    {paint.family || paint.colorFamily}
+                  </div>
                 </div>
                 
-                {/* 4 Clue Boxes */}
-                <div className="grid grid-cols-4 gap-2 h-14">
-                  {/* 1. Brand */}
-                  <div className={`flex flex-col items-center justify-center border ${guess.brandMatch ? 'bg-[#2ea043]/20 border-[#2ea043] text-[#2ea043]' : 'bg-red-900/20 border-red-500/50 text-red-400'} rounded-sm`}>
-                    <span className="text-[9px] opacity-60 mb-0.5 font-mono tracking-widest">BRAND</span>
-                    <span className="font-bold text-lg leading-none">{guess.brandMatch ? '✓' : '✗'}</span>
+                <div className="grid grid-cols-3 gap-2 h-9">
+                  <div className="flex items-center justify-center border border-white/10 bg-black/40 rounded-sm">
+                    <span className="text-[10px] font-bold text-gray-300">
+                      {guess.hueDirection === 'achromatic' ? '—' : 
+                       guess.hueDirection === 'match' ? '✓ HUE' : 
+                       guess.hueDirection === 'warmer' ? '→ WARMER' : '← COOLER'}
+                    </span>
                   </div>
 
-                  {/* 2. Family */}
-                  <div className={`flex flex-col items-center justify-center border ${
-                    guess.familyMatch === 'exact' ? 'bg-[#2ea043]/20 border-[#2ea043] text-[#2ea043]' : 
-                    guess.familyMatch === 'adjacent' ? 'bg-[#d29922]/20 border-[#d29922] text-[#d29922]' : 
-                    'bg-red-900/20 border-red-500/50 text-red-400'
-                  } rounded-sm overflow-hidden`}>
-                    <span className="text-[9px] opacity-60 mb-0.5 font-mono tracking-widest">FAMILY</span>
-                    <span className="font-bold text-xs capitalize truncate px-1 w-full text-center">{paint.family || paint.colorFamily}</span>
+                  <div className="flex items-center justify-center border border-white/10 bg-black/40 rounded-sm">
+                    <span className="text-[10px] font-bold text-gray-300 flex items-center gap-1">
+                       {guess.lightnessDirection === 'match' ? '✓ LIGHT' : 
+                        guess.lightnessDirection === 'lighter' ? '▲ LIGHTER' : '▼ DARKER'}
+                    </span>
                   </div>
 
-                  {/* 3. Lightness */}
-                  <div className={`flex flex-col items-center justify-center border ${guess.lightnessDirection === 'match' ? 'bg-[#2ea043]/20 border-[#2ea043] text-[#2ea043]' : 'bg-[#d29922]/20 border-[#d29922] text-[#d29922]'} rounded-sm`}>
-                    <span className="text-[9px] opacity-60 mb-0.5 font-mono tracking-widest">LIGHT</span>
-                    <div className="flex items-center">
-                      {guess.lightnessDirection === 'match' && <span className="font-bold text-lg leading-none">✓</span>}
-                      {guess.lightnessDirection === 'lighter' && <span className="font-bold text-lg leading-none">▲</span>}
-                      {guess.lightnessDirection === 'darker' && <span className="font-bold text-lg leading-none">▼</span>}
+                  <div className="flex flex-col border border-white/10 bg-black/40 rounded-sm relative overflow-hidden">
+                    <div 
+                      className="absolute left-0 top-0 bottom-0 z-0 opacity-40 transition-all duration-1000"
+                      style={{ width: `${proxPct}%`, backgroundColor: getBarColor(proxLbl) }}
+                    />
+                    <div className="relative z-10 w-full h-full flex items-center justify-between px-2">
+                       <span className="text-[10px] font-bold text-gray-400">{trend}</span>
+                       <span className="text-[10px] font-bold text-white">{proxLbl === 'WIN' ? '🎯' : proxLbl}</span>
                     </div>
-                  </div>
-
-                  {/* 4. Match Band */}
-                  <div className="flex items-center justify-center h-full">
-                    <DeltaEBadge deltaE={guess.deltaE} band={guess.deltaEBand} className="w-full h-full justify-center !py-0" showLabel={false} />
                   </div>
                 </div>
               </motion.div>
@@ -385,7 +351,6 @@ export function DailyGameUI() {
               {gameState.status === 'won' ? 'MISSION SUCCESSFUL' : 'MISSION FAILED'}
             </h2>
             
-            {/* Target Paint Card */}
             <div className="w-full bg-[#0a0f0a] border border-white/10 rounded-sm p-4 mb-6 flex flex-col items-center relative overflow-hidden">
               <div className="absolute top-0 right-0 p-2 opacity-10">
                 <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 22h20L12 2zm0 3.8l7.1 14.2H4.9L12 5.8z"/></svg>
@@ -399,57 +364,56 @@ export function DailyGameUI() {
                   className="w-16 h-16 rounded-full border-2 border-white/20 shadow-lg shrink-0" 
                   style={{ backgroundColor: targetPaint.hex }} 
                 />
-                <div className="flex flex-col justify-center">
-                  <p className="text-2xl font-bold text-white leading-tight">{targetPaint.name}</p>
-                  <p className="text-[var(--imperial-gold)] tracking-widest uppercase text-xs">{targetPaint.brand}</p>
+                <div className="flex flex-col">
+                  <span className="text-xl font-bold text-white leading-tight">{targetPaint.name}</span>
+                  <span className="text-sm text-[var(--cogitator-green)]/80 uppercase tracking-wider">{targetPaint.brand}</span>
                 </div>
               </div>
             </div>
 
-            {/* Visual Share Grid */}
-            <div className="bg-[#050a05] border border-[var(--cogitator-green)]/30 rounded-sm p-4 mb-6 w-full flex flex-col items-center">
-              <p className="text-[var(--cogitator-green)] text-xs mb-3 font-mono">
-                Swatchle #{Object.keys(dailyPuzzles.days).sort().indexOf(localDateStr) + 1} {gameState.status === 'won' ? gameState.guesses.length : 'X'}/6 🔥{gameState.streak}
-              </p>
-              <div className="flex flex-col gap-1">
-                {gameState.guesses.map((g, i) => (
-                  <div key={i} className="flex gap-1">
-                    <div className={`w-5 h-5 rounded-sm ${g.brandMatch ? 'bg-[#2ea043]' : 'bg-red-600'}`} />
-                    <div className={`w-5 h-5 rounded-sm ${g.familyMatch === 'exact' ? 'bg-[#2ea043]' : g.familyMatch === 'adjacent' ? 'bg-[#d29922]' : 'bg-red-600'}`} />
-                    <div className={`w-5 h-5 rounded-sm flex items-center justify-center text-black text-[10px] ${g.lightnessDirection === 'match' ? 'bg-[#2ea043]' : 'bg-blue-500'}`}>
-                      {g.lightnessDirection === 'match' ? '' : g.lightnessDirection === 'lighter' ? '▲' : '▼'}
+            <div className="w-full mb-6 relative">
+              <div className="flex w-full h-10 rounded-sm overflow-hidden border border-white/20">
+                {gameState.guesses.map((g, idx) => {
+                  const gp = PAINT_DATABASE.find(p => p.paint_id === g.paint_id);
+                  return (
+                    <div key={idx} className="flex-1 relative border-r border-black/20" style={{ backgroundColor: gp?.hex }}>
+                       {idx < gameState.guesses.length - 1 && (
+                         <div className="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-r from-transparent to-black/20 z-10" />
+                       )}
                     </div>
-                    <div className={`w-5 h-5 rounded-sm ${g.deltaEBand === 'perfect' ? 'bg-[#2ea043]' : g.deltaEBand === 'close' ? 'bg-blue-500' : g.deltaEBand === 'fair' ? 'bg-[#d29922]' : 'bg-red-600'}`} />
-                  </div>
-                ))}
+                  );
+                })}
+                <div className="flex-1 relative bg-black/20 overflow-hidden">
+                   <div className="absolute inset-0" style={{ backgroundColor: targetPaint.hex }} />
+                   <div className="absolute inset-0 flex items-center justify-center text-sm drop-shadow-md z-10">🎯</div>
+                </div>
               </div>
             </div>
 
-            {/* Actions */}
-            <div className="flex flex-col w-full gap-3">
-              <div className="flex gap-3">
-                <button
-                  onClick={handleShare}
-                  className="flex-1 touch-target py-3 bg-[var(--cogitator-green)] text-black font-bold text-sm tracking-widest rounded-sm hover:brightness-110 transition-colors flex items-center justify-center gap-2"
-                >
-                  <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path fillRule="evenodd" d="M1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0zM8 0a8 8 0 100 16A8 8 0 008 0zM6.379 5.227A.25.25 0 006 5.442v3.992a.25.25 0 00.379.214l3.12-1.996a.25.25 0 000-.428L6.379 5.227z"></path></svg>
-                  SHARE
-                </button>
-                <Link 
-                  href={`/paints/${targetPaint.brand.toLowerCase().replace(/[^a-z0-9]/g, '-')}/${targetPaint.paint_id}`}
-                  className="flex-1 touch-target py-3 bg-transparent border border-white/20 text-white font-bold text-sm tracking-widest rounded-sm hover:bg-white/5 transition-colors flex items-center justify-center"
-                >
-                  DOSSIER
-                </Link>
-              </div>
-              
-              <Link
-                href="/miniature"
-                className="w-full py-4 mt-2 bg-gradient-to-r from-[var(--imperial-gold)] to-[var(--brass)] text-black font-bold uppercase tracking-widest rounded-sm hover:brightness-110 transition-all text-center flex flex-col items-center justify-center shadow-lg"
+            <div className="flex w-full gap-3 mb-6">
+              <button
+                onClick={handleShare}
+                className="flex-1 bg-[var(--cogitator-green)] text-black font-bold py-3 px-4 rounded-sm hover:bg-[#2ea043] transition-colors flex items-center justify-center gap-2"
               >
-                <span className="text-[10px] opacity-70 mb-0.5 font-mono">PRIMARY OBJECTIVE</span>
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92zM18 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM6 13c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm12 7.02c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/></svg>
+                SHARE
+              </button>
+              <button
+                onClick={() => setShowStats(true)}
+                className="flex-1 bg-[var(--cogitator-green)]/10 border border-[var(--cogitator-green)]/30 text-[var(--cogitator-green)] font-bold py-3 px-4 rounded-sm hover:bg-[var(--cogitator-green)]/20 transition-colors flex items-center justify-center gap-2"
+              >
+                <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor"><path fillRule="evenodd" d="M2 2a1 1 0 011-1h10a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V2zm2 1v10h8V3H4zm3.5 2a.5.5 0 00-.5.5v3a.5.5 0 001 0v-3a.5.5 0 00-.5-.5zm2 1.5a.5.5 0 00-.5.5v1.5a.5.5 0 001 0V7a.5.5 0 00-.5-.5zm-4 1a.5.5 0 00-.5.5v.5a.5.5 0 001 0V8a.5.5 0 00-.5-.5z"></path></svg>
+                DOSSIER
+              </button>
+            </div>
+
+            <div className="w-full">
+              <a
+                href="/"
+                className="w-full bg-[var(--imperial-gold)]/20 border border-[var(--imperial-gold)]/50 text-[var(--imperial-gold)] font-bold py-3 px-4 rounded-sm hover:bg-[var(--imperial-gold)]/30 transition-colors flex items-center justify-center gap-2 tracking-widest text-sm"
+              >
                 <span>SCAN YOUR MINIATURE</span>
-              </Link>
+              </a>
             </div>
           </motion.div>
         )}

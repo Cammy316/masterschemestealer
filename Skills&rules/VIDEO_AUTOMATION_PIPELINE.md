@@ -11,7 +11,7 @@ foreign watermarks — see `SOCIAL_MEDIA_CAMPAIGN.md` §1). The literal how-to l
 
 **Build order (the Content Bank Sprint — synthesis directive 1):**
 1. `video-factory/` scaffold + **T2 Budget Swap** (simplest data → instant content).
-2. **T1 Daily Augury** template.
+2. **T1 Swatchle** template.
 3. **`factory qa`** automated QA script (below).
 4. **Render the 25-clip bank** — channels launch only when the bank is full
    (≥14 days of runway; no daily-posting stress while Engine A is built).
@@ -96,7 +96,7 @@ carries the brand. Users become the distribution network.
 
 ### Templates (each = one Remotion composition + a data selector)
 
-**T1 — Daily Augury Quiz (the flagship, fully automatic)**
+**T1 — Swatchle Quiz (the flagship, fully automatic)**
 - Input: `daily_puzzles.json` day + `paintDatabase` row.
 - Structure (24–30 s): swatch macro fills frame with garble-text hook ("Only real
   painters name this in 3 guesses") → three plausible wrong guesses tick past with

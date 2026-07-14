@@ -29,7 +29,7 @@ this distribute or monetise the measured data?* New compute is not the moat — 
 - **Phase 2 core loop complete (except barcode — see Debt & Deferred)**:
   inventory-aware substitutions in scans, owned-alternative swaps on the recipe card,
   Rack Gap Analysis endpoint + Forge panel.
-- **Phase 3 daily-habit complete**: The Daily Augury (`/daily`, 400-day puzzle file,
+- **Phase 3 daily-habit complete**: The Swatchle (`/daily`, 400-day puzzle file,
   streaks/stats/share) and the Session Forge (whole-scan sessions, parallel drying
   timers with global reconciliation, notifications, wake lock).
 - **Mobile optimisation sprint complete** (2026-07-09): 52-finding responsive audit
@@ -157,7 +157,7 @@ it re-enables by dropping one filter.*
 
 *Goal: turn users into the marketing engine.*
 
-### 4.1 "The Daily Augury" ✅ SHIPPED (2026-07-08/09)
+### 4.1 "The Swatchle" ✅ SHIPPED (2026-07-08/09)
 * Live at `/daily`: 400-day deterministic puzzle file, four-cell feedback grid
   (brand/family/lightness/ΔE band), streaks + stats + guess distribution, spoiler-free
   emoji share, win-screen funnel to the `/paints` dossier + scan CTA, home-screen entry
@@ -186,7 +186,7 @@ it re-enables by dropping one filter.*
 | **Phase 0** | Hardening | Supabase persistence, PWA, `/paints` + sitemap, offline parity, admin key, full-suite CI | ✅ **DONE — verified live 2026-07-07** |
 | **Phase 1** | SEO Foundation | `/convert` + `/paints` programmatic pages | ✅ **DONE** |
 | **Phase 2** | Core Loop | Inventory-aware substitutions, Rack Gap Analysis | ✅ **DONE** (barcode → Debt & Deferred) |
-| **Phase 3** | Daily habit | Daily Augury, Session Forge, mobile-optimisation sprint | ✅ **DONE 2026-07-09** |
+| **Phase 3** | Daily habit | Swatchle, Session Forge, mobile-optimisation sprint | ✅ **DONE 2026-07-09** |
 | **Content Bank Sprint** | Build the factory, fill the bank | `video-factory` T2+T1 templates, automated QA, **25-clip bank rendered BEFORE the first post** | **NEXT — do first** (synthesis directive; runbook Steps 1–4) |
 | **Launch Support Sprint** | Small pre-Phase-4 bridges | Ko-fi "Fuel the Auspex" on the Augury win screen + recipe cards (+ Early Founder badge preview); answer-free Discord daily-puzzle webhook + setup guide; Supabase feedback triage script (<3★ / "wrong family" flags); "Featured Reveals" site section (after Engine A) | Small items, slot between bank batches |
 | **Phase 3.5** | The Broadcast Update | In-app scan-reveal **video export with audio bed + virality modal**, Search Console submission, OG polish | After the bank is full — posting runs from the bank while this builds |

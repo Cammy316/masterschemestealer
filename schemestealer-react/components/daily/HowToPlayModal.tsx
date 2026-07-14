@@ -8,7 +8,6 @@ interface HowToPlayModalProps {
 }
 
 export function HowToPlayModal({ onClose }: HowToPlayModalProps) {
-  // Lock body scroll while open
   useEffect(() => {
     const previous = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
@@ -28,7 +27,7 @@ export function HowToPlayModal({ onClose }: HowToPlayModalProps) {
       >
         <button 
           onClick={onClose} 
-          className="absolute top-4 right-4 text-gray-500 hover:text-white touch-target flex items-center justify-center"
+          className="absolute top-4 right-4 text-gray-500 hover:text-white touch-target flex items-center justify-center w-11 h-11"
         >
           ✕
         </button>
@@ -40,41 +39,50 @@ export function HowToPlayModal({ onClose }: HowToPlayModalProps) {
             Guess the target <strong className="text-[var(--cogitator-green)] text-base">SWATCHLE</strong> paint in 6 tries.
           </p>
           <p>
-            After each guess, the color of the tiles will change to show how close your guess was to the target.
+            After each guess, the clues will guide you towards the target colour.
+          </p>
+          <p className="text-xs italic text-gray-400">
+            The small chip next to the paint name shows your color family match (Green: Exact, Yellow: Adjacent, Red: Far).
           </p>
 
           <div className="border-t border-gray-800 pt-4 mt-4">
-            <h3 className="font-bold text-white mb-2 tracking-widest text-xs uppercase">Examples</h3>
+            <h3 className="font-bold text-white mb-4 tracking-widest text-xs uppercase">Examples</h3>
             
             <div className="mb-4">
-              <div className="flex gap-2 mb-1 h-8">
-                <div className="flex-1 flex items-center justify-center bg-[#2ea043]/20 border border-[#2ea043] text-[#2ea043] rounded-sm text-xs font-bold">✓ BRAND</div>
-              </div>
-              <p className="text-xs">The target paint is from the <strong className="text-white">same brand</strong> as your guess.</p>
-            </div>
-
-            <div className="mb-4">
-              <div className="flex gap-2 mb-1 h-8">
-                <div className="flex-1 flex items-center justify-center bg-[#d29922]/20 border border-[#d29922] text-[#d29922] rounded-sm text-xs font-bold capitalize">adjacent family</div>
-              </div>
-              <p className="text-xs">Yellow means your color is in a <strong className="text-white">closely adjacent</strong> color family (e.g., Red vs Magenta).</p>
-            </div>
-
-            <div className="mb-4">
-              <div className="flex gap-2 mb-1 h-8">
-                <div className="flex-1 flex flex-col items-center justify-center bg-[#2ea043]/20 border border-[#2ea043] text-[#2ea043] rounded-sm font-bold">
-                  <span className="text-[9px] opacity-60 mb-0.5 font-mono tracking-widest leading-none">LIGHT</span>
-                  <span className="leading-none">▲</span>
+              <div className="flex gap-2 mb-2 h-8">
+                <div className="flex-1 flex items-center justify-center bg-gray-900 border border-gray-800 rounded-sm">
+                  <span className="text-xs font-bold text-gray-300">→ WARMER</span>
                 </div>
               </div>
-              <p className="text-xs">The arrow points towards the target. An up arrow means the target paint is <strong className="text-white">lighter</strong> than your guess.</p>
+              <p className="text-xs">
+                <strong className="text-white">Hue:</strong> The target hue is <strong className="text-white">warmer</strong> than your guess (closer to orange-red).
+              </p>
             </div>
 
             <div className="mb-4">
-              <div className="flex gap-2 mb-1 h-8">
-                <div className="flex-1 flex items-center justify-center bg-blue-500/20 border border-blue-500 text-blue-400 rounded-sm text-xs font-bold">ΔE 2.1</div>
+              <div className="flex gap-2 mb-2 h-8">
+                <div className="flex-1 flex items-center justify-center bg-gray-900 border border-gray-800 rounded-sm">
+                  <span className="text-xs font-bold text-gray-300 flex items-center gap-1">▲ LIGHTER</span>
+                </div>
               </div>
-              <p className="text-xs">The <strong className="text-white">Match (Delta E)</strong> score tells you how visually close the colors are. Look for perfect Green matches!</p>
+              <p className="text-xs">
+                <strong className="text-white">Lightness:</strong> The target paint is <strong className="text-white">lighter</strong> than your guess.
+              </p>
+            </div>
+
+            <div className="mb-4">
+              <div className="flex gap-2 mb-2 h-8">
+                <div className="flex-1 flex flex-col bg-gray-900 border border-gray-800 rounded-sm relative overflow-hidden">
+                  <div className="absolute left-0 top-0 bottom-0 bg-[#ff9800] opacity-40" style={{ width: '80%' }} />
+                  <div className="relative z-10 w-full h-full flex items-center justify-between px-2">
+                    <span className="text-[10px] font-bold text-gray-400">▲</span>
+                    <span className="text-[10px] font-bold text-white">HOT</span>
+                  </div>
+                </div>
+              </div>
+              <p className="text-xs">
+                <strong className="text-white">Proximity (Heat):</strong> Shows how visually close the colors are overall (ΔE). You are getting hotter!
+              </p>
             </div>
           </div>
           

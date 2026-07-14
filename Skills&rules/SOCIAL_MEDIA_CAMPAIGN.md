@@ -2,7 +2,7 @@
 
 *Rewritten 2026-07-09. Situation: every account exists (TikTok, Instagram, Facebook,
 X/Twitter, YouTube), **zero posts anywhere**. The product is fully live (scans,
-substitutions, Daily Augury, Session Forge, SEO pages). This is the from-nothing plan
+substitutions, Swatchle, Session Forge, SEO pages). This is the from-nothing plan
 to start marketing heavily, built on current-platform research (sources in the
 appendix) and on the automated video factory specced in `VIDEO_AUTOMATION_PIPELINE.md`.
 Solo-operator scoped: the factory produces; Cam fronts, engages and posts.*
@@ -149,7 +149,7 @@ teasers if Phase 5 starts; assess for Phase 4 go/no-go against the KPI gate belo
 | Completion rate per clip | platform natives | ≥ 60% avg, ≥ 70% on winners |
 | Follower growth | natives | TikTok 1k+, combined 2.5k+ |
 | Site sessions from social | referrers in first-party analytics | ≥ 25% of traffic |
-| Daily Augury players + share rate | `daily_played` / `daily_shared` | 100+ DAU, share ≥ 8% |
+| Swatchle players + share rate | `daily_played` / `daily_shared` | 100+ DAU, share ≥ 8% |
 | Scan conversion (visit → scan) | `page_view` → `scan_completed` | > 25% mobile |
 | Reveal videos exported (post-3.5) | `reveal_video_exported` | The share loop's pulse |
 | Ko-fi clicks | `kofi_clicked` | Baseline for Phase 4 sizing |

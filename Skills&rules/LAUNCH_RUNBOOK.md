@@ -66,7 +66,7 @@ an agent as one prompt; acceptance criteria are the campaign §1 table.
 - [ ] **2b. T2 Budget Swap** template per the pipeline doc structure (20–25 s,
       price-tag hook ≤3 s, ΔE stamp, price counter, loop end-frame, comment-bait
       variant flag `--bait`).
-- [ ] **2c. T1 Daily Augury** template (24–30 s, garble hook, wrong-guess ticker,
+- [ ] **2c. T1 Swatchle** template (24–30 s, garble hook, wrong-guess ticker,
       reveal at loop point, `--date` flag).
 - [ ] **2d. `factory qa`** script (first/last-3 s strips, loop-frame pixel diff,
       hook-beat check, thumbnails + title variants).
