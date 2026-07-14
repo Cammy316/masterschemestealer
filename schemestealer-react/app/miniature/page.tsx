@@ -16,6 +16,8 @@ import { motion } from 'framer-motion';
 import { useApiReady } from '@/hooks/useApiReady';
 import { useScan } from '@/hooks/useScan';
 import { prepareMiniatureImage } from '@/lib/backgroundRemoval';
+import { HowToScanModal } from '@/components/shared/HowToScanModal';
+import { AnimatePresence } from 'framer-motion';
 
 export default function MiniscanPage() {
   const router = useRouter();
@@ -25,6 +27,7 @@ export default function MiniscanPage() {
   const [showReveal, setShowReveal] = useState(false);
   const [modelProgress, setModelProgress] = useState<number | null>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
+  const [showHowToScan, setShowHowToScan] = useState(false);
 
   // Resize then remove the background in the browser (with model-download
   // progress). The backend requires a client-side RGBA PNG, so on failure this
@@ -132,7 +135,7 @@ export default function MiniscanPage() {
 
       {/* Header */}
       <motion.div
-        className="max-w-2xl mx-auto mb-[clamp(1rem,3vh,2rem)] text-center"
+        className="max-w-2xl mx-auto mb-2 sm:mb-4 text-center relative"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -140,19 +143,19 @@ export default function MiniscanPage() {
         <h1 className="text-[clamp(1.5rem,5vw,1.875rem)] text-balance font-bold gothic-text mb-2 auspex-text">
           ◆ MINISCAN PROTOCOL ◆
         </h1>
-        <p className="text-cogitator-green-dim tech-text text-sm">
+        <p className="text-cogitator-green-dim tech-text text-sm mb-1 sm:mb-2 leading-tight">
           Identify sacred paint formulations from painted miniatures
         </p>
-        <motion.div
-          className="mt-2 text-xs text-brass cyber-text"
-          animate={{ opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 2, repeat: Infinity }}
+        <button
+          onClick={() => setShowHowToScan(true)}
+          className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest font-mono text-[var(--cogitator-green)]/60 hover:text-[var(--cogitator-green)] transition-colors touch-target px-2 py-1 rounded hover:bg-[var(--cogitator-green)]/10"
         >
-          ⚙ MACHINE SPIRIT STATUS: ACTIVE ⚙
-        </motion.div>
+          <span className="w-4 h-4 rounded-full border border-current flex items-center justify-center opacity-80">?</span>
+          <span>How to use</span>
+        </button>
       </motion.div>
 
-      {/* Upload & Scan Area */}
+      {/* Upload Component */}
       <motion.div
         className="max-w-2xl mx-auto"
         initial={{ opacity: 0, scale: 0.95 }}
@@ -232,40 +235,9 @@ export default function MiniscanPage() {
         </motion.div>
       )}
 
-      {/* Instructions */}
-      <motion.div
-        className="max-w-2xl mx-auto mt-8"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-      >
-        <div className="rounded-lg p-4 text-sm border border-cogitator-green/30 bg-black/60 relative overflow-hidden group shadow-[0_0_15px_rgba(0,255,65,0.05)]">
-          <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,255,65,0.03)_2px,rgba(0,255,65,0.03)_4px)] pointer-events-none" />
-          <h3 className="font-bold mb-3 text-cogitator-green cyber-text text-center text-shadow-sm flex items-center justify-center gap-2">
-            <span className="text-cogitator-green/60">⚙</span>
-            OPERATIONAL GUIDANCE
-            <span className="text-cogitator-green/60">⚙</span>
-          </h3>
-          <ul className="space-y-2 text-cogitator-green/80 tech-text text-xs relative z-10 pl-2 border-l border-cogitator-green/20 mx-4">
-            <li className="flex items-start gap-2">
-              <span className="text-cogitator-green/50 mt-0.5">{'>'}</span>
-              Ensure adequate illumination for optimal pict-capture
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-cogitator-green/50 mt-0.5">{'>'}</span>
-              Center miniature within targeting reticle
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-cogitator-green/50 mt-0.5">{'>'}</span>
-              Avoid reflective surfaces that may confuse the auspex
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-cogitator-green/50 mt-0.5">{'>'}</span>
-              For best results, photograph against neutral background
-            </li>
-          </ul>
-        </div>
-      </motion.div>
+      <AnimatePresence>
+        {showHowToScan && <HowToScanModal onClose={() => setShowHowToScan(false)} />}
+      </AnimatePresence>
     </div>
   );
 }

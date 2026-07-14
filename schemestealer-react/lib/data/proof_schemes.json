@@ -1,0 +1,20 @@
+[
+  {
+    "id": "proof-1",
+    "model": "Ultramarine Intercessor",
+    "originalPalette": ["citadel-macragge-blue", "citadel-calgar-blue", "citadel-retributor-armour"],
+    "budgetPalette": ["vallejo-ultramarine", "vallejo-magic-blue", "vallejo-glorious-gold"]
+  },
+  {
+    "id": "proof-2",
+    "model": "Ork Boy",
+    "originalPalette": ["citadel-waaagh-flesh", "citadel-warboss-green", "citadel-leadbelcher"],
+    "budgetPalette": ["army-painter-greenskin", "army-painter-goblin-green", "army-painter-gun-metal"]
+  },
+  {
+    "id": "proof-3",
+    "model": "Stormcast Eternal",
+    "originalPalette": ["citadel-retributor-armour", "citadel-kantor-blue", "citadel-rakarth-flesh"],
+    "budgetPalette": ["vallejo-glorious-gold", "vallejo-imperial-blue", "army-painter-banshee-brown"]
+  }
+]

@@ -11,7 +11,8 @@ import { useAppStore } from '@/lib/store';
 import { WarpPortal } from '@/components/inspiration/WarpPortal';
 import { CosmicBackground } from '@/components/shared/CosmicBackground';
 import { LoadingAnimation } from '@/components/shared/LoadingAnimations';
-import { motion } from 'framer-motion';
+import { HowToScanModal } from '@/components/shared/HowToScanModal';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useApiReady } from '@/hooks/useApiReady';
 import { useScan } from '@/hooks/useScan';
 
@@ -23,6 +24,7 @@ export default function InspirationPage() {
   const [hasUploaded, setHasUploaded] = useState(false);
   const [isBursting, setIsBursting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showHowToScan, setShowHowToScan] = useState(false);
 
   const { isProcessing, error, result, scan, retry, fallbackToOffline, markCommitted } =
     useScan('inspiration');
@@ -103,7 +105,7 @@ export default function InspirationPage() {
 
       {/* Header */}
       <motion.div
-        className="max-w-2xl mx-auto pt-4 sm:pt-8 px-4 text-center relative z-20"
+        className="max-w-2xl mx-auto mb-2 sm:mb-4 text-center relative pt-2 sm:pt-4 px-4 z-20"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: (isProcessing || isBursting) ? 0 : 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -111,9 +113,16 @@ export default function InspirationPage() {
         <h1 className="text-[clamp(1.2rem,5vw,1.875rem)] text-balance font-bold gothic-text mb-2 warp-text text-shadow-lg" style={{ textShadow: '0 0 20px var(--ethereal-glow-strong)' }}>
           ◆ IMMATERIUM CONDUIT ◆
         </h1>
-        <p className="text-warp-purple-light text-sm gothic-text">
+        <p className="text-warp-purple-light text-sm gothic-text mb-1 sm:mb-2 leading-tight">
           Offer a visual sacrifice to divine its chromatic essence
         </p>
+        <button
+          onClick={() => setShowHowToScan(true)}
+          className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest font-mono text-[var(--warp-purple-light)]/60 hover:text-[var(--warp-purple-light)] transition-colors touch-target px-2 py-1 rounded hover:bg-[var(--warp-purple)]/20"
+        >
+          <span className="w-4 h-4 rounded-full border border-current flex items-center justify-center opacity-80">?</span>
+          <span>Channeling Guide</span>
+        </button>
       </motion.div>
 
       {/* Warp Portal - THE HERO */}
@@ -220,48 +229,10 @@ export default function InspirationPage() {
         </motion.div>
       )}
 
-      {/* Instructions - Hide during processing so focus is entirely on the portal */}
       {(!isProcessing && !isBursting) && (
-        <motion.div
-          className="max-w-2xl mx-auto px-4 mt-8 relative"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-        >
-          <div
-          className="rounded-lg p-4 text-sm relative overflow-hidden group shadow-[0_0_15px_rgba(139,92,246,0.15)]"
-          style={{
-            background: 'linear-gradient(135deg, rgba(30,27,75,0.8), rgba(15,15,35,0.9))',
-            border: '1px solid var(--warp-purple)',
-          }}
-        >
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(139,92,246,0.15)_0%,transparent_70%)] pointer-events-none" />
-          <h3 className="font-bold mb-3 text-warp-purple-light gothic-text text-center text-shadow-sm flex items-center justify-center gap-2">
-            <span className="text-warp-purple-light/50 text-xs">◆</span>
-            CHANNELING GUIDANCE
-            <span className="text-warp-purple-light/50 text-xs">◆</span>
-          </h3>
-          <ul className="space-y-2 text-warp-purple-light/90 text-xs font-medium relative z-10 pl-2 mx-4" style={{ borderLeft: '1px solid rgba(139,92,246,0.3)' }}>
-            <li className="flex items-start gap-2">
-              <span className="text-warp-purple-light/50 mt-0.5 text-[10px]">✧</span>
-              Upload any image: artwork, sunsets, photographs, landscapes
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-warp-purple-light/50 mt-0.5 text-[10px]">✧</span>
-              The Warp will extract 5-8 dominant hues from your offering
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-warp-purple-light/50 mt-0.5 text-[10px]">✧</span>
-              Receive paint recommendations to manifest these colors
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-warp-purple-light/50 mt-0.5 text-[10px]">✧</span>
-              No background removal - the entire image feeds the ritual
-            </li>
-          </ul>
-        </div>
-      </motion.div>
+        <AnimatePresence>
+          {showHowToScan && <HowToScanModal onClose={() => setShowHowToScan(false)} />}
+        </AnimatePresence>
       )}
 
       {/* Vortex Burst Screen Wash */}
