@@ -19,6 +19,7 @@ import { HexChip } from '@/components/shared/HexChip';
 import { ShareButton } from '@/components/ShareButton';
 import { ShareModal } from '@/components/ShareModal';
 import { LocalAuspexBadge } from '@/components/shared/LocalAuspexBadge';
+import { SessionConflictModal } from '@/components/shared/SessionConflictModal';
 import { FeedbackModal, type FeedbackSubmission } from '@/components/FeedbackModal';
 import { KoFiPrompt, KoFiBanner } from '@/components/KoFiPrompt';
 import { useFeedbackPrompt } from '@/hooks/useFeedbackPrompt';
@@ -68,6 +69,8 @@ export default function MiniscanResultsPage() {
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [showKoFiPrompt, setShowKoFiPrompt] = useState(false);
   const [koFiTrigger, setKoFiTrigger] = useState<'scan' | 'feedback'>('scan');
+  const [conflictModalOpen, setConflictModalOpen] = useState(false);
+  const [pendingSessionColors, setPendingSessionColors] = useState<any[]>([]);
   const { trackFeedbackSubmitted } = useAnalytics();
 
   // Feedback prompt hook - auto-shows after 10 seconds
@@ -155,20 +158,33 @@ export default function MiniscanResultsPage() {
     router.push('/miniature');
   };
 
-  const handleStartPainting = (colorIndex: number, brand: string) => {
+  const executeStartPainting = (colours: any[], merge: boolean = false) => {
     if (!currentScan) return;
     
-    if (activeSession && activeSession.scanId !== currentScan.id) {
-      if (!window.confirm("You have an active painting session. Replace it?")) return;
+    let finalColours = colours;
+    if (merge && activeSession?.colours) {
+      finalColours = [...activeSession.colours, ...colours];
     }
+    
+    setActiveSession({
+      scanId: merge && activeSession ? activeSession.scanId : currentScan.id,
+      startedAt: merge && activeSession ? activeSession.startedAt : new Date().toISOString(),
+      colours: finalColours,
+      dryTimeOverrides: merge && activeSession ? activeSession.dryTimeOverrides : {},
+    });
+
+    setConflictModalOpen(false);
+    router.push('/session');
+  };
+
+  const handleStartPainting = (colorIndex?: number, brand?: string) => {
+    if (!currentScan) return;
 
     const colours = currentScan.detectedColors.map((c, idx) => {
-      // Pick the best brand or default to the one clicked if it's the clicked colour
       let bestBrand = 'citadel' as 'citadel' | 'vallejo' | 'army_painter' | 'ak' | 'pro_acryl' | 'two_thin_coats';
-      if (idx === colorIndex) {
+      if (colorIndex !== undefined && idx === colorIndex && brand) {
         bestBrand = brand as typeof bestBrand;
       } else if (c.paintRecipe && Object.keys(c.paintRecipe).length > 0) {
-        // Just pick the first available brand for others
         bestBrand = Object.keys(c.paintRecipe)[0] as typeof bestBrand;
       }
       
@@ -189,14 +205,13 @@ export default function MiniscanResultsPage() {
       };
     });
 
-    setActiveSession({
-      scanId: currentScan.id,
-      startedAt: new Date().toISOString(),
-      colours,
-      dryTimeOverrides: {},
-    });
+    if (activeSession && activeSession.scanId !== currentScan.id) {
+      setPendingSessionColors(colours);
+      setConflictModalOpen(true);
+      return;
+    }
 
-    router.push('/session');
+    executeStartPainting(colours);
   };
 
   return (
@@ -279,6 +294,7 @@ export default function MiniscanResultsPage() {
             <motion.div
               key={index}
               id={`color-card-${index}`}
+              className={index === currentScan.detectedColors.length - 1 && currentScan.detectedColors.length % 2 !== 0 ? 'lg:col-span-2 lg:w-3/4 lg:mx-auto w-full' : 'w-full'}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -417,6 +433,21 @@ export default function MiniscanResultsPage() {
                 />
               </svg>
               <span className="auspex-text font-bold cyber-text">INITIATE NEW SCAN</span>
+            </div>
+          </motion.button>
+
+          <motion.button
+            onClick={() => handleStartPainting()}
+            className="w-full py-4 px-6 rounded-lg border-2 border-imperial-gold bg-dark-gothic touch-target textured"
+            whileHover={{
+              boxShadow: '0 0 15px var(--imperial-gold)',
+              scale: 1.02,
+            }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <div className="flex items-center justify-center gap-3">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--imperial-gold)" strokeWidth="2.5"><path d="M12 5v14M5 12h14" strokeLinecap="round" /></svg>
+              <span className="text-imperial-gold font-bold cyber-text">START PAINTING ALL</span>
             </div>
           </motion.button>
 
@@ -623,6 +654,14 @@ export default function MiniscanResultsPage() {
           mode="miniature"
         />
       )}
+
+      <SessionConflictModal
+        isOpen={conflictModalOpen}
+        mode="miniature"
+        onClose={() => setConflictModalOpen(false)}
+        onReplace={() => executeStartPainting(pendingSessionColors, false)}
+        onMerge={() => executeStartPainting(pendingSessionColors, true)}
+      />
     </div>
   );
 }

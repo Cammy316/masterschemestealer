@@ -15,12 +15,10 @@ export function ServoSkull({ className = '', isScanning = false }: ServoSkullPro
       <div style={isScanning ? { animation: 'patrol 4s ease-in-out infinite alternate' } : {}} className="relative w-full h-full flex items-center justify-center">
       <style>{`
         @keyframes svg-searchlight {
-          0%   { transform: rotate(-15deg) scaleY(0.5); }
-          20%  { transform: rotate(10deg) scaleY(1.3); }
-          40%  { transform: rotate(-5deg) scaleY(0.8); }
-          60%  { transform: rotate(15deg) scaleY(1.5); }
-          80%  { transform: rotate(-2deg) scaleY(0.9); }
-          100% { transform: rotate(-15deg) scaleY(0.5); }
+          0%   { transform: rotate(-15deg) scaleY(0.8); animation-timing-function: ease-in-out; }
+          33%  { transform: rotate(15deg) scaleY(1.3); animation-timing-function: ease-in-out; }
+          66%  { transform: rotate(-5deg) scaleY(0.9); animation-timing-function: ease-in-out; }
+          100% { transform: rotate(-15deg) scaleY(0.8); }
         }
         @keyframes patrol {
           0%   { transform: translateX(-40px); }
@@ -149,15 +147,22 @@ export function ServoSkull({ className = '', isScanning = false }: ServoSkullPro
         <line x1="77" y1="65" x2="73" y2="68" stroke="#444" />
 
         {/* Volumetric Laser Sweep Beam */}
-        {isScanning && (
-          <g style={{ transformOrigin: '35px 43.5px', animation: 'svg-searchlight 6s ease-in-out infinite' }}>
+        <g 
+          style={{ 
+            transformOrigin: '35px 43.5px',
+            opacity: isScanning ? 1 : 0,
+            transform: isScanning ? 'scale(1)' : 'scale(0.1)',
+            transition: 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
+          }}
+        >
+          <g style={{ transformOrigin: '35px 43.5px', animation: 'svg-searchlight 5s infinite' }}>
             <polygon 
               points="31,43.5 39,43.5 150,400 -80,400" 
               fill="url(#beamGradient)" 
               className="mix-blend-screen"
             />
           </g>
-        )}
+        </g>
       </svg>
       </div>
     </div>
