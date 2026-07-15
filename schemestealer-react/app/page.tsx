@@ -9,8 +9,6 @@ export default function Home() {
   return (
     <>
       <AdMechBackground />
-      {/* The Daily Augury banner now lives inside ModeSelector's first
-          viewport — rendered after it, it sat below the fold. */}
       <ModeSelector />
     </>
   );
