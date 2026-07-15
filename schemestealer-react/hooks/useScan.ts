@@ -6,6 +6,7 @@ import { mlLogger } from '@/lib/mlDataLogger';
 import { useAppStore } from '@/lib/store';
 import { mapScanError, type ScanError } from '@/lib/errorMessages';
 import type { ScanMode, ScanResult } from '@/lib/types';
+import { markApiReady } from './useApiReady';
 
 interface UseScanOptions {
   /**
@@ -105,6 +106,7 @@ export function useScan(mode: ScanMode, options: UseScanOptions = {}): UseScanRe
             
         if (controller.signal.aborted) return;
         
+        markApiReady();
         completeWith(scanResult);
       } catch (err) {
         if (controller.signal.aborted) return;
