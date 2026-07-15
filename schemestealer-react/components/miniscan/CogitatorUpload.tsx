@@ -70,14 +70,7 @@ export function CogitatorUpload({
             className="absolute inset-0 opacity-15 pointer-events-none bg-[linear-gradient(to_right,rgba(0,255,0,0.4)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,255,0,0.4)_1px,transparent_1px)] bg-[size:24px_24px]"
           />
 
-          {/* Machine Spirit Status Indicator (LED) */}
-          <div className="absolute top-2 left-2 sm:top-4 sm:left-4 flex items-center justify-center w-4 h-4 pointer-events-none z-30">
-            <motion.div
-              className="w-1.5 h-1.5 rounded-full bg-[#ff2a2a] shadow-[0_0_8px_#ff2a2a]"
-              animate={{ opacity: [0.2, 1, 0.2] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-            />
-          </div>
+          {/* (LED removed based on feedback) */}
 
           {/* CRT Scanline overlay */}
           <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%] pointer-events-none mix-blend-overlay z-10" />
@@ -107,7 +100,7 @@ export function CogitatorUpload({
           </div>
 
           {/* Main Content Area */}
-          <div className="relative z-10 sm:px-6 pt-3 sm:pt-6 flex-1 flex flex-col">
+          <div className="relative z-10 sm:px-6 pt-3 sm:pt-6 flex-1 flex flex-col justify-center">
             
             {(isProcessing || showReveal) && localImageUrl ? (
               <div className="flex flex-col items-center flex-1 justify-center">
@@ -143,7 +136,7 @@ export function CogitatorUpload({
                 </p>
 
                 {/* Buttons */}
-                <div className="space-y-2.5 sm:space-y-3 mt-auto">
+                <div className="space-y-2.5 sm:space-y-3">
               {/* Camera button */}
               <motion.button
                 onClick={onCameraActivate}
