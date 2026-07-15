@@ -19,6 +19,7 @@ import { HexChip } from '@/components/shared/HexChip';
 import { ShareButton } from '@/components/ShareButton';
 import { ShareModal } from '@/components/ShareModal';
 import { LocalAuspexBadge } from '@/components/shared/LocalAuspexBadge';
+import { SessionConflictModal } from '@/components/shared/SessionConflictModal';
 import { FeedbackModal, type FeedbackSubmission } from '@/components/FeedbackModal';
 import { KoFiPrompt, KoFiBanner } from '@/components/KoFiPrompt';
 import { useFeedbackPrompt } from '@/hooks/useFeedbackPrompt';
@@ -42,6 +43,8 @@ export default function InspirationResultsPage() {
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [showKoFiPrompt, setShowKoFiPrompt] = useState(false);
   const [koFiTrigger, setKoFiTrigger] = useState<'scan' | 'feedback'>('scan');
+  const [conflictModalOpen, setConflictModalOpen] = useState(false);
+  const [pendingSessionColors, setPendingSessionColors] = useState<any[]>([]);
   const { trackFeedbackSubmitted } = useAnalytics();
 
   // Feedback prompt hook - auto-shows after 10 seconds
@@ -137,16 +140,31 @@ export default function InspirationResultsPage() {
     router.push('/inspiration');
   };
 
-  const handleStartPainting = (colorIndex: number, brand: string) => {
+  const executeStartPainting = (colours: any[], merge: boolean = false) => {
     if (!currentScan) return;
     
-    if (activeSession && activeSession.scanId !== currentScan.id) {
-      if (!window.confirm("You have an active painting session. Replace it?")) return;
+    let finalColours = colours;
+    if (merge && activeSession?.colours) {
+      finalColours = [...activeSession.colours, ...colours];
     }
+    
+    setActiveSession({
+      scanId: merge && activeSession ? activeSession.scanId : currentScan.id,
+      startedAt: merge && activeSession ? activeSession.startedAt : new Date().toISOString(),
+      colours: finalColours,
+      dryTimeOverrides: merge && activeSession ? activeSession.dryTimeOverrides : {},
+    });
+
+    setConflictModalOpen(false);
+    router.push('/session');
+  };
+
+  const handleStartPainting = (colorIndex?: number, brand?: string) => {
+    if (!currentScan) return;
 
     const colours = currentScan.detectedColors.map((c, idx) => {
       let bestBrand = 'citadel' as 'citadel' | 'vallejo' | 'army_painter' | 'ak' | 'pro_acryl' | 'two_thin_coats';
-      if (idx === colorIndex) {
+      if (colorIndex !== undefined && idx === colorIndex && brand) {
         bestBrand = brand as typeof bestBrand;
       } else if (c.paintRecipe && Object.keys(c.paintRecipe).length > 0) {
         bestBrand = Object.keys(c.paintRecipe)[0] as typeof bestBrand;
@@ -169,14 +187,13 @@ export default function InspirationResultsPage() {
       };
     });
 
-    setActiveSession({
-      scanId: currentScan.id,
-      startedAt: new Date().toISOString(),
-      colours,
-      dryTimeOverrides: {},
-    });
+    if (activeSession && activeSession.scanId !== currentScan.id) {
+      setPendingSessionColors(colours);
+      setConflictModalOpen(true);
+      return;
+    }
 
-    router.push('/session');
+    executeStartPainting(colours);
   };
 
   return (
@@ -264,6 +281,7 @@ export default function InspirationResultsPage() {
           return (
             <motion.div
               key={index}
+              className={index === currentScan.detectedColors.length - 1 && currentScan.detectedColors.length % 2 !== 0 ? 'lg:col-span-2 lg:w-3/4 lg:mx-auto w-full' : 'w-full'}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
@@ -381,6 +399,20 @@ export default function InspirationResultsPage() {
               </svg>
               <span className="text-warp-purple-light font-bold gothic-text group-hover:text-white transition-colors">
                 CHANNEL THE WARP AGAIN
+              </span>
+            </div>
+          </motion.button>
+
+          <motion.button
+            onClick={() => handleStartPainting()}
+            className="w-full py-3 px-6 rounded-full border border-imperial-gold/30 bg-imperial-gold/10 backdrop-blur-md shadow-[0_4px_15px_rgba(255,215,0,0.15)] touch-target group"
+            whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,215,0,0.2)' }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <div className="flex items-center justify-center gap-2">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--imperial-gold)" strokeWidth="2.5"><path d="M12 5v14M5 12h14" strokeLinecap="round" /></svg>
+              <span className="text-imperial-gold font-bold gothic-text group-hover:text-white transition-colors">
+                START PAINTING ALL
               </span>
             </div>
           </motion.button>
@@ -573,6 +605,14 @@ export default function InspirationResultsPage() {
           mode="inspiration"
         />
       )}
+
+      <SessionConflictModal
+        isOpen={conflictModalOpen}
+        mode="inspiration"
+        onClose={() => setConflictModalOpen(false)}
+        onReplace={() => executeStartPainting(pendingSessionColors, false)}
+        onMerge={() => executeStartPainting(pendingSessionColors, true)}
+      />
     </div>
   );
 }

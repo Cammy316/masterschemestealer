@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-07-15 (Session Forge Gamification & UI Refactor)
+### Added
+- **Dataslate Content Generator**: Added `python-api/scripts/generate_dataslate_content.py` to compile 400+ advanced painting tips and lore quotes from Warhammer 40k and Fantasy.
+- **Dataslate Ticker**: Added an active Dataslate ticker to the bottom of the Session Forge checklist that constantly rotates tips and quotes.
+- **Mission Accomplished Screen**: Added a new celebration overlay when completing the final Phase III task, tracking the total session time.
+
+### Changed
+- **Session Forge Workflow**: Completely refactored `SessionRunner.tsx` from a horizontal Target-based carousel to a vertical Phase-Based Workflow (Phase I: Foundation, Phase II: Depth, Phase III: Brilliance).
+- **Gamified UI**: Added a "Mission Readiness" progress bar that climbs to 100% as tasks are marked applied.
+- **Drying Timers**: Added a 3-minute rapid cure timer for Phase I Base Coats, and grouped the 15-minute timers for Phase II Washes & Shades to encourage smart batch painting.
+
 ## [Unreleased] - 2026-07-15 (Miniscan UI Polish)
 ### Fixed
 - **Miniscan Layout & Overflow**: Rewrote the vertical flex layout of the `CogitatorUpload` component to correctly expand into the remaining viewport height without causing scroll on any device.
