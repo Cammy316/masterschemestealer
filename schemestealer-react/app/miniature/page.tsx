@@ -141,10 +141,6 @@ export default function MiniscanPage() {
         <div className="absolute top-0 left-0 w-8 h-8 border-l-2 border-t-2 border-green-500/30" />
         {/* Top Right */}
         <div className="absolute top-0 right-0 w-8 h-8 border-r-2 border-t-2 border-green-500/30" />
-        {/* Bottom Left */}
-        <div className="absolute bottom-20 left-0 w-8 h-8 border-l-2 border-b-2 border-green-500/30" />
-        {/* Bottom Right */}
-        <div className="absolute bottom-20 right-0 w-8 h-8 border-r-2 border-b-2 border-green-500/30" />
       </div>
 
       {/* Status readout corner */}
