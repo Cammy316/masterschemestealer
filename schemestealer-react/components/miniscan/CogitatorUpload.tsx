@@ -124,7 +124,7 @@ export function CogitatorUpload({
               </div>
             ) : (
               <>
-                <div className="flex justify-center mb-1 sm:mb-6">
+                <div className="flex justify-center mb-6 sm:mb-8">
                   <ServoSkull className="w-12 h-[3.8rem] sm:w-20 sm:h-24" isScanning={false} />
                 </div>
 
