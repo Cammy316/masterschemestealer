@@ -3,6 +3,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { API_BASE_URL } from '@/lib/apiClient';
 
+let sessionReady = false;
+
+export function markApiReady() {
+  sessionReady = true;
+}
+
 // Poll fast at first (this also usefully warms the Render instance), then back
 // off to a courteous cadence so we don't drain battery/data on mobile if the
 // backend stays down for a long time.
@@ -15,13 +21,11 @@ const BACKOFF_AFTER_MS = 5 * 60 * 1000; // 5 minutes
  * Pass skip=true (e.g. when offline mode is on) to skip polling and return ready immediately.
  */
 export function useApiReady(skip = false): boolean {
-  const [polledReady, setPolledReady] = useState(false);
+  const [polledReady, setPolledReady] = useState(sessionReady);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    // When skipping (offline mode) we report ready via the return value below —
-    // no synchronous setState in the effect body.
-    if (skip) return;
+    if (skip || sessionReady) return;
 
     let cancelled = false;
     const startedAt = Date.now();
@@ -42,11 +46,12 @@ export function useApiReady(skip = false): boolean {
     const check = async () => {
       try {
         const res = await fetch(`${API_BASE_URL}/api/ready`, {
-          signal: AbortSignal.timeout(4000),
+          signal: AbortSignal.timeout(8000),
         });
         if (res.ok) {
           const data = await res.json();
           if (data.ready) {
+            markApiReady();
             if (!cancelled) setPolledReady(true);
             clearTimer();
             return;
@@ -65,5 +70,5 @@ export function useApiReady(skip = false): boolean {
     };
   }, [skip]);
 
-  return skip || polledReady;
+  return skip || polledReady || sessionReady;
 }

@@ -224,7 +224,7 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
   }, []);
 
   return (
-    <div className="relative flex items-center justify-center min-h-[400px] py-8">
+    <div className="relative flex flex-col items-center justify-center min-h-[400px] py-8">
       {/* TODO(asset): warp-vortex.png hero art + the eye/skull decorative array would
           layer in here once the art exists. Blocked on art — the CSS/SVG vortex and
           parallax starfield below are the intentional fallback. */}
@@ -488,6 +488,15 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
           )}
         </motion.div>
       </motion.button>
+
+      {/* Info text */}
+      <motion.p
+        className="text-center text-[11px] text-warp-purple-light/50 mt-6 gothic-text uppercase tracking-widest"
+        animate={{ opacity: [0.3, 0.8, 0.3] }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+      >
+        [ Good even light · neutral background · miniature centred ]
+      </motion.p>
 
     </div>
   );

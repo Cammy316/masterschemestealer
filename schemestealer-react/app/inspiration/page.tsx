@@ -13,6 +13,7 @@ import { CosmicBackground } from '@/components/shared/CosmicBackground';
 import { LoadingAnimation } from '@/components/shared/LoadingAnimations';
 import { HowToScanModal } from '@/components/shared/HowToScanModal';
 import { AnimatePresence, motion } from 'framer-motion';
+import { WarmupStrip } from '@/components/shared/WarmupStrip';
 import { useApiReady } from '@/hooks/useApiReady';
 import { useScan } from '@/hooks/useScan';
 
@@ -69,29 +70,7 @@ export default function InspirationPage() {
   const offlineMode = useAppStore(s => s.offlineMode);
   const setOfflineMode = useAppStore(s => s.setOfflineMode);
 
-  // Display a subtle warm-up banner instead of gating the entire UI
-  const apiWarmupBanner = !apiReady && !isProcessing && !offlineMode && (
-    <motion.div 
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-black/80 border border-purple-500/50 rounded-full px-4 py-2 flex flex-col sm:flex-row items-center gap-3 shadow-[0_0_10px_rgba(139,92,246,0.3)] backdrop-blur-sm"
-    >
-      <div className="flex items-center gap-3">
-        <motion.div animate={{ rotate: 360 }} transition={{ duration: 3, repeat: Infinity, ease: 'linear' }} className="text-purple-500 text-sm">
-          ◆
-        </motion.div>
-        <span className="text-xs text-purple-400 gothic-text uppercase tracking-widest">
-          Warp Conduit Stabilising (~60s)
-        </span>
-      </div>
-      <button 
-        onClick={() => setOfflineMode(true)}
-        className="text-[10px] text-warp-teal border border-warp-teal/50 rounded px-2 py-1 hover:bg-warp-teal/20 transition-colors uppercase font-bold tracking-widest mt-2 sm:mt-0"
-      >
-        USE LOCAL AUSPEX
-      </button>
-    </motion.div>
-  );
+  // We no longer use inline apiWarmupBanner
 
   // We no longer return the LoadingAnimation early here.
   // Instead, the WarpPortal component stays mounted and uses the isActive={isProcessing}
@@ -99,7 +78,6 @@ export default function InspirationPage() {
 
   return (
     <div className="min-h-dvh void-bg overflow-x-hidden">
-      {apiWarmupBanner}
       {/* Full-page fixed starfield */}
       <CosmicBackground />
 
@@ -124,6 +102,10 @@ export default function InspirationPage() {
           <span>Channeling Guide</span>
         </button>
       </motion.div>
+
+      {(!apiReady && !isProcessing && !offlineMode) && (
+        <WarmupStrip theme="warp" onUseLocal={() => setOfflineMode(true)} />
+      )}
 
       {/* Warp Portal - THE HERO */}
       <motion.div

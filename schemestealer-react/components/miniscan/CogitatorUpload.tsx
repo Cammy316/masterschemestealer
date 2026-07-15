@@ -109,7 +109,7 @@ export function CogitatorUpload({
           </div>
 
           {/* Main Content Area */}
-          <div className="relative z-10 sm:px-6 pt-6">
+          <div className="relative z-10 sm:px-6 pt-5 sm:pt-6">
             
             {(isProcessing || showReveal) && localImageUrl ? (
               <div className="flex flex-col items-center">
@@ -133,24 +133,24 @@ export function CogitatorUpload({
               </div>
             ) : (
               <>
-                <div className="flex justify-center mb-6">
-                  <ServoSkull className="w-20 h-24" isScanning={false} />
+                <div className="flex justify-center mb-3 sm:mb-6">
+                  <ServoSkull className="w-14 h-[4.2rem] sm:w-20 sm:h-24" isScanning={false} />
                 </div>
 
                 <h2 className="auspex-text text-[clamp(1rem,4.5vw,1.25rem)] text-balance font-bold text-center mb-2 gothic-text [text-shadow:0_0_10px_var(--cogitator-green)]">
-                  ◆ INITIALIZE AUSPEX SCAN ◆
+                  ◆ INITIALISE AUSPEX SCAN ◆
                 </h2>
-                <p className="text-cogitator-green-dim text-sm text-center mb-6 tech-text">
+                <p className="text-cogitator-green-dim text-sm text-center mb-3 sm:mb-6 tech-text">
                   Upload cogitator data or activate pict-capture servo-skull
                 </p>
 
                 {/* Buttons */}
-                <div className="space-y-3">
+                <div className="space-y-2.5 sm:space-y-3">
               {/* Camera button */}
               <motion.button
                 onClick={onCameraActivate}
                 disabled={disabled}
-                className="w-full py-4 px-6 rounded-lg border border-cogitator-green bg-black/60 hover:bg-cogitator-green/10 touch-target disabled:opacity-50 shadow-[inset_0_0_15px_rgba(0,255,0,0.05)]"
+                className="w-full py-3 sm:py-4 px-6 rounded-lg border border-cogitator-green bg-black/60 hover:bg-cogitator-green/10 touch-target disabled:opacity-50 shadow-[inset_0_0_15px_rgba(0,255,0,0.05)]"
                 whileHover={disabled ? {} : {
                   boxShadow: 'inset 0 0 20px rgba(0,255,0,0.15), 0 0 15px var(--cogitator-green-glow)',
                   scale: 1.01,
@@ -180,7 +180,7 @@ export function CogitatorUpload({
               <motion.button
                 onClick={handleUploadClick}
                 disabled={disabled}
-                className="w-full py-4 px-6 rounded-lg border border-brass bg-black/60 hover:bg-brass/10 cursor-pointer touch-target disabled:opacity-50 shadow-[inset_0_0_15px_rgba(163,137,71,0.05)]"
+                className="w-full py-3 sm:py-4 px-6 rounded-lg border border-brass bg-black/60 hover:bg-brass/10 cursor-pointer touch-target disabled:opacity-50 shadow-[inset_0_0_15px_rgba(163,137,71,0.05)]"
                 whileHover={disabled ? {} : {
                   boxShadow: 'inset 0 0 20px rgba(163,137,71,0.15), 0 0 15px rgba(163,137,71,0.5)',
                   scale: 1.01,
@@ -202,11 +202,11 @@ export function CogitatorUpload({
 
             {/* Info text */}
             <motion.p
-              className="text-center text-[11px] text-cogitator-green-dim mt-6 tech-text uppercase tracking-widest"
+              className="text-center text-[11px] text-cogitator-green-dim mt-3 sm:mt-6 tech-text uppercase tracking-widest"
               animate={{ opacity: [0.3, 0.8, 0.3] }}
               transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
             >
-              [ Recommended: Clear lighting, miniature centered ]
+              [ Good even light · neutral background · miniature centred ]
             </motion.p>
               </>
             )}
