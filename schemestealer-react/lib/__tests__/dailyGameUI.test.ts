@@ -22,6 +22,13 @@ describe('DailyGameUI Share Logic', () => {
     expect(grid).toContain('🟩🟩🎯\n');
   });
 
+  it('generates correct share string emojis for achromatic hue', () => {
+    const grid = generateShareGrid([
+      { paint_id: '1', familyMatch: 'far', hueDirection: 'achromatic', lightnessDirection: 'match', deltaE: 10 },
+    ]);
+    expect(grid).toContain('⬜🟩😐\n');
+  });
+
   it('generates correct share string emojis for a loss', () => {
     // All misses
     const grid = generateShareGrid([

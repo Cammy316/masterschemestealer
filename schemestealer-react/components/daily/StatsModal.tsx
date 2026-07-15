@@ -1,7 +1,9 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { formatTimeToMidnight } from '@/lib/dailyStatus';
+import { useTimeToMidnight } from '@/hooks/useTimeToMidnight';
 
 interface GameState {
   guesses: any[];
@@ -21,28 +23,8 @@ interface StatsModalProps {
 }
 
 export function StatsModal({ gameState, onClose, onShare }: StatsModalProps) {
-  const [timeToMidnight, setTimeToMidnight] = useState('');
-
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      const tomorrow = new Date(now);
-      tomorrow.setHours(24, 0, 0, 0);
-      const diff = tomorrow.getTime() - now.getTime();
-      
-      const h = Math.floor(diff / (1000 * 60 * 60));
-      const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const s = Math.floor((diff % (1000 * 60)) / 1000);
-      
-      setTimeToMidnight(
-        `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
-      );
-    };
-
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
-  }, []);
+  const now = useTimeToMidnight();
+  const timeToMidnight = formatTimeToMidnight(now);
 
   const winPercent = gameState.played > 0 ? Math.round((gameState.won / gameState.played) * 100) : 0;
   const maxGuessCount = Math.max(...gameState.guessDistribution, 1); // Avoid division by zero
