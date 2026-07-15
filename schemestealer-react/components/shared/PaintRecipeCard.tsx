@@ -286,13 +286,23 @@ export function PaintRecipeCard({
 
       {/* Header: difficulty pill + actions */}
       <div className={`flex items-center justify-between px-3 py-2 border-b gap-2 ${isWarp ? 'bg-void-black/30 border-purple-500/20' : 'bg-[#0a150c] border-cogitator-green/30'}`}>
-        <Tooltip content={`${difficulty.label} — ${paintCount} paint${paintCount === 1 ? '' : 's'} in this recipe`}>
-          <span
-            className="text-[11px] font-semibold uppercase tracking-wide px-2.5 py-1 rounded-full border cursor-help whitespace-nowrap"
-            style={{ borderColor: 'var(--text-tertiary)', color: 'var(--text-secondary)' }}
+        <Tooltip content={`${difficulty.label} complexity — ${paintCount} paint${paintCount === 1 ? '' : 's'} in this recipe`}>
+          <div
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-sm shadow-[inset_0_1px_3px_rgba(0,0,0,0.5)] cursor-help select-none"
+            style={{ 
+              background: 'linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%)',
+              borderTop: '1px solid #333',
+              borderBottom: '1px solid #000',
+              borderLeft: '1px solid #1a1a1a',
+              borderRight: '1px solid #1a1a1a',
+            }}
           >
-            {difficulty.label}
-          </span>
+            <div className="w-1 h-1 rounded-full bg-black/80 shadow-[0_1px_0_rgba(255,255,255,0.1)]" />
+            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+              Difficulty: <span className="text-gray-200">{difficulty.label}</span>
+            </span>
+            <div className="w-1 h-1 rounded-full bg-black/80 shadow-[0_1px_0_rgba(255,255,255,0.1)]" />
+          </div>
         </Tooltip>
 
         <div className="flex items-center gap-2">
@@ -629,8 +639,8 @@ function RecipeStepRow({
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </div>
             )}
-            {/* ΔE badge, colour-coded by match quality */}
-            {activePaint.deltaE !== undefined && (
+            {/* ΔE badge, colour-coded by match quality (ONLY FOR BASE MATCH) */}
+            {activePaint.deltaE !== undefined && step.key === 'base' && (
               <div
                 className="absolute -bottom-1.5 -right-1.5 min-w-[26px] h-5 px-1 rounded-full flex items-center justify-center text-[11px] font-bold leading-none"
                 style={{ background: 'var(--void-black)', border: `1px solid ${quality.color}`, color: quality.color }}
