@@ -109,6 +109,8 @@ export function InlineGuessInput({ guessNumber, onSelect }: InlineGuessInputProp
                 return (
                   <li
                     key={paint.paint_id}
+                    role="option"
+                    aria-selected={isHighlighted}
                     onMouseDown={(e) => e.preventDefault()} // CRITICAL: prevent blur before click
                     onClick={() => {
                       onSelect(paint);

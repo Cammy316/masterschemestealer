@@ -57,17 +57,12 @@
      ======================================== */
   --min-touch-target: 44px;
   --nav-height: 64px;
-  --border-radius-sm: 4px;
-  --border-radius: 8px;
-  --border-radius-lg: 12px;
-  --border-radius-xl: 16px;
 
   /* ========================================
      Z-INDEX LAYERS
      ======================================== */
   --z-modal: 1000;
   --z-nav: 100;
-  --z-overlay: 50;
   --z-dropdown: 200; /* above page content + nav (100), below modals (1000) */
 }
 
@@ -175,8 +170,6 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ========================================
    RESPONSIVE TYPOGRAPHY UTILITIES
-   Only the classes with live call sites survive — the unused
-   title/header/body/tracking variants were dead weight.
    ======================================== */
 
 /* For section titles */

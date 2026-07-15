@@ -51,7 +51,7 @@ export function CogitatorUpload({
     <div className="relative max-w-2xl mx-auto w-full">
       {/* Brass Casing */}
       <div 
-        className="rounded-xl p-2 md:p-3 shadow-[inset_0_0_10px_rgba(0,0,0,0.8),0_10px_40px_rgba(0,0,0,0.8)] relative bg-[linear-gradient(135deg,#1a1510_0%,#4a3e20_20%,#8b7337_50%,#4a3e20_80%,#1a1510_100%)] border border-[#a38947]"
+        className="rounded-xl p-1 md:p-3 shadow-[inset_0_0_10px_rgba(0,0,0,0.8),0_10px_40px_rgba(0,0,0,0.8)] relative bg-[linear-gradient(135deg,#1a1510_0%,#4a3e20_20%,#8b7337_50%,#4a3e20_80%,#1a1510_100%)] border border-[#a38947]"
       >
         {/* Rivets */}
         {[
@@ -63,7 +63,7 @@ export function CogitatorUpload({
 
         {/* CRT Screen Frame */}
         <div 
-          className="rounded-lg p-4 md:p-8 relative overflow-hidden flex flex-col bg-[#031005] shadow-[inset_0_0_60px_rgba(0,0,0,0.9),inset_0_0_20px_rgba(0,255,0,0.15)] border-2 border-[#0a0a0a]"
+          className="rounded-lg p-3 md:p-8 relative overflow-hidden flex flex-col bg-[#031005] shadow-[inset_0_0_60px_rgba(0,0,0,0.9),inset_0_0_20px_rgba(0,255,0,0.15)] border-2 border-[#0a0a0a]"
         >
           {/* Active Auspex Grid */}
           <div 
@@ -109,7 +109,7 @@ export function CogitatorUpload({
           </div>
 
           {/* Main Content Area */}
-          <div className="relative z-10 sm:px-6 pt-5 sm:pt-6">
+          <div className="relative z-10 sm:px-6 pt-3 sm:pt-6">
             
             {(isProcessing || showReveal) && localImageUrl ? (
               <div className="flex flex-col items-center">
@@ -133,14 +133,14 @@ export function CogitatorUpload({
               </div>
             ) : (
               <>
-                <div className="flex justify-center mb-3 sm:mb-6">
-                  <ServoSkull className="w-14 h-[4.2rem] sm:w-20 sm:h-24" isScanning={false} />
+                <div className="flex justify-center mb-1 sm:mb-6">
+                  <ServoSkull className="w-12 h-[3.8rem] sm:w-20 sm:h-24" isScanning={false} />
                 </div>
 
-                <h2 className="auspex-text text-[clamp(1rem,4.5vw,1.25rem)] text-balance font-bold text-center mb-2 gothic-text [text-shadow:0_0_10px_var(--cogitator-green)]">
+                <h2 className="auspex-text text-[clamp(1rem,4.5vw,1.25rem)] text-balance font-bold text-center mb-1 gothic-text [text-shadow:0_0_10px_var(--cogitator-green)]">
                   ◆ INITIALISE AUSPEX SCAN ◆
                 </h2>
-                <p className="text-cogitator-green-dim text-sm text-center mb-3 sm:mb-6 tech-text">
+                <p className="text-cogitator-green-dim text-xs sm:text-sm text-center mb-2 sm:mb-6 tech-text">
                   Upload cogitator data or activate pict-capture servo-skull
                 </p>
 
@@ -202,7 +202,7 @@ export function CogitatorUpload({
 
             {/* Info text */}
             <motion.p
-              className="text-center text-[11px] text-cogitator-green-dim mt-3 sm:mt-6 tech-text uppercase tracking-widest"
+              className="text-center text-[10px] sm:text-[11px] text-cogitator-green-dim mt-2 sm:mt-6 tech-text uppercase tracking-widest"
               animate={{ opacity: [0.3, 0.8, 0.3] }}
               transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
             >
