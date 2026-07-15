@@ -48,10 +48,10 @@ export function CogitatorUpload({
   };
 
   return (
-    <div className="relative max-w-2xl mx-auto w-full">
+    <div className="relative max-w-2xl mx-auto w-full flex-1 flex flex-col">
       {/* Brass Casing */}
       <div 
-        className="rounded-xl p-1 md:p-3 shadow-[inset_0_0_10px_rgba(0,0,0,0.8),0_10px_40px_rgba(0,0,0,0.8)] relative bg-[linear-gradient(135deg,#1a1510_0%,#4a3e20_20%,#8b7337_50%,#4a3e20_80%,#1a1510_100%)] border border-[#a38947]"
+        className="rounded-xl p-1 md:p-3 shadow-[inset_0_0_10px_rgba(0,0,0,0.8),0_10px_40px_rgba(0,0,0,0.8)] relative bg-[linear-gradient(135deg,#1a1510_0%,#4a3e20_20%,#8b7337_50%,#4a3e20_80%,#1a1510_100%)] border border-[#a38947] flex-1 flex flex-col"
       >
         {/* Rivets */}
         {[
@@ -63,7 +63,7 @@ export function CogitatorUpload({
 
         {/* CRT Screen Frame */}
         <div 
-          className="rounded-lg p-3 md:p-8 relative overflow-hidden flex flex-col bg-[#031005] shadow-[inset_0_0_60px_rgba(0,0,0,0.9),inset_0_0_20px_rgba(0,255,0,0.15)] border-2 border-[#0a0a0a]"
+          className="rounded-lg p-3 md:p-8 relative overflow-hidden flex-1 flex flex-col bg-[#031005] shadow-[inset_0_0_60px_rgba(0,0,0,0.9),inset_0_0_20px_rgba(0,255,0,0.15)] border-2 border-[#0a0a0a]"
         >
           {/* Active Auspex Grid */}
           <div 
@@ -71,15 +71,12 @@ export function CogitatorUpload({
           />
 
           {/* Machine Spirit Status Indicator (LED) */}
-          <div className="absolute top-3 left-4 sm:top-4 sm:left-5 flex items-center gap-2 pointer-events-none z-30 opacity-80">
+          <div className="absolute top-2 left-2 sm:top-4 sm:left-4 flex items-center justify-center w-4 h-4 pointer-events-none z-30">
             <motion.div
-              className="w-1.5 h-1.5 rounded-full bg-[var(--cogitator-green)] shadow-[0_0_8px_var(--cogitator-green)]"
+              className="w-1.5 h-1.5 rounded-full bg-[#ff2a2a] shadow-[0_0_8px_#ff2a2a]"
               animate={{ opacity: [0.2, 1, 0.2] }}
               transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
             />
-            <span className="text-[9px] text-[var(--cogitator-green)]/80 cyber-text font-mono tracking-widest uppercase">
-              M.SPIRIT
-            </span>
           </div>
 
           {/* CRT Scanline overlay */}
@@ -110,10 +107,10 @@ export function CogitatorUpload({
           </div>
 
           {/* Main Content Area */}
-          <div className="relative z-10 sm:px-6 pt-3 sm:pt-6">
+          <div className="relative z-10 sm:px-6 pt-3 sm:pt-6 flex-1 flex flex-col">
             
             {(isProcessing || showReveal) && localImageUrl ? (
-              <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center flex-1 justify-center">
                 <ServoSkull className="w-16 h-16 mb-4 z-20 drop-shadow-[0_0_10px_rgba(0,255,0,0.5)]" isScanning={isProcessing} />
                 <ActiveAuspexScan 
                   localImageUrl={localImageUrl}
@@ -146,7 +143,7 @@ export function CogitatorUpload({
                 </p>
 
                 {/* Buttons */}
-                <div className="space-y-2.5 sm:space-y-3">
+                <div className="space-y-2.5 sm:space-y-3 mt-auto">
               {/* Camera button */}
               <motion.button
                 onClick={onCameraActivate}
