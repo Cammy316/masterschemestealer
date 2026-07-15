@@ -20,6 +20,48 @@ import { HowToScanModal } from '@/components/shared/HowToScanModal';
 import { AnimatePresence } from 'framer-motion';
 import { WarmupStrip } from '@/components/shared/WarmupStrip';
 
+// Component to display scrolling/changing technogargle text
+function Technogargle() {
+  const [sig, setSig] = useState('98.2');
+  const [rng, setRng] = useState('OPTM');
+  const [hex, setHex] = useState('0x4F2A');
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      // Randomly change values every second for "thinking" effect
+      setSig((90 + Math.random() * 9.9).toFixed(1));
+      
+      const states = ['OPTM', 'SCAN', 'SYNC', 'CALC', 'ACTV'];
+      setRng(states[Math.floor(Math.random() * states.length)]);
+      
+      setHex('0x' + Math.floor(Math.random() * 65535).toString(16).toUpperCase().padStart(4, '0'));
+    }, 1200);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="fixed top-6 right-4 text-green-500/40 text-[10px] font-mono z-20 pointer-events-none text-right flex flex-col items-end leading-tight">
+      <motion.div
+        animate={{ opacity: [0.5, 0.9, 0.5] }}
+        transition={{ duration: 3, repeat: Infinity }}
+      >
+        SIG: {sig}%
+      </motion.div>
+      <motion.div
+        animate={{ opacity: [0.6, 1, 0.6] }}
+        transition={{ duration: 2.1, repeat: Infinity, delay: 0.5 }}
+      >
+        SYS: {rng}
+      </motion.div>
+      <motion.div
+        className="text-[8px] mt-0.5 opacity-50"
+      >
+        {hex}
+      </motion.div>
+    </div>
+  );
+}
+
 export default function MiniscanPage() {
   const router = useRouter();
   const setMode = useAppStore((s) => s.setMode);
@@ -92,7 +134,7 @@ export default function MiniscanPage() {
 
 
   return (
-    <div className="min-h-dvh pt-1 sm:pt-[clamp(0.75rem,3vh,2rem)] px-4 cogitator-screen flex flex-col" style={{ background: 'var(--void-black)' }}>
+    <div className="min-h-dvh pt-8 sm:pt-10 px-4 cogitator-screen flex flex-col" style={{ background: 'var(--void-black)' }}>
       {/* Targeting brackets - corner overlays */}
       <div className="fixed inset-4 pointer-events-none z-20">
         {/* Top Left */}
@@ -106,10 +148,7 @@ export default function MiniscanPage() {
       </div>
 
       {/* Status readout corner */}
-      <div className="fixed top-6 right-4 text-green-500/40 text-xs font-mono z-20 pointer-events-none">
-        <div>SIG: 98.2%</div>
-        <div>RNG: OPTM</div>
-      </div>
+      <Technogargle />
 
       {/* Header */}
       <motion.div
@@ -139,7 +178,7 @@ export default function MiniscanPage() {
 
       {/* Upload Component */}
       <motion.div
-        className="max-w-2xl mx-auto w-full flex-1 flex flex-col justify-center pb-24 sm:pb-32"
+        className="max-w-2xl mx-auto w-full flex-1 flex flex-col pb-24 sm:pb-32"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, delay: 0.2 }}
