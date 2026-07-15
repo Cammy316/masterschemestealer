@@ -2,12 +2,17 @@
 
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useAppStore } from '@/lib/store';
 
 interface HowToScanModalProps {
   onClose: () => void;
 }
 
 export function HowToScanModal({ onClose }: HowToScanModalProps) {
+  const mode = useAppStore(s => s.currentMode);
+  const isWarp = mode === 'inspiration';
+  const titleColor = isWarp ? 'text-[var(--warp-purple-light)]' : 'text-[var(--cogitator-green)]';
+
   useEffect(() => {
     const previous = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
@@ -17,7 +22,7 @@ export function HowToScanModal({ onClose }: HowToScanModalProps) {
   }, []);
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={onClose}>
+    <div className="fixed inset-0 z-[var(--z-modal)] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={onClose}>
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
@@ -32,45 +37,55 @@ export function HowToScanModal({ onClose }: HowToScanModalProps) {
           ✕
         </button>
 
-        <h2 className="text-xl gothic-text text-[var(--imperial-gold)] mb-6 text-center">HOW TO SCAN</h2>
+        <h2 className={`text-xl gothic-text mb-6 text-center ${titleColor}`}>
+          {isWarp ? 'CHANNELLING GUIDE' : 'HOW TO SCAN'}
+        </h2>
 
         <div className="text-sm text-gray-300 space-y-4">
-          <p>
-            Upload a photo of a miniature (<strong>MINISCAN</strong>) or any inspiration image (<strong>INSPIRATION</strong>).
-          </p>
+          {!isWarp ? (
+            <>
+              <ol className="list-decimal pl-5 space-y-2 text-xs">
+                <li><strong className="text-white">good, even light</strong> — daylight or a desk lamp, no harsh shadows</li>
+                <li><strong className="text-white">plain, neutral background</strong></li>
+                <li><strong className="text-white">avoid gloss glare</strong> — tilt the model or diffuse the light</li>
+                <li><strong className="text-white">fill the frame</strong> with the miniature.</li>
+              </ol>
+              <div className="mt-4">
+                <h3 className="font-bold text-[var(--imperial-gold)] mb-1 text-xs uppercase tracking-widest">What You Get</h3>
+                <p className="text-xs">The full paint recipe per colour with budget-brand matches.</p>
+              </div>
+            </>
+          ) : (
+            <>
+              <ol className="list-decimal pl-5 space-y-2 text-xs">
+                <li><strong className="text-white">any image works</strong> — art, sunsets, screenshots, photographs</li>
+                <li><strong className="text-white">the conduit extracts</strong> 5–8 dominant hues</li>
+                <li><strong className="text-white">each hue is matched</strong> to real paints across six brands</li>
+                <li><strong className="text-white">the whole image is read</strong> (no background removal) — crop to the region you love first.</li>
+              </ol>
+            </>
+          )}
 
           <div className="border-t border-gray-800 pt-4 mt-4">
-            <h3 className="font-bold text-white mb-4 tracking-widest text-xs uppercase">Interaction Guide</h3>
-            
-            <ul className="space-y-4 text-xs">
-              <li className="flex items-start gap-3">
-                <div className="w-6 h-6 flex-shrink-0 flex items-center justify-center bg-gray-900 border border-gray-700 rounded-sm">🔒</div>
-                <div>
-                  <strong className="text-white block mb-1">Lock Targets</strong>
-                  Tap the padlock icon on a colour to lock it. This ensures it stays in your palette when you swap other paints.
-                </div>
+            <h3 className="font-bold text-white mb-3 tracking-widest text-xs uppercase">After The Scan</h3>
+            <ul className="space-y-3 text-xs">
+              <li className="flex items-start gap-2">
+                <span>🔒</span>
+                <span><strong>Lock Targets:</strong> Tap the padlock to keep a colour when swapping other paints.</span>
               </li>
-              
-              <li className="flex items-start gap-3">
-                <div className="w-6 h-6 flex-shrink-0 flex items-center justify-center bg-gray-900 border border-gray-700 rounded-sm text-[10px]">🎨</div>
-                <div>
-                  <strong className="text-white block mb-1">Brand Details</strong>
-                  Tap any paint swatch to reveal its exact brand, name, and Delta-E match quality.
-                </div>
+              <li className="flex items-start gap-2">
+                <span>🎨</span>
+                <span><strong>Brand Details:</strong> Tap any swatch for exact brand, name, and match quality.</span>
               </li>
-
-              <li className="flex items-start gap-3">
-                <div className="w-6 h-6 flex-shrink-0 flex items-center justify-center bg-gray-900 border border-gray-700 rounded-sm text-[10px]">🔄</div>
-                <div>
-                  <strong className="text-white block mb-1">Substitutions</strong>
-                  If you don't own a paint, the engine will automatically suggest the closest alternative from other brands.
-                </div>
+              <li className="flex items-start gap-2">
+                <span>🔄</span>
+                <span><strong>Substitutions:</strong> Automatically find the closest alternatives from other brands.</span>
               </li>
             </ul>
           </div>
           
           <div className="border-t border-[var(--imperial-gold)]/30 pt-4 mt-6">
-            <p className="text-center font-mono text-[10px] text-[var(--imperial-gold)]/60 uppercase tracking-widest">Auspex Pattern Recognition</p>
+            <p className="text-center font-mono text-[11px] text-[var(--imperial-gold)]/60 uppercase tracking-widest">Auspex Pattern Recognition</p>
           </div>
         </div>
       </motion.div>
