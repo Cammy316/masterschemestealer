@@ -55,7 +55,8 @@ export interface Guess {
 export function generateShareGrid(guesses: Guess[]) {
   let grid = '';
   for (const g of guesses) {
-    if (g.hueDirection === 'match' || g.hueDirection === 'achromatic') grid += '🟩';
+    if (g.hueDirection === 'match') grid += '🟩';
+    else if (g.hueDirection === 'achromatic') grid += '⬜';
     else if (g.hueDirection === 'warmer') grid += '➡️';
     else grid += '⬅️';
     

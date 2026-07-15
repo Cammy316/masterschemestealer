@@ -1,20 +1,422 @@
 [
   {
-    "id": "proof-1",
-    "model": "Ultramarine Intercessor",
-    "originalPalette": ["citadel-macragge-blue", "citadel-calgar-blue", "citadel-retributor-armour"],
-    "budgetPalette": ["vallejo-ultramarine", "vallejo-magic-blue", "vallejo-glorious-gold"]
+    "id": "scheme-1",
+    "model": "Ultramarines Intercessor",
+    "originalPalette": [
+      "citadel-macragge-blue",
+      "citadel-calgar-blue",
+      "citadel-abaddon-black"
+    ],
+    "budgetPalette": [
+      "ak-3gen-dark-blue",
+      "two-thin-coats-elysium-blue",
+      "army-painter-wph-matt-black"
+    ]
   },
   {
-    "id": "proof-2",
-    "model": "Ork Boy",
-    "originalPalette": ["citadel-waaagh-flesh", "citadel-warboss-green", "citadel-leadbelcher"],
-    "budgetPalette": ["army-painter-greenskin", "army-painter-goblin-green", "army-painter-gun-metal"]
+    "id": "scheme-2",
+    "model": "Blood Angels Assault Intercessor",
+    "originalPalette": [
+      "citadel-mephiston-red",
+      "citadel-evil-sunz-scarlet",
+      "citadel-abaddon-black"
+    ],
+    "budgetPalette": [
+      "two-thin-coats-evil-eye-red",
+      "ak-3gen-vermillion",
+      "army-painter-wph-matt-black"
+    ]
   },
   {
-    "id": "proof-3",
-    "model": "Stormcast Eternal",
-    "originalPalette": ["citadel-retributor-armour", "citadel-kantor-blue", "citadel-rakarth-flesh"],
-    "budgetPalette": ["vallejo-glorious-gold", "vallejo-imperial-blue", "army-painter-banshee-brown"]
+    "id": "scheme-3",
+    "model": "Death Guard Plague Marine",
+    "originalPalette": [
+      "citadel-death-guard-green",
+      "citadel-balthasar-gold",
+      "citadel-leadbelcher"
+    ],
+    "budgetPalette": [
+      "vallejo-model-color-russian-unif-wwii",
+      "two-thin-coats-steampunk-copper",
+      "ak-3gen-oily-steel"
+    ]
+  },
+  {
+    "id": "scheme-4",
+    "model": "Ork Boyz Flesh",
+    "originalPalette": [
+      "citadel-waaagh-flesh",
+      "citadel-warboss-green",
+      "citadel-skarsnik-green"
+    ],
+    "budgetPalette": [
+      "two-thin-coats-dark-arts-betrayer-green",
+      "two-thin-coats-orc-hide",
+      "vallejo-model-color-bright-green"
+    ]
+  },
+  {
+    "id": "scheme-5",
+    "model": "Necron Warrior",
+    "originalPalette": [
+      "citadel-runelord-brass",
+      "citadel-leadbelcher",
+      "citadel-moot-green"
+    ],
+    "budgetPalette": [
+      "vallejo-game-color-barbarian-skin",
+      "ak-3gen-oily-steel",
+      "vallejo-game-color-scorpy-green"
+    ]
+  },
+  {
+    "id": "scheme-6",
+    "model": "Stormcast Eternal Liberator",
+    "originalPalette": [
+      "citadel-retributor-armour",
+      "citadel-liberator-gold",
+      "citadel-kantor-blue"
+    ],
+    "budgetPalette": [
+      "ak-3gen-medium-flesh-tone",
+      "ak-3gen-decomposed-flesh",
+      "pro-acryl-dark-blue"
+    ]
+  },
+  {
+    "id": "scheme-7",
+    "model": "Night Lords Chaos Space Marine",
+    "originalPalette": [
+      "citadel-night-lords-blue",
+      "citadel-mephiston-red",
+      "citadel-leadbelcher"
+    ],
+    "budgetPalette": [
+      "vallejo-model-color-continental-blue",
+      "two-thin-coats-evil-eye-red",
+      "ak-3gen-oily-steel"
+    ]
+  },
+  {
+    "id": "scheme-8",
+    "model": "Imperial Fists Intercessor",
+    "originalPalette": [
+      "citadel-averland-sunset",
+      "citadel-yriel-yellow",
+      "citadel-mephiston-red"
+    ],
+    "budgetPalette": [
+      "two-thin-coats-dark-sun-yellow",
+      "vallejo-game-color-sun-yellow",
+      "two-thin-coats-evil-eye-red"
+    ]
+  },
+  {
+    "id": "scheme-9",
+    "model": "Adepta Sororitas Battle Sister",
+    "originalPalette": [
+      "citadel-abaddon-black",
+      "citadel-mephiston-red",
+      "citadel-corax-white"
+    ],
+    "budgetPalette": [
+      "army-painter-wph-matt-black",
+      "two-thin-coats-evil-eye-red",
+      "army-painter-mithril"
+    ]
+  },
+  {
+    "id": "scheme-10",
+    "model": "Tyranid Hive Fleet Leviathan",
+    "originalPalette": [
+      "citadel-wraithbone",
+      "citadel-naggaroth-night",
+      "citadel-mephiston-red"
+    ],
+    "budgetPalette": [
+      "two-thin-coats-dark-arts-altar-ivory",
+      "vallejo-game-color-night-blue",
+      "two-thin-coats-evil-eye-red"
+    ]
+  },
+  {
+    "id": "scheme-11",
+    "model": "T'au Empire Fire Warrior",
+    "originalPalette": [
+      "citadel-tau-light-ochre",
+      "citadel-rhinox-hide",
+      "citadel-abaddon-black"
+    ],
+    "budgetPalette": [
+      "army-painter-demigod-flames",
+      "vallejo-game-color-evil-red",
+      "army-painter-wph-matt-black"
+    ]
+  },
+  {
+    "id": "scheme-12",
+    "model": "Salamanders Intercessor",
+    "originalPalette": [
+      "citadel-waaagh-flesh",
+      "citadel-warpstone-glow",
+      "citadel-moot-green"
+    ],
+    "budgetPalette": [
+      "two-thin-coats-dark-arts-betrayer-green",
+      "ak-3gen-greenskin-punch",
+      "vallejo-game-color-scorpy-green"
+    ]
+  },
+  {
+    "id": "scheme-13",
+    "model": "Dark Angels Intercessor",
+    "originalPalette": [
+      "citadel-caliban-green",
+      "citadel-warpstone-glow",
+      "citadel-mephiston-red"
+    ],
+    "budgetPalette": [
+      "two-thin-coats-wyvern-green",
+      "ak-3gen-greenskin-punch",
+      "two-thin-coats-evil-eye-red"
+    ]
+  },
+  {
+    "id": "scheme-14",
+    "model": "Space Wolves Hunter",
+    "originalPalette": [
+      "citadel-the-fang",
+      "citadel-russ-grey",
+      "citadel-fenrisian-grey"
+    ],
+    "budgetPalette": [
+      "pro-acryl-dark-grey-blue",
+      "army-painter-stratos-blue",
+      "vallejo-model-color-grey-blue"
+    ]
+  },
+  {
+    "id": "scheme-15",
+    "model": "Black Legion Marine",
+    "originalPalette": [
+      "citadel-abaddon-black",
+      "citadel-leadbelcher",
+      "citadel-balthasar-gold"
+    ],
+    "budgetPalette": [
+      "army-painter-wph-matt-black",
+      "ak-3gen-oily-steel",
+      "two-thin-coats-steampunk-copper"
+    ]
+  },
+  {
+    "id": "scheme-16",
+    "model": "Thousand Sons Rubric Marine",
+    "originalPalette": [
+      "citadel-thousand-sons-blue",
+      "citadel-ahriman-blue",
+      "citadel-retributor-armour"
+    ],
+    "budgetPalette": [
+      "ak-3gen-medium-blue",
+      "ak-3gen-archaic-turquoise",
+      "ak-3gen-medium-flesh-tone"
+    ]
+  },
+  {
+    "id": "scheme-17",
+    "model": "Word Bearers Legionary",
+    "originalPalette": [
+      "citadel-word-bearers-red",
+      "citadel-leadbelcher",
+      "citadel-abaddon-black"
+    ],
+    "budgetPalette": [
+      "vallejo-game-color-gory-red",
+      "ak-3gen-oily-steel",
+      "army-painter-wph-matt-black"
+    ]
+  },
+  {
+    "id": "scheme-18",
+    "model": "Alpha Legion Operative",
+    "originalPalette": [
+      "citadel-stegadon-scale-green",
+      "citadel-sotek-green",
+      "citadel-temple-guard-blue"
+    ],
+    "budgetPalette": [
+      "two-thin-coats-hydra-green",
+      "ak-3gen-turquoise",
+      "vallejo-game-color-electric-blue"
+    ]
+  },
+  {
+    "id": "scheme-19",
+    "model": "Iron Hands Intercessor",
+    "originalPalette": [
+      "citadel-abaddon-black",
+      "citadel-leadbelcher",
+      "citadel-corax-white"
+    ],
+    "budgetPalette": [
+      "army-painter-wph-matt-black",
+      "ak-3gen-oily-steel",
+      "army-painter-mithril"
+    ]
+  },
+  {
+    "id": "scheme-20",
+    "model": "Raven Guard Intercessor",
+    "originalPalette": [
+      "citadel-corvus-black",
+      "citadel-abaddon-black",
+      "citadel-corax-white"
+    ],
+    "budgetPalette": [
+      "two-thin-coats-dark-arts-animus-black",
+      "army-painter-wph-matt-black",
+      "army-painter-mithril"
+    ]
+  },
+  {
+    "id": "scheme-21",
+    "model": "White Scars Intercessor",
+    "originalPalette": [
+      "citadel-corax-white",
+      "citadel-white-scar",
+      "citadel-mephiston-red"
+    ],
+    "budgetPalette": [
+      "army-painter-mithril",
+      "pro-acryl-bold-titanium-white",
+      "two-thin-coats-evil-eye-red"
+    ]
+  },
+  {
+    "id": "scheme-22",
+    "model": "Cadian Shock Trooper",
+    "originalPalette": [
+      "citadel-zandri-dust",
+      "citadel-castellan-green",
+      "citadel-cadian-fleshtone"
+    ],
+    "budgetPalette": [
+      "two-thin-coats-sandstone",
+      "vallejo-model-color-military-green",
+      "two-thin-coats-dark-arts-masque-flesh"
+    ]
+  },
+  {
+    "id": "scheme-23",
+    "model": "Death Korps of Krieg",
+    "originalPalette": [
+      "citadel-death-korps-drab",
+      "citadel-mechanicus-standard-grey",
+      "citadel-leadbelcher"
+    ],
+    "budgetPalette": [
+      "vallejo-model-color-cam-black-green",
+      "ak-3gen-dark-grey",
+      "ak-3gen-oily-steel"
+    ]
+  },
+  {
+    "id": "scheme-24",
+    "model": "Genestealer Cults Neophyte",
+    "originalPalette": [
+      "citadel-mechanicus-standard-grey",
+      "citadel-abaddon-black",
+      "citadel-rakarth-flesh"
+    ],
+    "budgetPalette": [
+      "ak-3gen-dark-grey",
+      "army-painter-wph-matt-black",
+      "two-thin-coats-griffon-claw"
+    ]
+  },
+  {
+    "id": "scheme-25",
+    "model": "Adeptus Mechanicus Skitarii",
+    "originalPalette": [
+      "citadel-mephiston-red",
+      "citadel-leadbelcher",
+      "citadel-rhinox-hide"
+    ],
+    "budgetPalette": [
+      "two-thin-coats-evil-eye-red",
+      "ak-3gen-oily-steel",
+      "vallejo-game-color-evil-red"
+    ]
+  },
+  {
+    "id": "scheme-26",
+    "model": "Aeldari Guardian",
+    "originalPalette": [
+      "citadel-mephiston-red",
+      "citadel-abaddon-black",
+      "citadel-wraithbone"
+    ],
+    "budgetPalette": [
+      "two-thin-coats-evil-eye-red",
+      "army-painter-wph-matt-black",
+      "two-thin-coats-dark-arts-altar-ivory"
+    ]
+  },
+  {
+    "id": "scheme-27",
+    "model": "Drukhari Kabalite",
+    "originalPalette": [
+      "citadel-incubi-darkness",
+      "citadel-kabalite-green",
+      "citadel-sybarite-green"
+    ],
+    "budgetPalette": [
+      "vallejo-model-color-dark-sea-blue",
+      "two-thin-coats-jade-green",
+      "two-thin-coats-ghoul-green"
+    ]
+  },
+  {
+    "id": "scheme-28",
+    "model": "Leagues of Votann Hearthkyn",
+    "originalPalette": [
+      "citadel-the-fang",
+      "citadel-zandri-dust",
+      "citadel-leadbelcher"
+    ],
+    "budgetPalette": [
+      "pro-acryl-dark-grey-blue",
+      "two-thin-coats-sandstone",
+      "ak-3gen-oily-steel"
+    ]
+  },
+  {
+    "id": "scheme-29",
+    "model": "Flesh Tearers Assault Marine",
+    "originalPalette": [
+      "citadel-khorne-red",
+      "citadel-abaddon-black",
+      "citadel-leadbelcher"
+    ],
+    "budgetPalette": [
+      "two-thin-coats-asmodeus-red",
+      "army-painter-wph-matt-black",
+      "ak-3gen-oily-steel"
+    ]
+  },
+  {
+    "id": "scheme-30",
+    "model": "Khorne Berzerker",
+    "originalPalette": [
+      "citadel-mephiston-red",
+      "citadel-runelord-brass",
+      "citadel-abaddon-black"
+    ],
+    "budgetPalette": [
+      "two-thin-coats-evil-eye-red",
+      "vallejo-game-color-barbarian-skin",
+      "army-painter-wph-matt-black"
+    ]
   }
 ]
