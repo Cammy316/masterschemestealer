@@ -92,7 +92,7 @@ export default function MiniscanPage() {
 
 
   return (
-    <div className="min-h-dvh pt-[clamp(0.75rem,3vh,2rem)] px-4 cogitator-screen" style={{ background: 'var(--void-black)' }}>
+    <div className="min-h-dvh pt-1 sm:pt-[clamp(0.75rem,3vh,2rem)] px-4 cogitator-screen" style={{ background: 'var(--void-black)' }}>
       {/* Targeting brackets - corner overlays */}
       <div className="fixed inset-4 pointer-events-none z-20">
         {/* Top Left */}
@@ -113,15 +113,15 @@ export default function MiniscanPage() {
 
       {/* Header */}
       <motion.div
-        className="max-w-2xl mx-auto mb-2 sm:mb-4 text-center relative"
+        className="max-w-2xl mx-auto mb-0 sm:mb-4 text-center relative"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="text-[clamp(1.5rem,5vw,1.875rem)] text-balance font-bold gothic-text mb-2 auspex-text">
+        <h1 className="text-[clamp(1.5rem,5vw,1.875rem)] text-balance font-bold gothic-text mb-1 sm:mb-2 auspex-text">
           ◆ MINISCAN PROTOCOL ◆
         </h1>
-        <p className="text-cogitator-green-dim tech-text text-sm mb-1 sm:mb-2 leading-tight">
+        <p className="text-cogitator-green-dim tech-text text-xs sm:text-sm mb-1 sm:mb-2 leading-tight">
           Identify sacred paint formulations from painted miniatures
         </p>
         <button
