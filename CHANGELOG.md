@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-07-15 (Miniscan UI Polish)
+### Fixed
+- **Miniscan Layout & Overflow**: Rewrote the vertical flex layout of the `CogitatorUpload` component to correctly expand into the remaining viewport height without causing scroll on any device.
+- **Targeting Bracket Overlaps**: Removed conflicting corner target brackets from the global overlay that previously overlapped with the brass Miniscan corners.
+- **Component Centering**: Centered the floating Servo Skull, Title, and Action Buttons vertically within the dynamic CRT window to utilize dead space intelligently on tall aspect ratios.
+
+### Changed
+- **Dynamic Technogargle**: Replaced static status text in the top right with an animated "Technogargle" component that randomly cycles hex addresses and signal strengths.
+- **Machine Spirit LED**: Removed the distracting "M.SPIRIT" pill and LED from the CRT frame to achieve a cleaner aesthetic that emphasizes the hovering Servo Skull.
+
 ## [Unreleased] - 2026-07-14 (Swatchle UI Overhaul)
 ### Changed
 - **Rebranded The Daily Augury to Swatchle**: Updated naming across the app banner, stats modal, share grid text, and game identifiers.
