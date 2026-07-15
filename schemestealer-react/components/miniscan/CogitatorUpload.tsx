@@ -70,15 +70,16 @@ export function CogitatorUpload({
             className="absolute inset-0 opacity-15 pointer-events-none bg-[linear-gradient(to_right,rgba(0,255,0,0.4)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,255,0,0.4)_1px,transparent_1px)] bg-[size:24px_24px]"
           />
 
-          {/* Machine Spirit Status Bar */}
-          <div className="absolute top-2 left-0 right-0 flex justify-center pointer-events-none z-30">
+          {/* Machine Spirit Status Indicator (LED) */}
+          <div className="absolute top-3 left-4 sm:top-4 sm:left-5 flex items-center gap-2 pointer-events-none z-30 opacity-80">
             <motion.div
-              className="text-[9px] text-[var(--cogitator-green)]/80 cyber-text font-mono tracking-widest uppercase bg-[#051005]/80 px-3 py-1 rounded-full border border-[var(--cogitator-green)]/30 backdrop-blur-sm shadow-[0_0_10px_rgba(0,255,65,0.2)]"
-              animate={{ opacity: [0.5, 1, 0.5] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              ⚙ MACHINE SPIRIT: ACTIVE ⚙
-            </motion.div>
+              className="w-1.5 h-1.5 rounded-full bg-[var(--cogitator-green)] shadow-[0_0_8px_var(--cogitator-green)]"
+              animate={{ opacity: [0.2, 1, 0.2] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+            />
+            <span className="text-[9px] text-[var(--cogitator-green)]/80 cyber-text font-mono tracking-widest uppercase">
+              M.SPIRIT
+            </span>
           </div>
 
           {/* CRT Scanline overlay */}

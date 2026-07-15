@@ -92,7 +92,7 @@ export default function MiniscanPage() {
 
 
   return (
-    <div className="min-h-dvh pt-1 sm:pt-[clamp(0.75rem,3vh,2rem)] px-4 cogitator-screen" style={{ background: 'var(--void-black)' }}>
+    <div className="min-h-dvh pt-1 sm:pt-[clamp(0.75rem,3vh,2rem)] px-4 cogitator-screen flex flex-col" style={{ background: 'var(--void-black)' }}>
       {/* Targeting brackets - corner overlays */}
       <div className="fixed inset-4 pointer-events-none z-20">
         {/* Top Left */}
@@ -113,7 +113,7 @@ export default function MiniscanPage() {
 
       {/* Header */}
       <motion.div
-        className="max-w-2xl mx-auto mb-0 sm:mb-4 text-center relative"
+        className="max-w-2xl mx-auto w-full mb-0 sm:mb-4 text-center relative shrink-0"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -139,7 +139,7 @@ export default function MiniscanPage() {
 
       {/* Upload Component */}
       <motion.div
-        className="max-w-2xl mx-auto"
+        className="max-w-2xl mx-auto w-full flex-1 flex flex-col justify-center pb-24 sm:pb-32"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, delay: 0.2 }}
