@@ -184,7 +184,7 @@ export function SessionRunner() {
   // otherwise render NaN% completion and an instant MISSION SUCCESS.
   if (!mounted || !activeSession || allSteps.length === 0) {
     return (
-      <div className="min-h-dvh bg-void-black text-[var(--cogitator-green)] flex flex-col gap-6 items-center justify-center tech-text px-6">
+      <div className="flex-1 bg-void-black text-[var(--cogitator-green)] flex flex-col gap-6 items-center justify-center tech-text px-6">
         <span>NO ACTIVE SESSION</span>
         <button
           onClick={() => router.push('/')}
@@ -241,7 +241,7 @@ export function SessionRunner() {
   });
 
   return (
-    <div className="min-h-dvh bg-void-black flex flex-col relative overflow-hidden text-[var(--cogitator-green)] font-sans">
+    <div className="flex-1 bg-void-black flex flex-col relative overflow-hidden text-[var(--cogitator-green)] font-sans">
       {/* Header with Progress Bar */}
       <div className="pt-6 px-4 pb-4 border-b border-[var(--cogitator-green)]/30 bg-black/80 backdrop-blur-md z-20 sticky top-0">
         <div className="flex justify-between items-center mb-3">

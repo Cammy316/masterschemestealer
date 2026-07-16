@@ -20,7 +20,7 @@ export function ModeSelector() {
   }, []);
 
   return (
-    <div className="min-h-dvh flex flex-col bg-transparent relative overflow-x-hidden overflow-y-auto">
+    <div className="flex-1 flex flex-col bg-transparent relative overflow-x-hidden">
       <div className="fixed inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.5)_100%)]" />
 
       <div className="relative z-10 flex flex-col items-center flex-1 px-4 py-5 sm:py-8">

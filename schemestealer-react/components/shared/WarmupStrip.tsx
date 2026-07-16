@@ -2,10 +2,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 interface WarmupStripProps {
   theme: 'cogitator' | 'warp';
+  /** Render the strip unconditionally and toggle this — if the PARENT
+   *  conditionally unmounts the component, the exit animation never plays
+   *  and the layout jump-cuts. */
+  open: boolean;
   onUseLocal: () => void;
 }
 
-export function WarmupStrip({ theme, onUseLocal }: WarmupStripProps) {
+export function WarmupStrip({ theme, open, onUseLocal }: WarmupStripProps) {
   const isWarp = theme === 'warp';
   
   const borderColor = isWarp ? 'border-[var(--warp-purple-light)]/50' : 'border-[var(--cogitator-green)]/50';
@@ -16,13 +20,14 @@ export function WarmupStrip({ theme, onUseLocal }: WarmupStripProps) {
 
   return (
     <AnimatePresence>
+      {open && (
       <motion.div
         initial={{ height: 0, opacity: 0 }}
         animate={{ height: 'auto', opacity: 1 }}
         exit={{ height: 0, opacity: 0 }}
         className="w-full max-w-2xl mx-auto overflow-hidden"
       >
-        <div className={`flex items-center justify-between py-2 px-3 border ${borderColor} ${bgColor} ${textColor} mb-4 rounded-md`}>
+        <div className={`flex items-center justify-between py-2 px-3 border ${borderColor} ${bgColor} ${textColor} mb-3 rounded-md`}>
           <div className="flex items-center gap-2">
             <motion.span
               animate={{ rotate: 360 }}
@@ -41,6 +46,7 @@ export function WarmupStrip({ theme, onUseLocal }: WarmupStripProps) {
           </button>
         </div>
       </motion.div>
+      )}
     </AnimatePresence>
   );
 }
