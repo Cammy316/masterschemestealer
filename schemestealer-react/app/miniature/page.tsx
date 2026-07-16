@@ -182,7 +182,7 @@ export default function MiniscanPage() {
         <CogitatorUpload
           onFileSelect={handleFileSelect}
           onCameraActivate={handleCameraActivate}
-          disabled={isProcessing || showReveal}
+          disabled={isProcessing || showReveal || !!result}
           isProcessing={isProcessing}
           showReveal={showReveal}
           localImageUrl={localImageUrl}

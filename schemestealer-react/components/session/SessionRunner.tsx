@@ -59,7 +59,14 @@ export function SessionRunner() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [tick, setTick] = useState(0);
   const [dataslateMessage, setDataslateMessage] = useState('');
-  
+  // SSR renders the empty state (no localStorage); gate the main branch on mount so
+  // the client's first render matches and hydration never mismatches.
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // Dataslate rotator
   useEffect(() => {
     const allMessages = [...dataslateContent.painting_tips, ...dataslateContent.lore_quotes];
@@ -106,6 +113,14 @@ export function SessionRunner() {
       }
     };
   }, []);
+
+  // Hook must run unconditionally (before any early return) or finishing/aborting a
+  // session changes the hook count mid-render and React throws.
+  const allSteps = useMemo(() => {
+    return (activeSession?.colours ?? []).flatMap(c =>
+      c.steps.map(s => ({ ...s, colourIndex: c.colourIndex, target: c.colourIndex + 1, hex: c.hex, brand: c.brand }))
+    );
+  }, [activeSession]);
 
   const requestNotificationPermission = async () => {
     if (!('Notification' in window)) {
@@ -165,7 +180,9 @@ export function SessionRunner() {
     }
   };
 
-  if (!activeSession) {
+  // allSteps.length === 0 also guards a degenerate session (no steps), which would
+  // otherwise render NaN% completion and an instant MISSION SUCCESS.
+  if (!mounted || !activeSession || allSteps.length === 0) {
     return (
       <div className="min-h-dvh bg-void-black text-[var(--cogitator-green)] flex flex-col gap-6 items-center justify-center tech-text px-6">
         <span>NO ACTIVE SESSION</span>
@@ -180,12 +197,6 @@ export function SessionRunner() {
   }
 
   // Phase computation
-  const allSteps = useMemo(() => {
-    return activeSession.colours.flatMap(c => 
-      c.steps.map(s => ({ ...s, colourIndex: c.colourIndex, target: c.colourIndex + 1, hex: c.hex, brand: c.brand }))
-    );
-  }, [activeSession]);
-
   const baseSteps = allSteps.filter(s => s.role === 'base');
   const depthSteps = allSteps.filter(s => s.role === 'shade' || s.role === 'wash');
   const highlightSteps = allSteps.filter(s => s.role === 'highlight');

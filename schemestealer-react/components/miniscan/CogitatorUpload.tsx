@@ -102,7 +102,10 @@ export function CogitatorUpload({
           {/* Main Content Area */}
           <div className="relative z-10 sm:px-6 pt-3 sm:pt-6 flex-1 flex flex-col justify-center">
             
-            {(isProcessing || showReveal) && localImageUrl ? (
+            {/* `result` is part of the condition: completeWith drops isProcessing one
+                render before the page's effect raises showReveal, and without it the
+                idle upload screen flashes for that frame. */}
+            {(isProcessing || showReveal || !!result) && localImageUrl ? (
               <div className="flex flex-col items-center flex-1 justify-center">
                 <ServoSkull className="w-16 h-16 mb-4 z-20 drop-shadow-[0_0_10px_rgba(0,255,0,0.5)]" isScanning={isProcessing} />
                 <ActiveAuspexScan 
