@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-07-16 (Pre-Launch Audit Batch 3: Session Forge Polish)
+### Fixed
+- **ABORT button clipped off-screen at ≤340px**: the sticky header row's title +
+  buttons exceeded narrow viewports and the root `overflow-hidden` (now removed)
+  silently clipped them — the row now wraps. Found via the no-horizontal-scroll gate
+  the moment the mask came off.
+- **Mission Success screen clipping**: the celebration now centres when there's room
+  and body-scrolls on short/landscape viewports instead of clipping RETURN TO BASE
+  behind the nav.
+- **Notification burst on reopen**: timers that expired while the tab was closed
+  reconcile silently — only timers finishing within the last minute notify.
+- **Wake lock never retried after a failed initial request** — now re-requested
+  (idempotently) on every return to visibility.
+
+### Changed
+- Desktop no longer a phone-width strip: checklist widens to `max-w-2xl`, idle
+  dataslate to `max-w-xl` at `lg:`.
+- Idle-curing screen fills the real remaining height (dead `min-h-[60vh]` zone gone);
+  checklist bottom padding defers to the layout's nav-safe padding.
+- All eight sub-11px labels raised to 11px.
+
 ## [Unreleased] - 2026-07-16 (Pre-Launch Audit Batch 2: Miniscan Layout + Height System)
 ### Changed
 - **One viewport-height owner**: `<main>` in the root layout now owns the height floor
