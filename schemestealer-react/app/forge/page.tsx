@@ -7,9 +7,18 @@ import { ForgeBackground } from '@/components/ForgeBackground';
 import { useAppStore } from '@/lib/store';
 import type { Paint } from '@/lib/types';
 
-const ForgeInventoryTab = dynamic(() => import('@/components/forge/ForgeInventoryTab'), { ssr: false });
-const ForgeMixTab = dynamic(() => import('@/components/forge/ForgeMixTab'), { ssr: false });
-const ForgeRequisitionTab = dynamic(() => import('@/components/forge/ForgeRequisitionTab'), { ssr: false });
+// Themed fallback: without one the tab area is blank until the chunk loads.
+function TabLoading() {
+  return (
+    <div className="py-16 text-center text-brass/60 tech-text text-[11px] uppercase tracking-widest animate-pulse">
+      CONSULTING THE COGITATOR…
+    </div>
+  );
+}
+
+const ForgeInventoryTab = dynamic(() => import('@/components/forge/ForgeInventoryTab'), { ssr: false, loading: () => <TabLoading /> });
+const ForgeMixTab = dynamic(() => import('@/components/forge/ForgeMixTab'), { ssr: false, loading: () => <TabLoading /> });
+const ForgeRequisitionTab = dynamic(() => import('@/components/forge/ForgeRequisitionTab'), { ssr: false, loading: () => <TabLoading /> });
 const DynamicAddPaintModal = dynamic(() => import('@/components/forge/AddPaintModal'), { ssr: false });
 
 export default function ForgePage() {

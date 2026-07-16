@@ -10,7 +10,6 @@ import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { WarpPortal } from '@/components/inspiration/WarpPortal';
 import { CosmicBackground } from '@/components/shared/CosmicBackground';
-import { LoadingAnimation } from '@/components/shared/LoadingAnimations';
 import { HowToScanModal } from '@/components/shared/HowToScanModal';
 import { AnimatePresence, motion } from 'framer-motion';
 import { WarmupStrip } from '@/components/shared/WarmupStrip';
@@ -72,7 +71,6 @@ export default function InspirationPage() {
 
   // We no longer use inline apiWarmupBanner
 
-  // We no longer return the LoadingAnimation early here.
   // Instead, the WarpPortal component stays mounted and uses the isActive={isProcessing}
   // prop to transition into its "Hyper-Drive" loading state!
 

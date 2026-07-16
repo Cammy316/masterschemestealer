@@ -9,9 +9,6 @@ import React, { useCallback, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { CogitatorUpload } from '@/components/miniscan/CogitatorUpload';
-import { LoadingAnimation } from '@/components/shared/LoadingAnimations';
-import { ModelDownloadProgress } from '@/components/shared/ModelDownloadProgress';
-import { ScanReveal } from '@/components/miniscan/ScanReveal';
 import { motion } from 'framer-motion';
 import { useApiReady } from '@/hooks/useApiReady';
 import { useScan } from '@/hooks/useScan';
@@ -103,7 +100,9 @@ export default function MiniscanPage() {
         <h1 className="text-[clamp(1.5rem,5vw,1.875rem)] text-balance font-bold gothic-text mb-1 sm:mb-2 auspex-text">
           ◆ MINISCAN PROTOCOL ◆
         </h1>
-        <p className="text-cogitator-green-dim tech-text text-xs sm:text-sm mb-1 sm:mb-2 leading-tight">
+        {/* Flavour line: hidden below 360px — it wraps to two lines there and
+            pushes the idle card past the fold. */}
+        <p className="hidden min-[360px]:block text-cogitator-green-dim tech-text text-xs sm:text-sm mb-1 sm:mb-2 leading-tight">
           Identify sacred paint formulations from painted miniatures
         </p>
         <button

@@ -97,8 +97,10 @@ export function ShoppingCart({ manifestId }: { manifestId?: string }) {
           <div className="text-imperial-gold font-bold tracking-[0.2em] text-lg gothic-text">
             PENDING REQUISITION
           </div>
+          {/* Line items, matching the nav badge and MANIFEST count (pot
+              quantities remain a per-line detail; cost maths keeps them). */}
           <div className="text-gray-400 text-xs tech-text mt-2 uppercase tracking-widest">
-            {totalItems} ITEM{totalItems !== 1 ? 'S' : ''} TOTAL
+            {cart.length} ITEM{cart.length !== 1 ? 'S' : ''} TOTAL
           </div>
         </div>
       </div>
@@ -184,7 +186,7 @@ function CartItem({ item, index, onRemove, onUpdateQuantity }: CartItemProps) {
           onClick={handleDecrement}
           disabled={item.quantity <= 1}
           aria-label="Decrease quantity"
-          className="w-10 h-10 rounded-sm bg-black/80 hover:bg-charcoal active:bg-gray-800 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all border-y-2 border-x border-b-gray-900 border-t-gray-600 border-x-gray-800 shadow-inner active:scale-95"
+          className="w-11 h-11 rounded-sm bg-black/80 hover:bg-charcoal active:bg-gray-800 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-all border-y-2 border-x border-b-gray-900 border-t-gray-600 border-x-gray-800 shadow-inner active:scale-95"
         >
           <span className="text-imperial-gold font-bold drop-shadow-[0_0_2px_rgba(184,134,11,0.5)]">−</span>
         </button>
@@ -196,14 +198,14 @@ function CartItem({ item, index, onRemove, onUpdateQuantity }: CartItemProps) {
         <button
           onClick={handleIncrement}
           aria-label="Increase quantity"
-          className="w-10 h-10 rounded-sm bg-black/80 hover:bg-charcoal active:bg-gray-800 flex items-center justify-center transition-all border-y-2 border-x border-b-gray-900 border-t-gray-600 border-x-gray-800 shadow-inner active:scale-95"
+          className="w-11 h-11 rounded-sm bg-black/80 hover:bg-charcoal active:bg-gray-800 flex items-center justify-center transition-all border-y-2 border-x border-b-gray-900 border-t-gray-600 border-x-gray-800 shadow-inner active:scale-95"
         >
           <span className="text-imperial-gold font-bold drop-shadow-[0_0_2px_rgba(184,134,11,0.5)]">+</span>
         </button>
 
         <button
           onClick={onRemove}
-          className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-sm bg-red-950/20 text-red-900 hover:bg-red-950/60 hover:text-red-500 border border-transparent hover:border-red-900/50 transition-all ml-1 active:scale-95"
+          className="flex-shrink-0 w-11 h-11 flex items-center justify-center rounded-sm bg-red-950/20 text-red-900 hover:bg-red-950/60 hover:text-red-500 border border-transparent hover:border-red-900/50 transition-all ml-1 active:scale-95"
           aria-label="Remove item"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
@@ -274,18 +276,5 @@ function CostSummary({ cart }: CostSummaryProps) {
         Based on average retail prices. Actual costs may vary by retailer.
       </p>
     </div>
-  );
-}
-
-export function CartBadge() {
-  const cart = useAppStore((state) => state.cart);
-  const totalItems = getTotalCartItems(cart);
-
-  if (totalItems === 0) return null;
-
-  return (
-    <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
-      {totalItems > 9 ? '9+' : totalItems}
-    </span>
   );
 }

@@ -101,16 +101,6 @@ export default function InspirationResultsPage() {
     }
   }, [currentScan, showKoFiPrompt]);
 
-  // Scroll to color orbs on mount
-  React.useEffect(() => {
-    if (currentScan?.detectedColors?.length) {
-      const timer = setTimeout(() => {
-        document.getElementById('orbs-section')?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [currentScan]);
-
   if (!currentScan) {
     return (
       <div className="flex-1 flex items-center justify-center px-6 void-bg">
@@ -296,7 +286,8 @@ export default function InspirationResultsPage() {
                       background: `radial-gradient(circle at 30% 30%, ${color.hex}, #000000)`,
                       boxShadow: `0 0 20px ${color.hex}60`,
                     }}
-                    animate={{ y: [0, -4, 0] }}
+                    whileInView={{ y: [0, -4, 0] }}
+                    viewport={{ amount: 0.1 }}
                     transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                   >
                     <div className="absolute top-[10%] left-[15%] w-[30%] h-[20%] rounded-full bg-white/30 blur-[1px] rotate-[-25deg]" />
@@ -369,7 +360,7 @@ export default function InspirationResultsPage() {
 
         {/* Actions */}
         <motion.div
-          className="flex flex-col gap-3 mt-8 max-w-sm mx-auto"
+          className="flex flex-col gap-3 mt-8 max-w-sm sm:max-w-md mx-auto w-full"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.5 }}
@@ -417,96 +408,101 @@ export default function InspirationResultsPage() {
             </div>
           </motion.button>
 
-          <motion.button
-            onClick={() => router.push('/forge')}
-            className="w-full py-3 px-6 rounded-full border border-warp-teal/30 bg-warp-teal/10 backdrop-blur-md shadow-[0_4px_15px_rgba(20,184,166,0.15)] touch-target group"
-            whileHover={{ scale: 1.02, backgroundColor: 'rgba(20,184,166,0.2)' }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <div className="flex items-center justify-center gap-2">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="var(--warp-teal)"
-                strokeWidth="2"
-              >
-                <path
-                  d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M15 2H9c-1.1 0-2 .9-2 2v2h10V4c0-1.1-.9-2-2-2z"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <span className="text-warp-teal font-bold gothic-text group-hover:text-white transition-colors">
-                VIEW REQUISITIONS
-              </span>
-            </div>
-          </motion.button>
+          {/* Secondary actions: 2-up grid — six stacked full-width buttons made
+              the page a wall of scroll on phones. */}
+          <div className="grid grid-cols-2 gap-3">
+            <motion.button
+              onClick={() => router.push('/forge')}
+              className="py-3 px-3 rounded-full border border-warp-teal/30 bg-warp-teal/10 backdrop-blur-md shadow-[0_4px_15px_rgba(20,184,166,0.15)] touch-target group"
+              whileHover={{ scale: 1.02, backgroundColor: 'rgba(20,184,166,0.2)' }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="flex items-center justify-center gap-2">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="var(--warp-teal)"
+                  strokeWidth="2"
+                  className="shrink-0"
+                >
+                  <path
+                    d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M15 2H9c-1.1 0-2 .9-2 2v2h10V4c0-1.1-.9-2-2-2z"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <span className="text-warp-teal text-sm font-bold gothic-text group-hover:text-white transition-colors">
+                  REQUISITIONS
+                </span>
+              </div>
+            </motion.button>
 
-          {/* Share Button */}
-          <motion.button
-            onClick={() => setShowShareModal(true)}
-            className="w-full py-3 px-6 rounded-full border border-warp-purple/40 bg-warp-purple/10 backdrop-blur-md shadow-[0_4px_15px_rgba(139,92,246,0.15)] touch-target group"
-            whileHover={{ scale: 1.02, backgroundColor: 'rgba(139,92,246,0.2)' }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <div className="flex items-center justify-center gap-2">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--warp-purple-light)" strokeWidth="2">
-                <circle cx="18" cy="5" r="3" />
-                <circle cx="6" cy="12" r="3" />
-                <circle cx="18" cy="19" r="3" />
-                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-              </svg>
-              <span className="text-warp-purple-light font-bold gothic-text group-hover:text-white transition-colors">
-                SHARE ESSENCE
-              </span>
-            </div>
-          </motion.button>
+            {/* Share Button */}
+            <motion.button
+              onClick={() => setShowShareModal(true)}
+              className="py-3 px-3 rounded-full border border-warp-purple/40 bg-warp-purple/10 backdrop-blur-md shadow-[0_4px_15px_rgba(139,92,246,0.15)] touch-target group"
+              whileHover={{ scale: 1.02, backgroundColor: 'rgba(139,92,246,0.2)' }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="flex items-center justify-center gap-2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--warp-purple-light)" strokeWidth="2" className="shrink-0">
+                  <circle cx="18" cy="5" r="3" />
+                  <circle cx="6" cy="12" r="3" />
+                  <circle cx="18" cy="19" r="3" />
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                </svg>
+                <span className="text-warp-purple-light text-sm font-bold gothic-text group-hover:text-white transition-colors">
+                  SHARE ESSENCE
+                </span>
+              </div>
+            </motion.button>
 
-          {/* Give Feedback Button */}
-          <motion.button
-            onClick={triggerFeedback}
-            className="w-full py-3 px-6 rounded-full border border-warp-pink/30 bg-warp-pink/10 backdrop-blur-md shadow-[0_4px_15px_rgba(236,72,153,0.15)] touch-target group"
-            whileHover={{ scale: 1.02, backgroundColor: 'rgba(236,72,153,0.2)' }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <div className="flex items-center justify-center gap-2">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--warp-pink)" strokeWidth="2">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              <span className="text-warp-pink text-sm font-bold gothic-text group-hover:text-white transition-colors">
-                GIVE FEEDBACK
-              </span>
-            </div>
-          </motion.button>
+            {/* Give Feedback Button */}
+            <motion.button
+              onClick={triggerFeedback}
+              className="py-3 px-3 rounded-full border border-warp-pink/30 bg-warp-pink/10 backdrop-blur-md shadow-[0_4px_15px_rgba(236,72,153,0.15)] touch-target group"
+              whileHover={{ scale: 1.02, backgroundColor: 'rgba(236,72,153,0.2)' }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="flex items-center justify-center gap-2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--warp-pink)" strokeWidth="2" className="shrink-0">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span className="text-warp-pink text-sm font-bold gothic-text group-hover:text-white transition-colors">
+                  GIVE FEEDBACK
+                </span>
+              </div>
+            </motion.button>
 
-          {/* Ko-fi Support Button */}
-          <motion.button
-            onClick={() => {
-              import('@/lib/analytics').then(({ analytics }) => analytics.trackKoFiClicked('inspiration_results'));
-              window.open('https://ko-fi.com/schemestealer', '_blank', 'noopener,noreferrer');
-            }}
-            className="w-full py-3 px-6 rounded-full border border-amber-500/30 bg-amber-500/10 backdrop-blur-md shadow-[0_4px_15px_rgba(245,158,11,0.15)] touch-target group"
-            whileHover={{ scale: 1.02, backgroundColor: 'rgba(245,158,11,0.2)' }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <div className="flex items-center justify-center gap-2">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-amber-500">
-                <path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M6 1v3M10 1v3M14 1v3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              <span className="text-amber-500 font-bold gothic-text group-hover:text-white transition-colors">
-                EMPOWER THE WARP
-              </span>
-            </div>
-          </motion.button>
+            {/* Ko-fi Support Button */}
+            <motion.button
+              onClick={() => {
+                import('@/lib/analytics').then(({ analytics }) => analytics.trackKoFiClicked('inspiration_results'));
+                window.open('https://ko-fi.com/schemestealer', '_blank', 'noopener,noreferrer');
+              }}
+              className="py-3 px-3 rounded-full border border-amber-500/30 bg-amber-500/10 backdrop-blur-md shadow-[0_4px_15px_rgba(245,158,11,0.15)] touch-target group"
+              whileHover={{ scale: 1.02, backgroundColor: 'rgba(245,158,11,0.2)' }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="flex items-center justify-center gap-2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-amber-500 shrink-0">
+                  <path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M6 1v3M10 1v3M14 1v3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span className="text-amber-500 text-sm font-bold gothic-text group-hover:text-white transition-colors">
+                  EMPOWER
+                </span>
+              </div>
+            </motion.button>
+          </div>
         </motion.div>
 
         {/* Info card */}
