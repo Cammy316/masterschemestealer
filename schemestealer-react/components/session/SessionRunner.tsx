@@ -87,6 +87,8 @@ export function SessionRunner() {
   useEffect(() => {
     let wakeLock: any = null;
     const requestWakeLock = async () => {
+      // Idempotent: skip when a lock is already held.
+      if (wakeLock && wakeLock.released === false) return;
       try {
         if ('wakeLock' in navigator) {
           wakeLock = await (navigator as any).wakeLock.request('screen');
@@ -95,11 +97,13 @@ export function SessionRunner() {
         console.error('Wake Lock error:', err);
       }
     };
-    
+
     requestWakeLock();
-    
+
     const handleVisibilityChange = () => {
-      if (wakeLock !== null && document.visibilityState === 'visible') {
+      // Retry on every return to visibility — the old `wakeLock !== null`
+      // guard meant a failed INITIAL request was never retried.
+      if (document.visibilityState === 'visible') {
         requestWakeLock();
       }
     };
@@ -164,7 +168,12 @@ export function SessionRunner() {
         if (step.status === 'drying' && step.dryUntil && step.dryUntil - Date.now() <= 0) {
           updateSessionStep(colour.colourIndex, step.role, 'done');
           analytics.trackStepCompleted(step.role, step.paintName);
-          notifyDryingComplete(step.paintName, step.role);
+          // Only notify for timers that JUST finished — reopening a tab hours
+          // later must not fire a burst of stale notifications at once.
+          const overdueMs = Date.now() - step.dryUntil;
+          if (overdueMs < 60_000) {
+            notifyDryingComplete(step.paintName, step.role);
+          }
         }
       });
     });
@@ -241,10 +250,14 @@ export function SessionRunner() {
   });
 
   return (
-    <div className="flex-1 bg-void-black flex flex-col relative overflow-hidden text-[var(--cogitator-green)] font-sans">
+    <div className="flex-1 bg-void-black flex flex-col relative text-[var(--cogitator-green)] font-sans">
       {/* Header with Progress Bar */}
+      {/* page-local stacking only (z-10/z-20 here order content over the backdrop); overlay chrome uses the --z-* tokens */}
       <div className="pt-6 px-4 pb-4 border-b border-[var(--cogitator-green)]/30 bg-black/80 backdrop-blur-md z-20 sticky top-0">
-        <div className="flex justify-between items-center mb-3">
+        {/* flex-wrap: at ≤340px the title + buttons exceed the row width — the old
+            root overflow-hidden CLIPPED the ABORT button off-screen; wrapping keeps
+            both reachable. */}
+        <div className="flex flex-wrap justify-between items-center gap-y-2 mb-3">
           <div>
             <h1 className="gothic-text text-xl tracking-widest drop-shadow-[0_0_8px_rgba(0,255,65,0.4)]">
               {phaseTitle}
@@ -254,14 +267,14 @@ export function SessionRunner() {
             {(!('Notification' in window) || Notification.permission !== 'granted') && (
               <button
                 onClick={requestNotificationPermission}
-                className="touch-target px-3 border border-yellow-500/50 text-yellow-500 text-[10px] tech-text rounded-sm hover:bg-yellow-500/10 transition-colors"
+                className="touch-target px-3 border border-yellow-500/50 text-yellow-500 text-[11px] tech-text rounded-sm hover:bg-yellow-500/10 transition-colors"
               >
                 ENABLE ALERTS
               </button>
             )}
             <button
               onClick={finishSession}
-              className="touch-target px-3 py-1 border border-red-500/50 text-red-400 text-[10px] tech-text rounded-sm hover:bg-red-500/10 transition-colors"
+              className="touch-target px-3 py-1 border border-red-500/50 text-red-400 text-[11px] tech-text rounded-sm hover:bg-red-500/10 transition-colors"
             >
               ABORT
             </button>
@@ -270,7 +283,7 @@ export function SessionRunner() {
         
         {/* Mission Readiness Progress Bar */}
         <div className="w-full">
-          <div className="flex justify-between text-[10px] tech-text mb-1 opacity-80">
+          <div className="flex justify-between text-[11px] tech-text mb-1 opacity-80">
             <span>MISSION COMPLETION</span>
             <span>{Math.round(progressPercent)}%</span>
           </div>
@@ -287,35 +300,39 @@ export function SessionRunner() {
 
       {currentPhase === 4 ? (
         /* MISSION SUCCESS SCREEN */
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="flex-1 flex flex-col items-center justify-center p-6 text-center z-10"
+          className="flex-1 flex flex-col z-10"
         >
-          <div className="w-32 h-32 mb-6 rounded-full border-4 border-[var(--imperial-gold)] shadow-[0_0_40px_var(--imperial-gold)] flex items-center justify-center">
-            <span className="text-6xl">🏆</span>
+          {/* my-auto centres when there is room; when the viewport is short
+              (landscape phones) the body scrolls instead of clipping. */}
+          <div className="my-auto flex flex-col items-center p-6 text-center w-full">
+            <div className="w-32 h-32 mb-6 rounded-full border-4 border-[var(--imperial-gold)] shadow-[0_0_40px_var(--imperial-gold)] flex items-center justify-center">
+              <span className="text-6xl">🏆</span>
+            </div>
+            <h2 className="gothic-text text-4xl text-[var(--imperial-gold)] drop-shadow-[0_0_10px_var(--imperial-gold)] mb-2">
+              MISSION SUCCESS
+            </h2>
+            <p className="tech-text text-lg opacity-80 mb-8">
+              Total Session Time: {Math.round((Date.now() - new Date(activeSession.startedAt).getTime()) / 60000)} minutes
+            </p>
+            <button
+              onClick={finishSession}
+              className="w-full max-w-sm py-4 bg-[var(--imperial-gold)] text-black font-bold uppercase tracking-widest tech-text rounded-sm shadow-[0_0_20px_rgba(255,184,0,0.5)] hover:brightness-110 transition-all"
+            >
+              RETURN TO BASE
+            </button>
           </div>
-          <h2 className="gothic-text text-4xl text-[var(--imperial-gold)] drop-shadow-[0_0_10px_var(--imperial-gold)] mb-2">
-            MISSION SUCCESS
-          </h2>
-          <p className="tech-text text-lg opacity-80 mb-8">
-            Total Session Time: {Math.round((Date.now() - new Date(activeSession.startedAt).getTime()) / 60000)} minutes
-          </p>
-          <button
-            onClick={finishSession}
-            className="w-full max-w-sm py-4 bg-[var(--imperial-gold)] text-black font-bold uppercase tracking-widest tech-text rounded-sm shadow-[0_0_20px_rgba(255,184,0,0.5)] hover:brightness-110 transition-all"
-          >
-            RETURN TO BASE
-          </button>
         </motion.div>
       ) : (
-        <div className="flex-1 overflow-y-auto px-4 py-6 z-10 pb-32">
+        <div className="flex-1 flex flex-col px-4 py-6 z-10">
           {isIdleCuring && maxDryLeft > 0 ? (
             /* IDLE CURING SCREEN (Dataslate) */
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="flex flex-col items-center justify-center h-full min-h-[60vh]"
+              className="flex-1 flex flex-col items-center justify-center"
             >
               <div className="w-32 h-32 mb-6 relative">
                 <div className="absolute inset-0 border-4 border-[var(--warning)] rounded-full border-t-transparent animate-spin" style={{ animationDuration: '3s' }} />
@@ -326,9 +343,9 @@ export function SessionRunner() {
               </div>
               <h3 className="tech-text text-xl text-[var(--warning)] tracking-widest mb-8">IDLE CURING</h3>
               
-              <div className="w-full max-w-md bg-black/60 border border-[var(--cogitator-green)]/30 p-6 rounded-sm relative overflow-hidden">
+              <div className="w-full max-w-md lg:max-w-xl bg-black/60 border border-[var(--cogitator-green)]/30 p-6 rounded-sm relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[var(--cogitator-green)] to-transparent opacity-50" />
-                <div className="text-[10px] tech-text text-[var(--cogitator-green)]/60 mb-3 uppercase tracking-widest border-b border-[var(--cogitator-green)]/20 pb-2">
+                <div className="text-[11px] tech-text text-[var(--cogitator-green)]/60 mb-3 uppercase tracking-widest border-b border-[var(--cogitator-green)]/20 pb-2">
                   <ScrambleText text="DATALINK ESTABLISHED // TRANSMISSION INCOMING" />
                 </div>
                 <p className="font-serif italic text-lg leading-relaxed text-[var(--cogitator-green)]/90 text-center text-balance min-h-[100px] flex items-center justify-center">
@@ -338,7 +355,7 @@ export function SessionRunner() {
             </motion.div>
           ) : (
             /* ACTIVE CHECKLIST */
-            <div className="flex flex-col gap-4 max-w-lg mx-auto">
+            <div className="flex flex-col gap-4 max-w-lg lg:max-w-2xl mx-auto w-full">
               <AnimatePresence>
                 {activeSteps.map((step, idx) => {
                   const override = activeSession.dryTimeOverrides[step.role];
@@ -395,14 +412,14 @@ export function SessionRunner() {
                       <div className="relative z-10 flex items-center gap-4">
                         {/* Target Indicator */}
                         <div className="flex flex-col items-center justify-center border-r border-current/20 pr-4">
-                          <span className="text-[10px] tech-text opacity-70 mb-1">TARGET</span>
+                          <span className="text-[11px] tech-text opacity-70 mb-1">TARGET</span>
                           <span className="font-bold text-lg">{step.target}</span>
                         </div>
                         
                         <div>
                           <div className="flex items-center gap-2 mb-1">
                             <div className="w-3 h-3 rounded-full border border-current/50" style={{ background: step.hex ?? '#333' }} />
-                            <div className="text-[10px] uppercase tracking-widest opacity-70">{step.brand}</div>
+                            <div className="text-[11px] uppercase tracking-widest opacity-70">{step.brand}</div>
                           </div>
                           <div className="font-bold tech-text text-sm sm:text-base">{step.paintName}</div>
                         </div>
@@ -416,7 +433,7 @@ export function SessionRunner() {
                           </span>
                         ) : isDrying ? (
                           <div className="flex flex-col items-end">
-                            <span className="text-[10px] opacity-70 tracking-widest mb-1">CURING</span>
+                            <span className="text-[11px] opacity-70 tracking-widest mb-1">CURING</span>
                             <span className="font-mono font-bold text-base">{formatTimeLeft(timeLeftMs)}</span>
                           </div>
                         ) : (
@@ -433,7 +450,7 @@ export function SessionRunner() {
               {/* Persistent small dataslate ticker at bottom of active list */}
               {!isIdleCuring && (
                 <div className="mt-8 mb-4 border border-[var(--cogitator-green)]/20 bg-black/40 p-4 rounded-sm">
-                  <div className="flex items-center gap-2 mb-2 text-[var(--cogitator-green)]/50 text-[10px] tracking-widest uppercase">
+                  <div className="flex items-center gap-2 mb-2 text-[var(--cogitator-green)]/50 text-[11px] tracking-widest uppercase">
                     <span className="w-1.5 h-1.5 rounded-full bg-[var(--cogitator-green)]/50 animate-pulse" />
                     DATA SLATE ACTIVE
                   </div>
