@@ -11,6 +11,12 @@ interface ColorPoint {
   name: string;
 }
 
+// ONE class for BOTH image layers: the reticle positions are measured against
+// layer 1 but drawn over layer 2, so the two boxes must be identical. The svh
+// clamp keeps the processing state inside short viewports (360x640) and stable
+// when the mobile URL bar toggles.
+const SCAN_IMG_CLASS = 'w-full h-auto object-contain max-h-[min(45svh,420px)]';
+
 interface ActiveAuspexScanProps {
   localImageUrl: string | null;
   resultImageUrl?: string | null;
@@ -54,9 +60,11 @@ export function ActiveAuspexScan({
   // twice — double-committing the scan and revoking its live blob URL.
   const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const completedRef = useRef(false);
+  const unmountedRef = useRef(false);
 
   useEffect(() => {
     return () => {
+      unmountedRef.current = true;
       timeoutsRef.current.forEach(clearTimeout);
       timeoutsRef.current = [];
     };
@@ -99,39 +107,55 @@ export function ActiveAuspexScan({
         setNormalizedReticles(mapped);
       }
 
+      // Decode the reveal image BEFORE the wipe starts — otherwise the 3s wipe
+      // can slide down over a blank frame while the result blob decodes. The
+      // 1.5s ceiling means a slow decode delays, but can never hang, the reveal.
+      const ready: Promise<void> = resultImageUrl
+        ? new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => resolve();
+            img.onerror = () => resolve();
+            img.src = resultImageUrl;
+            setTimeout(() => resolve(), 1500);
+          })
+        : Promise.resolve();
+
       // Start the wipe: wind-down beat → wipe → done → complete (once).
       timeoutsRef.current.push(setTimeout(() => {
-        setPhase('wipe');
+        ready.then(() => {
+          if (unmountedRef.current) return;
+          setPhase('wipe');
 
-        // Spawn crosshairs based on Y-coordinate passing
-        if (imgRef.current) {
-          reticleData.forEach((r) => {
-            // Rough estimate of when the sweep hits this point (0 to 3000ms)
-            const yPercent = r.y / 1000;
-            timeoutsRef.current.push(setTimeout(() => {
-              setCrosshairs(prev => [...prev, r]);
-            }, yPercent * 3000));
-          });
-        }
+          // Spawn crosshairs based on Y-coordinate passing
+          if (imgRef.current) {
+            reticleData.forEach((r) => {
+              // Rough estimate of when the sweep hits this point (0 to 3000ms)
+              const yPercent = r.y / 1000;
+              timeoutsRef.current.push(setTimeout(() => {
+                setCrosshairs(prev => [...prev, r]);
+              }, yPercent * 3000));
+            });
+          }
 
-        // Complete
-        timeoutsRef.current.push(setTimeout(() => {
-          setPhase('done');
+          // Complete
           timeoutsRef.current.push(setTimeout(() => {
-            if (!completedRef.current) {
-              completedRef.current = true;
-              onRevealComplete?.();
-            }
-          }, 1000));
-        }, 3200));
+            setPhase('done');
+            timeoutsRef.current.push(setTimeout(() => {
+              if (!completedRef.current) {
+                completedRef.current = true;
+                onRevealComplete?.();
+              }
+            }, 1000));
+          }, 3200));
+        });
       }, 300));
     }
-  }, [showReveal, phase, reticleData, wipeControls, onRevealComplete]);
+  }, [showReveal, phase, reticleData, wipeControls, onRevealComplete, resultImageUrl]);
 
   if (!localImageUrl && !resultImageUrl) return null;
 
   return (
-    <div ref={containerRef} className="relative w-full overflow-hidden flex justify-center border-2 border-cogitator-green/30 rounded shadow-[0_0_20px_rgba(0,255,65,0.1)] min-h-[300px]">
+    <div ref={containerRef} className="relative w-full overflow-hidden flex justify-center border-2 border-cogitator-green/30 rounded shadow-[0_0_20px_rgba(0,255,65,0.1)]">
       
       {/* 
         LAYER 1: The Wireframe (Loading State) 
@@ -144,7 +168,7 @@ export function ActiveAuspexScan({
             ref={imgRef}
             src={localImageUrl!} 
             alt="Scanning..." 
-            className="w-full h-auto object-contain max-h-[60vh] opacity-30"
+            className={`${SCAN_IMG_CLASS} opacity-30`}
             style={{ filter: 'sepia(100%) hue-rotate(70deg) saturate(300%) brightness(0.5) contrast(200%)' }} 
           />
           
@@ -232,10 +256,10 @@ export function ActiveAuspexScan({
           transition={{ duration: 3, ease: 'linear' }}
           style={{ zIndex: 10 }}
         >
-          <img 
-            src={resultImageUrl || localImageUrl!} 
-            alt="Result" 
-            className="w-full h-auto object-contain max-h-[60vh]"
+          <img
+            src={resultImageUrl || localImageUrl!}
+            alt="Result"
+            className={SCAN_IMG_CLASS}
           />
           
           {/* High-Tech Neon Grid Overlay */}

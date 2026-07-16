@@ -113,7 +113,7 @@ export default function InspirationResultsPage() {
 
   if (!currentScan) {
     return (
-      <div className="min-h-dvh flex items-center justify-center px-6 void-bg">
+      <div className="flex-1 flex items-center justify-center px-6 void-bg">
         <div className="starfield-bg fixed inset-0 -z-10" />
         <div className="text-center max-w-sm">
           <div className="border-b border-warp-purple-dark/50 pb-4 mb-6">
@@ -197,7 +197,7 @@ export default function InspirationResultsPage() {
   };
 
   return (
-    <div className="min-h-dvh pt-8 px-6 void-bg">
+    <div className="flex-1 pt-8 px-6 void-bg">
       {/* Starfield background */}
       <div className="starfield-bg fixed inset-0 -z-10" />
 

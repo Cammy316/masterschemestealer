@@ -87,7 +87,7 @@ export default async function PaintHubPage({ params }: Props) {
   return (
     // div, not <main>: the root layout already renders the page inside a
     // <main> with pb-nav-safe — nesting doubled both
-    <div className="min-h-dvh bg-void-black text-white">
+    <div className="flex-1 bg-void-black text-white">
       <div className="max-w-4xl mx-auto px-4 py-12">
         {/* SCHEMESTEALER BRANDING */}
         <div className="flex justify-center mb-12">

@@ -57,7 +57,10 @@ export default function RootLayout({
       <body suppressHydrationWarning className="antialiased bg-[#050505] font-sans">
         <ClientProvider>
           <Navigation />
-          <main className="min-h-dvh pb-nav-safe">
+          {/* main is the ONLY owner of the viewport floor (svh = stable when the
+              mobile URL bar toggles) and the nav-safe bottom padding. Page roots
+              use flex-1, never their own min-h-dvh or nav padding. */}
+          <main className="min-h-svh pb-nav-safe flex flex-col">
             {children}
           </main>
           <ConsentBanner />

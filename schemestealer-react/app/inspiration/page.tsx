@@ -77,7 +77,7 @@ export default function InspirationPage() {
   // prop to transition into its "Hyper-Drive" loading state!
 
   return (
-    <div className="min-h-dvh void-bg overflow-x-hidden">
+    <div className="flex-1 void-bg overflow-x-hidden">
       {/* Full-page fixed starfield */}
       <CosmicBackground />
 
@@ -103,9 +103,11 @@ export default function InspirationPage() {
         </button>
       </motion.div>
 
-      {(!apiReady && !isProcessing && !offlineMode) && (
-        <WarmupStrip theme="warp" onUseLocal={() => setOfflineMode(true)} />
-      )}
+      <WarmupStrip
+        theme="warp"
+        open={!apiReady && !isProcessing && !offlineMode}
+        onUseLocal={() => setOfflineMode(true)}
+      />
 
       {/* Warp Portal - THE HERO */}
       <motion.div
