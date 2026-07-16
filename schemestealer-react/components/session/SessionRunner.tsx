@@ -58,7 +58,7 @@ export function SessionRunner() {
   
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [tick, setTick] = useState(0);
-  const [dataslateMessage, setDataslateMessage] = useState('');
+  const [dataslateEntry, setDataslateEntry] = useState<{ text: string; attribution?: string } | null>(null);
   // SSR renders the empty state (no localStorage); gate the main branch on mount so
   // the client's first render matches and hydration never mismatches.
   const [mounted, setMounted] = useState(false);
@@ -67,13 +67,33 @@ export function SessionRunner() {
     setMounted(true);
   }, []);
 
-  // Dataslate rotator
+  // Dataslate rotator — shuffled deck, so nothing repeats until the whole
+  // pool has been shown (the old random pick could show the same entry twice
+  // in a row). Randomness stays inside the effect for hydration safety.
   useEffect(() => {
-    const allMessages = [...dataslateContent.painting_tips, ...dataslateContent.lore_quotes];
-    setDataslateMessage(allMessages[Math.floor(Math.random() * allMessages.length)]);
-    
+    const pool: { text: string; attribution?: string }[] = [
+      ...dataslateContent.painting_tips.map((text) => ({ text })),
+      ...dataslateContent.lore_quotes,
+    ];
+    let deck: number[] = [];
+    let pos = 0;
+    const reshuffle = () => {
+      const last = deck[deck.length - 1];
+      do {
+        deck = pool.map((_, i) => i);
+        for (let i = deck.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [deck[i], deck[j]] = [deck[j], deck[i]];
+        }
+      } while (pool.length > 1 && deck[0] === last);
+      pos = 0;
+    };
+    reshuffle();
+    setDataslateEntry(pool[deck[pos++]]);
+
     const interval = setInterval(() => {
-      setDataslateMessage(allMessages[Math.floor(Math.random() * allMessages.length)]);
+      if (pos >= deck.length) reshuffle();
+      setDataslateEntry(pool[deck[pos++]]);
     }, 20000); // cycle every 20s
     return () => clearInterval(interval);
   }, []);
@@ -348,9 +368,16 @@ export function SessionRunner() {
                 <div className="text-[11px] tech-text text-[var(--cogitator-green)]/60 mb-3 uppercase tracking-widest border-b border-[var(--cogitator-green)]/20 pb-2">
                   <ScrambleText text="DATALINK ESTABLISHED // TRANSMISSION INCOMING" />
                 </div>
-                <p className="font-serif italic text-lg leading-relaxed text-[var(--cogitator-green)]/90 text-center text-balance min-h-[100px] flex items-center justify-center">
-                  "{dataslateMessage}"
-                </p>
+                <div className="min-h-[100px] flex flex-col items-center justify-center">
+                  <p className="font-serif italic text-lg leading-relaxed text-[var(--cogitator-green)]/90 text-center text-balance">
+                    {dataslateEntry?.attribution ? `"${dataslateEntry.text}"` : dataslateEntry?.text}
+                  </p>
+                  {dataslateEntry?.attribution && (
+                    <p className="w-full text-right text-[11px] tech-text text-[var(--cogitator-green)]/50 mt-2 uppercase tracking-widest">
+                      — {dataslateEntry.attribution}
+                    </p>
+                  )}
+                </div>
               </div>
             </motion.div>
           ) : (
@@ -455,8 +482,13 @@ export function SessionRunner() {
                     DATA SLATE ACTIVE
                   </div>
                   <p className="font-serif italic text-sm leading-relaxed text-[var(--cogitator-green)]/70 text-center">
-                    "{dataslateMessage}"
+                    {dataslateEntry?.attribution ? `"${dataslateEntry.text}"` : dataslateEntry?.text}
                   </p>
+                  {dataslateEntry?.attribution && (
+                    <p className="text-right text-[11px] tech-text text-[var(--cogitator-green)]/40 mt-2 uppercase tracking-widest">
+                      — {dataslateEntry.attribution}
+                    </p>
+                  )}
                 </div>
               )}
             </div>
