@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-07-16 (Pre-Launch Audit Batch 2: Miniscan Layout + Height System)
+### Changed
+- **One viewport-height owner**: `<main>` in the root layout now owns the height floor
+  (`min-h-svh` — stable when the mobile URL bar toggles) and the nav-safe padding;
+  ten page roots dropped their own `min-h-dvh`, removing the ~88px dead scroll that
+  every route carried and the "breathing" CRT on phones.
+- **Content-hugging cogitator**: the Miniscan CRT no longer stretches to fill the
+  screen (up to ~350px of empty green on tall phones, a huge empty box on desktop) —
+  the card hugs its content and the page centres it. The ~96-128px dead band below
+  the card is gone.
+- **Technogargle moved inside the CRT** (was viewport-fixed over the page title on
+  narrow phones; also raised to 11px text) and the leftover fixed targeting brackets
+  were deleted.
+
+### Fixed
+- **Processing-state clipping on short phones**: both scan-image layers now share one
+  height budget (`min(45svh, 420px)`) — the 60vh image no longer overflows the CRT at
+  360×640, and sharing a single class guarantees the reticle overlay stays registered.
+- **Skull jump at scan start**: one persistent servo-skull morphs between idle and
+  scanning sizes instead of two different instances swapping (which restarted the
+  float animation mid-air).
+- **Warm-up strip pop-out**: the strip now animates its own exit (the AnimatePresence
+  previously lived inside the component the pages unmounted, so the collapse
+  jump-cut).
+- **Reveal wipe over an undecoded image**: the wipe now waits (max 1.5s) for the
+  result image to decode before sliding.
+
 ## [Unreleased] - 2026-07-16 (Pre-Launch Audit Batch 1: P0 Fixes)
 ### Fixed
 - **Session Forge crash on finish/abort**: the `allSteps` memo sat below the

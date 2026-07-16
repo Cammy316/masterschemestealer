@@ -12,6 +12,36 @@ import { ServoSkull } from './ServoSkull';
 import { ActiveAuspexScan } from './ActiveAuspexScan';
 import type { ScanResult } from '@/lib/types';
 
+// Animated status readout, anchored inside the CRT frame so it can never
+// overlap the page title or sit under a notch (it used to be viewport-fixed).
+function Technogargle() {
+  const [sig, setSig] = React.useState('98.2');
+  const [rng, setRng] = React.useState('OPTM');
+  const [hex, setHex] = React.useState('0x4F2A');
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setSig((90 + Math.random() * 9.9).toFixed(1));
+      const states = ['OPTM', 'SCAN', 'SYNC', 'CALC', 'ACTV'];
+      setRng(states[Math.floor(Math.random() * states.length)]);
+      setHex('0x' + Math.floor(Math.random() * 65535).toString(16).toUpperCase().padStart(4, '0'));
+    }, 1200);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="absolute top-2 right-2 text-green-500/40 text-[11px] font-mono z-20 pointer-events-none text-right flex flex-col items-end leading-tight">
+      <motion.div animate={{ opacity: [0.5, 0.9, 0.5] }} transition={{ duration: 3, repeat: Infinity }}>
+        SIG: {sig}%
+      </motion.div>
+      <motion.div animate={{ opacity: [0.6, 1, 0.6] }} transition={{ duration: 2.1, repeat: Infinity, delay: 0.5 }}>
+        SYS: {rng}
+      </motion.div>
+      <motion.div className="mt-0.5 opacity-50">{hex}</motion.div>
+    </div>
+  );
+}
+
 interface CogitatorUploadProps {
   onFileSelect: (file: File) => void;
   onCameraActivate: () => void;
@@ -47,11 +77,16 @@ export function CogitatorUpload({
     fileInputRef.current?.click();
   };
 
+  // `result` is part of the condition: completeWith drops isProcessing one render
+  // before the page's effect raises showReveal, and without it the idle upload
+  // screen flashes for that frame.
+  const scanning = (isProcessing || showReveal || !!result) && !!localImageUrl;
+
   return (
-    <div className="relative max-w-2xl mx-auto w-full flex-1 flex flex-col">
+    <div className="relative max-w-2xl mx-auto w-full">
       {/* Brass Casing */}
       <div 
-        className="rounded-xl p-1 md:p-3 shadow-[inset_0_0_10px_rgba(0,0,0,0.8),0_10px_40px_rgba(0,0,0,0.8)] relative bg-[linear-gradient(135deg,#1a1510_0%,#4a3e20_20%,#8b7337_50%,#4a3e20_80%,#1a1510_100%)] border border-[#a38947] flex-1 flex flex-col"
+        className="rounded-xl p-1 md:p-3 shadow-[inset_0_0_10px_rgba(0,0,0,0.8),0_10px_40px_rgba(0,0,0,0.8)] relative bg-[linear-gradient(135deg,#1a1510_0%,#4a3e20_20%,#8b7337_50%,#4a3e20_80%,#1a1510_100%)] border border-[#a38947]"
       >
         {/* Rivets */}
         {[
@@ -63,7 +98,7 @@ export function CogitatorUpload({
 
         {/* CRT Screen Frame */}
         <div 
-          className="rounded-lg p-3 md:p-8 relative overflow-hidden flex-1 flex flex-col bg-[#031005] shadow-[inset_0_0_60px_rgba(0,0,0,0.9),inset_0_0_20px_rgba(0,255,0,0.15)] border-2 border-[#0a0a0a]"
+          className="rounded-lg p-3 md:p-8 relative overflow-hidden bg-[#031005] shadow-[inset_0_0_60px_rgba(0,0,0,0.9),inset_0_0_20px_rgba(0,255,0,0.15)] border-2 border-[#0a0a0a]"
         >
           {/* Active Auspex Grid */}
           <div 
@@ -71,6 +106,9 @@ export function CogitatorUpload({
           />
 
           {/* (LED removed based on feedback) */}
+
+          {/* Status readout, inside the CRT */}
+          <Technogargle />
 
           {/* CRT Scanline overlay */}
           <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%] pointer-events-none mix-blend-overlay z-10" />
@@ -100,15 +138,25 @@ export function CogitatorUpload({
           </div>
 
           {/* Main Content Area */}
-          <div className="relative z-10 sm:px-6 pt-3 sm:pt-6 flex-1 flex flex-col justify-center">
+          <div className="relative z-10 sm:px-6 pt-3 sm:pt-6 pb-2 sm:pb-6">
             
-            {/* `result` is part of the condition: completeWith drops isProcessing one
-                render before the page's effect raises showReveal, and without it the
-                idle upload screen flashes for that frame. */}
-            {(isProcessing || showReveal || !!result) && localImageUrl ? (
-              <div className="flex flex-col items-center flex-1 justify-center">
-                <ServoSkull className="w-16 h-16 mb-4 z-20 drop-shadow-[0_0_10px_rgba(0,255,0,0.5)]" isScanning={isProcessing} />
-                <ActiveAuspexScan 
+            {/* ONE persistent skull across both states: swapping two differently
+                sized instances restarted the float animation and visibly jumped
+                at scan start — this one morphs instead. */}
+            <div className={`flex justify-center ${scanning ? 'mb-4' : 'mb-4 sm:mb-8'}`}>
+              <ServoSkull
+                className={`transition-all duration-500 ${
+                  scanning
+                    ? 'w-16 h-16 z-20 drop-shadow-[0_0_10px_rgba(0,255,0,0.5)]'
+                    : 'w-12 h-[3.8rem] sm:w-20 sm:h-24'
+                }`}
+                isScanning={isProcessing}
+              />
+            </div>
+
+            {scanning && localImageUrl ? (
+              <div className="flex flex-col items-center">
+                <ActiveAuspexScan
                   localImageUrl={localImageUrl}
                   resultImageUrl={result?.imageUrl}
                   isProcessing={isProcessing}
@@ -127,10 +175,6 @@ export function CogitatorUpload({
               </div>
             ) : (
               <>
-                <div className="flex justify-center mb-6 sm:mb-8">
-                  <ServoSkull className="w-12 h-[3.8rem] sm:w-20 sm:h-24" isScanning={false} />
-                </div>
-
                 <h2 className="auspex-text text-[clamp(1rem,4.5vw,1.25rem)] text-balance font-bold text-center mb-1 gothic-text [text-shadow:0_0_10px_var(--cogitator-green)]">
                   ◆ INITIALISE AUSPEX SCAN ◆
                 </h2>
