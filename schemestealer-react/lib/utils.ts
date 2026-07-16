@@ -199,6 +199,16 @@ export function calculatePaintCost(paints: { brand: string; quantity?: number }[
 }
 
 /**
+ * Format the background-removal model download readout. `percent` arrives as a
+ * 0-100 integer from prepareMiniatureImage's onProgress (NOT a 0-1 fraction).
+ */
+export function formatModelProgress(percent: number | null | undefined): string | null {
+  if (typeof percent !== 'number' || Number.isNaN(percent)) return null;
+  const clamped = Math.min(100, Math.max(0, Math.round(percent)));
+  return `DOWNLOADING PATTERNS... ${clamped}%`;
+}
+
+/**
  * Format currency for display
  */
 export function formatCurrency(amount: number, currency: string = 'GBP'): string {
