@@ -46,16 +46,22 @@ const ROUTES: Array<{ path: string; name: string; setup?: (page: Page) => Promis
     name: 'daily-complete',
     setup: async (page) => {
       await page.evaluate(() => {
+        // MUST match the real GameState shape (DailyGameUI) + Guess shape
+        // (lib/colourClues.ts) — guesses reference paints by paint_id, and the
+        // stats fields must exist or the card renders "undefined-day streak".
         window.localStorage.setItem('schemestealer-daily-augury', JSON.stringify({
           lastPlayedDate: new Date().toLocaleDateString('en-CA'),
-          targetPaint: { brand: "citadel", name: "Mephiston Red", family: "red", hex: "#991115", rgb: [153, 17, 21], hsl: [358, 80, 33] },
-          guesses: [
-            { paint: { brand: "citadel", name: "Evil Sunz Scarlet", family: "red", hex: "#c01411", rgb: [192, 20, 17], hsl: [1, 84, 41] }, deltaE: 8.5 },
-            { paint: { brand: "citadel", name: "Khorne Red", family: "red", hex: "#6a0001", rgb: [106, 0, 1], hsl: [359, 100, 21] }, deltaE: 12.1 },
-            { paint: { brand: "citadel", name: "Mephiston Red", family: "red", hex: "#991115", rgb: [153, 17, 21], hsl: [358, 80, 33] }, deltaE: 0 }
-          ],
           status: 'won',
-          hasSeenHelp: true
+          guesses: [
+            { paint_id: 'citadel-evil-sunz-scarlet', familyMatch: 'exact', hueDirection: 'match', lightnessDirection: 'darker', deltaE: 8.5 },
+            { paint_id: 'citadel-khorne-red', familyMatch: 'exact', hueDirection: 'warmer', lightnessDirection: 'lighter', deltaE: 12.1 },
+            { paint_id: 'citadel-mephiston-red', familyMatch: 'exact', hueDirection: 'match', lightnessDirection: 'match', deltaE: 0 },
+          ],
+          streak: 3,
+          maxStreak: 5,
+          played: 10,
+          won: 8,
+          guessDistribution: [0, 1, 4, 2, 1, 0],
         }));
       });
       // reload to pick up the new local storage state

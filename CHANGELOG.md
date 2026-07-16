@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-07-16 (Pre-Launch Audit Batch 1: P0 Fixes)
+### Fixed
+- **Session Forge crash on finish/abort**: the `allSteps` memo sat below the
+  no-session early return, so ending a session changed the hook count mid-render and
+  React threw "Rendered fewer hooks". Hook hoisted; a `mounted` gate also fixes the
+  SSR/hydration mismatch on reload, and empty-step sessions no longer render `NaN%`
+  completion with an instant MISSION SUCCESS.
+- **Miniscan model-download readout showed up to 10000%**: the progress callback
+  emits 0-100 integers but the UI multiplied by 100. New pure `formatModelProgress`
+  (clamped, renders 0% correctly) + unit tests.
+- **Idle-screen flash mid-scan**: scan completion dropped `isProcessing` one render
+  before the reveal flag rose, flashing the upload buttons between the processing and
+  reveal states. The CRT branch (and the buttons' disabled state) now also key off
+  `result`.
+- **Broken responsive-spec seed**: the `daily-complete` Playwright route seeded a
+  wrong-shaped GameState (no `paint_id`s, missing stats fields), screenshotting a
+  completion card that rendered "undefined-day streak" — false confidence. Seed now
+  matches the real GameState/Guess shapes.
+
 ## [Unreleased] - 2026-07-15 (Session Forge Gamification & UI Refactor)
 ### Added
 - **Dataslate Content Generator**: Added `python-api/scripts/generate_dataslate_content.py` to compile 400+ advanced painting tips and lore quotes from Warhammer 40k and Fantasy.

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useAnimation } from 'framer-motion';
+import { formatModelProgress } from '@/lib/utils';
 
 interface ColorPoint {
   x: number;
@@ -187,8 +188,8 @@ export function ActiveAuspexScan({
             {/* Top Bar */}
             <div className="flex justify-between items-start text-[11px] text-cogitator-green font-mono">
               <div className="bg-black/50 px-2 py-1 border border-cogitator-green/30 backdrop-blur-sm">
-                {progress ? (
-                  <div>DOWNLOADING PATTERNS... {Math.round(progress * 100)}%</div>
+                {formatModelProgress(progress) ? (
+                  <div>{formatModelProgress(progress)}</div>
                 ) : (
                   <div className="animate-pulse">
                     EXTRACTING CHROMATIC DATA...<br/>
