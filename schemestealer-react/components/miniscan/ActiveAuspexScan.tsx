@@ -63,6 +63,10 @@ export function ActiveAuspexScan({
   const unmountedRef = useRef(false);
 
   useEffect(() => {
+    // Reset on (re)mount: StrictMode's dev double-invoke runs this cleanup once
+    // at startup, and without the reset the flag stays true forever — the wipe
+    // chain then bails thinking the component unmounted (reveal never plays).
+    unmountedRef.current = false;
     return () => {
       unmountedRef.current = true;
       timeoutsRef.current.forEach(clearTimeout);
