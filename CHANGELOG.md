@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-07-16 (Pre-Launch Audit Batch 4: Round-2 Regression Fixes)
+### Fixed
+- **WarpPortal hint had the wrong copy**: showed the Miniscan light/background hint
+  on the any-image-works Inspiration page — corrected, and it now hides while the
+  portal is active or fed.
+- **Swatchle completion**: unused empty guess rows no longer stack as dead boxes
+  above the completion card; the win-celebration stagger actually fires (the parent
+  never orchestrated its children's variants).
+- **HowToScanModal theming ran deeper than the title**: frame border and footer now
+  follow the page palette (warp purple + "Warp-Divination Protocol" on Inspiration).
+- Miniscan idle hint raised to 11px on mobile; reticle fallback label "Color N" →
+  "Colour N"; inline guess placeholder shortened so it no longer clips at 320px;
+  the two inspiration burst overlays moved off raw z-50 onto the modal token.
+
+### Added
+- `lib/__tests__/dailyStatus.test.ts` — the two test groups skipped in Round 2:
+  `hasPlayedToday` (badge correctness) and `formatTimeToMidnight` (countdown).
+
 ## [Unreleased] - 2026-07-16 (Pre-Launch Audit Batch 3: Session Forge Polish)
 ### Fixed
 - **ABORT button clipped off-screen at ≤340px**: the sticky header row's title +

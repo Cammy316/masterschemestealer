@@ -91,7 +91,7 @@ export function InlineGuessInput({ guessNumber, onSelect }: InlineGuessInputProp
         onFocus={handleFocus}
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
-        placeholder={`GUESS ${guessNumber} OF 6 — TYPE A PAINT NAME`}
+        placeholder={`GUESS ${guessNumber}/6 — TYPE PAINT NAME`}
         autoComplete="off"
         spellCheck={false}
         enterKeyHint="go"
