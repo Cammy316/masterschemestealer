@@ -168,7 +168,7 @@ export function CogitatorUpload({
                       x: c.position?.x ?? 0.5,
                       y: c.position?.y ?? 0.5,
                       color: c.hex,
-                      name: c.family || `Color ${i + 1}`,
+                      name: c.family || `Colour ${i + 1}`,
                     })) || []
                   }
                 />
@@ -240,7 +240,7 @@ export function CogitatorUpload({
 
             {/* Info text */}
             <motion.p
-              className="text-center text-[10px] sm:text-[11px] text-cogitator-green-dim mt-2 sm:mt-6 tech-text uppercase tracking-widest"
+              className="text-center text-[11px] text-cogitator-green-dim mt-2 sm:mt-6 tech-text uppercase tracking-widest"
               animate={{ opacity: [0.3, 0.8, 0.3] }}
               transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
             >

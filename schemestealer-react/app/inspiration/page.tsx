@@ -125,7 +125,7 @@ export default function InspirationPage() {
 
         {/* Portal-Centered Burst Effects */}
         {isBursting && (
-          <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-50">
+          <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-[var(--z-modal)]">
             {/* The Singular Collapse */}
             <motion.div
               className="absolute w-4 h-4 rounded-full bg-white shadow-[0_0_50px_20px_rgba(255,255,255,1)]"
@@ -221,7 +221,7 @@ export default function InspirationPage() {
 
       {/* Vortex Burst Screen Wash */}
       {isBursting && (
-        <div className="fixed inset-0 z-50 pointer-events-none">
+        <div className="fixed inset-0 z-[var(--z-modal)] pointer-events-none">
           {/* Screen wash */}
           <motion.div 
             className="absolute inset-0 bg-warp-purple/40 backdrop-blur-sm"

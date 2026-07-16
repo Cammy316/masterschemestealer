@@ -489,14 +489,17 @@ export function WarpPortal({ onActivate, isActive = false, disabled = false, has
         </motion.div>
       </motion.button>
 
-      {/* Info text */}
-      <motion.p
-        className="text-center text-[11px] text-warp-purple-light/50 mt-6 gothic-text uppercase tracking-widest"
-        animate={{ opacity: [0.3, 0.8, 0.3] }}
-        transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
-      >
-        [ Good even light · neutral background · miniature centred ]
-      </motion.p>
+      {/* Info text — inspiration copy (any image), hidden once the portal is
+          active or fed. The miniature light/background hint was wrong here. */}
+      {!(isActive || hasUploaded) && (
+        <motion.p
+          className="text-center text-[11px] text-warp-purple-light/50 mt-6 gothic-text uppercase tracking-widest"
+          animate={{ opacity: [0.3, 0.8, 0.3] }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+        >
+          [ Any image works — art, sunsets, photos ]
+        </motion.p>
+      )}
 
     </div>
   );

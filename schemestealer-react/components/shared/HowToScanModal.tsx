@@ -12,6 +12,11 @@ export function HowToScanModal({ onClose }: HowToScanModalProps) {
   const mode = useAppStore(s => s.currentMode);
   const isWarp = mode === 'inspiration';
   const titleColor = isWarp ? 'text-[var(--warp-purple-light)]' : 'text-[var(--cogitator-green)]';
+  // Theme runs deeper than the title: frame + footer follow the page's palette.
+  const frameBorder = isWarp ? 'border-[var(--warp-purple)]/40' : 'border-[var(--imperial-gold)]/30';
+  const footerBorder = isWarp ? 'border-[var(--warp-purple)]/30' : 'border-[var(--imperial-gold)]/30';
+  const footerText = isWarp ? 'text-[var(--warp-purple-light)]/60' : 'text-[var(--imperial-gold)]/60';
+  const footerLabel = isWarp ? 'Warp-Divination Protocol' : 'Auspex Pattern Recognition';
 
   useEffect(() => {
     const previous = document.body.style.overflow;
@@ -28,7 +33,7 @@ export function HowToScanModal({ onClose }: HowToScanModalProps) {
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
         onClick={e => e.stopPropagation()}
-        className="bg-[#0a0f0a] border border-[var(--imperial-gold)]/30 p-6 rounded-sm max-w-sm w-full max-h-[90dvh] overflow-y-auto shadow-2xl relative"
+        className={`bg-[#0a0f0a] border ${frameBorder} p-6 rounded-sm max-w-sm w-full max-h-[90dvh] overflow-y-auto shadow-2xl relative`}
       >
         <button 
           onClick={onClose} 
@@ -84,8 +89,8 @@ export function HowToScanModal({ onClose }: HowToScanModalProps) {
             </ul>
           </div>
           
-          <div className="border-t border-[var(--imperial-gold)]/30 pt-4 mt-6">
-            <p className="text-center font-mono text-[11px] text-[var(--imperial-gold)]/60 uppercase tracking-widest">Auspex Pattern Recognition</p>
+          <div className={`border-t ${footerBorder} pt-4 mt-6`}>
+            <p className={`text-center font-mono text-[11px] ${footerText} uppercase tracking-widest`}>{footerLabel}</p>
           </div>
         </div>
       </motion.div>
