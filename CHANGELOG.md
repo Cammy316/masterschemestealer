@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-07-16 (Dataslate Overhaul + Reveal Fix)
+### Fixed
+- **Miniscan reveal stuck on the wireframe (dev)**: StrictMode's mount-cleanup left
+  the new unmount guard permanently true, so the wipe chain bailed thinking the
+  component had unmounted. Guard now resets on (re)mount.
+
+### Changed
+- **Dataslate content curated**: the old generator padded 52 real tips with 350
+  clones of one sentence template (87% of the pool — the repetition players
+  noticed). Replaced with 98 hand-curated painting tips and 87 W40K/Fantasy quotes,
+  **every quote attributed to a named character or canonical in-universe source**,
+  rendered as its own right-aligned line. Tips display plain (advice isn't a
+  quotation); quotes keep their quote marks. Scraper dependency removed; the
+  generator validates (no dupes, all attributed, length caps) and fails loudly.
+- **No-repeat rotation**: the ticker steps through a shuffled deck instead of
+  picking randomly — nothing repeats until the whole pool has been shown.
+
+### Added
+- `lib/__tests__/dataslateContent.test.ts`: variety floors (≥80 tips, ≥60 quotes),
+  every quote attributed, zero duplicate texts, length cap.
+
 ## [Unreleased] - 2026-07-16 (Pre-Launch Audit Batch 5: App-Wide Tightening)
 ### Removed
 - **Four dead loader components deleted** (`LoadingAnimations`, `PageLoader`,
