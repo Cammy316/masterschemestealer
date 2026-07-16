@@ -14,6 +14,8 @@ const VIEWPORTS = [
   { name: '320', width: 320, height: 658 },
   { name: '360', width: 360, height: 740 },
   { name: '390', width: 390, height: 844 },
+  // Tall Androids (Pixel-class) — the worst case for dead-space bugs.
+  { name: '412', width: 412, height: 915 },
   { name: '768', width: 768, height: 1024 },
   { name: '1440', width: 1440, height: 900 },
   { name: 'land740', width: 740, height: 360 },
@@ -72,6 +74,25 @@ const ROUTES: Array<{ path: string; name: string; setup?: (page: Page) => Promis
   { path: '/session', name: 'session' },
   { path: '/convert/pro-acryl-bright-pale-yellow-to-ak', name: 'convert' },
   { path: '/paints/pro-acryl/pro-acryl-bright-pale-yellow', name: 'paints' },
+  {
+    // The shared seed sets offlineMode: true, which hides the warm-up strip
+    // from every other screenshot — this variant makes it visible (the backend
+    // is absent in the test env, so useApiReady stays false).
+    path: '/miniature',
+    name: 'miniature-warmup',
+    setup: async (page) => {
+      await page.evaluate(() => {
+        const raw = window.localStorage.getItem('schemestealer-storage');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          parsed.state.offlineMode = false;
+          window.localStorage.setItem('schemestealer-storage', JSON.stringify(parsed));
+        }
+      });
+      await page.reload({ waitUntil: 'networkidle' });
+      await page.waitForTimeout(600);
+    },
+  },
 ];
 
 const SEEDED_STATE = {
@@ -179,6 +200,30 @@ test('home first-viewport @ 360x740', async ({ page }) => {
     expect(box.y).toBeLessThan(740);
   }
 });
+
+// The idle Miniscan screen must fit a single viewport at every phone size —
+// dead space and pointless scroll here was a launch-blocking complaint.
+for (const vp of [{ w: 320, h: 658 }, { w: 360, h: 740 }, { w: 390, h: 844 }, { w: 412, h: 915 }]) {
+  test(`miniature idle vertical fit @ ${vp.w}x${vp.h}`, async ({ page }) => {
+    await page.setViewportSize({ width: vp.w, height: vp.h });
+    await page.addInitScript(() => {
+      // offlineMode hides the transient warm-up strip for a deterministic layout.
+      window.localStorage.setItem('schemestealer-storage', JSON.stringify({ state: { cart: [], inventory: [], offlineMode: true }, version: 0 }));
+      window.localStorage.setItem('schemestealer-analytics-consent', 'denied');
+    });
+    await page.goto('/miniature', { waitUntil: 'networkidle' });
+    await page.waitForTimeout(600);
+
+    const fit = await page.evaluate(() => ({
+      scrollHeight: document.documentElement.scrollHeight,
+      innerHeight: window.innerHeight,
+    }));
+    expect(
+      fit.scrollHeight,
+      `idle miniscan scrolls at ${vp.w}x${vp.h} (${fit.scrollHeight} > ${fit.innerHeight})`
+    ).toBeLessThanOrEqual(fit.innerHeight + 24);
+  });
+}
 
 test('miniature first-viewport @ 360x640', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 640 });
