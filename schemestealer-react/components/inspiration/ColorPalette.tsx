@@ -55,11 +55,14 @@ export function ColorPalette({ colors, title = '◆ EXTRACTED ESSENCE ◆' }: Co
             }}
           >
             {/* Swatch container with ethereal glow and floating animation */}
+            {/* whileInView: framer pauses these infinite loops offscreen — with
+                many colours the always-on version burnt CPU for orbs nobody saw. */}
             <motion.div
               className="relative group"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              animate={{ y: [0, -8, 0] }}
+              whileInView={{ y: [0, -8, 0] }}
+              viewport={{ amount: 0.1 }}
               transition={{
                 duration: 3 + ((index * 13) % 100) / 100,
                 repeat: Infinity,
@@ -71,10 +74,11 @@ export function ColorPalette({ colors, title = '◆ EXTRACTED ESSENCE ◆' }: Co
               <motion.div
                 className="absolute inset-0 rounded-full blur-xl opacity-60"
                 style={{ backgroundColor: color.hex }}
-                animate={{
+                whileInView={{
                   scale: [1, 1.2, 1],
                   opacity: [0.4, 0.7, 0.4],
                 }}
+                viewport={{ amount: 0.1 }}
                 transition={{
                   duration: 2.5,
                   repeat: Infinity,

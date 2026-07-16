@@ -178,7 +178,8 @@ export function CogitatorUpload({
                 <h2 className="auspex-text text-[clamp(1rem,4.5vw,1.25rem)] text-balance font-bold text-center mb-1 gothic-text [text-shadow:0_0_10px_var(--cogitator-green)]">
                   ◆ INITIALISE AUSPEX SCAN ◆
                 </h2>
-                <p className="text-cogitator-green-dim text-xs sm:text-sm text-center mb-2 sm:mb-6 tech-text">
+                {/* Flavour line: hidden below 360px (wraps to two lines there). */}
+                <p className="hidden min-[360px]:block text-cogitator-green-dim text-xs sm:text-sm text-center mb-2 sm:mb-6 tech-text">
                   Upload cogitator data or activate pict-capture servo-skull
                 </p>
 

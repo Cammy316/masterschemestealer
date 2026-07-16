@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-07-16 (Pre-Launch Audit Batch 5: App-Wide Tightening)
+### Removed
+- **Four dead loader components deleted** (`LoadingAnimations`, `PageLoader`,
+  `ModelDownloadProgress`, `ScanReveal` — imported but never rendered anywhere) plus
+  the orphaned `CartBadge`; stale imports cleaned up.
+
+### Changed
+- **Inspiration results de-cluttered**: the two primary actions stay full-width and
+  the four secondary buttons form a 2-up grid (was six stacked full-width buttons —
+  a wall of scroll); the forced auto-scroll to the orbs on page load removed
+  (it yanked refresh/deep-link visitors past their source image).
+- **Colour-orb animations pause off-screen** (`whileInView`) — the always-on
+  infinite float/glow loops burnt CPU in proportion to colour count.
+- Forge tabs show a themed "CONSULTING THE COGITATOR…" fallback instead of a blank
+  flash while their chunks load; cart quantity/remove buttons raised to 44px;
+  requisition stamp counts line items, matching the nav badge and manifest.
+
+### Added
+- Responsive spec: tall-phone 412×915 added to the matrix (the worst dead-space
+  case was previously untested); four "miniature idle vertical fit" assertions
+  (no page scroll at any phone size); a `miniature-warmup` screenshot variant —
+  the warm-up strip was invisible in every previous screenshot because the shared
+  seed forces offline mode.
+
 ## [Unreleased] - 2026-07-16 (Pre-Launch Audit Batch 4: Round-2 Regression Fixes)
 ### Fixed
 - **WarpPortal hint had the wrong copy**: showed the Miniscan light/background hint
