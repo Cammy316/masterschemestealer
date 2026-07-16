@@ -258,7 +258,9 @@ export function DailyGameUI() {
         )}
 
         <div className="flex flex-col gap-2 mb-4">
-          {Array.from({ length: MAX_GUESSES }).map((_, i) => {
+          {/* After the game ends, unused rows would render as dead empty boxes
+              stacked above the completion card — only show them mid-game. */}
+          {Array.from({ length: gameState.status === 'playing' ? MAX_GUESSES : gameState.guesses.length }).map((_, i) => {
             const guess = gameState.guesses[i];
             
             if (!guess) {
@@ -362,10 +364,13 @@ export function DailyGameUI() {
         </div>
 
         {gameState.status !== 'playing' && (
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ staggerChildren: 0.12 }}
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, scale: 0.95 },
+              show: { opacity: 1, scale: 1, transition: { staggerChildren: 0.12 } },
+            }}
+            initial="hidden"
+            animate="show"
             className="flex flex-col items-center p-6 border border-[var(--imperial-gold)]/50 bg-black/80 backdrop-blur-md rounded-sm mt-4 shadow-[0_0_30px_rgba(212,175,55,0.15)] relative overflow-hidden"
           >
             <motion.div 
@@ -375,13 +380,11 @@ export function DailyGameUI() {
               className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--imperial-gold)_0%,transparent_70%)] pointer-events-none z-0"
             />
             
-            <motion.h2 
+            <motion.h2
               variants={{
                 hidden: { scale: 0.8, opacity: 0 },
                 show: { scale: 1, opacity: 1, transition: { type: "spring" } }
               }}
-              initial="hidden"
-              animate="show"
               className="text-3xl gothic-text text-[var(--imperial-gold)] mb-2 drop-shadow-[0_0_8px_rgba(212,175,55,0.5)] z-10"
             >
               {gameState.status === 'won' ? 'MISSION SUCCESSFUL' : 'MISSION FAILED'}
