@@ -28,7 +28,12 @@
 import React, { useRef, useEffect, useCallback, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Color, MaskFrame } from '@/lib/types';
-import { maskDestRect, layoutRailCallouts } from '@/lib/maskGeometry';
+import { layoutRailCallouts } from '@/lib/maskGeometry';
+import {
+  buildBaseLayer as buildBaseLayerShared,
+  buildRegionLayer as buildRegionLayerShared,
+  decodeMask,
+} from '@/lib/reveal/revealLayers';
 
 function DecryptionText({ text, delay = 0, className = '' }: { text: string; delay?: number; className?: string }) {
   const [displayText, setDisplayText] = useState(text.replace(/[a-zA-Z]/g, '0'));
@@ -85,19 +90,6 @@ interface AuspexRevealProps {
   onChipClick?: (index: number) => void;
 }
 
-/** Decode a base64 PNG into an ImageBitmap */
-async function decodeMask(base64: string): Promise<ImageBitmap | null> {
-  try {
-    const binary = atob(base64);
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-    const blob = new Blob([bytes], { type: 'image/png' });
-    return await createImageBitmap(blob);
-  } catch {
-    return null;
-  }
-}
-
 const PULSE_DURATION_MS = 2600;
 /** Rail chips sit centred at this % from their frame edge (SVG x = 6 / 94). */
 const RAIL_INSET_PCT = 6;
@@ -139,49 +131,17 @@ export function AuspexReveal({
     [mode, colors]
   );
 
-  /** The model dimmed IN PLACE (source-atop keeps the RGBA background
-   *  transparent so the CSS backdrop shows through) + CRT scanlines. */
+  /** Shared with the video exporter (lib/reveal/revealLayers) so the live
+   *  reveal and an exported clip can never drift in look. */
   const buildBaseLayer = useCallback(
-    (img: HTMLImageElement, w: number, h: number, greyscale: boolean) => {
-      const layer = document.createElement('canvas');
-      layer.width = w;
-      layer.height = h;
-      const ctx = layer.getContext('2d');
-      if (!ctx) return null;
-      if (greyscale) {
-        ctx.filter = 'grayscale(1) brightness(0.5)';
-        ctx.drawImage(img, 0, 0);
-        ctx.filter = 'none';
-      } else {
-        ctx.drawImage(img, 0, 0);
-      }
-      ctx.globalCompositeOperation = 'source-atop'; // model pixels only
-      ctx.fillStyle = greyscale ? 'rgba(4, 8, 6, 0.45)' : 'rgba(5, 12, 10, 0.72)';
-      ctx.fillRect(0, 0, w, h);
-      for (let y = 0; y < h; y += 4) {
-        ctx.fillStyle = 'rgba(0, 255, 65, 0.03)';
-        ctx.fillRect(0, y, w, 1);
-      }
-      return layer;
-    },
+    (img: HTMLImageElement, w: number, h: number, greyscale: boolean) =>
+      buildBaseLayerShared(img, w, h, greyscale),
     []
   );
 
-  /** The user's REAL image clipped to one region (alpha-keyed mask drawn
-   *  into its crop rect). No tinting — the point is showing actual paint. */
   const buildRegionLayer = useCallback(
-    (img: HTMLImageElement, mask: ImageBitmap, w: number, h: number) => {
-      const dst = maskDestRect(maskFrame, w, h);
-      const layer = document.createElement('canvas');
-      layer.width = w;
-      layer.height = h;
-      const ctx = layer.getContext('2d');
-      if (!ctx) return null;
-      ctx.drawImage(img, 0, 0);
-      ctx.globalCompositeOperation = 'destination-in';
-      ctx.drawImage(mask, 0, 0, mask.width, mask.height, dst.x, dst.y, dst.w, dst.h);
-      return layer;
-    },
+    (img: HTMLImageElement, mask: ImageBitmap, w: number, h: number) =>
+      buildRegionLayerShared(img, mask, w, h, maskFrame),
     [maskFrame]
   );
 

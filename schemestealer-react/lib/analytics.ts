@@ -18,6 +18,7 @@ export type AnalyticsEventName =
   | 'paint_removed_from_cart'
   | 'affiliate_link_clicked'
   | 'share_initiated'
+  | 'reveal_video_exported'
   | 'feedback_submitted'
   | 'pro_upgrade_clicked'
   | 'ko_fi_clicked'
@@ -253,6 +254,17 @@ class AnalyticsService {
    */
   trackShareInitiated(method: 'copy' | 'download' | 'social'): void {
     this.track('share_initiated', { method });
+  }
+
+  /**
+   * Track a scan-reveal video export (Engine A pict-cast).
+   */
+  trackRevealVideoExported(durationMs: number, format: string, captionPreset: string): void {
+    this.track('reveal_video_exported', {
+      duration_ms: durationMs,
+      format,
+      caption_preset: captionPreset,
+    });
   }
 
   /**

@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-07-30 (Content Bank Sprint + Broadcast Update)
+### Added
+- **Engine A — in-app scan-reveal video export ("pict-cast")**: from a Miniscan
+  result, Share → EXPORT PICT-CAST records a ~13s 1080×1920 clip of the user's own
+  model being read region-by-region by the machine spirit — greyscale→colour region
+  blooms with hex-glow rims, garbling leader-line labels, a base→shade→highlight→wash
+  recipe cascade, and a brand plate that dissolves back to frame 1 (seamless loop),
+  over a synthesised cogitator audio bed. Deterministic, t-parameterised timeline;
+  MP4 (avc1) with WebM/vp9 fallback; `navigator.share({files})` with a download
+  fallback; per-platform copy-ready captions; three burned-in caption presets.
+  Reuses the AuspexReveal visual language via shared layers, so an exported clip
+  always matches the on-screen reveal. Gated on backend masks + MediaRecorder
+  support; degrades gracefully otherwise. New `reveal_video_exported` analytics
+  event. Miniature (green) flow first; Inspiration is a fast follow.
+- **`video-factory/` — Engine B local content factory** (Remotion): batch-renders
+  the launch content bank straight from the shipped data files. Three templates —
+  T1 Swatchle (guess-the-paint), T2 Budget Swap (premium→cheapest measured match),
+  T3 Scheme Proof (famous scheme's official vs budget palette) — plus a one-command
+  `factory bank` runner (one bundle, QA each, summary CSV) and automated QA
+  (loop-close pixel diff, hook-beat checks, thumbnails, title variants). Reads
+  `schemestealer-react/lib/data/*.json` read-only; outputs git-ignored. Not part of
+  the deployed app.
+- **Footage capture plan** (`Skills&rules/FOOTAGE_CAPTURE_PLAN.md`): the desk-side
+  shoot guide for the ~7 footage-based launch clips (the other 18 are data renders).
+- Tests: `lib/__tests__/revealTimeline.test.ts` + `lib/__tests__/revealExport.test.ts`
+  (timeline determinism + loop seam, MP4-first format selection, caption rules, spec
+  building); `tests/reveal-export.spec.ts` (Playwright — export UI wiring + a
+  deterministic 5-frame storyboard render). video-factory ships node:test selector
+  tests.
+
+### Changed
+- **`components/ShareModal.tsx` reworked** from the placeholder swatch-grid image
+  export into the pict-cast export flow, themed to the cogitator/warp tokens.
+- **`AuspexReveal` now imports its base/region layer builders from the shared
+  `lib/reveal/revealLayers` module** — a single source of truth for the reveal look,
+  so the live reveal and the exported clip can never drift. Behaviour unchanged.
+
 ## [Unreleased] - 2026-07-16 (Dataslate Overhaul + Reveal Fix)
 ### Fixed
 - **Miniscan reveal stuck on the wireframe (dev)**: StrictMode's mount-cleanup left

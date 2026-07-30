@@ -567,18 +567,7 @@ export default function InspirationResultsPage() {
       </div>
 
       {showShareModal && (
-        <ShareModal
-          mode="inspiration"
-          data={{
-            colors: currentScan.detectedColors.map((color) => ({
-              hex: color.hex,
-              name: color.family || 'Unknown',
-              percentage: color.percentage || 0,
-            })),
-            imageUrl: currentScan.imageUrl,
-          }}
-          onClose={() => setShowShareModal(false)}
-        />
+        <ShareModal mode="inspiration" scan={currentScan} onClose={() => setShowShareModal(false)} />
       )}
 
       {/* Feedback Modal */}
