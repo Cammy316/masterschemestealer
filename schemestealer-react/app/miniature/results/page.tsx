@@ -620,18 +620,7 @@ export default function MiniscanResultsPage() {
       </div>
 
       {showShareModal && (
-        <ShareModal
-          mode="miniature"
-          data={{
-            colors: currentScan.detectedColors.map((color) => ({
-              hex: color.hex,
-              name: color.family || 'Unknown',
-              percentage: color.percentage || 0,
-            })),
-            imageUrl: currentScan.imageUrl,
-          }}
-          onClose={() => setShowShareModal(false)}
-        />
+        <ShareModal mode="miniature" scan={currentScan} onClose={() => setShowShareModal(false)} />
       )}
 
       {/* Feedback Modal */}
