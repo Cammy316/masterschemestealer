@@ -1,0 +1,12 @@
+# Heavy / generated — the FACTORY SOURCE is tracked, its outputs are not.
+node_modules/
+out/
+footage/
+
+# Remotion / bundler caches
+.remotion/
+build/
+
+# OS / editor
+.DS_Store
+*.log
