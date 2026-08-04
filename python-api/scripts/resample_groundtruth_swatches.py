@@ -34,7 +34,7 @@ from skimage import color as skcolor
 
 from core.colour_maths import ciede2000_single
 
-PDF_PATH = r"E:\Git\masterschemestealer\Skills&rules\REDACTED_SWATCH_SOURCE.pdf"
+PDF_PATH = r"E:\Git\masterschemestealer\Skills&rules\_source\REDACTED_SWATCH_SOURCE.pdf"
 DB_PATH = os.path.join(os.path.dirname(__file__), "..", "paints_groundtruth.json")
 OUT_JSON = os.path.join(os.path.dirname(__file__), "..", "swatch_resample.json")
 OUT_MD = os.path.join(os.path.dirname(__file__), "..", "swatch_resample_report.md")

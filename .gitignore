@@ -48,11 +48,10 @@ api.log
 # feedback incl. emails — must never be committed). Production uses Supabase.
 python-api/data/
 
-# Local reference material & archives — never publish (the swatch-source PDF
-# lives here; OLS/ is a local-only archive of superseded docs).
-Skills&rules/*.pdf
-Skills&rules/*.zip
-Skills&rules/OLS/
+# Local-only project docs & skills — sensitive business plans (monetisation
+# roadmap, launch/campaign strategy) plus the swatch-source PDF live here. The
+# whole folder is kept on disk for local context but never committed.
+Skills&rules/
 
 # Bundled external audit plugin — has its own git repo, must not be embedded.
 frontend-design-audit/
