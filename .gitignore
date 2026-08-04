@@ -53,6 +53,19 @@ python-api/data/
 # whole folder is kept on disk for local context but never committed.
 Skills&rules/
 
+# Local-only large/offline assets & superseded business-doc duplicates. Kept on
+# disk, never committed (also purged from history). The canonical roadmap lives
+# in Skills&rules/context/.
+ml-pipeline/
+Testimages/
+/SCHEMESTEALER_MEGA_ROADMAP.md
+/SCHEMESTEALER_ULTIMATE_ROADMAP.md
+/Geminiideas.md
+/GrokIdeas.md
+/ClaudeIdeas.txt
+/1000058499.mp4
+/architecture.md.bak
+
 # Bundled external audit plugin — has its own git repo, must not be embedded.
 frontend-design-audit/
 
