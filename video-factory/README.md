@@ -6,8 +6,8 @@ MP4 masters + per-platform captions. **Not part of the deployed app** — Vercel
 Its source is version-controlled; its outputs (`out/`, `footage/`, `node_modules/`) are
 git-ignored.
 
-Built per `Skills&rules/VIDEO_AUTOMATION_PIPELINE.md` (Engine B) and
-`Skills&rules/LAUNCH_RUNBOOK.md` (Steps 2–4).
+Built per `Skills&rules/launch/VIDEO_AUTOMATION_PIPELINE.md` (Engine B) and
+`Skills&rules/launch/LAUNCH_RUNBOOK.md` (Steps 2–4).
 
 ## Setup
 
