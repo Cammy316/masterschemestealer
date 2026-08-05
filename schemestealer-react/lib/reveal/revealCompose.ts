@@ -237,12 +237,29 @@ export function buildRevealSpec(
   };
 }
 
+/**
+ * Physical canvas for a given output scale. Composition always happens in
+ * logical 1080×1920 coordinates — the scale is applied as a context transform
+ * (see `applyOutputScale`), so no layout, font size or geometry constant has to
+ * know about it. Used to drop the MediaRecorder fallback to 720×1280, where the
+ * software encoder is the bottleneck.
+ */
+export function outputSize(scale: number): { width: number; height: number } {
+  return { width: Math.round(CANVAS_W * scale), height: Math.round(CANVAS_H * scale) };
+}
+
+/** Reset the context to logical 1080×1920 space for the given output scale. */
+export function applyOutputScale(ctx: CanvasRenderingContext2D, scale: number): void {
+  ctx.setTransform(scale, 0, 0, scale, 0, 0);
+}
+
 /** Load image + decode masks + pre-build layers. Browser-only. */
 export async function prepareResources(
   imageUrl: string,
   colors: Color[],
   maskFrame: MaskFrame | undefined,
   spec: RevealSpec,
+  outputScale = 1,
 ): Promise<RevealResources> {
   const img = await loadImage(imageUrl);
 
@@ -250,8 +267,9 @@ export async function prepareResources(
   // photo's native resolution. A background-removed phone photo is ~12 MP; a
   // dozen layers of that scaled down per frame cost ~70 ms/frame and starved
   // the 33 ms budget, which is what made the export stutter at ~12 fps.
+  // The output scale folds in here too, so a 720p export builds 720p layers.
   const fitted = fitRect(img.naturalWidth, img.naturalHeight, FULL_BOX);
-  const layerScale = Math.min(1, (fitted.w * MAX_CAMERA_SCALE) / img.naturalWidth);
+  const layerScale = Math.min(1, (fitted.w * MAX_CAMERA_SCALE * outputScale) / img.naturalWidth);
   const imgW = Math.max(1, Math.round(img.naturalWidth * layerScale));
   const imgH = Math.max(1, Math.round(img.naturalHeight * layerScale));
 
@@ -262,14 +280,20 @@ export async function prepareResources(
   const greyLayer = buildBaseLayer(img, imgW, imgH, true, adaptiveVideoDim(measureMeanLuma(heroLayer)));
   if (!greyLayer) throw new Error('Failed to build base layer');
 
+  // Full-frame cached layers are stored at PHYSICAL output size so their
+  // per-frame blit is 1:1, but painted through the scale transform so they keep
+  // logical geometry (the 26 px grid stays 26 logical px at any output size).
+  const phys = outputSize(outputScale);
+
   // The backdrop is fully determined by (size, skin): render it once instead of
   // repainting three full-canvas gradients and ~116 grid strips every frame —
   // twice per frame during the loop crossfade.
   const backdropLayer = document.createElement('canvas');
-  backdropLayer.width = CANVAS_W;
-  backdropLayer.height = CANVAS_H;
+  backdropLayer.width = phys.width;
+  backdropLayer.height = phys.height;
   const bctx = backdropLayer.getContext('2d');
   if (!bctx) throw new Error('2D canvas unavailable');
+  applyOutputScale(bctx, outputScale);
   paintBackdrop(bctx, CANVAS_W, CANVAS_H, spec.skin);
 
   const built = await Promise.all(
@@ -286,8 +310,8 @@ export async function prepareResources(
   );
 
   const loopTargetLayer = document.createElement('canvas');
-  loopTargetLayer.width = CANVAS_W;
-  loopTargetLayer.height = CANVAS_H;
+  loopTargetLayer.width = phys.width;
+  loopTargetLayer.height = phys.height;
 
   const revealedLayer = buildRevealedComposite(
     greyLayer,
@@ -313,7 +337,10 @@ export async function prepareResources(
 
   // Bake the loop target now (fonts are loaded before prepareResources runs).
   const lctx = loopTargetLayer.getContext('2d');
-  if (lctx) drawLoopTarget(lctx, res);
+  if (lctx) {
+    applyOutputScale(lctx, outputScale);
+    drawLoopTarget(lctx, res);
+  }
   return res;
 }
 
@@ -520,7 +547,7 @@ function drawGreyModel(
 export function drawLoopTarget(ctx: CanvasRenderingContext2D, res: RevealResources): void {
   const s0 = frameState(0, res.spec);
   const r = modelRectAt(s0.camera, res.imgW, res.imgH);
-  ctx.drawImage(res.backdropLayer, 0, 0);
+  ctx.drawImage(res.backdropLayer, 0, 0, CANVAS_W, CANVAS_H);
   drawHeroGlow(ctx, res, r, s0.heroGlow);
   withRock(ctx, r, s0.camera.rotationDeg, () => {
     ctx.drawImage(res.heroLayer, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
@@ -545,7 +572,7 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
   const hud = 1 - state.hudFade;
   const finaleIndex = spec.regions.length - 1; // dominant colour blooms last
 
-  ctx.drawImage(res.backdropLayer, 0, 0);
+  ctx.drawImage(res.backdropLayer, 0, 0, CANVAS_W, CANVAS_H);
   drawHeroGlow(ctx, res, r, state.heroGlow);
 
   // Once every bloom has landed and its rim has died away, the model is a fixed
@@ -737,7 +764,7 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
   if (state.loopCrossfade > 0) {
     ctx.save();
     ctx.globalAlpha = state.loopCrossfade;
-    ctx.drawImage(res.loopTargetLayer, 0, 0);
+    ctx.drawImage(res.loopTargetLayer, 0, 0, CANVAS_W, CANVAS_H);
     ctx.restore();
   }
 }
@@ -881,6 +908,11 @@ if (process.env.NODE_ENV !== 'production' && typeof window !== 'undefined') {
     prepareResources,
     recipeSteps,
     composeAt,
+    applyOutputScale,
+    outputSize,
     scheduleRevealAudio,
+    // The offline encoder is a dynamic chunk in production; tests pull it in on
+    // demand, which registers window.__revealOfflineDebug.
+    loadOffline: () => import('./renderRevealOffline'),
   };
 }

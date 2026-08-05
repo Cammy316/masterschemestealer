@@ -1,0 +1,236 @@
+/**
+ * Engine A — OFFLINE renderer. The pict-cast's real engine.
+ *
+ * MediaRecorder cannot produce this clip. It is a real-time, wall-clock recorder:
+ * if encoding a frame takes too long it drops the frame and moves on (there is a
+ * standing W3C request for frame-by-frame recording precisely because the API
+ * cannot do it — mediacapture-record#213). On a phone, software VP8 encoding of a
+ * 1080×1920 frame is itself slower than the frame budget, so measured device
+ * exports came out at 5 fps with half-second stalls, and no amount of compose
+ * optimisation could fix that.
+ *
+ * Here there is no clock. Each frame is composed at its exact timeline position
+ * and handed to a WebCodecs encoder with an explicit timestamp, so a slow frame
+ * makes the export take longer and can never make it stutter. The result is
+ * constant-frame-rate by construction, carries real duration metadata, and is
+ * H.264/MP4 wherever the platform can encode it — using the hardware encoder.
+ */
+
+import {
+  AudioBufferSource,
+  BufferTarget,
+  CanvasSource,
+  Mp4OutputFormat,
+  Output,
+  QUALITY_HIGH,
+  WebMOutputFormat,
+  getFirstEncodableAudioCodec,
+  getFirstEncodableVideoCodec,
+  type AudioCodec,
+  type VideoCodec,
+} from 'mediabunny';
+
+import {
+  applyOutputScale,
+  buildRevealSpec,
+  composeReveal,
+  outputSize,
+  prepareResources,
+  recipeSteps,
+  CANVAS_W,
+  CANVAS_H,
+} from './revealCompose';
+import { frameState, DEFAULT_DURATION_MS, type RevealSpec } from './revealTimeline';
+import { scheduleRevealAudio } from './revealAudio';
+import type { RenderRevealOptions, RenderRevealResult } from './renderRevealVideo';
+
+/** MP4 is the goal (Instagram's uploader refuses WebM and iOS won't play it), so
+ *  H.264 is tried first; WebM is a fallback that still gets perfect pacing. */
+const VIDEO_LADDER: VideoCodec[] = ['avc', 'vp9', 'vp8'];
+const AUDIO_LADDER: AudioCodec[] = ['aac', 'opus'];
+
+export interface OfflinePlan {
+  video: VideoCodec;
+  audio: AudioCodec | null;
+  container: 'mp4' | 'webm';
+  mimeType: string;
+}
+
+/** MP4 can carry H.264/AAC (and Opus); VP8/VP9 have to go in WebM. */
+function containerFor(video: VideoCodec): 'mp4' | 'webm' {
+  return video === 'avc' ? 'mp4' : 'webm';
+}
+
+/**
+ * What this browser can actually encode at the target size.
+ *
+ * mediabunny's probes run a real encoder configuration rather than trusting
+ * `VideoEncoder.isConfigSupported()`, which matters: Firefox reports H.264 as
+ * supported and then throws on `configure()`.
+ */
+export async function planOfflineRender(
+  width: number,
+  height: number,
+): Promise<OfflinePlan | null> {
+  if (typeof VideoEncoder === 'undefined') return null;
+  let video: VideoCodec | null = null;
+  try {
+    video = await getFirstEncodableVideoCodec(VIDEO_LADDER, { width, height });
+  } catch {
+    return null;
+  }
+  if (!video) return null;
+
+  const container = containerFor(video);
+  // WebM cannot carry AAC; MP4 takes either.
+  const audioLadder = container === 'webm' ? (['opus'] as AudioCodec[]) : AUDIO_LADDER;
+  let audio: AudioCodec | null = null;
+  try {
+    audio = await getFirstEncodableAudioCodec(audioLadder, { numberOfChannels: 2, sampleRate: 48000 });
+  } catch {
+    audio = null; // audio is a bonus; never lose the export over it
+  }
+
+  return {
+    video,
+    audio,
+    container,
+    mimeType: container === 'mp4' ? 'video/mp4' : 'video/webm',
+  };
+}
+
+/** Frames are emitted at exact multiples of the frame interval. The LAST frame
+ *  sits one interval BEFORE the end, because frame N would be frame 0 again —
+ *  that wrap is the loop seam, so rendering it would duplicate a frame. */
+export function frameTimestamps(durationMs: number, fps: number): number[] {
+  const count = Math.max(1, Math.round((durationMs / 1000) * fps));
+  const step = 1000 / fps;
+  return Array.from({ length: count }, (_, i) => i * step);
+}
+
+/** Render the synthesised bed into an AudioBuffer, reusing the same graph the
+ *  live path schedules — no second source of truth for the sound. */
+async function renderAudioBuffer(spec: RevealSpec): Promise<AudioBuffer | null> {
+  try {
+    const Ctor =
+      window.OfflineAudioContext ||
+      (window as unknown as { webkitOfflineAudioContext: typeof OfflineAudioContext })
+        .webkitOfflineAudioContext;
+    if (!Ctor) return null;
+    const sampleRate = 48000;
+    const ctx = new Ctor(2, Math.ceil((spec.durationMs / 1000) * sampleRate), sampleRate);
+    scheduleRevealAudio(ctx, ctx.destination, spec, 0);
+    return await ctx.startRendering();
+  } catch {
+    return null;
+  }
+}
+
+export async function renderRevealOffline(
+  opts: RenderRevealOptions & { plan: OfflinePlan; outputScale?: number },
+): Promise<RenderRevealResult> {
+  const durationMs = opts.durationMs ?? DEFAULT_DURATION_MS;
+  const fps = opts.fps ?? 30;
+  const outputScale = opts.outputScale ?? 1;
+  const { width, height } = outputSize(outputScale);
+
+  // Fonts must be loaded or canvas text falls back to a system face.
+  await (document.fonts?.ready ?? Promise.resolve());
+
+  const steps = recipeSteps(opts.recipe, opts.brand);
+  const spec = buildRevealSpec(
+    opts.colors,
+    steps,
+    opts.brandLabel,
+    opts.skin,
+    opts.captionPreset,
+    durationMs,
+    opts.recipeColourIndex ?? -1,
+  );
+  if (spec.regions.length === 0) throw new Error('No mask regions to reveal.');
+
+  const res = await prepareResources(opts.imageUrl, opts.colors, opts.maskFrame, spec, outputScale);
+
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d', { alpha: false });
+  if (!ctx) throw new Error('2D canvas unavailable');
+
+  const output = new Output({
+    format:
+      opts.plan.container === 'mp4'
+        ? new Mp4OutputFormat({ fastStart: 'in-memory' })
+        : new WebMOutputFormat(),
+    target: new BufferTarget(),
+  });
+
+  const videoSource = new CanvasSource(canvas, {
+    codec: opts.plan.video,
+    quality: QUALITY_HIGH,
+    keyFrameInterval: 2,
+  });
+  output.addVideoTrack(videoSource, { frameRate: fps });
+
+  const audioBuffer = opts.audio === false || !opts.plan.audio ? null : await renderAudioBuffer(spec);
+  const audioSource =
+    audioBuffer && opts.plan.audio
+      ? new AudioBufferSource({ codec: opts.plan.audio, quality: QUALITY_HIGH })
+      : null;
+  if (audioSource) output.addAudioTrack(audioSource);
+
+  await output.start();
+
+  const stamps = frameTimestamps(durationMs, fps);
+  const frameDur = 1 / fps;
+  try {
+    for (let i = 0; i < stamps.length; i++) {
+      if (opts.signal?.aborted) throw new DOMException('Export cancelled', 'AbortError');
+      applyOutputScale(ctx, outputScale);
+      composeReveal(ctx, frameState(stamps[i], spec), res);
+      // Awaiting respects encoder + writer backpressure; an unbounded queue is a
+      // documented way to crash the encoder.
+      await videoSource.add(stamps[i] / 1000, frameDur);
+      opts.onProgress?.((i + 1) / (stamps.length + 1));
+      // Yield periodically so the progress ring paints and the tab stays alive.
+      if (i % 8 === 7) await new Promise((r) => setTimeout(r, 0));
+    }
+    if (audioSource && audioBuffer) await audioSource.add(audioBuffer);
+    await output.finalize();
+  } catch (err) {
+    try {
+      await output.cancel();
+    } catch {
+      /* already torn down */
+    }
+    throw err;
+  }
+
+  const buffer = (output.target as BufferTarget).buffer;
+  if (!buffer) throw new Error('Encoder produced no output.');
+  opts.onProgress?.(1);
+
+  return {
+    blob: new Blob([buffer], { type: opts.plan.mimeType }),
+    mime: opts.plan.mimeType,
+    durationMs,
+    engine: 'webcodecs',
+    width,
+    height,
+    codec: opts.plan.video,
+    frameCount: stamps.length,
+  };
+}
+
+export const OFFLINE_CANVAS_LOGICAL = { width: CANVAS_W, height: CANVAS_H };
+
+// Dev-only hook. Unlike MediaRecorder, the offline pipeline has no real-time
+// requirement, so it CAN be driven end-to-end in headless Chromium — the whole
+// encode path is testable instead of device-only.
+if (process.env.NODE_ENV !== 'production' && typeof window !== 'undefined') {
+  (window as unknown as Record<string, unknown>).__revealOfflineDebug = {
+    planOfflineRender,
+    renderRevealOffline,
+    frameTimestamps,
+  };
+}

@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { pickVideoMime, videoMimeSupport } from '../reveal/renderRevealVideo';
+import { frameTimestamps } from '../reveal/renderRevealOffline';
+import { outputSize } from '../reveal/revealCompose';
 import {
   garbleReveal,
   fitRect,
@@ -50,6 +52,41 @@ describe('videoMimeSupport', () => {
     expect(keys.some((k) => k.includes('opus') && k.startsWith('video/mp4'))).toBe(true);
     expect(map['video/webm']).toBe(true);
     expect(map['video/mp4']).toBe(false);
+  });
+});
+
+describe('frameTimestamps', () => {
+  // Intent: the offline renderer emits an exact CFR timeline. MediaRecorder's
+  // real-time capture dropped to 5 fps on mobile because it drops frames it
+  // can't encode in time; here the count is fixed and the spacing is exact.
+  it('emits exactly duration × fps frames at exact intervals', () => {
+    const ts = frameTimestamps(13000, 30);
+    expect(ts.length).toBe(390);
+    expect(ts[0]).toBe(0);
+    for (let i = 1; i < ts.length; i++) {
+      expect(ts[i] - ts[i - 1]).toBeCloseTo(1000 / 30, 9);
+    }
+  });
+
+  // Intent: the seam. Frame N would BE frame 0 (the clip loops), so rendering
+  // it would duplicate a frame and stall the loop for one tick.
+  it('stops one interval short of the duration so the wrap is the seam', () => {
+    const ts = frameTimestamps(13000, 30);
+    expect(ts[ts.length - 1]).toBeCloseTo(13000 - 1000 / 30, 6);
+    expect(ts[ts.length - 1]).toBeLessThan(13000);
+  });
+
+  it('never emits an empty timeline', () => {
+    expect(frameTimestamps(0, 30).length).toBe(1);
+  });
+});
+
+describe('outputSize', () => {
+  // Intent: the MediaRecorder fallback renders at 720×1280 because its software
+  // encoder is the bottleneck — composition still happens in logical 1080×1920.
+  it('scales the physical canvas while keeping 9:16', () => {
+    expect(outputSize(1)).toEqual({ width: 1080, height: 1920 });
+    expect(outputSize(2 / 3)).toEqual({ width: 720, height: 1280 });
   });
 });
 

@@ -24,6 +24,9 @@ import type { RevealSkin } from './revealLayers';
 
 export type RevealPhase = 'hero' | 'snap' | 'sweep' | 'reveal' | 'recipe' | 'plate';
 
+/** Clip length. Lives here because every phase boundary is a fraction of it. */
+export const DEFAULT_DURATION_MS = 13000;
+
 export interface RevealRegion {
   index: number; // index into the scan's colours
   hex: string;
