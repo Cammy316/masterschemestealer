@@ -2,6 +2,79 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-08-05 (Pict-Cast v2 — the export becomes postable)
+
+Reviewing the first real export against the campaign's acceptance criteria
+(`SOCIAL_MEDIA_CAMPAIGN.md` §1) found it failed nearly all of them. The
+storyboard, composition, audio mix and container were reworked around one rule:
+the painter's own model is the hook, and the clip has to survive a bright feed at
+thumbnail size.
+
+### Fixed
+- **Exports were VP8 WebM** — a file Instagram refuses on upload and iOS cannot
+  play. Both MP4 candidates were failing `MediaRecorder.isTypeSupported` because
+  Chrome rejects the bare `avc1` shorthand; the candidate list now leads with
+  full profile strings (`avc1.640028` / `avc1.42E01E` + `mp4a.40.2`) and WebM is
+  a genuine last resort.
+- **The loop never made it onto the tape.** Recording stopped the instant
+  `t >= duration`, cutting the dissolve mid-crossfade; the recorder now holds the
+  completed final frame for 320 ms. The crossfade also alpha-blended over
+  still-drawn caption/labels/recipe/plate, ghosting them through the seam — HUD
+  chrome now fades out fully *before* the dissolve carries any weight. Measured
+  seam: mean pixel difference 0.012 between the first and last frames.
+- **The audio bed was inaudible** — 40.3 dBFS RMS, flat, no transients, on
+  platforms that normalise toward 14 LUFS and demote silent clips. Restaged
+  gains, added attack transients (boot thud, charge riser, snap hit, per-region
+  hits, loop swell) and a soft-knee tanh limiter: now 19.1 dBFS RMS, 1.1 dBFS
+  peak, non-clipping.
+- **Region blooms flattened the paint job.** The reveal drew real photo pixels
+  correctly, but a shadow blur of up to 73 px was applied to the whole region
+  layer, washing hex over the painter's blending. The glow moved to a dedicated
+  hollow rim layer (dilate the mask, punch the original out); region pixels are
+  now drawn clean.
+- Recipe cascade order corrected to base→highlight→shade→wash, matching the app's
+  recipe card instead of teaching a different sequence.
+
+### Changed
+- **New storyboard**: hero (full-colour model, slow push-in) → flicker-snap to
+  greyscale → sweep that lights the model up behind the scan line → accelerating
+  region blooms → recipe outro → plate → dissolve back to the hero. **The loop
+  target is now the hero frame**, so a rewatch replays the snap-to-grey as its own
+  hook. First colour is on screen at frame 0 (was 3.0 s, past the scroll
+  decision).
+- **The camera moves**: Ken Burns push-in with a micro-punch toward each blooming
+  region, and the model eases into a compact framing for the outro so the recipe
+  owns the lower frame. Camera returns home before the dissolve so the seam has
+  no jump.
+- **The outro says what it is for.** Five regions get called out but only one gets
+  a breakdown — the heading now reads `{BRAND} RECIPE` over
+  `DOMINANT · {n} {FAMILY}`, and that region's callout stays lit during the
+  cascade. A ΔE badge is drawn on the **base step only**: ΔE measures distance
+  from the detected colour, which derived partners do not, and labelling both
+  "ΔE" would compare two different quantities.
+- **Legibility at feed size**: family labels 24→36 px, chips and anchors enlarged,
+  model box grown, sweep now drawn in the active skin's accent (it was hard-coded
+  imperial green even on the Warp skin).
+- **Caption counts up** — `SCANNING…` → `READING… k/n COLOURS` → `n COLOURS
+  IDENTIFIED` — instead of stating the total from the first second.
+- **Branding shrank**: a small persistent `schemestealer.com` corner watermark
+  plus a reduced end plate, so the clip reads as the painter's flex rather than an
+  advert they are posting for us.
+- `buildBaseLayer` takes an explicit dim level. The exported clip needs a much
+  brighter greyscale base than the on-screen reveal (thumbnail on a bright feed vs
+  up close on a dark screen), so `SCREEN_BASE_DIM` / `VIDEO_BASE_DIM` are named
+  constants rather than a forked layer builder — the shared look stays shared.
+- `createRevealAudioBed` split into `scheduleRevealAudio` (graph) + the
+  MediaStream plumbing, so the identical graph renders in an OfflineAudioContext
+  and its loudness can be measured.
+
+### Added
+- Loudness regression gate in `tests/reveal-export.spec.ts`: renders the bed
+  offline and asserts RMS > 26 dBFS and a non-clipping peak. The silent-audio
+  bug shipped precisely because nothing ever checked.
+- Timeline tests for the hook frame, the camera returning home for the loop, the
+  HUD leading the dissolve, bloom acceleration, and the counting caption.
+
 ## [Unreleased] - 2026-07-30 (Content Bank Sprint + Broadcast Update)
 ### Added
 - **Engine A — in-app scan-reveal video export ("pict-cast")**: from a Miniscan

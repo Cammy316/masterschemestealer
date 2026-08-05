@@ -26,6 +26,19 @@ export async function decodeMask(base64: string): Promise<ImageBitmap | null> {
   }
 }
 
+/** How hard the greyscale base is knocked back. The on-screen reveal is viewed
+ *  up close on a dark screen; the exported clip is viewed thumbnail-sized on a
+ *  bright feed, where the app's dimming reads as a muddy blob. Same look, two
+ *  viewing distances — so the level is a parameter, not a fork. */
+export interface BaseDim {
+  /** brightness() multiplier applied with the greyscale filter */
+  brightness: number;
+  /** opacity of the void veil painted over the model pixels */
+  veil: number;
+}
+export const SCREEN_BASE_DIM: BaseDim = { brightness: 0.5, veil: 0.45 };
+export const VIDEO_BASE_DIM: BaseDim = { brightness: 0.85, veil: 0.15 };
+
 /**
  * The model dimmed IN PLACE. `source-atop` keeps the RGBA background
  * transparent so the backdrop shows through; adds CRT scanlines.
@@ -35,6 +48,7 @@ export function buildBaseLayer(
   w: number,
   h: number,
   greyscale: boolean,
+  dim: BaseDim = SCREEN_BASE_DIM,
 ): HTMLCanvasElement | null {
   const layer = document.createElement('canvas');
   layer.width = w;
@@ -42,19 +56,34 @@ export function buildBaseLayer(
   const ctx = layer.getContext('2d');
   if (!ctx) return null;
   if (greyscale) {
-    ctx.filter = 'grayscale(1) brightness(0.5)';
+    ctx.filter = `grayscale(1) brightness(${dim.brightness})`;
     ctx.drawImage(img, 0, 0);
     ctx.filter = 'none';
   } else {
     ctx.drawImage(img, 0, 0);
   }
   ctx.globalCompositeOperation = 'source-atop'; // model pixels only
-  ctx.fillStyle = greyscale ? 'rgba(4, 8, 6, 0.45)' : 'rgba(5, 12, 10, 0.72)';
+  ctx.fillStyle = greyscale ? `rgba(4, 8, 6, ${dim.veil})` : 'rgba(5, 12, 10, 0.72)';
   ctx.fillRect(0, 0, w, h);
   for (let y = 0; y < h; y += 4) {
     ctx.fillStyle = 'rgba(0, 255, 65, 0.03)';
     ctx.fillRect(0, y, w, 1);
   }
+  return layer;
+}
+
+/**
+ * The model exactly as the painter shot it — no greyscale, no veil, no
+ * scanlines. This is the export's opening frame AND its loop target: the hook
+ * is their paint job, and the clip dissolves back onto it.
+ */
+export function buildHeroLayer(img: CanvasImageSource, w: number, h: number): HTMLCanvasElement | null {
+  const layer = document.createElement('canvas');
+  layer.width = w;
+  layer.height = h;
+  const ctx = layer.getContext('2d');
+  if (!ctx) return null;
+  ctx.drawImage(img, 0, 0);
   return layer;
 }
 
@@ -77,6 +106,48 @@ export function buildRegionLayer(
   if (!ctx) return null;
   ctx.drawImage(img, 0, 0);
   ctx.globalCompositeOperation = 'destination-in';
+  ctx.drawImage(mask, 0, 0, mask.width, mask.height, dst.x, dst.y, dst.w, dst.h);
+  return layer;
+}
+
+/**
+ * A hollow contour ring around one region, in that region's colour.
+ *
+ * The export used to glow by shadow-blurring the whole region layer, which
+ * bloomed a wash of hex over the photograph and flattened the blending the
+ * painter actually did. The glow belongs on the OUTLINE: dilate the mask,
+ * punch the original back out, and let this ring carry the light while the
+ * region pixels stay untouched.
+ */
+export function buildRegionRimLayer(
+  mask: ImageBitmap,
+  w: number,
+  h: number,
+  maskFrame: MaskFrame | undefined,
+  hex: string,
+  thickness = 4,
+): HTMLCanvasElement | null {
+  const dst = maskDestRect(maskFrame, w, h);
+  const layer = document.createElement('canvas');
+  layer.width = w;
+  layer.height = h;
+  const ctx = layer.getContext('2d');
+  if (!ctx) return null;
+
+  // Dilate: stamp the mask around a ring of offsets.
+  const t = thickness;
+  const offsets: [number, number][] = [
+    [-t, 0], [t, 0], [0, -t], [0, t],
+    [-t, -t], [t, -t], [-t, t], [t, t],
+  ];
+  for (const [dx, dy] of offsets) {
+    ctx.drawImage(mask, 0, 0, mask.width, mask.height, dst.x + dx, dst.y + dy, dst.w, dst.h);
+  }
+  // Colourise the dilated silhouette, then punch the original out of it.
+  ctx.globalCompositeOperation = 'source-in';
+  ctx.fillStyle = hex;
+  ctx.fillRect(0, 0, w, h);
+  ctx.globalCompositeOperation = 'destination-out';
   ctx.drawImage(mask, 0, 0, mask.width, mask.height, dst.x, dst.y, dst.w, dst.h);
   return layer;
 }

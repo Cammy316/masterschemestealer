@@ -137,7 +137,16 @@ test('pict-cast export: UI wired + storyboard frames render', async ({ page }) =
   console.log('TIMER PROBE:', JSON.stringify(probe));
 
   // (b) Deterministic storyboard frames via the dev render hook.
-  const FRAMES: Record<string, number> = { boot: 500, sweep: 2000, reveal: 6500, recipe: 10800, loop: 12850 };
+  // One frame per storyboard phase, for eyeball QA of the exported look.
+  // `hero` must show the model in FULL COLOUR — it is the hook and the loop target.
+  const FRAMES: Record<string, number> = {
+    hero: 500,
+    snap: 1250,
+    sweep: 2200,
+    reveal: 6500,
+    recipe: 10800,
+    loop: 13000,
+  };
   const result = await page.evaluate(async (frames) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const R = (window as any).__revealDebug;
@@ -146,7 +155,7 @@ test('pict-cast export: UI wired + storyboard frames render', async ({ page }) =
     if (!R || !scan) return { error: `hook=${!!R} scan=${!!scan}` } as const;
     const colors = scan.detectedColors;
     const steps = R.recipeSteps(colors[0].paintRecipe, 'citadel');
-    const spec = R.buildRevealSpec(colors, steps, 'Citadel', 'imperial', 'colours', 13000);
+    const spec = R.buildRevealSpec(colors, steps, 'Citadel', 'imperial', 'colours', 13000, 0);
     const res = await R.prepareResources(scan.imageUrl, colors, scan.maskFrame, spec);
     const canvas = document.createElement('canvas');
     canvas.width = 1080;
@@ -169,4 +178,34 @@ test('pict-cast export: UI wired + storyboard frames render', async ({ page }) =
     writeFileSync(resolve(OUT_DIR, `${name}.png`), Buffer.from(b64, 'base64'));
     expect(b64.length).toBeGreaterThan(2000); // non-trivial frame
   }
+
+  // (c) The audio bed must be AUDIBLE. The first shipped export measured
+  // −40 dBFS RMS — inaudible once a platform normalises toward ~−14 LUFS, and a
+  // silent clip gets demoted outright. Rendering the same graph offline is the
+  // only way to check this without a real-time MediaRecorder.
+  const audio = await page.evaluate(async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const R = (window as any).__revealDebug;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const scan = (window as any).__seedScan;
+    const spec = R.buildRevealSpec(scan.detectedColors, [], 'Citadel', 'imperial', 'colours', 13000, 0);
+    const sr = 48000;
+    const ctx = new OfflineAudioContext(1, Math.ceil(sr * 13.6), sr);
+    R.scheduleRevealAudio(ctx, ctx.destination, spec, 0.05);
+    const d = (await ctx.startRendering()).getChannelData(0);
+    let sum = 0;
+    let peak = 0;
+    for (let i = 0; i < d.length; i++) {
+      sum += d[i] * d[i];
+      if (Math.abs(d[i]) > peak) peak = Math.abs(d[i]);
+    }
+    return {
+      rmsDb: 20 * Math.log10(Math.sqrt(sum / d.length) + 1e-9),
+      peakDb: 20 * Math.log10(peak + 1e-9),
+    };
+  });
+  console.log('AUDIO BED:', JSON.stringify(audio));
+  expect(audio.rmsDb).toBeGreaterThan(-26);
+  expect(audio.peakDb).toBeLessThan(0); // the limiter must stop it clipping
+  expect(audio.peakDb).toBeGreaterThan(-12); // …but it still has to have transients
 });
