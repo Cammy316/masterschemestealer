@@ -132,6 +132,9 @@ const GLOW_HZ = 0.45;
 const PUSH_IN = 0.09;
 /** Extra punch toward the region currently blooming. */
 const REGION_PUNCH = 0.045;
+/** The largest the model rect can ever be scaled to — the exporter sizes its
+ *  cached layers to this so they are never upscaled and never oversized. */
+export const MAX_CAMERA_SCALE = HERO_SCALE + REGION_PUNCH;
 /** How far the frame drifts toward the blooming region (fraction of the offset). */
 const FOCUS_DRIFT = 0.35;
 

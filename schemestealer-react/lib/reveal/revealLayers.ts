@@ -88,12 +88,15 @@ export function buildBaseLayer(
   layer.height = h;
   const ctx = layer.getContext('2d');
   if (!ctx) return null;
+  // Drawn to the layer's own size: the exporter builds layers at composition
+  // scale rather than the photo's native resolution (see LAYER budget in
+  // revealCompose). Callers passing the natural dims get identical output.
   if (greyscale) {
     ctx.filter = `grayscale(1) brightness(${dim.brightness})`;
-    ctx.drawImage(img, 0, 0);
+    ctx.drawImage(img, 0, 0, w, h);
     ctx.filter = 'none';
   } else {
-    ctx.drawImage(img, 0, 0);
+    ctx.drawImage(img, 0, 0, w, h);
   }
   ctx.globalCompositeOperation = 'source-atop'; // model pixels only
   ctx.fillStyle = greyscale ? `rgba(4, 8, 6, ${dim.veil})` : 'rgba(5, 12, 10, 0.72)';
@@ -116,7 +119,7 @@ export function buildHeroLayer(img: CanvasImageSource, w: number, h: number): HT
   layer.height = h;
   const ctx = layer.getContext('2d');
   if (!ctx) return null;
-  ctx.drawImage(img, 0, 0);
+  ctx.drawImage(img, 0, 0, w, h);
   return layer;
 }
 
@@ -137,7 +140,7 @@ export function buildRegionLayer(
   layer.height = h;
   const ctx = layer.getContext('2d');
   if (!ctx) return null;
-  ctx.drawImage(img, 0, 0);
+  ctx.drawImage(img, 0, 0, w, h);
   ctx.globalCompositeOperation = 'destination-in';
   ctx.drawImage(mask, 0, 0, mask.width, mask.height, dst.x, dst.y, dst.w, dst.h);
   return layer;
@@ -155,6 +158,11 @@ export function buildRegionLayer(
  * The mask is smoothed through a ¼-scale round-trip first: real grabCut masks
  * are full of pinhole speckle, and rimming the raw mask traced every hole —
  * the model looked scribbled over with crayon.
+ *
+ * The glow is BAKED IN here, once. Applying shadowBlur to this layer on every
+ * frame meant a full gaussian blur per region per frame, which is what pushed
+ * the compose loop past its budget and dropped the clip to ~12 fps; the pulse
+ * now animates alpha over a pre-blurred layer instead.
  */
 export function buildRegionRimLayer(
   mask: ImageBitmap,
@@ -197,7 +205,21 @@ export function buildRegionRimLayer(
   ctx.fillRect(0, 0, w, h);
   ctx.globalCompositeOperation = 'destination-out';
   ctx.drawImage(small, 0, 0, sw, sh, 0, 0, w, h);
-  return layer;
+
+  // Bake the glow: the crisp ring plus a blurred copy behind it, so the frame
+  // loop only has to alpha-blend one finished layer.
+  const glowed = document.createElement('canvas');
+  glowed.width = w;
+  glowed.height = h;
+  const gctx = glowed.getContext('2d');
+  if (!gctx) return layer;
+  gctx.shadowColor = hex;
+  gctx.shadowBlur = Math.max(12, Math.round(w * 0.03));
+  gctx.drawImage(layer, 0, 0);
+  gctx.drawImage(layer, 0, 0); // second pass thickens the halo
+  gctx.shadowBlur = 0;
+  gctx.drawImage(layer, 0, 0);
+  return glowed;
 }
 
 /** Neon corner brackets, scaled to the target size. Used by the exporter. */

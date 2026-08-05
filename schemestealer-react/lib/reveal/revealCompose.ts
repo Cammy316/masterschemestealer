@@ -24,6 +24,7 @@ import {
   frameState,
   smoothstep,
   sortRegionsForReveal,
+  MAX_CAMERA_SCALE,
   type RevealCamera,
   type RevealFrameState,
   type RevealRecipeStep,
@@ -166,10 +167,23 @@ export function modelRectAt(camera: RevealCamera, imgW: number, imgH: number): R
 export interface RevealResources {
   spec: RevealSpec;
   fonts: RevealFonts;
+  /** LAYER dimensions, not the source photo's. Layers are built at composition
+   *  scale (see prepareResources) — the aspect ratio is preserved, so these
+   *  drive fitRect identically while every per-frame drawImage samples a small
+   *  texture instead of a 12-megapixel one. */
   imgW: number;
   imgH: number;
+  /** The static cogitator backdrop, rendered once and blitted per frame. */
+  backdropLayer: HTMLCanvasElement;
+  /** The finished frame-1 composition, rendered once — the loop dissolve is
+   *  frameState(0) every time, so re-composing it per frame was pure waste. */
+  loopTargetLayer: HTMLCanvasElement;
   heroLayer: HTMLCanvasElement;
   greyLayer: HTMLCanvasElement;
+  /** Grey base + every region at full reveal, flattened. Once the blooms have
+   *  settled the model stops changing except for the camera, so the outro can
+   *  draw ONE layer instead of the base twice plus one per region. */
+  revealedLayer: HTMLCanvasElement | null;
   regionLayers: (HTMLCanvasElement | null)[]; // aligned to spec.regions order
   rimLayers: (HTMLCanvasElement | null)[];
   callouts: RailCallout[];
@@ -231,8 +245,15 @@ export async function prepareResources(
   spec: RevealSpec,
 ): Promise<RevealResources> {
   const img = await loadImage(imageUrl);
-  const imgW = img.naturalWidth;
-  const imgH = img.naturalHeight;
+
+  // Build every layer at the largest size it can ever be DRAWN at, not at the
+  // photo's native resolution. A background-removed phone photo is ~12 MP; a
+  // dozen layers of that scaled down per frame cost ~70 ms/frame and starved
+  // the 33 ms budget, which is what made the export stutter at ~12 fps.
+  const fitted = fitRect(img.naturalWidth, img.naturalHeight, FULL_BOX);
+  const layerScale = Math.min(1, (fitted.w * MAX_CAMERA_SCALE) / img.naturalWidth);
+  const imgW = Math.max(1, Math.round(img.naturalWidth * layerScale));
+  const imgH = Math.max(1, Math.round(img.naturalHeight * layerScale));
 
   const heroLayer = buildHeroLayer(img, imgW, imgH);
   if (!heroLayer) throw new Error('Failed to build base layer');
@@ -240,6 +261,16 @@ export async function prepareResources(
   // reads as a visible grey model, not a silhouette.
   const greyLayer = buildBaseLayer(img, imgW, imgH, true, adaptiveVideoDim(measureMeanLuma(heroLayer)));
   if (!greyLayer) throw new Error('Failed to build base layer');
+
+  // The backdrop is fully determined by (size, skin): render it once instead of
+  // repainting three full-canvas gradients and ~116 grid strips every frame —
+  // twice per frame during the loop crossfade.
+  const backdropLayer = document.createElement('canvas');
+  backdropLayer.width = CANVAS_W;
+  backdropLayer.height = CANVAS_H;
+  const bctx = backdropLayer.getContext('2d');
+  if (!bctx) throw new Error('2D canvas unavailable');
+  paintBackdrop(bctx, CANVAS_W, CANVAS_H, spec.skin);
 
   const built = await Promise.all(
     spec.regions.map(async (r) => {
@@ -254,17 +285,36 @@ export async function prepareResources(
     }),
   );
 
-  return {
+  const loopTargetLayer = document.createElement('canvas');
+  loopTargetLayer.width = CANVAS_W;
+  loopTargetLayer.height = CANVAS_H;
+
+  const revealedLayer = buildRevealedComposite(
+    greyLayer,
+    built.map((b) => b.region),
+    imgW,
+    imgH,
+  );
+
+  const res: RevealResources = {
     spec,
     fonts: resolveFonts(),
     imgW,
     imgH,
+    backdropLayer,
+    loopTargetLayer,
     heroLayer,
     greyLayer,
+    revealedLayer,
     regionLayers: built.map((b) => b.region),
     rimLayers: built.map((b) => b.rim),
     callouts: layoutRailCallouts(spec.regions.map((r) => r.position)),
   };
+
+  // Bake the loop target now (fonts are loaded before prepareResources runs).
+  const lctx = loopTargetLayer.getContext('2d');
+  if (lctx) drawLoopTarget(lctx, res);
+  return res;
 }
 
 function loadImage(url: string): Promise<HTMLImageElement> {
@@ -412,6 +462,35 @@ function withRock(
   ctx.restore();
 }
 
+/**
+ * Flatten "scanned grey base + every region revealed" into one layer.
+ *
+ * Mirrors exactly what the per-frame path draws once the blooms have settled:
+ * the base twice (PRE_SCAN_DIM then the remainder, as drawGreyModel does when
+ * fully scanned), then each region at full alpha. Source-over composites
+ * associatively here, so blitting this layer over the backdrop is pixel-wise
+ * identical to the seven separate draws it replaces.
+ */
+function buildRevealedComposite(
+  greyLayer: HTMLCanvasElement,
+  regionLayers: (HTMLCanvasElement | null)[],
+  w: number,
+  h: number,
+): HTMLCanvasElement | null {
+  const layer = document.createElement('canvas');
+  layer.width = w;
+  layer.height = h;
+  const ctx = layer.getContext('2d');
+  if (!ctx) return null;
+  ctx.globalAlpha = PRE_SCAN_DIM;
+  ctx.drawImage(greyLayer, 0, 0);
+  ctx.globalAlpha = 1 - PRE_SCAN_DIM;
+  ctx.drawImage(greyLayer, 0, 0);
+  ctx.globalAlpha = 1;
+  for (const region of regionLayers) if (region) ctx.drawImage(region, 0, 0);
+  return layer;
+}
+
 /** Greyscale base, dim ahead of the scan line and full behind it. */
 function drawGreyModel(
   ctx: CanvasRenderingContext2D,
@@ -441,7 +520,7 @@ function drawGreyModel(
 export function drawLoopTarget(ctx: CanvasRenderingContext2D, res: RevealResources): void {
   const s0 = frameState(0, res.spec);
   const r = modelRectAt(s0.camera, res.imgW, res.imgH);
-  paintBackdrop(ctx, CANVAS_W, CANVAS_H, res.spec.skin);
+  ctx.drawImage(res.backdropLayer, 0, 0);
   drawHeroGlow(ctx, res, r, s0.heroGlow);
   withRock(ctx, r, s0.camera.rotationDeg, () => {
     ctx.drawImage(res.heroLayer, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
@@ -466,36 +545,50 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
   const hud = 1 - state.hudFade;
   const finaleIndex = spec.regions.length - 1; // dominant colour blooms last
 
-  paintBackdrop(ctx, CANVAS_W, CANVAS_H, spec.skin);
+  ctx.drawImage(res.backdropLayer, 0, 0);
   drawHeroGlow(ctx, res, r, state.heroGlow);
 
-  withRock(ctx, r, state.camera.rotationDeg, () => {
-    drawGreyModel(ctx, res, r, state.baseAlpha, state.scanned);
+  // Once every bloom has landed and its rim has died away, the model is a fixed
+  // image under a moving camera — draw the flattened layer instead of the base
+  // twice plus one draw per region.
+  const settled =
+    !!res.revealedLayer &&
+    state.baseAlpha === 1 &&
+    state.scanned === 1 &&
+    state.regions.length > 0 &&
+    state.regions.every((rs) => rs.revealProgress >= 1 && rs.pulse <= 0);
 
-    // Region colour blooms — the painter's REAL pixels, drawn clean. The rim
-    // flashes at the moment of identification then dies away entirely: a
-    // permanent outline traced every pinhole in real grabCut masks and read as
-    // crayon scribble.
-    state.regions.forEach((rs, i) => {
-      if (rs.revealProgress <= 0) return;
-      const layer = res.regionLayers[i];
-      if (layer) {
-        ctx.save();
-        ctx.globalAlpha = rs.revealProgress;
-        ctx.drawImage(layer, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
-        ctx.restore();
-      }
-      const rim = res.rimLayers[i];
-      if (rim && rs.pulse > 0) {
-        const finale = i === finaleIndex ? 1.25 : 1;
-        ctx.save();
-        ctx.globalAlpha = Math.min(1, rs.pulse * finale);
-        ctx.shadowColor = spec.regions[i].hex;
-        ctx.shadowBlur = (14 + rs.pulse * 46) * finale;
-        ctx.drawImage(rim, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
-        ctx.restore();
-      }
-    });
+  withRock(ctx, r, state.camera.rotationDeg, () => {
+    if (settled) {
+      ctx.drawImage(res.revealedLayer!, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
+    } else {
+      drawGreyModel(ctx, res, r, state.baseAlpha, state.scanned);
+
+      // Region colour blooms — the painter's REAL pixels, drawn clean. The rim
+      // flashes at the moment of identification then dies away entirely: a
+      // permanent outline traced every pinhole in real grabCut masks and read
+      // as crayon scribble.
+      state.regions.forEach((rs, i) => {
+        if (rs.revealProgress <= 0) return;
+        const layer = res.regionLayers[i];
+        if (layer) {
+          ctx.save();
+          ctx.globalAlpha = rs.revealProgress;
+          ctx.drawImage(layer, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
+          ctx.restore();
+        }
+        // Glow is pre-baked into the rim layer, so the pulse is a plain alpha
+        // blend — no per-frame gaussian blur.
+        const rim = res.rimLayers[i];
+        if (rim && rs.pulse > 0) {
+          const finale = i === finaleIndex ? 1.25 : 1;
+          ctx.save();
+          ctx.globalAlpha = Math.min(1, rs.pulse * finale);
+          ctx.drawImage(rim, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
+          ctx.restore();
+        }
+      });
+    }
 
     // The hero (full colour) sits on top until the snap strobes it away, with
     // a chromatic-aberration hit as it goes (hue-shifted echoes; browsers
@@ -639,12 +732,12 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
   if (state.plateAlpha > 0 && hud > 0) drawPlate(ctx, state.plateAlpha * hud, res);
   if (state.phase !== 'hero' && hud > 0) drawWatermark(ctx, hud, res);
 
-  // Loop dissolve back to frame 1 (the hero). The HUD has already faded, so
-  // nothing ghosts through the crossfade.
+  // Loop dissolve back to frame 1 (the hero) — a blit of the pre-baked target.
+  // The HUD has already faded, so nothing ghosts through the crossfade.
   if (state.loopCrossfade > 0) {
     ctx.save();
     ctx.globalAlpha = state.loopCrossfade;
-    drawLoopTarget(ctx, res);
+    ctx.drawImage(res.loopTargetLayer, 0, 0);
     ctx.restore();
   }
 }
