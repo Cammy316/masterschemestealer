@@ -110,7 +110,7 @@ export function ShareModal({ mode, scan, onClose }: ShareModalProps) {
       const url = URL.createObjectURL(result.blob);
       setVideo({ url, blob: result.blob, mime: result.mime });
       setPhase('ready');
-      analytics.trackRevealVideoExported(result.durationMs, result.mime, preset);
+      analytics.trackRevealVideoExported(result.durationMs, result.mime, preset, result.mimeSupport);
     } catch (e) {
       if (e instanceof DOMException && e.name === 'AbortError') {
         setPhase('idle');

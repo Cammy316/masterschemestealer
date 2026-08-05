@@ -2,6 +2,59 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-08-05 (Pict-Cast v3 — the hero stops the scroll)
+
+Frame-by-frame review of the first two on-device v2 exports (desktop + mobile,
+incl. a real red-marine scan) against scroll-stopping research: the outro and
+loop were strong, but the first five seconds lost the viewer — a small static
+product shot, then the dominant region blooming alone for 2.6 s right on the
+3–6 s retention cliff. The mobile scan also exposed two real-scheme bugs the
+synthetic QA masks could never show.
+
+### Changed
+- **The hero now fights for the scroll.** Frame 0 opens punched in at 1.35×
+  (the model fills the frame) and pulls back as visible motion, with a gentle
+  turntable-style rock, a breathing backlight tinted from the dominant colour,
+  and the question hook "CAN THE MACHINE READ THIS PAINT JOB?" burned into the
+  first frame. The snap lands with a chromatic-glitch strobe. The outro camera
+  dives from the compact framing back into the same close-up, so the loop's
+  final frame IS frame 1 (`drawLoopTarget` now derives from `frameState(0)` —
+  the two can never drift).
+- **The reveal escalates instead of sagging**: regions bloom smallest-coverage
+  first so the dominant colour ignites last as the finale (on a marine: helmet
+  → trims → the whole armour), blooms are capped at ~1.1 s (the first bloom
+  previously ran 2.6 s alone), and the finale gets a stronger rim pulse plus a
+  chord-and-thump audio beat.
+- **Rim glow flashes instead of scribbling**: the rim now appears only during
+  the identification pulse and is built from a smoothed (¼-scale round-trip)
+  mask — real grabCut masks are full of pinholes, and v2's permanent outline
+  traced every one of them like crayon.
+- Recipe heading fades in with the box morph (it drew over the model's feet),
+  and the ΔE badge follows the app's band colours (perfect/close/fair/distant)
+  instead of flattering every match with green.
+
+### Fixed
+- **Dark schemes no longer scan as silhouettes**: greyscale base brightness now
+  adapts to the model's measured luma (`adaptiveVideoDim`). The red marine's
+  scan phase was a black cut-out; the pink test mini had only looked right
+  because pink is light.
+- **Dark-family callouts are readable**: label text, chip ring and number use
+  `labelTint` — plain sRGB lift toward white to a luma floor — while leader
+  lines and anchor dots stay true-hex. BLACK and BROWN callouts were invisible
+  on the void backdrop.
+- MP4 candidate list gains Opus-paired profiles (`avc1+opus`) — Chrome encodes
+  Opus, not AAC, so the AAC pairings could never match there.
+
+### Added
+- **Container telemetry**: every export logs and attaches the full
+  `isTypeSupported` verdict map to the `reveal_video_exported` event
+  (`videoMimeSupport`). Two device exports in a row landed on VP8 WebM with no
+  way to know why; the next one settles it with data instead of a third guess.
+- Tests: hero motion + punched-in frame 0, loop camera parity incl. rotation,
+  coverage-ordered blooms with caps, label tint floor, ΔE band mapping, MIME
+  support map; the Playwright seed scan gains a near-black region so the
+  dark-scheme paths are exercised by real frames.
+
 ## [Unreleased] - 2026-08-05 (Pict-Cast v2 — the export becomes postable)
 
 Reviewing the first real export against the campaign's acceptance criteria

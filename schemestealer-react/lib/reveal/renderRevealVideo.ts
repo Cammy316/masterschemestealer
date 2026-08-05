@@ -23,11 +23,14 @@ import { createRevealAudioBed, type RevealAudioBed } from './revealAudio';
  * MP4 first, and with FULL codec profile strings — Chrome's isTypeSupported
  * rejects the bare `avc1` shorthand, which is why the first real exports all
  * landed on VP8 WebM: a file Instagram refuses on upload and iOS won't play.
- * WebM is the genuine last resort, not the default.
+ * The AAC pairings serve Safari (which encodes AAC); the Opus pairings serve
+ * Chrome (which does not encode AAC). WebM is the genuine last resort.
  */
 const MIME_CANDIDATES = [
-  'video/mp4;codecs="avc1.640028,mp4a.40.2"', // H.264 High
-  'video/mp4;codecs="avc1.42E01E,mp4a.40.2"', // H.264 Baseline
+  'video/mp4;codecs="avc1.640028,mp4a.40.2"', // H.264 High + AAC
+  'video/mp4;codecs="avc1.42E01E,mp4a.40.2"', // H.264 Baseline + AAC
+  'video/mp4;codecs="avc1.640028,opus"', // H.264 High + Opus
+  'video/mp4;codecs="avc1.42E01E,opus"', // H.264 Baseline + Opus
   'video/mp4;codecs=avc1',
   'video/mp4',
   'video/webm;codecs="vp9,opus"',
@@ -37,6 +40,17 @@ const MIME_CANDIDATES = [
 
 function defaultIsSupported(m: string): boolean {
   return typeof MediaRecorder !== 'undefined' && MediaRecorder.isTypeSupported(m);
+}
+
+/** Which candidates this browser claims to support — logged and attached to the
+ *  export analytics, so real devices tell us what they can record instead of us
+ *  guessing codec strings a third time. */
+export function videoMimeSupport(
+  isSupported: (m: string) => boolean = defaultIsSupported,
+): Record<string, boolean> {
+  const map: Record<string, boolean> = {};
+  for (const m of MIME_CANDIDATES) map[m] = isSupported(m);
+  return map;
 }
 
 /** Preferred recordable MIME — MP4 first, WebM fallback. `isSupported` is
@@ -87,11 +101,16 @@ export interface RenderRevealResult {
   blob: Blob;
   mime: string;
   durationMs: number;
+  /** isTypeSupported result per candidate — export telemetry (see videoMimeSupport). */
+  mimeSupport: Record<string, boolean>;
 }
 
 export async function renderRevealVideo(opts: RenderRevealOptions): Promise<RenderRevealResult> {
   const mime = pickVideoMime();
   if (!mime) throw new Error('This browser cannot record video (MediaRecorder unavailable).');
+  const mimeSupport = videoMimeSupport();
+  // Deliberately loud: a device export attaching this log is the diagnostic.
+  console.info('[pict-cast] recording as', mime, 'support map:', mimeSupport);
 
   const durationMs = opts.durationMs ?? DEFAULT_DURATION_MS;
   const fps = opts.fps ?? 30;
@@ -178,5 +197,5 @@ export async function renderRevealVideo(opts: RenderRevealOptions): Promise<Rend
 
   const blob = await done;
   if (opts.signal?.aborted) throw new DOMException('Export cancelled', 'AbortError');
-  return { blob, mime, durationMs };
+  return { blob, mime, durationMs, mimeSupport };
 }

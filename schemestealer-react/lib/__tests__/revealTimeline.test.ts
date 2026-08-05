@@ -4,18 +4,20 @@ import {
   regionSchedule,
   sortRegionsForReveal,
   phaseAt,
+  HERO_SCALE,
   PHASE_FRACTIONS,
   type RevealSpec,
   type RevealRegion,
 } from '../reveal/revealTimeline';
 
-function region(index: number, y: number): RevealRegion {
-  return { index, hex: '#00ff41', family: 'green', position: { x: 0.5, y } };
+function region(index: number, y: number, percentage: number): RevealRegion {
+  return { index, hex: '#00ff41', family: 'green', position: { x: 0.5, y }, percentage };
 }
 
+// Regions arrive already sorted (smallest coverage first — see sortRegionsForReveal).
 const SPEC: RevealSpec = {
   skin: 'imperial',
-  regions: [region(0, 0.2), region(1, 0.5), region(2, 0.8)],
+  regions: [region(0, 0.2, 10), region(1, 0.5, 30), region(2, 0.8, 60)],
   recipe: [
     { role: 'base', name: 'Base', hex: '#111' },
     { role: 'highlight', name: 'Highlight', hex: '#333' },
@@ -26,26 +28,36 @@ const SPEC: RevealSpec = {
   colourCount: 3,
   durationMs: 13000,
   captionPreset: 'colours',
-  recipeRegionIndex: 0,
+  recipeRegionIndex: 2,
 };
 
 describe('revealTimeline', () => {
-  // Intent: the hook. A feed viewer decides to scroll inside ~2.5 s, so the
-  // payoff — the painter's actual model in full colour — must be on screen from
-  // the first frame. The clip used to open on a near-black greyscale blob.
-  it('opens on the full-colour model, not the greyscale one', () => {
+  // Intent: the hook. A feed viewer decides to scroll inside ~1.7 s, so frame 0
+  // must be the painter's model in full colour, PUNCHED IN and MOVING — v2
+  // opened on a small static product shot and it read as an ad.
+  it('opens punched-in on the full-colour model', () => {
     const first = frameState(0, SPEC);
     expect(first.phase).toBe('hero');
     expect(first.heroAlpha).toBe(1);
     expect(first.baseAlpha).toBe(0);
-    // and it is still the hero well inside the scroll-decision window
-    expect(frameState(800, SPEC).heroAlpha).toBeGreaterThan(0);
+    expect(first.camera.scale).toBeCloseTo(HERO_SCALE, 5);
+    expect(first.heroGlow).toBeGreaterThan(0); // the backlight is on from frame 0
+    expect(first.camera.rotationDeg).toBeCloseTo(0, 6); // rock phase 0 at t=0 (loop seam)
   });
 
-  // Intent: the seam. The clip must dissolve back onto its own opening frame, so
-  // the last frame's camera has to match frame 1's exactly — otherwise the loop
-  // jump-cuts on a size change.
-  it('lands the final frame back on the opening framing (the loop)', () => {
+  // Intent: the hero must MOVE — the pull-back and the rock are the visible
+  // motion that stops the scroll, not a slow 1%-per-second drift.
+  it('the hero visibly pulls back and rocks within the first half-second', () => {
+    const early = frameState(400, SPEC);
+    expect(early.camera.scale).toBeLessThan(HERO_SCALE - 0.01); // pulling back
+    expect(Math.abs(early.camera.rotationDeg)).toBeGreaterThan(0.2); // rocking
+    expect(early.heroAlpha).toBe(1); // still the full-colour model
+  });
+
+  // Intent: the seam. The clip must dissolve back onto its own opening frame —
+  // scale, focus, box AND rotation all have to land exactly on frame 0's state
+  // or the loop jump-cuts.
+  it('lands the final frame back on the opening camera (the loop)', () => {
     const first = frameState(0, SPEC);
     const last = frameState(SPEC.durationMs, SPEC);
     expect(first.loopCrossfade).toBe(0);
@@ -54,6 +66,7 @@ describe('revealTimeline', () => {
     expect(last.camera.boxLerp).toBeCloseTo(first.camera.boxLerp, 5);
     expect(last.camera.focusX).toBeCloseTo(first.camera.focusX, 5);
     expect(last.camera.focusY).toBeCloseTo(first.camera.focusY, 5);
+    expect(last.camera.rotationDeg).toBeCloseTo(first.camera.rotationDeg, 5);
   });
 
   // Intent: the first export ghosted labels and recipe chips through the loop
@@ -83,7 +96,7 @@ describe('revealTimeline', () => {
   // do something to the model, not just slide a decorative bar over it.
   it('the scanned fraction tracks the sweep and stays lit afterwards', () => {
     expect(frameState(SPEC.durationMs * 0.1, SPEC).scanned).toBe(0); // pre-sweep
-    const mid = frameState(SPEC.durationMs * 0.17, SPEC).scanned;
+    const mid = frameState(SPEC.durationMs * 0.16, SPEC).scanned;
     expect(mid).toBeGreaterThan(0);
     expect(mid).toBeLessThan(1);
     expect(frameState(SPEC.durationMs * 0.5, SPEC).scanned).toBe(1);
@@ -104,17 +117,21 @@ describe('revealTimeline', () => {
     done.regions.forEach((r) => expect(r.revealProgress).toBeGreaterThan(0.99));
   });
 
-  // Intent: a metronome reveal sags in the middle. Later regions land quicker so
-  // the clip keeps gaining pace toward the recipe.
-  it('accelerates: each bloom is shorter than the one before it', () => {
+  // Intent: v2 let the FIRST bloom run 2.6 s alone — right on the 3–6 s
+  // retention cliff. Blooms are capped and never slower than their predecessor,
+  // and the last one still finishes exactly on the phase boundary.
+  it('caps bloom length and keeps the stagger accelerating', () => {
     const slots = regionSchedule(5);
-    for (let i = 1; i < slots.length; i++) {
-      expect(slots[i].dur).toBeLessThan(slots[i - 1].dur);
-      expect(slots[i].start).toBeGreaterThan(slots[i - 1].start);
+    const capMs = 0.09 * 13000;
+    for (let i = 0; i < slots.length; i++) {
+      expect(slots[i].dur * 13000).toBeLessThanOrEqual(capMs);
+      if (i > 0) {
+        expect(slots[i].start).toBeGreaterThan(slots[i - 1].start);
+        expect(slots[i].dur).toBeLessThanOrEqual(slots[i - 1].dur + 1e-9);
+      }
     }
-    // the last bloom still finishes exactly on the phase boundary
     const last = slots[slots.length - 1];
-    expect(last.start + last.dur).toBeCloseTo(PHASE_FRACTIONS.revealEnd, 6);
+    expect(last.start + last.dur).toBeLessThanOrEqual(PHASE_FRACTIONS.revealEnd + 1e-9);
   });
 
   // Intent: the caption counts up as colours resolve (progression to watch)
@@ -150,15 +167,22 @@ describe('revealTimeline', () => {
     expect(a).toEqual(b);
   });
 
-  it('sortRegionsForReveal orders by y then index', () => {
-    const shuffled = [region(2, 0.8), region(0, 0.2), region(1, 0.5)];
-    expect(sortRegionsForReveal(shuffled).map((r) => r.index)).toEqual([0, 1, 2]);
+  // Intent: quick wins escalate to the dominant colour igniting LAST as the
+  // finale — v2 opened the reveal with the biggest region and sagged.
+  it('sortRegionsForReveal orders smallest coverage first, dominant last', () => {
+    const shuffled = [region(0, 0.2, 60), region(1, 0.5, 10), region(2, 0.8, 30)];
+    expect(sortRegionsForReveal(shuffled).map((r) => r.index)).toEqual([1, 2, 0]);
+  });
+
+  it('breaks percentage ties by y then index', () => {
+    const tied = [region(2, 0.8, 20), region(0, 0.2, 20), region(1, 0.5, 20)];
+    expect(sortRegionsForReveal(tied).map((r) => r.index)).toEqual([0, 1, 2]);
   });
 
   it('phaseAt walks hero→snap→sweep→reveal→recipe→plate', () => {
     expect(phaseAt(0)).toBe('hero');
     expect(phaseAt(0.1)).toBe('snap');
-    expect(phaseAt(0.18)).toBe('sweep');
+    expect(phaseAt(0.15)).toBe('sweep');
     expect(phaseAt(0.5)).toBe('reveal');
     expect(phaseAt(0.8)).toBe('recipe');
     expect(phaseAt(1)).toBe('plate');

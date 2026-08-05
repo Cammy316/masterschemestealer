@@ -45,6 +45,10 @@ test('pict-cast export: UI wired + storyboard frames render', async ({ page }) =
       x.fillStyle = '#3a5a8a';
       x.fillRect(120, 200, 40, 240);
       x.fillRect(240, 200, 40, 240);
+      // near-black plinth — exercises the dark-scheme paths (adaptive base
+      // brightness + label lightness floor) that solid bright shapes never hit
+      x.fillStyle = '#141414';
+      x.fillRect(130, 440, 140, 36);
       return c.toDataURL('image/png');
     })();
 
@@ -67,6 +71,7 @@ test('pict-cast export: UI wired + storyboard frames render', async ({ page }) =
       x.fillRect(120, 200, 40, 240);
       x.fillRect(240, 200, 40, 240);
     });
+    const blackMask = maskB64((x) => x.fillRect(130, 440, 140, 36));
 
     const recipe = (hex: string) => ({
       base: { name: 'Mephiston Red', hex, type: 'base', deltaE: 1.2 },
@@ -104,7 +109,9 @@ test('pict-cast export: UI wired + storyboard frames render', async ({ page }) =
       detectedColors: [
         colour('#8a3a3a', [138, 58, 58], [40, 35, 20], 'red', 50, { x: 0.5, y: 0.55 }, redMask),
         colour('#c8a06a', [200, 160, 106], [70, 10, 35], 'bone', 25, { x: 0.5, y: 0.23 }, boneMask),
-        colour('#3a5a8a', [58, 90, 138], [40, 5, -30], 'blue', 25, { x: 0.35, y: 0.5 }, blueMask),
+        colour('#3a5a8a', [58, 90, 138], [40, 5, -30], 'blue', 20, { x: 0.35, y: 0.5 }, blueMask),
+        // near-black region: label tint + adaptive brightness under real frames
+        colour('#141414', [20, 20, 20], [7, 0, 0], 'black', 5, { x: 0.5, y: 0.76 }, blackMask),
       ],
     };
     (window as unknown as { __seedScan: unknown }).__seedScan = scan;

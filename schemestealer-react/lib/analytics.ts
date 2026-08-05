@@ -259,11 +259,19 @@ class AnalyticsService {
   /**
    * Track a scan-reveal video export (Engine A pict-cast).
    */
-  trackRevealVideoExported(durationMs: number, format: string, captionPreset: string): void {
+  trackRevealVideoExported(
+    durationMs: number,
+    format: string,
+    captionPreset: string,
+    mimeSupport?: Record<string, boolean>,
+  ): void {
     this.track('reveal_video_exported', {
       duration_ms: durationMs,
       format,
       caption_preset: captionPreset,
+      // Codec telemetry: which containers this device can actually record —
+      // real exports settle the MP4 question instead of codec-string guesses.
+      ...(mimeSupport ? { mime_support: JSON.stringify(mimeSupport) } : {}),
     });
   }
 
