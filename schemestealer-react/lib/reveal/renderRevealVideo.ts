@@ -19,7 +19,21 @@ import type { Color, MaskFrame, PaintRecipe } from '../types';
 import type { RevealSkin } from './revealLayers';
 import { createRevealAudioBed, type RevealAudioBed } from './revealAudio';
 
-const MIME_CANDIDATES = ['video/mp4;codecs=avc1', 'video/webm;codecs=vp9', 'video/webm'];
+/**
+ * MP4 first, and with FULL codec profile strings — Chrome's isTypeSupported
+ * rejects the bare `avc1` shorthand, which is why the first real exports all
+ * landed on VP8 WebM: a file Instagram refuses on upload and iOS won't play.
+ * WebM is the genuine last resort, not the default.
+ */
+const MIME_CANDIDATES = [
+  'video/mp4;codecs="avc1.640028,mp4a.40.2"', // H.264 High
+  'video/mp4;codecs="avc1.42E01E,mp4a.40.2"', // H.264 Baseline
+  'video/mp4;codecs=avc1',
+  'video/mp4',
+  'video/webm;codecs="vp9,opus"',
+  'video/webm;codecs=vp9',
+  'video/webm',
+];
 
 function defaultIsSupported(m: string): boolean {
   return typeof MediaRecorder !== 'undefined' && MediaRecorder.isTypeSupported(m);
@@ -44,6 +58,11 @@ export function canExportReveal(): boolean {
 
 export const DEFAULT_DURATION_MS = 13000;
 
+/** Extra real time spent holding the completed final frame before stopping the
+ *  recorder. Without it the record ended mid-dissolve — the loop seam the whole
+ *  storyboard is built around never made it onto the tape. */
+const LOOP_HOLD_MS = 320;
+
 export interface RenderRevealOptions {
   imageUrl: string;
   colors: Color[];
@@ -52,6 +71,9 @@ export interface RenderRevealOptions {
   /** best-brand key into PaintRecipe (e.g. 'citadel') */
   brand: keyof PaintRecipe;
   brandLabel: string;
+  /** Index into `colors` of the colour the recipe describes, so the outro can
+   *  name it instead of leaving the viewer guessing which region it's for. */
+  recipeColourIndex?: number;
   skin: RevealSkin;
   captionPreset: CaptionPreset;
   durationMs?: number;
@@ -78,7 +100,15 @@ export async function renderRevealVideo(opts: RenderRevealOptions): Promise<Rend
   await (document.fonts?.ready ?? Promise.resolve());
 
   const steps = recipeSteps(opts.recipe, opts.brand);
-  const spec = buildRevealSpec(opts.colors, steps, opts.brandLabel, opts.skin, opts.captionPreset, durationMs);
+  const spec = buildRevealSpec(
+    opts.colors,
+    steps,
+    opts.brandLabel,
+    opts.skin,
+    opts.captionPreset,
+    durationMs,
+    opts.recipeColourIndex ?? -1,
+  );
   if (spec.regions.length === 0) throw new Error('No mask regions to reveal.');
 
   const res = await prepareResources(opts.imageUrl, opts.colors, opts.maskFrame, spec);
@@ -129,13 +159,15 @@ export async function renderRevealVideo(opts: RenderRevealOptions): Promise<Rend
     const frameMs = 1000 / fps;
     const id = setInterval(() => {
       const t = performance.now() - startedAt;
-      if (opts.signal?.aborted || t >= durationMs) {
+      if (opts.signal?.aborted || t >= durationMs + LOOP_HOLD_MS) {
         clearInterval(id);
-        composeReveal(ctx, frameState(Math.min(t, durationMs), spec), res);
-        opts.onProgress?.(Math.min(1, t / durationMs));
+        composeReveal(ctx, frameState(durationMs, spec), res);
+        opts.onProgress?.(1);
         return resolve();
       }
-      composeReveal(ctx, frameState(t, spec), res);
+      // Past the storyboard end, hold the final (loop-target) frame so the
+      // completed dissolve is actually captured.
+      composeReveal(ctx, frameState(Math.min(t, durationMs), spec), res);
       opts.onProgress?.(Math.min(1, t / durationMs));
     }, frameMs);
   });

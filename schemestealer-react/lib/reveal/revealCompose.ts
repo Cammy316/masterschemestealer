@@ -6,19 +6,23 @@
  */
 
 import type { Color, MaskFrame, PaintRecipe } from '../types';
-import { maskDestRect, layoutRailCallouts, type RailCallout } from '../maskGeometry';
+import { layoutRailCallouts, type RailCallout } from '../maskGeometry';
 import {
   buildBaseLayer,
+  buildHeroLayer,
   buildRegionLayer,
+  buildRegionRimLayer,
   decodeMask,
   drawCornerBrackets,
   paintBackdrop,
+  VIDEO_BASE_DIM,
   type RevealSkin,
 } from './revealLayers';
+import { scheduleRevealAudio } from './revealAudio';
 import {
   frameState,
   sortRegionsForReveal,
-  LOOP_FAINT_ALPHA,
+  type RevealCamera,
   type RevealFrameState,
   type RevealRecipeStep,
   type RevealSpec,
@@ -27,18 +31,37 @@ import {
 
 export const CANVAS_W = 1080;
 export const CANVAS_H = 1920;
-const MODEL_BOX = { x: 90, y: 210, w: 900, h: 1000 };
-const RECIPE_TOP = 1270;
+
+/** Reveal framing: the model owns the frame. */
+const FULL_BOX = { x: 70, y: 150, w: 940, h: 1250 };
+/** Outro framing: the model eases up and back to clear room for the recipe. */
+const COMPACT_BOX = { x: 250, y: 180, w: 580, h: 800 };
+const RECIPE_TOP = 1060;
+const CHIP_H = 96;
+const CHIP_GAP = 18;
+
+/** Model dimming ahead of the scan line, so the sweep visibly lights it up.
+ *  Kept shallow — the pre-scan model still has to READ at feed size. */
+const PRE_SCAN_DIM = 0.62;
 
 const ROLE_ACCENT: Record<RevealRecipeStep['role'], string> = {
   base: '#00FF41',
-  shade: '#2AA6FF',
   highlight: '#FFD700',
+  shade: '#2AA6FF',
   wash: '#A78BFA',
 };
 
 function accentFor(skin: RevealSkin): string {
   return skin === 'warp' ? '#A78BFA' : '#00FF41';
+}
+
+/** #rrggbb → rgba() so gradients can fade an arbitrary accent. */
+export function hexToRgba(hex: string, alpha: number): string {
+  const h = hex.replace('#', '');
+  const full = h.length === 3 ? h.split('').map((c) => c + c).join('') : h;
+  const n = parseInt(full, 16);
+  if (!Number.isFinite(n)) return `rgba(0,255,65,${alpha})`;
+  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`;
 }
 
 // ---- fonts -------------------------------------------------------------------
@@ -78,27 +101,58 @@ export function fitRect(srcW: number, srcH: number, box: Rect): Rect {
   return { x: box.x + (box.w - w) / 2, y: box.y + (box.h - h) / 2, w, h };
 }
 
+function lerp(a: number, b: number, t: number): number {
+  return a + (b - a) * t;
+}
+
+function lerpRect(a: Rect, b: Rect, t: number): Rect {
+  return { x: lerp(a.x, b.x, t), y: lerp(a.y, b.y, t), w: lerp(a.w, b.w, t), h: lerp(a.h, b.h, t) };
+}
+
+/**
+ * Where the model lands this frame: the box morphs full→compact for the outro,
+ * then the camera scales about its focus point (Ken Burns + per-region punch).
+ * Everything anchored to the model — masks, rims, leader lines — reads this one
+ * rect, so nothing can drift out of register.
+ */
+export function modelRectAt(camera: RevealCamera, imgW: number, imgH: number): Rect {
+  const fitted = fitRect(imgW, imgH, lerpRect(FULL_BOX, COMPACT_BOX, camera.boxLerp));
+  const w = fitted.w * camera.scale;
+  const h = fitted.h * camera.scale;
+  return {
+    x: fitted.x + fitted.w * camera.focusX - w * camera.focusX,
+    y: fitted.y + fitted.h * camera.focusY - h * camera.focusY,
+    w,
+    h,
+  };
+}
+
 // ---- spec + resources --------------------------------------------------------
 export interface RevealResources {
   spec: RevealSpec;
   fonts: RevealFonts;
   imgW: number;
   imgH: number;
-  modelRect: Rect;
+  /** Hero framing (full box, no camera move) — frame 1 and the loop target. */
+  heroRect: Rect;
+  heroLayer: HTMLCanvasElement;
   greyLayer: HTMLCanvasElement;
   regionLayers: (HTMLCanvasElement | null)[]; // aligned to spec.regions order
+  rimLayers: (HTMLCanvasElement | null)[];
   callouts: RailCallout[];
 }
 
-/** Best-brand 4-step recipe → ordered steps for the outro cascade. */
+/** Best-brand 4-step recipe → ordered steps for the outro cascade. Order matches
+ *  the app's recipe card (base→highlight→shade→wash) so the clip teaches the
+ *  same sequence the user will follow at the desk. */
 export function recipeSteps(recipe: PaintRecipe | undefined, brand: keyof PaintRecipe): RevealRecipeStep[] {
   const br = recipe?.[brand];
   if (!br) return [];
-  const order: RevealRecipeStep['role'][] = ['base', 'shade', 'highlight', 'wash'];
+  const order: RevealRecipeStep['role'][] = ['base', 'highlight', 'shade', 'wash'];
   const out: RevealRecipeStep[] = [];
   for (const role of order) {
     const m = br[role];
-    if (m) out.push({ role, name: m.name, hex: m.hex });
+    if (m) out.push({ role, name: m.name, hex: m.hex, deltaE: m.deltaE });
   }
   return out;
 }
@@ -110,6 +164,7 @@ export function buildRevealSpec(
   skin: RevealSkin,
   captionPreset: CaptionPreset,
   durationMs: number,
+  recipeColourIndex = -1,
 ): RevealSpec {
   const withMasks = colors
     .map((c, index) => ({
@@ -121,14 +176,16 @@ export function buildRevealSpec(
     }))
     .filter((r) => r.hasMask)
     .map(({ hasMask, ...r }) => r);
+  const regions = sortRegionsForReveal(withMasks);
   return {
     skin,
-    regions: sortRegionsForReveal(withMasks),
+    regions,
     recipe,
     brand,
     colourCount: withMasks.length,
     durationMs,
     captionPreset,
+    recipeRegionIndex: regions.findIndex((r) => r.index === recipeColourIndex),
   };
 }
 
@@ -143,15 +200,20 @@ export async function prepareResources(
   const imgW = img.naturalWidth;
   const imgH = img.naturalHeight;
 
-  const greyLayer = buildBaseLayer(img, imgW, imgH, true);
-  if (!greyLayer) throw new Error('Failed to build base layer');
+  const heroLayer = buildHeroLayer(img, imgW, imgH);
+  const greyLayer = buildBaseLayer(img, imgW, imgH, true, VIDEO_BASE_DIM);
+  if (!heroLayer || !greyLayer) throw new Error('Failed to build base layer');
 
-  const regionLayers = await Promise.all(
+  const built = await Promise.all(
     spec.regions.map(async (r) => {
       const b64 = colors[r.index]?.mask;
-      if (!b64) return null;
+      if (!b64) return { region: null, rim: null };
       const mask = await decodeMask(b64);
-      return mask ? buildRegionLayer(img, mask, imgW, imgH, maskFrame) : null;
+      if (!mask) return { region: null, rim: null };
+      return {
+        region: buildRegionLayer(img, mask, imgW, imgH, maskFrame),
+        rim: buildRegionRimLayer(mask, imgW, imgH, maskFrame, r.hex),
+      };
     }),
   );
 
@@ -160,9 +222,11 @@ export async function prepareResources(
     fonts: resolveFonts(),
     imgW,
     imgH,
-    modelRect: fitRect(imgW, imgH, MODEL_BOX),
+    heroRect: fitRect(imgW, imgH, FULL_BOX),
+    heroLayer,
     greyLayer,
-    regionLayers,
+    regionLayers: built.map((b) => b.region),
+    rimLayers: built.map((b) => b.rim),
     callouts: layoutRailCallouts(spec.regions.map((r) => r.position)),
   };
 }
@@ -256,60 +320,102 @@ function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: numbe
 }
 
 // ---- frame composition -------------------------------------------------------
-function captionText(preset: CaptionPreset, colourCount: number): string | null {
-  if (preset === 'colours') return `IDENTIFIED IN ${colourCount} COLOURS`;
-  if (preset === 'machine-spirit') return 'THE MACHINE SPIRIT KNOWS YOUR RECIPE';
-  return null;
+/**
+ * The 'colours' caption COUNTS UP as regions resolve instead of stating the
+ * total from the first second — progression to watch, and the payoff line only
+ * lands once the model is fully read.
+ */
+export function captionText(spec: RevealSpec, state: RevealFrameState): string | null {
+  if (spec.captionPreset === 'none' || state.phase === 'hero') return null;
+  if (spec.captionPreset === 'machine-spirit') return 'THE MACHINE SPIRIT KNOWS YOUR RECIPE';
+  if (state.phase === 'snap' || state.phase === 'sweep') return 'SCANNING…';
+  if (state.phase === 'reveal') return `READING… ${state.identifiedCount}/${spec.colourCount} COLOURS`;
+  return `${spec.colourCount} COLOURS IDENTIFIED`;
 }
 
-function drawGreyModel(ctx: CanvasRenderingContext2D, res: RevealResources, alpha: number): void {
+/** Greyscale base, dim ahead of the scan line and full behind it. */
+function drawGreyModel(
+  ctx: CanvasRenderingContext2D,
+  res: RevealResources,
+  r: Rect,
+  alpha: number,
+  scanned: number,
+): void {
+  if (alpha <= 0) return;
   ctx.save();
-  ctx.globalAlpha = alpha;
-  const r = res.modelRect;
+  ctx.globalAlpha = alpha * PRE_SCAN_DIM;
+  ctx.drawImage(res.greyLayer, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
+  ctx.restore();
+  if (scanned <= 0) return;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(r.x, r.y, r.w, r.h * scanned);
+  ctx.clip();
+  ctx.globalAlpha = alpha * (1 - PRE_SCAN_DIM);
   ctx.drawImage(res.greyLayer, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
   ctx.restore();
 }
 
-/** Frame-1 / loop-target composition: backdrop + faint grey model + brackets. */
+/** Frame-1 / loop-target composition: backdrop + the model in FULL COLOUR. */
 export function drawLoopTarget(ctx: CanvasRenderingContext2D, res: RevealResources): void {
+  const r = res.heroRect;
   paintBackdrop(ctx, CANVAS_W, CANVAS_H, res.spec.skin);
-  drawGreyModel(ctx, res, LOOP_FAINT_ALPHA);
+  ctx.drawImage(res.heroLayer, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
   drawCornerBrackets(ctx, CANVAS_W, CANVAS_H, accentFor(res.spec.skin));
 }
 
 export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameState, res: RevealResources): void {
-  const { spec, modelRect: r } = res;
+  const { spec } = res;
   const accent = accentFor(spec.skin);
+  const r = modelRectAt(state.camera, res.imgW, res.imgH);
+  const hud = 1 - state.hudFade;
 
   paintBackdrop(ctx, CANVAS_W, CANVAS_H, spec.skin);
-  drawGreyModel(ctx, res, state.baseAlpha);
+  drawGreyModel(ctx, res, r, state.baseAlpha, state.scanned);
 
-  // Region colour blooms, each with its own hex glow.
+  // Region colour blooms — the painter's REAL pixels, drawn clean. The glow
+  // lives on the rim layer so nothing washes over their blending.
   state.regions.forEach((rs, i) => {
+    if (rs.revealProgress <= 0) return;
     const layer = res.regionLayers[i];
-    if (!layer || rs.revealProgress <= 0) return;
-    const region = spec.regions[i];
-    ctx.save();
-    ctx.globalAlpha = rs.revealProgress;
-    ctx.shadowColor = region.hex;
-    ctx.shadowBlur = 18 + rs.pulse * 55;
-    ctx.drawImage(layer, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
-    ctx.restore();
+    if (layer) {
+      ctx.save();
+      ctx.globalAlpha = rs.revealProgress;
+      ctx.drawImage(layer, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
+      ctx.restore();
+    }
+    const rim = res.rimLayers[i];
+    if (rim) {
+      ctx.save();
+      ctx.globalAlpha = rs.revealProgress * (0.3 + 0.7 * rs.pulse);
+      ctx.shadowColor = spec.regions[i].hex;
+      ctx.shadowBlur = 12 + rs.pulse * 42;
+      ctx.drawImage(rim, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
+      ctx.restore();
+    }
   });
 
-  // Scan sweep.
+  // The hero (full colour) sits on top until the snap strobes it away.
+  if (state.heroAlpha > 0) {
+    ctx.save();
+    ctx.globalAlpha = state.heroAlpha;
+    ctx.drawImage(res.heroLayer, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
+    ctx.restore();
+  }
+
+  // Scan sweep, in the active skin's accent.
   if (state.sweepY !== null) {
     const y = r.y + state.sweepY * r.h;
-    const grad = ctx.createLinearGradient(0, y - 60, 0, y);
-    grad.addColorStop(0, 'rgba(0,255,136,0)');
-    grad.addColorStop(1, 'rgba(0,255,136,0.35)');
+    const grad = ctx.createLinearGradient(0, y - 70, 0, y);
+    grad.addColorStop(0, hexToRgba(accent, 0));
+    grad.addColorStop(1, hexToRgba(accent, 0.35));
     ctx.save();
     ctx.fillStyle = grad;
-    ctx.fillRect(r.x, y - 60, r.w, 60);
-    ctx.strokeStyle = 'rgba(0,255,136,0.95)';
-    ctx.lineWidth = 3;
-    ctx.shadowColor = 'rgba(0,255,136,0.8)';
-    ctx.shadowBlur = 24;
+    ctx.fillRect(r.x, y - 70, r.w, 70);
+    ctx.strokeStyle = hexToRgba(accent, 0.95);
+    ctx.lineWidth = 4;
+    ctx.shadowColor = accent;
+    ctx.shadowBlur = 28;
     ctx.beginPath();
     ctx.moveTo(r.x, y);
     ctx.lineTo(r.x + r.w, y);
@@ -317,26 +423,38 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
     ctx.restore();
   }
 
+  // Impact flash on the cut to greyscale.
+  if (state.snapFlash > 0) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.fillStyle = hexToRgba(accent, 0.3 * state.snapFlash);
+    ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+    ctx.restore();
+  }
+
   // Rail callouts: leader line + chip + garble family label.
   res.callouts.forEach((c) => {
     const rs = state.regions[c.index];
     const region = spec.regions[c.index];
-    if (!rs || !region || rs.labelReveal <= 0) return;
+    if (!rs || !region || rs.labelReveal <= 0 || hud <= 0) return;
     const hex = region.hex;
-    const railX = c.side === 'left' ? 46 : CANVAS_W - 46;
+    const railX = c.side === 'left' ? 52 : CANVAS_W - 52;
     const railY = r.y + c.railY * r.h;
     const anchorX = r.x + c.anchorX * r.w;
     const anchorY = r.y + c.anchorY * r.h;
     const dir = c.side === 'left' ? 1 : -1;
     const elbowX = railX + dir * 40;
+    // The recipe belongs to ONE region — keep its chip alive while the cascade runs.
+    const owns = c.index === spec.recipeRegionIndex && state.recipeProgress > 0;
+    const ownPulse = owns ? 0.5 + 0.5 * Math.sin(state.recipeProgress * Math.PI * 6) : 0;
 
     ctx.save();
-    ctx.globalAlpha = rs.labelReveal;
+    ctx.globalAlpha = rs.labelReveal * hud;
     // leader line (circuit elbow)
     ctx.strokeStyle = hex;
-    ctx.lineWidth = 2.5;
+    ctx.lineWidth = owns ? 4 : 2.5;
     ctx.shadowColor = hex;
-    ctx.shadowBlur = 8;
+    ctx.shadowBlur = 8 + ownPulse * 18;
     ctx.beginPath();
     ctx.moveTo(railX, railY);
     ctx.lineTo(elbowX, railY);
@@ -346,53 +464,61 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
     // anchor dot
     ctx.fillStyle = hex;
     ctx.beginPath();
-    ctx.arc(anchorX, anchorY, 7, 0, Math.PI * 2);
+    ctx.arc(anchorX, anchorY, 8, 0, Math.PI * 2);
     ctx.fill();
     // chip
     ctx.beginPath();
-    ctx.arc(railX, railY, 26, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(5,7,10,0.9)';
+    ctx.arc(railX, railY, 34, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(5,7,10,0.92)';
     ctx.fill();
-    ctx.lineWidth = 3;
+    ctx.lineWidth = owns ? 5 : 3;
     ctx.strokeStyle = hex;
     ctx.stroke();
     ctx.restore();
-    drawText(ctx, String(c.index + 1), railX, railY, { font: res.fonts.cyber, size: 26, colour: hex });
-    // label
+
+    ctx.save();
+    ctx.globalAlpha = rs.labelReveal * hud;
+    drawText(ctx, String(c.index + 1), railX, railY, { font: res.fonts.cyber, size: 32, colour: hex });
     const label = garbleReveal((region.family || region.hex).toUpperCase(), rs.labelReveal);
-    const labelX = c.side === 'left' ? railX + 44 : railX - 44;
+    const labelX = c.side === 'left' ? railX + 52 : railX - 52;
     drawText(ctx, label, labelX, railY, {
       font: res.fonts.cyber,
-      size: 24,
+      size: 36,
       colour: hex,
       align: c.side === 'left' ? 'left' : 'right',
-      glow: 10,
+      glow: 12,
+      maxWidth: 380,
     });
+    ctx.restore();
   });
 
   drawCornerBrackets(ctx, CANVAS_W, CANVAS_H, accent);
 
-  // Burned-in caption (hidden during boot and the loop dissolve).
-  if (state.phase !== 'boot') {
-    const cap = captionText(spec.captionPreset, spec.colourCount);
-    if (cap)
-      drawText(ctx, cap, CANVAS_W / 2, 130, {
-        font: res.fonts.cyber,
-        size: 34,
-        colour: accent,
-        glow: 14,
-        letter: 2,
-        maxWidth: CANVAS_W - 120,
-      });
+  // Burned-in caption.
+  const cap = captionText(spec, state);
+  if (cap && hud > 0) {
+    ctx.save();
+    ctx.globalAlpha = hud;
+    drawText(ctx, cap, CANVAS_W / 2, 130, {
+      font: res.fonts.cyber,
+      size: 40,
+      colour: accent,
+      glow: 16,
+      letter: 2,
+      maxWidth: CANVAS_W - 120,
+    });
+    ctx.restore();
   }
 
   // Recipe outro cascade.
-  if (state.recipeProgress > 0) drawRecipe(ctx, state.recipeProgress, res);
+  if (state.recipeProgress > 0 && hud > 0) drawRecipe(ctx, state.recipeProgress, hud, res);
 
-  // Brand plate.
-  if (state.plateAlpha > 0) drawPlate(ctx, state.plateAlpha, res);
+  // Brand plate + persistent watermark.
+  if (state.plateAlpha > 0 && hud > 0) drawPlate(ctx, state.plateAlpha * hud, res);
+  if (state.phase !== 'hero' && hud > 0) drawWatermark(ctx, hud, res);
 
-  // Loop dissolve back to frame 1.
+  // Loop dissolve back to frame 1 (the hero). The HUD has already faded, so
+  // nothing ghosts through the crossfade.
   if (state.loopCrossfade > 0) {
     ctx.save();
     ctx.globalAlpha = state.loopCrossfade;
@@ -401,53 +527,74 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
   }
 }
 
-function drawRecipe(ctx: CanvasRenderingContext2D, progress: number, res: RevealResources): void {
-  const steps = res.spec.recipe;
+function drawRecipe(ctx: CanvasRenderingContext2D, progress: number, hud: number, res: RevealResources): void {
+  const { spec } = res;
+  const steps = spec.recipe;
   if (steps.length === 0) return;
-  drawText(ctx, '◆ THE RECIPE ◆', CANVAS_W / 2, RECIPE_TOP, {
+  const accent = accentFor(spec.skin);
+  const owner = spec.recipeRegionIndex >= 0 ? spec.regions[spec.recipeRegionIndex] : undefined;
+
+  ctx.save();
+  ctx.globalAlpha = hud;
+  drawText(ctx, `${spec.brand.toUpperCase()} RECIPE`, CANVAS_W / 2, RECIPE_TOP, {
     font: res.fonts.gothic,
     size: 44,
-    colour: accentFor(res.spec.skin),
+    colour: accent,
     glow: 12,
+    maxWidth: CANVAS_W - 160,
   });
+  // Name WHICH colour this recipe is for — five regions were called out, only
+  // one gets a breakdown, and the viewer should never have to guess which.
+  if (owner) {
+    drawText(
+      ctx,
+      `DOMINANT · ${spec.recipeRegionIndex + 1} ${(owner.family || owner.hex).toUpperCase()}`,
+      CANVAS_W / 2,
+      RECIPE_TOP + 44,
+      { font: res.fonts.cyber, size: 26, colour: owner.hex, letter: 2, maxWidth: CANVAS_W - 200 },
+    );
+  }
+  ctx.restore();
 
-  const chipH = 96;
-  const gap = 18;
-  const startY = RECIPE_TOP + 60;
+  const startY = RECIPE_TOP + 84;
   steps.forEach((step, i) => {
     const appear = Math.max(0, Math.min(1, progress * steps.length - i));
     if (appear <= 0) return;
-    const accent = ROLE_ACCENT[step.role];
-    const y = startY + i * (chipH + gap);
+    const roleAccent = ROLE_ACCENT[step.role];
+    const y = startY + i * (CHIP_H + CHIP_GAP);
     const x = 110;
     const w = CANVAS_W - 220;
+    // ΔE is the distance from the DETECTED colour, which only the base match
+    // measures — showing it on derived partners would compare two different
+    // quantities under one label. Honest badge or no badge.
+    const showDelta = step.role === 'base' && typeof step.deltaE === 'number' && step.deltaE > 0;
+
     ctx.save();
-    ctx.globalAlpha = appear;
+    ctx.globalAlpha = appear * hud;
     ctx.translate((1 - appear) * 40, 0);
     // chip body
-    roundRect(ctx, x, y, w, chipH, 18);
+    roundRect(ctx, x, y, w, CHIP_H, 18);
     ctx.fillStyle = 'rgba(8,12,16,0.85)';
     ctx.fill();
     ctx.lineWidth = 2;
-    ctx.strokeStyle = accent;
-    ctx.shadowColor = accent;
+    ctx.strokeStyle = roleAccent;
+    ctx.shadowColor = roleAccent;
     ctx.shadowBlur = 16;
     ctx.stroke();
     ctx.shadowBlur = 0;
     // role spine
-    roundRect(ctx, x, y, 12, chipH, 6);
-    ctx.fillStyle = accent;
+    roundRect(ctx, x, y, 12, CHIP_H, 6);
+    ctx.fillStyle = roleAccent;
     ctx.fill();
     // swatch
     roundRect(ctx, x + 34, y + 18, 60, 60, 12);
     ctx.fillStyle = step.hex;
     ctx.fill();
-    ctx.restore();
-    // text
+
     drawText(ctx, step.role.toUpperCase(), x + 118, y + 34, {
       font: res.fonts.cyber,
       size: 22,
-      colour: accent,
+      colour: roleAccent,
       align: 'left',
     });
     drawText(ctx, step.name, x + 118, y + 66, {
@@ -455,27 +602,52 @@ function drawRecipe(ctx: CanvasRenderingContext2D, progress: number, res: Reveal
       size: 34,
       colour: '#e8f0e8',
       align: 'left',
-      maxWidth: x + w - (x + 118) - 20,
+      maxWidth: w - 118 - 20 - (showDelta ? 140 : 0),
     });
+    if (showDelta) {
+      drawText(ctx, `ΔE ${step.deltaE!.toFixed(1)}`, x + w - 26, y + CHIP_H / 2, {
+        font: res.fonts.cyber,
+        size: 26,
+        colour: roleAccent,
+        align: 'right',
+      });
+    }
+    ctx.restore();
   });
+}
+
+/** Small, persistent, corner-set. The flex is the recipe — the brand only has
+ *  to be findable, not shouted, or nobody posts this to their own grid. */
+function drawWatermark(ctx: CanvasRenderingContext2D, alpha: number, res: RevealResources): void {
+  ctx.save();
+  ctx.globalAlpha = alpha * 0.6;
+  drawText(ctx, 'schemestealer.com', 56, CANVAS_H - 46, {
+    font: res.fonts.cyber,
+    size: 24,
+    weight: 600,
+    colour: '#c8d8cc',
+    align: 'left',
+    letter: 1,
+  });
+  ctx.restore();
 }
 
 function drawPlate(ctx: CanvasRenderingContext2D, alpha: number, res: RevealResources): void {
   ctx.save();
   ctx.globalAlpha = alpha;
   const accent = accentFor(res.spec.skin);
-  drawText(ctx, 'SCHEMESTEALER', CANVAS_W / 2, CANVAS_H - 130, {
+  drawText(ctx, 'SCHEMESTEALER', CANVAS_W / 2, 1670, {
     font: res.fonts.gothic,
-    size: 52,
+    size: 40,
     colour: accent,
-    glow: 16,
+    glow: 14,
   });
-  drawText(ctx, 'scan yours free · schemestealer.com', CANVAS_W / 2, CANVAS_H - 78, {
+  drawText(ctx, '1,312 measured paints · scan yours free', CANVAS_W / 2, 1716, {
     font: res.fonts.cyber,
-    size: 26,
+    size: 23,
     colour: '#8a9a8a',
     letter: 2,
-    maxWidth: CANVAS_W - 120,
+    maxWidth: CANVAS_W - 140,
   });
   ctx.restore();
 }
@@ -494,5 +666,6 @@ if (process.env.NODE_ENV !== 'production' && typeof window !== 'undefined') {
     prepareResources,
     recipeSteps,
     composeAt,
+    scheduleRevealAudio,
   };
 }

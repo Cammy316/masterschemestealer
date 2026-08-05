@@ -31,19 +31,27 @@ const PRESETS: { id: CaptionPreset; label: string }[] = [
 
 type Phase = 'idle' | 'recording' | 'ready' | 'error';
 
-/** Dominant colour's best-brand recipe drives the outro cascade. */
+/** Dominant colour's best-brand recipe drives the outro cascade. Its index comes
+ *  back too so the clip can label WHICH colour the recipe is for. */
 function pickBestRecipe(colors: Color[]): {
   recipe?: PaintRecipe;
   brand: keyof PaintRecipe;
   label: string;
   topFamily?: string;
+  colourIndex: number;
 } {
   const sorted = [...colors].sort((a, b) => (b.percentage ?? 0) - (a.percentage ?? 0));
   const dom = sorted.find((c) => c.paintRecipe) ?? colors[0];
   const recipe = dom?.paintRecipe;
   const keys = recipe ? (Object.keys(recipe) as (keyof PaintRecipe)[]) : [];
   const brand = (keys.includes('citadel') ? 'citadel' : keys[0]) ?? 'citadel';
-  return { recipe, brand, label: BRAND_LABELS[brand] ?? 'Citadel', topFamily: dom?.family };
+  return {
+    recipe,
+    brand,
+    label: BRAND_LABELS[brand] ?? 'Citadel',
+    topFamily: dom?.family,
+    colourIndex: dom ? colors.indexOf(dom) : -1,
+  };
 }
 
 export function ShareModal({ mode, scan, onClose }: ShareModalProps) {
@@ -92,6 +100,7 @@ export function ShareModal({ mode, scan, onClose }: ShareModalProps) {
         recipe: best.recipe,
         brand: best.brand,
         brandLabel: best.label,
+        recipeColourIndex: best.colourIndex,
         skin: mode === 'miniature' ? 'imperial' : 'warp',
         captionPreset: preset,
         audio,
