@@ -8,19 +8,21 @@
 import type { Color, MaskFrame, PaintRecipe } from '../types';
 import { layoutRailCallouts, type RailCallout } from '../maskGeometry';
 import {
+  adaptiveVideoDim,
   buildBaseLayer,
   buildHeroLayer,
   buildRegionLayer,
   buildRegionRimLayer,
   decodeMask,
   drawCornerBrackets,
+  measureMeanLuma,
   paintBackdrop,
-  VIDEO_BASE_DIM,
   type RevealSkin,
 } from './revealLayers';
 import { scheduleRevealAudio } from './revealAudio';
 import {
   frameState,
+  smoothstep,
   sortRegionsForReveal,
   type RevealCamera,
   type RevealFrameState,
@@ -62,6 +64,39 @@ export function hexToRgba(hex: string, alpha: number): string {
   const n = parseInt(full, 16);
   if (!Number.isFinite(n)) return `rgba(0,255,65,${alpha})`;
   return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`;
+}
+
+/**
+ * Text-safe tint of a region colour: mixed toward white (plain sRGB
+ * arithmetic — no colour-space maths) until it clears a readable luma floor.
+ * BLACK and BROWN callouts were invisible dark-on-black in their own hex;
+ * leader lines and anchor dots stay true-hex so the colour story is honest —
+ * only the TYPE gets lifted.
+ */
+export function labelTint(hex: string, floor = 140): string {
+  const h = hex.replace('#', '');
+  const full = h.length === 3 ? h.split('').map((c) => c + c).join('') : h;
+  const n = parseInt(full, 16);
+  if (!Number.isFinite(n)) return hex;
+  let r = (n >> 16) & 255;
+  let g = (n >> 8) & 255;
+  let b = n & 255;
+  const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  if (luma >= floor) return hex;
+  const t = (floor - luma) / (255 - luma);
+  r = Math.round(r + (255 - r) * t);
+  g = Math.round(g + (255 - g) * t);
+  b = Math.round(b + (255 - b) * t);
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+/** ΔE badge colour follows the app's band vocabulary (DeltaEBadge):
+ *  perfect ≤2 · close ≤5 · fair ≤10 · distant beyond. */
+export function deltaBandColour(deltaE: number): string {
+  if (deltaE <= 2) return '#00FF41';
+  if (deltaE <= 5) return '#A3E635';
+  if (deltaE <= 10) return '#F59E0B';
+  return '#EF4444';
 }
 
 // ---- fonts -------------------------------------------------------------------
@@ -133,8 +168,6 @@ export interface RevealResources {
   fonts: RevealFonts;
   imgW: number;
   imgH: number;
-  /** Hero framing (full box, no camera move) — frame 1 and the loop target. */
-  heroRect: Rect;
   heroLayer: HTMLCanvasElement;
   greyLayer: HTMLCanvasElement;
   regionLayers: (HTMLCanvasElement | null)[]; // aligned to spec.regions order
@@ -172,6 +205,7 @@ export function buildRevealSpec(
       hex: c.hex,
       family: c.family ?? '',
       position: c.position ?? { x: 0.5, y: 0.5 },
+      percentage: c.percentage ?? 0,
       hasMask: !!c.mask,
     }))
     .filter((r) => r.hasMask)
@@ -201,8 +235,11 @@ export async function prepareResources(
   const imgH = img.naturalHeight;
 
   const heroLayer = buildHeroLayer(img, imgW, imgH);
-  const greyLayer = buildBaseLayer(img, imgW, imgH, true, VIDEO_BASE_DIM);
-  if (!heroLayer || !greyLayer) throw new Error('Failed to build base layer');
+  if (!heroLayer) throw new Error('Failed to build base layer');
+  // Greyscale brightness adapts to the model's measured luma so a dark scheme
+  // reads as a visible grey model, not a silhouette.
+  const greyLayer = buildBaseLayer(img, imgW, imgH, true, adaptiveVideoDim(measureMeanLuma(heroLayer)));
+  if (!greyLayer) throw new Error('Failed to build base layer');
 
   const built = await Promise.all(
     spec.regions.map(async (r) => {
@@ -222,7 +259,6 @@ export async function prepareResources(
     fonts: resolveFonts(),
     imgW,
     imgH,
-    heroRect: fitRect(imgW, imgH, FULL_BOX),
     heroLayer,
     greyLayer,
     regionLayers: built.map((b) => b.region),
@@ -321,16 +357,59 @@ function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: numbe
 
 // ---- frame composition -------------------------------------------------------
 /**
- * The 'colours' caption COUNTS UP as regions resolve instead of stating the
- * total from the first second — progression to watch, and the payoff line only
- * lands once the model is fully read.
+ * The 'colours' caption opens with a question hook on frame 0 (the written
+ * promise the research says the first frame needs), then COUNTS UP as regions
+ * resolve — progression to watch, and the payoff line only lands once the
+ * model is fully read.
  */
 export function captionText(spec: RevealSpec, state: RevealFrameState): string | null {
-  if (spec.captionPreset === 'none' || state.phase === 'hero') return null;
+  if (spec.captionPreset === 'none') return null;
   if (spec.captionPreset === 'machine-spirit') return 'THE MACHINE SPIRIT KNOWS YOUR RECIPE';
+  if (state.phase === 'hero') return 'CAN THE MACHINE READ THIS PAINT JOB?';
   if (state.phase === 'snap' || state.phase === 'sweep') return 'SCANNING…';
   if (state.phase === 'reveal') return `READING… ${state.identifiedCount}/${spec.colourCount} COLOURS`;
   return `${spec.colourCount} COLOURS IDENTIFIED`;
+}
+
+/** Breathing backlight behind the hero, tinted with the dominant region's hex —
+ *  the void stays, but the frame has light and it moves. */
+function drawHeroGlow(ctx: CanvasRenderingContext2D, res: RevealResources, r: Rect, glow: number): void {
+  if (glow <= 0) return;
+  const hex = res.spec.regions[res.spec.regions.length - 1]?.hex ?? '#00FF41';
+  const cx = r.x + r.w / 2;
+  const cy = r.y + r.h / 2;
+  const radius = Math.max(r.w, r.h) * 0.75;
+  const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
+  grad.addColorStop(0, hexToRgba(hex, 0.26 * glow));
+  grad.addColorStop(0.55, hexToRgba(hex, 0.1 * glow));
+  grad.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.save();
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+  ctx.restore();
+}
+
+/** Run `draw` with the model-space rock rotation applied about the rect centre.
+ *  Rotation is only ever non-zero during hero/snap, when no callouts are up, so
+ *  HUD geometry never needs to counter-rotate. */
+function withRock(
+  ctx: CanvasRenderingContext2D,
+  r: Rect,
+  rotationDeg: number,
+  draw: () => void,
+): void {
+  if (rotationDeg === 0) {
+    draw();
+    return;
+  }
+  ctx.save();
+  const cx = r.x + r.w / 2;
+  const cy = r.y + r.h / 2;
+  ctx.translate(cx, cy);
+  ctx.rotate((rotationDeg * Math.PI) / 180);
+  ctx.translate(-cx, -cy);
+  draw();
+  ctx.restore();
 }
 
 /** Greyscale base, dim ahead of the scan line and full behind it. */
@@ -356,12 +435,28 @@ function drawGreyModel(
   ctx.restore();
 }
 
-/** Frame-1 / loop-target composition: backdrop + the model in FULL COLOUR. */
+/** Frame-1 / loop-target composition, DERIVED from frameState(0) so the loop
+ *  and the opening frame can never drift apart: backdrop + breathing glow +
+ *  the punched-in full-colour hero + brackets + the hook caption. */
 export function drawLoopTarget(ctx: CanvasRenderingContext2D, res: RevealResources): void {
-  const r = res.heroRect;
+  const s0 = frameState(0, res.spec);
+  const r = modelRectAt(s0.camera, res.imgW, res.imgH);
   paintBackdrop(ctx, CANVAS_W, CANVAS_H, res.spec.skin);
-  ctx.drawImage(res.heroLayer, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
+  drawHeroGlow(ctx, res, r, s0.heroGlow);
+  withRock(ctx, r, s0.camera.rotationDeg, () => {
+    ctx.drawImage(res.heroLayer, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
+  });
   drawCornerBrackets(ctx, CANVAS_W, CANVAS_H, accentFor(res.spec.skin));
+  const cap = captionText(res.spec, s0);
+  if (cap)
+    drawText(ctx, cap, CANVAS_W / 2, 130, {
+      font: res.fonts.cyber,
+      size: 40,
+      colour: accentFor(res.spec.skin),
+      glow: 16,
+      letter: 2,
+      maxWidth: CANVAS_W - 120,
+    });
 }
 
 export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameState, res: RevealResources): void {
@@ -369,39 +464,60 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
   const accent = accentFor(spec.skin);
   const r = modelRectAt(state.camera, res.imgW, res.imgH);
   const hud = 1 - state.hudFade;
+  const finaleIndex = spec.regions.length - 1; // dominant colour blooms last
 
   paintBackdrop(ctx, CANVAS_W, CANVAS_H, spec.skin);
-  drawGreyModel(ctx, res, r, state.baseAlpha, state.scanned);
+  drawHeroGlow(ctx, res, r, state.heroGlow);
 
-  // Region colour blooms — the painter's REAL pixels, drawn clean. The glow
-  // lives on the rim layer so nothing washes over their blending.
-  state.regions.forEach((rs, i) => {
-    if (rs.revealProgress <= 0) return;
-    const layer = res.regionLayers[i];
-    if (layer) {
+  withRock(ctx, r, state.camera.rotationDeg, () => {
+    drawGreyModel(ctx, res, r, state.baseAlpha, state.scanned);
+
+    // Region colour blooms — the painter's REAL pixels, drawn clean. The rim
+    // flashes at the moment of identification then dies away entirely: a
+    // permanent outline traced every pinhole in real grabCut masks and read as
+    // crayon scribble.
+    state.regions.forEach((rs, i) => {
+      if (rs.revealProgress <= 0) return;
+      const layer = res.regionLayers[i];
+      if (layer) {
+        ctx.save();
+        ctx.globalAlpha = rs.revealProgress;
+        ctx.drawImage(layer, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
+        ctx.restore();
+      }
+      const rim = res.rimLayers[i];
+      if (rim && rs.pulse > 0) {
+        const finale = i === finaleIndex ? 1.25 : 1;
+        ctx.save();
+        ctx.globalAlpha = Math.min(1, rs.pulse * finale);
+        ctx.shadowColor = spec.regions[i].hex;
+        ctx.shadowBlur = (14 + rs.pulse * 46) * finale;
+        ctx.drawImage(rim, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
+        ctx.restore();
+      }
+    });
+
+    // The hero (full colour) sits on top until the snap strobes it away, with
+    // a chromatic-aberration hit as it goes (hue-shifted echoes; browsers
+    // without canvas filters just get the ghost offsets, which still read).
+    if (state.heroAlpha > 0) {
+      if (state.snapFlash > 0) {
+        const shift = 7 * state.snapFlash;
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.globalAlpha = 0.22 * state.snapFlash;
+        ctx.filter = 'hue-rotate(120deg)';
+        ctx.drawImage(res.heroLayer, 0, 0, res.imgW, res.imgH, r.x + shift, r.y, r.w, r.h);
+        ctx.filter = 'hue-rotate(-120deg)';
+        ctx.drawImage(res.heroLayer, 0, 0, res.imgW, res.imgH, r.x - shift, r.y, r.w, r.h);
+        ctx.restore();
+      }
       ctx.save();
-      ctx.globalAlpha = rs.revealProgress;
-      ctx.drawImage(layer, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
-      ctx.restore();
-    }
-    const rim = res.rimLayers[i];
-    if (rim) {
-      ctx.save();
-      ctx.globalAlpha = rs.revealProgress * (0.3 + 0.7 * rs.pulse);
-      ctx.shadowColor = spec.regions[i].hex;
-      ctx.shadowBlur = 12 + rs.pulse * 42;
-      ctx.drawImage(rim, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
+      ctx.globalAlpha = state.heroAlpha;
+      ctx.drawImage(res.heroLayer, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
       ctx.restore();
     }
   });
-
-  // The hero (full colour) sits on top until the snap strobes it away.
-  if (state.heroAlpha > 0) {
-    ctx.save();
-    ctx.globalAlpha = state.heroAlpha;
-    ctx.drawImage(res.heroLayer, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
-    ctx.restore();
-  }
 
   // Scan sweep, in the active skin's accent.
   if (state.sweepY !== null) {
@@ -423,11 +539,13 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
     ctx.restore();
   }
 
-  // Impact flash on the cut to greyscale.
+  // Impact flash on the cut to greyscale — a sharp pop, not a wash: the square
+  // falloff keeps it to the first frames so the backdrop never sits tinted.
   if (state.snapFlash > 0) {
+    const pop = state.snapFlash * state.snapFlash;
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
-    ctx.fillStyle = hexToRgba(accent, 0.3 * state.snapFlash);
+    ctx.fillStyle = hexToRgba(accent, 0.22 * pop);
     ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
     ctx.restore();
   }
@@ -466,25 +584,27 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
     ctx.beginPath();
     ctx.arc(anchorX, anchorY, 8, 0, Math.PI * 2);
     ctx.fill();
-    // chip
+    // chip + type in a text-safe tint — a BLACK or BROWN callout in its own
+    // hex is invisible on the void backdrop; the line/dot above stay true-hex.
+    const tint = labelTint(hex);
     ctx.beginPath();
     ctx.arc(railX, railY, 34, 0, Math.PI * 2);
     ctx.fillStyle = 'rgba(5,7,10,0.92)';
     ctx.fill();
     ctx.lineWidth = owns ? 5 : 3;
-    ctx.strokeStyle = hex;
+    ctx.strokeStyle = tint;
     ctx.stroke();
     ctx.restore();
 
     ctx.save();
     ctx.globalAlpha = rs.labelReveal * hud;
-    drawText(ctx, String(c.index + 1), railX, railY, { font: res.fonts.cyber, size: 32, colour: hex });
+    drawText(ctx, String(c.index + 1), railX, railY, { font: res.fonts.cyber, size: 32, colour: tint });
     const label = garbleReveal((region.family || region.hex).toUpperCase(), rs.labelReveal);
     const labelX = c.side === 'left' ? railX + 52 : railX - 52;
     drawText(ctx, label, labelX, railY, {
       font: res.fonts.cyber,
       size: 36,
-      colour: hex,
+      colour: tint,
       align: c.side === 'left' ? 'left' : 'right',
       glow: 12,
       maxWidth: 380,
@@ -510,8 +630,10 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
     ctx.restore();
   }
 
-  // Recipe outro cascade.
-  if (state.recipeProgress > 0 && hud > 0) drawRecipe(ctx, state.recipeProgress, hud, res);
+  // Recipe outro cascade. Gated on the box morph so the heading never draws
+  // over the model's feet while it is still easing into the compact framing.
+  const recipeAlpha = hud * (state.phase === 'recipe' ? smoothstep(state.camera.boxLerp) : 1);
+  if (state.recipeProgress > 0 && recipeAlpha > 0) drawRecipe(ctx, state.recipeProgress, recipeAlpha, res);
 
   // Brand plate + persistent watermark.
   if (state.plateAlpha > 0 && hud > 0) drawPlate(ctx, state.plateAlpha * hud, res);
@@ -551,7 +673,7 @@ function drawRecipe(ctx: CanvasRenderingContext2D, progress: number, hud: number
       `DOMINANT · ${spec.recipeRegionIndex + 1} ${(owner.family || owner.hex).toUpperCase()}`,
       CANVAS_W / 2,
       RECIPE_TOP + 44,
-      { font: res.fonts.cyber, size: 26, colour: owner.hex, letter: 2, maxWidth: CANVAS_W - 200 },
+      { font: res.fonts.cyber, size: 26, colour: labelTint(owner.hex), letter: 2, maxWidth: CANVAS_W - 200 },
     );
   }
   ctx.restore();
@@ -608,7 +730,7 @@ function drawRecipe(ctx: CanvasRenderingContext2D, progress: number, hud: number
       drawText(ctx, `ΔE ${step.deltaE!.toFixed(1)}`, x + w - 26, y + CHIP_H / 2, {
         font: res.fonts.cyber,
         size: 26,
-        colour: roleAccent,
+        colour: deltaBandColour(step.deltaE!),
         align: 'right',
       });
     }

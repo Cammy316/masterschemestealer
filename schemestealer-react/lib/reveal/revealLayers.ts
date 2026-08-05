@@ -39,6 +39,39 @@ export interface BaseDim {
 export const SCREEN_BASE_DIM: BaseDim = { brightness: 0.5, veil: 0.45 };
 export const VIDEO_BASE_DIM: BaseDim = { brightness: 0.85, veil: 0.15 };
 
+/** Mean luma (0–255) of a layer's OPAQUE pixels, sampled via a small offscreen
+ *  readback. Transparent background (the removed backdrop) is excluded. */
+export function measureMeanLuma(layer: HTMLCanvasElement): number {
+  const S = 64;
+  const probe = document.createElement('canvas');
+  probe.width = S;
+  probe.height = S;
+  const ctx = probe.getContext('2d', { willReadFrequently: true });
+  if (!ctx) return 128;
+  ctx.drawImage(layer, 0, 0, S, S);
+  const { data } = ctx.getImageData(0, 0, S, S);
+  let sum = 0;
+  let count = 0;
+  for (let i = 0; i < data.length; i += 4) {
+    if (data[i + 3] < 32) continue;
+    sum += 0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2];
+    count++;
+  }
+  return count > 0 ? sum / count : 128;
+}
+
+/**
+ * Fixed dimming failed on real schemes: a red marine converts to ~35% luma and
+ * reads as a black silhouette for the whole scan phase (the pink test mini only
+ * looked right because pink is light). Scale the greyscale brightness so every
+ * model lands near the same visible grey, whatever it was painted.
+ */
+export function adaptiveVideoDim(meanLuma: number): BaseDim {
+  const TARGET = 150;
+  const brightness = Math.min(2.4, Math.max(0.8, TARGET / Math.max(1, meanLuma)));
+  return { brightness, veil: VIDEO_BASE_DIM.veil };
+}
+
 /**
  * The model dimmed IN PLACE. `source-atop` keeps the RGBA background
  * transparent so the backdrop shows through; adds CRT scanlines.
@@ -118,6 +151,10 @@ export function buildRegionLayer(
  * painter actually did. The glow belongs on the OUTLINE: dilate the mask,
  * punch the original back out, and let this ring carry the light while the
  * region pixels stay untouched.
+ *
+ * The mask is smoothed through a ¼-scale round-trip first: real grabCut masks
+ * are full of pinhole speckle, and rimming the raw mask traced every hole —
+ * the model looked scribbled over with crayon.
  */
 export function buildRegionRimLayer(
   mask: ImageBitmap,
@@ -125,30 +162,41 @@ export function buildRegionRimLayer(
   h: number,
   maskFrame: MaskFrame | undefined,
   hex: string,
-  thickness = 4,
+  thickness = 5,
 ): HTMLCanvasElement | null {
   const dst = maskDestRect(maskFrame, w, h);
+
+  // Smooth: mask → quarter-scale canvas (bilinear down) → stretched back up.
+  const sw = Math.max(1, Math.round(w / 4));
+  const sh = Math.max(1, Math.round(h / 4));
+  const small = document.createElement('canvas');
+  small.width = sw;
+  small.height = sh;
+  const sctx = small.getContext('2d');
+  if (!sctx) return null;
+  sctx.drawImage(mask, 0, 0, mask.width, mask.height, dst.x / 4, dst.y / 4, dst.w / 4, dst.h / 4);
+
   const layer = document.createElement('canvas');
   layer.width = w;
   layer.height = h;
   const ctx = layer.getContext('2d');
   if (!ctx) return null;
 
-  // Dilate: stamp the mask around a ring of offsets.
+  // Dilate: stamp the smoothed silhouette around a ring of offsets.
   const t = thickness;
   const offsets: [number, number][] = [
     [-t, 0], [t, 0], [0, -t], [0, t],
     [-t, -t], [t, -t], [-t, t], [t, t],
   ];
   for (const [dx, dy] of offsets) {
-    ctx.drawImage(mask, 0, 0, mask.width, mask.height, dst.x + dx, dst.y + dy, dst.w, dst.h);
+    ctx.drawImage(small, 0, 0, sw, sh, dx, dy, w, h);
   }
-  // Colourise the dilated silhouette, then punch the original out of it.
+  // Colourise the dilated silhouette, then punch the smoothed interior out.
   ctx.globalCompositeOperation = 'source-in';
   ctx.fillStyle = hex;
   ctx.fillRect(0, 0, w, h);
   ctx.globalCompositeOperation = 'destination-out';
-  ctx.drawImage(mask, 0, 0, mask.width, mask.height, dst.x, dst.y, dst.w, dst.h);
+  ctx.drawImage(small, 0, 0, sw, sh, 0, 0, w, h);
   return layer;
 }
 

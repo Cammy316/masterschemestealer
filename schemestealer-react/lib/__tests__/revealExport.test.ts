@@ -1,9 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { pickVideoMime } from '../reveal/renderRevealVideo';
+import { pickVideoMime, videoMimeSupport } from '../reveal/renderRevealVideo';
 import {
   garbleReveal,
   fitRect,
   hexToRgba,
+  labelTint,
+  deltaBandColour,
   captionText,
   recipeSteps,
   buildRevealSpec,
@@ -24,11 +26,30 @@ describe('pickVideoMime', () => {
     // a browser that only accepts the bare mp4 type must still get mp4
     expect(pickVideoMime((m) => m === 'video/mp4')).toBe('video/mp4');
   });
+  it('offers Opus-paired mp4 for browsers that cannot encode AAC (Chrome)', () => {
+    // Chrome-like: rejects anything naming AAC, accepts H.264+Opus in mp4.
+    const chromeLike = (m: string) => !m.includes('mp4a') && m.startsWith('video/mp4;codecs="avc1');
+    expect(pickVideoMime(chromeLike)).toBe('video/mp4;codecs="avc1.640028,opus"');
+  });
   it('falls back to webm/vp9 when no mp4 form is supported', () => {
     expect(pickVideoMime((m) => m.startsWith('video/webm'))).toBe('video/webm;codecs="vp9,opus"');
   });
   it('returns null when nothing is recordable', () => {
     expect(pickVideoMime(() => false)).toBeNull();
+  });
+});
+
+describe('videoMimeSupport', () => {
+  // Intent: two device exports in a row landed on VP8 WebM with no way to know
+  // why — the telemetry map must cover every candidate so a single real export
+  // settles what that browser can record.
+  it('reports a verdict for every candidate', () => {
+    const map = videoMimeSupport((m) => m === 'video/webm');
+    const keys = Object.keys(map);
+    expect(keys.length).toBeGreaterThanOrEqual(9);
+    expect(keys.some((k) => k.includes('opus') && k.startsWith('video/mp4'))).toBe(true);
+    expect(map['video/webm']).toBe(true);
+    expect(map['video/mp4']).toBe(false);
   });
 });
 
@@ -61,6 +82,34 @@ describe('hexToRgba', () => {
   it('converts a hex accent to an alpha-carrying rgba', () => {
     expect(hexToRgba('#00FF41', 0.5)).toBe('rgba(0, 255, 65, 0.5)');
     expect(hexToRgba('#A78BFA', 1)).toBe('rgba(167, 139, 250, 1)');
+  });
+});
+
+describe('labelTint', () => {
+  // Intent: on the real marine scan the BLACK and BROWN callouts were invisible
+  // — label text in the region's own hex fails for dark families. Dark hexes
+  // get lifted to a readable floor; light ones pass through untouched.
+  it('lifts dark hexes to the readable floor', () => {
+    const tinted = labelTint('#1a1a1a');
+    expect(tinted).not.toBe('#1a1a1a');
+    const m = tinted.match(/rgb\((\d+), (\d+), (\d+)\)/)!;
+    const luma = 0.2126 * +m[1] + 0.7152 * +m[2] + 0.0722 * +m[3];
+    expect(luma).toBeGreaterThanOrEqual(139);
+  });
+  it('leaves already-readable hexes exactly as they are', () => {
+    expect(labelTint('#e8c56a')).toBe('#e8c56a'); // light yellow
+    expect(labelTint('#00FF41')).toBe('#00FF41'); // neon green
+  });
+});
+
+describe('deltaBandColour', () => {
+  // Intent: the badge is the brand's honesty signal — its colour must follow the
+  // app's band vocabulary, not flatter every match with green.
+  it('maps the app ΔE bands', () => {
+    expect(deltaBandColour(1.2)).toBe('#00FF41'); // perfect
+    expect(deltaBandColour(3.4)).toBe('#A3E635'); // close
+    expect(deltaBandColour(8.2)).toBe('#F59E0B'); // fair
+    expect(deltaBandColour(14)).toBe('#EF4444'); // distant
   });
 });
 
@@ -115,30 +164,39 @@ describe('buildRevealCaptions', () => {
 });
 
 describe('buildRevealSpec', () => {
-  function colour(hex: string, y: number, withMask: boolean): Color {
+  function colour(hex: string, y: number, withMask: boolean, pct = 0): Color {
     return {
       rgb: [0, 0, 0],
       lab: [0, 0, 0],
       hex,
       family: 'red',
+      percentage: pct,
       position: { x: 0.5, y },
       mask: withMask ? 'AAAA' : null,
     };
   }
 
-  it('drops regions with no mask and orders the rest top→bottom', () => {
+  it('drops regions with no mask; percentage ties fall back to top→bottom order', () => {
     const colors = [colour('#a', 0.8, true), colour('#b', 0.2, true), colour('#c', 0.5, false)];
     const spec = buildRevealSpec(colors, [], 'Citadel', 'imperial', 'colours', 13000);
-    // only the two with masks, ordered by y (0.2 before 0.8)
+    // only the two with masks, tied percentage → ordered by y (0.2 before 0.8)
     expect(spec.regions.map((r) => r.index)).toEqual([1, 0]);
     expect(spec.colourCount).toBe(2);
+  });
+
+  // Intent: quick wins escalate to the dominant colour igniting last — the
+  // reveal order is coverage, smallest first.
+  it('orders regions smallest coverage first, dominant last', () => {
+    const colors = [colour('#a', 0.2, true, 60), colour('#b', 0.5, true, 10), colour('#c', 0.8, true, 30)];
+    const spec = buildRevealSpec(colors, [], 'Citadel', 'imperial', 'colours', 13000);
+    expect(spec.regions.map((r) => r.index)).toEqual([1, 2, 0]);
   });
 
   // Intent: five regions get called out but only one gets a recipe — the outro
   // has to name which, so the viewer isn't left asking "what about the cyan?".
   it('maps the recipe colour onto its position in the reveal order', () => {
-    const colors = [colour('#a', 0.8, true), colour('#b', 0.2, true)];
-    // colour index 0 sorts SECOND (y 0.8), so the region index is 1
+    const colors = [colour('#a', 0.8, true, 60), colour('#b', 0.2, true, 10)];
+    // colour index 0 is dominant → reveals LAST → region index 1
     expect(buildRevealSpec(colors, [], 'Citadel', 'imperial', 'colours', 13000, 0).recipeRegionIndex).toBe(1);
     expect(buildRevealSpec(colors, [], 'Citadel', 'imperial', 'colours', 13000, 1).recipeRegionIndex).toBe(0);
   });
@@ -150,33 +208,35 @@ describe('buildRevealSpec', () => {
 
 describe('captionText', () => {
   const colors: Color[] = [0.2, 0.5, 0.8].map((y, i) => ({
-    rgb: [0, 0, 0],
-    lab: [0, 0, 0],
+    rgb: [0, 0, 0] as [number, number, number],
+    lab: [0, 0, 0] as [number, number, number],
     hex: `#00ff4${i}`,
     family: 'green',
+    percentage: 10 * (i + 1),
     position: { x: 0.5, y },
     mask: 'AAAA',
   }));
   const spec = buildRevealSpec(colors, [], 'Citadel', 'imperial', 'colours', 13000, 0);
   const at = (f: number) => captionText(spec, frameState(spec.durationMs * f, spec));
 
-  // Intent: the hook frame is the model alone — a caption over it competes with
-  // the paint job for the two seconds that decide the scroll.
-  it('keeps the hero frame clean', () => {
-    expect(at(0)).toBeNull();
+  // Intent: the first frame needs a written promise as well as the visual —
+  // research: question hooks on frame 0 outperform naked visuals. v2 left the
+  // hero captionless and it read as a mute product shot.
+  it('opens on the question hook', () => {
+    expect(at(0)).toBe('CAN THE MACHINE READ THIS PAINT JOB?');
   });
 
   // Intent: a static "IDENTIFIED IN 5 COLOURS" from second one gives a viewer
   // nothing to watch for. The count climbs, then pays off.
   it('counts up during the reveal and resolves to the total', () => {
-    expect(at(0.18)).toBe('SCANNING…');
+    expect(at(0.16)).toBe('SCANNING…');
     expect(at(0.4)).toMatch(/^READING… \d\/3 COLOURS$/);
     expect(at(0.85)).toBe('3 COLOURS IDENTIFIED');
   });
 
   it('honours the other presets', () => {
     const ms = buildRevealSpec(colors, [], 'Citadel', 'imperial', 'machine-spirit', 13000, 0);
-    expect(captionText(ms, frameState(6000, ms))).toBe('THE MACHINE SPIRIT KNOWS YOUR RECIPE');
+    expect(captionText(ms, frameState(0, ms))).toBe('THE MACHINE SPIRIT KNOWS YOUR RECIPE');
     const none = buildRevealSpec(colors, [], 'Citadel', 'imperial', 'none', 13000, 0);
     expect(captionText(none, frameState(6000, none))).toBeNull();
   });

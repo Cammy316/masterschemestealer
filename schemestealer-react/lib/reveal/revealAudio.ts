@@ -160,13 +160,18 @@ export function scheduleRevealAudio(
   whine.stop(sweepEnd + 0.1);
 
   // Per-region reveal chimes (pentatonic so any count sounds musical), on the
-  // same accelerating schedule the blooms use.
+  // same accelerating schedule the blooms use. The LAST region is the dominant
+  // colour igniting — it lands as a chord with a low thump, not another tick.
   const n = spec.regions.length;
   const pent = [523.25, 587.33, 659.25, 783.99, 880.0];
   spec.regions.forEach((_, i) => {
     const hit = at(regionRevealFraction(i, n));
     ping(pent[i % pent.length], hit, 0.6, 0.28);
     burst(hit, 0.12, 0.1, 2600, 1.4);
+    if (i === n - 1 && n > 1) {
+      ping(pent[i % pent.length] * 2, hit + 0.04, 0.8, 0.2); // octave shimmer
+      ping(65.4, hit, 0.7, 0.4); // low thump — the finale beat
+    }
   });
 
   // Outro stamp as the recipe cascade starts.
