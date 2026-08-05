@@ -263,15 +263,26 @@ class AnalyticsService {
     durationMs: number,
     format: string,
     captionPreset: string,
-    mimeSupport?: Record<string, boolean>,
+    detail?: {
+      mimeSupport?: Record<string, boolean>;
+      engine?: string;
+      width?: number;
+      height?: number;
+      codec?: string;
+    },
   ): void {
     this.track('reveal_video_exported', {
       duration_ms: durationMs,
       format,
       caption_preset: captionPreset,
+      // Which pipeline ran and what it produced. 'mediarecorder' means the
+      // device had no WebCodecs and got the degraded 720p real-time path.
+      ...(detail?.engine ? { engine: detail.engine } : {}),
+      ...(detail?.codec ? { codec: detail.codec } : {}),
+      ...(detail?.width && detail?.height ? { resolution: `${detail.width}x${detail.height}` } : {}),
       // Codec telemetry: which containers this device can actually record —
       // real exports settle the MP4 question instead of codec-string guesses.
-      ...(mimeSupport ? { mime_support: JSON.stringify(mimeSupport) } : {}),
+      ...(detail?.mimeSupport ? { mime_support: JSON.stringify(detail.mimeSupport) } : {}),
     });
   }
 

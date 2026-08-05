@@ -67,7 +67,14 @@ export function ShareModal({ mode, scan, onClose }: ShareModalProps) {
   const [preset, setPreset] = useState<CaptionPreset>('colours');
   const [audio, setAudio] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [video, setVideo] = useState<{ url: string; blob: Blob; mime: string } | null>(null);
+  const [video, setVideo] = useState<{
+    url: string;
+    blob: Blob;
+    mime: string;
+    engine?: 'webcodecs' | 'mediarecorder';
+    width?: number;
+    height?: number;
+  } | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
@@ -108,9 +115,22 @@ export function ShareModal({ mode, scan, onClose }: ShareModalProps) {
         signal: controller.signal,
       });
       const url = URL.createObjectURL(result.blob);
-      setVideo({ url, blob: result.blob, mime: result.mime });
+      setVideo({
+        url,
+        blob: result.blob,
+        mime: result.mime,
+        engine: result.engine,
+        width: result.width,
+        height: result.height,
+      });
       setPhase('ready');
-      analytics.trackRevealVideoExported(result.durationMs, result.mime, preset, result.mimeSupport);
+      analytics.trackRevealVideoExported(result.durationMs, result.mime, preset, {
+        mimeSupport: result.mimeSupport,
+        engine: result.engine,
+        width: result.width,
+        height: result.height,
+        codec: result.codec,
+      });
     } catch (e) {
       if (e instanceof DOMException && e.name === 'AbortError') {
         setPhase('idle');
@@ -289,7 +309,16 @@ export function ShareModal({ mode, scan, onClose }: ShareModalProps) {
                 />
                 <p className="text-xs cyber-text text-center" style={{ color: accentDim }}>
                   PICT-CAST READY · {ext.toUpperCase()}
+                  {video.width ? ` · ${video.width}×${video.height}` : ''}
                 </p>
+                {/* Honest about the degraded path: this browser has no WebCodecs,
+                    so the clip was captured in real time at reduced size. */}
+                {video.engine === 'mediarecorder' && (
+                  <p className="text-xs tech-text text-center" style={{ color: 'var(--text-secondary)' }}>
+                    Your browser can&apos;t encode video directly, so this was captured live at reduced
+                    size. Chrome or Safari will export a full-resolution MP4.
+                  </p>
+                )}
                 <div className="flex gap-2">
                   <button
                     onClick={handleSaveShare}

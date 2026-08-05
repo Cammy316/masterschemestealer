@@ -7,14 +7,14 @@
  */
 
 import {
+  applyOutputScale,
   composeReveal,
   prepareResources,
   buildRevealSpec,
+  outputSize,
   recipeSteps,
-  CANVAS_W,
-  CANVAS_H,
 } from './revealCompose';
-import { frameState, type CaptionPreset } from './revealTimeline';
+import { frameState, DEFAULT_DURATION_MS, type CaptionPreset } from './revealTimeline';
 import type { Color, MaskFrame, PaintRecipe } from '../types';
 import type { RevealSkin } from './revealLayers';
 import { createRevealAudioBed, type RevealAudioBed } from './revealAudio';
@@ -60,17 +60,19 @@ export function pickVideoMime(isSupported: (m: string) => boolean = defaultIsSup
   return null;
 }
 
-/** Whether this browser can export at all (button gating). */
+/** Whether this browser can export at all (button gating). Either pipeline will
+ *  do — WebCodecs is preferred, MediaRecorder is the fallback. */
 export function canExportReveal(): boolean {
+  if (typeof HTMLCanvasElement === 'undefined') return false;
+  if (typeof VideoEncoder !== 'undefined') return true;
   return (
     typeof MediaRecorder !== 'undefined' &&
-    typeof HTMLCanvasElement !== 'undefined' &&
     typeof HTMLCanvasElement.prototype.captureStream === 'function' &&
     pickVideoMime() !== null
   );
 }
 
-export const DEFAULT_DURATION_MS = 13000;
+export { DEFAULT_DURATION_MS } from './revealTimeline';
 
 /** Extra real time spent holding the completed final frame before stopping the
  *  recorder. Without it the record ended mid-dissolve — the loop seam the whole
@@ -101,11 +103,49 @@ export interface RenderRevealResult {
   blob: Blob;
   mime: string;
   durationMs: number;
+  /** Which pipeline produced the file. `mediarecorder` is the degraded path. */
+  engine?: 'webcodecs' | 'mediarecorder';
+  width?: number;
+  height?: number;
+  codec?: string;
+  frameCount?: number;
   /** isTypeSupported result per candidate — export telemetry (see videoMimeSupport). */
-  mimeSupport: Record<string, boolean>;
+  mimeSupport?: Record<string, boolean>;
 }
 
+/**
+ * Output scale for the MediaRecorder fallback: 720×1280 instead of 1080×1920.
+ * That path is stuck with a real-time software encoder, and 2.25× fewer pixels
+ * is the difference between the 5 fps measured on Firefox Android and something
+ * watchable. Still within every platform's accepted vertical spec.
+ */
+const FALLBACK_OUTPUT_SCALE = 2 / 3;
+/** Fewer frames to encode buys the fallback encoder more time per frame. */
+const FALLBACK_FPS = 24;
+
+/**
+ * Render the reveal, preferring the offline WebCodecs pipeline.
+ *
+ * MediaRecorder is a real-time recorder that drops frames it cannot encode in
+ * time, so it can only ever be the fallback — on browsers with no WebCodecs at
+ * all (notably Firefox Android).
+ */
 export async function renderRevealVideo(opts: RenderRevealOptions): Promise<RenderRevealResult> {
+  // Dynamic: the muxer + encoder module only loads when someone actually taps
+  // export, so it never lands in the initial bundle of a mobile-first app.
+  const offline = await import('./renderRevealOffline');
+  const fullSize = outputSize(1);
+  const plan = await offline.planOfflineRender(fullSize.width, fullSize.height);
+  if (plan) {
+    console.info('[pict-cast] offline render:', plan.container, plan.video, 'audio', plan.audio ?? 'none');
+    return offline.renderRevealOffline({ ...opts, plan });
+  }
+  console.warn('[pict-cast] no WebCodecs encoder — falling back to real-time MediaRecorder at 720p');
+  return recordRevealRealtime(opts);
+}
+
+/** Legacy real-time path. Kept only for browsers without WebCodecs. */
+export async function recordRevealRealtime(opts: RenderRevealOptions): Promise<RenderRevealResult> {
   const mime = pickVideoMime();
   if (!mime) throw new Error('This browser cannot record video (MediaRecorder unavailable).');
   const mimeSupport = videoMimeSupport();
@@ -113,7 +153,9 @@ export async function renderRevealVideo(opts: RenderRevealOptions): Promise<Rend
   console.info('[pict-cast] recording as', mime, 'support map:', mimeSupport);
 
   const durationMs = opts.durationMs ?? DEFAULT_DURATION_MS;
-  const fps = opts.fps ?? 30;
+  const fps = opts.fps ?? FALLBACK_FPS;
+  const outputScale = FALLBACK_OUTPUT_SCALE;
+  const phys = outputSize(outputScale);
 
   // Fonts must be loaded or canvas text falls back to a system face.
   await (document.fonts?.ready ?? Promise.resolve());
@@ -130,22 +172,27 @@ export async function renderRevealVideo(opts: RenderRevealOptions): Promise<Rend
   );
   if (spec.regions.length === 0) throw new Error('No mask regions to reveal.');
 
-  const res = await prepareResources(opts.imageUrl, opts.colors, opts.maskFrame, spec);
+  const res = await prepareResources(opts.imageUrl, opts.colors, opts.maskFrame, spec, outputScale);
 
   const canvas = document.createElement('canvas');
-  canvas.width = CANVAS_W;
-  canvas.height = CANVAS_H;
+  canvas.width = phys.width;
+  canvas.height = phys.height;
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('2D canvas unavailable');
 
+  const compose = (t: number) => {
+    applyOutputScale(ctx, outputScale);
+    composeReveal(ctx, frameState(t, spec), res);
+  };
+
   // Prime frame 0 so capture never starts on a blank canvas.
-  composeReveal(ctx, frameState(0, spec), res);
+  compose(0);
 
   const videoStream = canvas.captureStream(fps);
 
   // Audio bed (quiet cogitator hum + sweep whine + reveal chimes + outro stamp).
   let audioBed: RevealAudioBed | null = null;
-  const tracks = [...videoStream.getVideoTracks()];
+  const tracks: MediaStreamTrack[] = [...videoStream.getVideoTracks()];
   if (opts.audio !== false) {
     try {
       audioBed = createRevealAudioBed(spec);
@@ -170,10 +217,6 @@ export async function renderRevealVideo(opts: RenderRevealOptions): Promise<Rend
   audioBed?.start();
   const startedAt = performance.now();
 
-  // Drive the compose loop off a timer, not rAF: rAF pauses when the tab is
-  // backgrounded (or under headless), which would stall a 13 s record forever.
-  // captureStream(fps) samples the canvas on its own clock, so a timer draw is
-  // enough. Wall-clock `t` keeps the storyboard on time regardless of tick jitter.
   await new Promise<void>((resolve) => {
     const frameMs = 1000 / fps;
     // Draw on rAF so paints land on compositor frame boundaries; a timer-driven
@@ -190,7 +233,7 @@ export async function renderRevealVideo(opts: RenderRevealOptions): Promise<Rend
       finished = true;
       cancelAnimationFrame(rafId);
       clearInterval(watchdog);
-      composeReveal(ctx, frameState(durationMs, spec), res);
+      compose(durationMs);
       opts.onProgress?.(1);
       resolve();
     };
@@ -204,7 +247,7 @@ export async function renderRevealVideo(opts: RenderRevealOptions): Promise<Rend
       lastDraw = now;
       // Past the storyboard end, hold the final (loop-target) frame so the
       // completed dissolve is actually captured.
-      composeReveal(ctx, frameState(Math.min(t, durationMs), spec), res);
+      compose(Math.min(t, durationMs));
       opts.onProgress?.(Math.min(1, t / durationMs));
     };
 
@@ -227,5 +270,14 @@ export async function renderRevealVideo(opts: RenderRevealOptions): Promise<Rend
 
   const blob = await done;
   if (opts.signal?.aborted) throw new DOMException('Export cancelled', 'AbortError');
-  return { blob, mime, durationMs, mimeSupport };
+  return {
+    blob,
+    mime,
+    durationMs,
+    mimeSupport,
+    engine: 'mediarecorder',
+    width: phys.width,
+    height: phys.height,
+    codec: mime,
+  };
 }

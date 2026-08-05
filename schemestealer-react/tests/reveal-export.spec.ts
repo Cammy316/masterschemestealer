@@ -1,21 +1,22 @@
 /**
  * Engine A — pict-cast export.
  *
- * Verifies (a) the export UI is wired into the Miniscan results Share modal, and
- * (b) the deterministic storyboard renders correctly by composing the 5 key
- * frames to an offscreen canvas and saving PNGs for eyeball QA.
+ * Verifies (a) the export UI is wired into the Miniscan results Share modal,
+ * (b) the deterministic storyboard renders correctly, (c) the audio bed is
+ * audible, and (d) compose stays inside the frame budget at realistic photo
+ * size.
  *
- * The real-time MediaRecorder capture can't be driven under headless/offscreen
- * Chromium (it suspends page timers after ~130 ms — see the timer probe), so the
- * end-to-end record is verified on a real device. The compose pipeline, spec
- * building and resource prep ARE exercised here in a real browser.
+ * The real encode is in reveal-encode.spec.ts — it needs real Chrome, because
+ * Playwright's bundled Chromium crashes on VideoEncoder.
  */
 import { test, expect } from '@playwright/test';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { seedScan } from './revealSeed';
 
 const STORAGE_KEY = 'schemestealer-storage';
 const OUT_DIR = resolve('test-results', 'reveal-frames');
+
 
 test('pict-cast export: UI wired + storyboard frames render', async ({ page }) => {
   page.on('pageerror', (e) => console.log('PAGEERROR:', e.message));
@@ -24,100 +25,7 @@ test('pict-cast export: UI wired + storyboard frames render', async ({ page }) =
     r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ status: 'ok', ready: true }) }),
   );
 
-  // Build a synthetic MASKED scan in-browser; stash on window (persist strips
-  // masks/imageUrl from localStorage) and also seed localStorage for the app.
-  await page.addInitScript((key) => {
-    window.localStorage.setItem('schemestealer-analytics-consent', 'granted');
-
-    const miniUrl = (() => {
-      const c = document.createElement('canvas');
-      c.width = 400;
-      c.height = 600;
-      const x = c.getContext('2d')!;
-      x.fillStyle = '#0a0a0a';
-      x.fillRect(0, 0, 400, 600);
-      x.fillStyle = '#8a3a3a';
-      x.fillRect(140, 180, 120, 260);
-      x.fillStyle = '#c8a06a';
-      x.beginPath();
-      x.arc(200, 140, 50, 0, Math.PI * 2);
-      x.fill();
-      x.fillStyle = '#3a5a8a';
-      x.fillRect(120, 200, 40, 240);
-      x.fillRect(240, 200, 40, 240);
-      // near-black plinth — exercises the dark-scheme paths (adaptive base
-      // brightness + label lightness floor) that solid bright shapes never hit
-      x.fillStyle = '#141414';
-      x.fillRect(130, 440, 140, 36);
-      return c.toDataURL('image/png');
-    })();
-
-    const maskB64 = (draw: (x: CanvasRenderingContext2D) => void) => {
-      const c = document.createElement('canvas');
-      c.width = 400;
-      c.height = 600;
-      const x = c.getContext('2d')!;
-      x.fillStyle = '#ffffff';
-      draw(x);
-      return c.toDataURL('image/png').split(',')[1];
-    };
-    const redMask = maskB64((x) => x.fillRect(140, 180, 120, 260));
-    const boneMask = maskB64((x) => {
-      x.beginPath();
-      x.arc(200, 140, 50, 0, Math.PI * 2);
-      x.fill();
-    });
-    const blueMask = maskB64((x) => {
-      x.fillRect(120, 200, 40, 240);
-      x.fillRect(240, 200, 40, 240);
-    });
-    const blackMask = maskB64((x) => x.fillRect(130, 440, 140, 36));
-
-    const recipe = (hex: string) => ({
-      base: { name: 'Mephiston Red', hex, type: 'base', deltaE: 1.2 },
-      shade: { name: 'Nuln Oil', hex: '#141414', type: 'shade', deltaE: 0 },
-      highlight: { name: 'Evil Sunz Scarlet', hex: '#d49a9a', type: 'layer', deltaE: 2.4 },
-      wash: { name: 'Reikland Fleshshade', hex: '#7a3b1a', type: 'wash', deltaE: 0 },
-    });
-    const colour = (
-      hex: string,
-      rgb: number[],
-      lab: number[],
-      family: string,
-      pct: number,
-      pos: { x: number; y: number },
-      mask: string,
-    ) => ({
-      hex,
-      rgb,
-      lab,
-      family,
-      percentage: pct,
-      position: pos,
-      mask,
-      paintRecipe: { citadel: recipe(hex), vallejo: recipe(hex), army_painter: recipe(hex) },
-    });
-
-    const scan = {
-      id: 'reveal-seed',
-      mode: 'miniature',
-      timestamp: '2026-06-30T00:00:00.000Z',
-      analysisSource: 'backend',
-      recommendedPaints: [],
-      imageUrl: miniUrl,
-      maskFrame: { width: 400, height: 600, cropX: 0, cropY: 0, cropW: 400, cropH: 600, frameW: 400, frameH: 600 },
-      detectedColors: [
-        colour('#8a3a3a', [138, 58, 58], [40, 35, 20], 'red', 50, { x: 0.5, y: 0.55 }, redMask),
-        colour('#c8a06a', [200, 160, 106], [70, 10, 35], 'bone', 25, { x: 0.5, y: 0.23 }, boneMask),
-        colour('#3a5a8a', [58, 90, 138], [40, 5, -30], 'blue', 20, { x: 0.35, y: 0.5 }, blueMask),
-        // near-black region: label tint + adaptive brightness under real frames
-        colour('#141414', [20, 20, 20], [7, 0, 0], 'black', 5, { x: 0.5, y: 0.76 }, blackMask),
-      ],
-    };
-    (window as unknown as { __seedScan: unknown }).__seedScan = scan;
-    const state = { cart: [], scanHistory: [scan], currentScan: scan, preferredBrands: ['all'], preferredRegion: 'global' };
-    window.localStorage.setItem(key, JSON.stringify({ state, version: 0 }));
-  }, STORAGE_KEY);
+  await page.addInitScript(seedScan, STORAGE_KEY);
 
   await page.goto('/miniature/results');
 
@@ -218,4 +126,97 @@ test('pict-cast export: UI wired + storyboard frames render', async ({ page }) =
   expect(audio.rmsDb).toBeGreaterThan(-26);
   expect(audio.peakDb).toBeLessThan(0); // the limiter must stop it clipping
   expect(audio.peakDb).toBeGreaterThan(-12); // …but it still has to have transients
+});
+
+// Perf gate. The stutter bug was invisible to this suite for two rounds because
+// the seed image is 400×600 and composes in 0.2 ms — 200× cheaper than a real
+// background-removed phone photo. This renders at a realistic source size and
+// fails if any phase blows the budget.
+test('pict-cast perf gate: compose stays in budget at phone-photo resolution', async ({ page }) => {
+  test.setTimeout(180000);
+  page.on('pageerror', (e) => console.log('PAGEERROR:', e.message));
+  await page.route('**/api/**', (r) =>
+    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ status: 'ok', ready: true }) }),
+  );
+  await page.goto('/miniature/results');
+
+  const perf = await page.evaluate(async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const R = (window as any).__revealDebug;
+    if (!R) return { error: 'no hook' } as const;
+    const W = 2400;
+    const H = 3200;
+    const mk = (draw: (x: CanvasRenderingContext2D) => void) => {
+      const c = document.createElement('canvas');
+      c.width = W;
+      c.height = H;
+      draw(c.getContext('2d')!);
+      return c;
+    };
+    const src = mk((x) => {
+      x.fillStyle = '#c4457a';
+      x.fillRect(860, 940, 670, 1410);
+      x.fillStyle = '#e8c56a';
+      x.beginPath();
+      x.arc(1200, 725, 300, 0, Math.PI * 2);
+      x.fill();
+      x.fillStyle = '#2f9fb5';
+      x.fillRect(720, 1070, 220, 1280);
+      x.fillStyle = '#141414';
+      x.fillRect(1010, 2690, 380, 170);
+    }).toDataURL('image/png');
+    const maskB64 = (draw: (x: CanvasRenderingContext2D) => void) =>
+      mk((x) => {
+        x.fillStyle = '#fff';
+        draw(x);
+      })
+        .toDataURL('image/png')
+        .split(',')[1];
+    const colour = (hex: string, family: string, pct: number, pos: { x: number; y: number }, mask: string) => ({
+      hex, rgb: [0, 0, 0], lab: [50, 0, 0], family, percentage: pct, position: pos, mask,
+    });
+    const colors = [
+      colour('#c4457a', 'pink', 50, { x: 0.5, y: 0.5 }, maskB64((x) => x.fillRect(860, 940, 670, 1410))),
+      colour('#e8c56a', 'yellow', 22, { x: 0.5, y: 0.23 }, maskB64((x) => { x.beginPath(); x.arc(1200, 725, 300, 0, Math.PI * 2); x.fill(); })),
+      colour('#2f9fb5', 'cyan', 20, { x: 0.3, y: 0.53 }, maskB64((x) => x.fillRect(720, 1070, 220, 1280))),
+      colour('#141414', 'black', 8, { x: 0.5, y: 0.86 }, maskB64((x) => x.fillRect(1010, 2690, 380, 170))),
+    ];
+    const steps = [
+      { role: 'base', name: 'Fulgrim Pink', hex: '#c4457a', deltaE: 1.8 },
+      { role: 'highlight', name: 'Ceramite White', hex: '#f2f2ee' },
+      { role: 'shade', name: 'Dechala Lilac', hex: '#8a7ab5' },
+      { role: 'wash', name: 'Carroburg Crimson', hex: '#7a1f3d' },
+    ];
+    const spec = R.buildRevealSpec(colors, steps, 'Citadel', 'imperial', 'colours', 13000, 0);
+    const res = await R.prepareResources(
+      src, colors,
+      { width: W, height: H, cropX: 0, cropY: 0, cropW: W, cropH: H, frameW: W, frameH: H },
+      spec,
+    );
+    const canvas = document.createElement('canvas');
+    canvas.width = 1080;
+    canvas.height = 1920;
+    const ctx = canvas.getContext('2d')!;
+    const phases: Record<string, number> = { hero: 400, snap: 1300, sweep: 2000, reveal: 6000, recipe: 11000, loop: 12800 };
+    const timings: Record<string, number> = {};
+    for (const [name, t0] of Object.entries(phases)) {
+      R.composeAt(ctx, t0, res); // warm
+      const N = 10;
+      const start = performance.now();
+      for (let i = 0; i < N; i++) R.composeAt(ctx, t0 + i, res);
+      timings[name] = +((performance.now() - start) / N).toFixed(1);
+    }
+    return { timings, layer: `${res.imgW}x${res.imgH}` } as const;
+  });
+
+  console.log('PERF GATE:', JSON.stringify(perf));
+  expect('error' in perf ? perf.error : null).toBeNull();
+  if ('error' in perf) return;
+
+  // Budget with headroom for CI noise: the regression this catches took the
+  // reveal phase to ~70 ms (2× the 33 ms frame budget at 30 fps).
+  const BUDGET_MS = 50;
+  for (const [phase, ms] of Object.entries(perf.timings)) {
+    expect(ms, `compose phase "${phase}" took ${ms}ms (budget ${BUDGET_MS}ms)`).toBeLessThan(BUDGET_MS);
+  }
 });

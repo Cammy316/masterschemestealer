@@ -2,6 +2,65 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-08-05 (Pict-Cast v4 — offline render: real MP4, no dropped frames)
+
+Two device exports and the browser's own codec-support map settled both open
+questions. Frame timings, parsed out of the WebM containers directly:
+
+| Export | frames | fps | median gap | worst gap |
+|---|---|---|---|---|
+| v3 desktop (Firefox) | 170 | 12.8 | 83 ms | 217 ms |
+| v3.1 desktop, after the perf pass | 378 | **28.4** | 33 ms | 231 ms |
+| v3.1 **mobile** (Firefox Android) | 67 | **5.0** | 66 ms | **575 ms** |
+
+The perf pass did land on desktop (median gap 33 ms = textbook 30 fps) but left
+13 dropped frames and a 231 ms freeze, and mobile was untouched at 5 fps. Those
+half-second mobile stalls are far longer than compose takes, which puts the
+blame on the encoder, not the drawing.
+
+**MediaRecorder cannot do this job.** It is a real-time, wall-clock recorder: if
+a frame can't be encoded in time it drops it and moves on — there is a standing
+W3C request (mediacapture-record#213) for the frame-by-frame recording we need
+and it does not exist. On a phone, *software* VP8 encoding of a 1080×1920 frame
+is itself slower than the frame budget. **And it can never give us MP4 here:** the
+support map came back false for every MP4 and VP9 candidate and true only for
+bare `video/webm` — that is Firefox, whose MediaRecorder does VP8/Opus and
+nothing else. Three rounds of codec-string tuning were never going to work.
+
+### Added
+- **Offline WebCodecs renderer** (`lib/reveal/renderRevealOffline.ts`). Each
+  frame is composed at its exact timeline position and handed to a `VideoEncoder`
+  with an explicit timestamp, muxed with **Mediabunny** (MPL-2.0). There is no
+  clock, so a slow frame makes the export take longer and can never make it
+  stutter. Verified output: **H.264/AAC MP4, 1080×1920, exactly 60/60 frames for
+  a 2 s clip, every frame gap identical, real duration metadata** — and rendered
+  in 1.0 s, i.e. faster than real time. Codec ladder avc→vp9→vp8 (WebM still gets
+  perfect pacing where H.264 is unavailable); mediabunny's probes run a real
+  encoder configure, which matters because Firefox reports H.264 as supported and
+  then throws.
+- **Perf gate** (`tests/reveal-export.spec.ts`): composes at 2400×3200 — a real
+  phone photo — and fails if any storyboard phase exceeds the frame budget. This
+  is the hole the stutter fell through twice: the seed fixture is 400×600 and
+  composes in 0.2 ms, so a 70 ms/frame regression was invisible to a green suite.
+- **End-to-end encode test** (`tests/reveal-encode.spec.ts`). Unlike
+  MediaRecorder, the offline pipeline has no real-time requirement, so the whole
+  encode is testable. It runs in *real* Chrome: Playwright's bundled Chromium
+  crashes its renderer the moment `VideoEncoder.encode()` is called (confirmed
+  with raw WebCodecs, no library involved).
+
+### Changed
+- **Output scale knob.** Composition still happens in logical 1080×1920; the
+  physical canvas and a context transform carry the scale, so no layout, font
+  size or geometry constant changes.
+- **The MediaRecorder path is now the fallback only**, for browsers with no
+  WebCodecs at all (notably Firefox Android). It renders at **720×1280 and
+  24 fps** — 2.25× fewer pixels for the software encoder, the difference between
+  5 fps and something watchable — and the share modal says plainly that the clip
+  was captured live at reduced size and that Chrome or Safari export a
+  full-resolution MP4.
+- Export analytics carry `engine`, `codec` and `resolution` alongside the codec
+  support map, so a single export reports which pipeline ran.
+
 ## [Unreleased] - 2026-08-05 (Pict-Cast — smooth playback)
 
 The exported clip played back stuttery. Measured cause, not the container: the
