@@ -2,6 +2,57 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-08-05 (Pict-Cast — smooth playback)
+
+The exported clip played back stuttery. Measured cause, not the container: the
+v3 device export contains **170 frames across 13.5 s — 12.6 fps** against a
+requested 30. Timing `composeReveal` against realistic source photos showed why,
+and showed why QA never caught it:
+
+| Source photo | reveal | recipe | loop | (budget 33.3 ms) |
+|---|---|---|---|---|
+| 400×600 (the QA fixture) | 0.2 ms | 0.3 ms | 0.1 ms | 100× under |
+| 1200×1800 (real phone) | 63 ms | 28 ms | 70 ms | **2× over** |
+| 2400×3200 (real phone) | 70 ms | 31 ms | 76 ms | **2.3× over** |
+
+Half the frames were never drawn in time, and MediaRecorder faithfully recorded
+that. The Playwright fixture is 400×600 — 200× cheaper than a real scan — so
+every frame rendered in 0.2 ms and the problem was structurally invisible to the
+test suite.
+
+### Fixed
+- **Layers were kept at the source photo's native resolution.** A
+  background-removed phone photo is ~12 MP, and a dozen layers of it (hero,
+  greyscale, per-region, per-rim) were rescaled several times per frame. Layers
+  are now built once at composition scale — the largest size the camera can ever
+  draw them (`MAX_CAMERA_SCALE`), so they are never upscaled either.
+- **The rim glow ran a full gaussian blur per region per frame.** The glow is
+  now baked into the rim layer once; the identification pulse animates alpha
+  over a pre-blurred layer, which looks the same and costs nothing.
+- **The backdrop was repainted from scratch every frame** — three full-canvas
+  gradients plus ~116 grid strips, and twice per frame during the loop
+  crossfade — despite being fully determined by (size, skin). Rendered once and
+  blitted.
+- **The loop dissolve re-composed the entire frame-1 hero every frame.** It is
+  `frameState(0)`, which never changes: baked once at prepare time. The seam is
+  now provably exact — frame 0 and the final frame differ by **0 pixels**.
+- **The outro re-drew the model from seven layers every frame** although the
+  blooms had settled and only the camera was moving. Grey base plus all revealed
+  regions are flattened into one layer and drawn once.
+- **The draw loop free-ran on `setInterval`**, beating against `captureStream`'s
+  own clock. It now draws on `requestAnimationFrame` (gated near the capture
+  rate so a 120 Hz display doesn't draw four times per captured frame), with the
+  timer retained as a watchdog so a backgrounded tab can't stall a recording.
+
+Result at realistic source resolution: reveal 63→**19 ms**, recipe 28→**0.2 ms**,
+loop 70→**0 ms**. The worst phase now uses 63% of the frame budget instead of
+210% of it.
+
+### Added
+- `frame0` in the storyboard QA frames. `frame0` and `loop` must be
+  pixel-identical — that pair *is* the loop seam; the existing `hero` frame is
+  sampled mid-pull-back and legitimately differs from both.
+
 ## [Unreleased] - 2026-08-05 (Pict-Cast v3 — the hero stops the scroll)
 
 Frame-by-frame review of the first two on-device v2 exports (desktop + mobile,

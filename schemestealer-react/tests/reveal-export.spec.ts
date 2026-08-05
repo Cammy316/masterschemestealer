@@ -146,7 +146,10 @@ test('pict-cast export: UI wired + storyboard frames render', async ({ page }) =
   // (b) Deterministic storyboard frames via the dev render hook.
   // One frame per storyboard phase, for eyeball QA of the exported look.
   // `hero` must show the model in FULL COLOUR — it is the hook and the loop target.
+  // `frame0` and `loop` must be pixel-identical — that pair IS the loop seam.
+  // `hero` is sampled mid-pull-back, so it legitimately differs from both.
   const FRAMES: Record<string, number> = {
+    frame0: 0,
     hero: 500,
     snap: 1250,
     sweep: 2200,

@@ -176,18 +176,48 @@ export async function renderRevealVideo(opts: RenderRevealOptions): Promise<Rend
   // enough. Wall-clock `t` keeps the storyboard on time regardless of tick jitter.
   await new Promise<void>((resolve) => {
     const frameMs = 1000 / fps;
-    const id = setInterval(() => {
-      const t = performance.now() - startedAt;
-      if (opts.signal?.aborted || t >= durationMs + LOOP_HOLD_MS) {
-        clearInterval(id);
-        composeReveal(ctx, frameState(durationMs, spec), res);
-        opts.onProgress?.(1);
-        return resolve();
-      }
+    // Draw on rAF so paints land on compositor frame boundaries; a timer-driven
+    // loop free-runs against captureStream's own clock and the beat between the
+    // two shows up as judder. The gate keeps us near `fps` on a 120 Hz display
+    // instead of drawing four times per captured frame.
+    let rafId = 0;
+    let watchdog = 0;
+    let lastDraw = -Infinity;
+    let finished = false;
+
+    const stop = () => {
+      if (finished) return;
+      finished = true;
+      cancelAnimationFrame(rafId);
+      clearInterval(watchdog);
+      composeReveal(ctx, frameState(durationMs, spec), res);
+      opts.onProgress?.(1);
+      resolve();
+    };
+
+    const draw = () => {
+      if (finished) return;
+      const now = performance.now();
+      const t = now - startedAt;
+      if (opts.signal?.aborted || t >= durationMs + LOOP_HOLD_MS) return stop();
+      if (now - lastDraw < frameMs * 0.8) return;
+      lastDraw = now;
       // Past the storyboard end, hold the final (loop-target) frame so the
       // completed dissolve is actually captured.
       composeReveal(ctx, frameState(Math.min(t, durationMs), spec), res);
       opts.onProgress?.(Math.min(1, t / durationMs));
+    };
+
+    const tick = () => {
+      draw();
+      if (!finished) rafId = requestAnimationFrame(tick);
+    };
+    rafId = requestAnimationFrame(tick);
+
+    // rAF is throttled or suspended in a backgrounded tab (and under headless),
+    // which would stall the recording forever — keep a timer as the floor.
+    watchdog = window.setInterval(() => {
+      if (performance.now() - lastDraw >= frameMs * 2) draw();
     }, frameMs);
   });
 
