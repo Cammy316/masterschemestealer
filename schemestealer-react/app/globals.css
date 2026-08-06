@@ -1,6 +1,15 @@
 @import "tailwindcss";
 
 :root {
+  /* The app is dark BY DESIGN. Without this declaration Chrome's Auto Dark
+     Theme (and Dark Reader-class extensions) treat the page as un-themed and
+     apply their own CIELAB lightness inversion — which flips an already-dark
+     design into a light one: void-black backgrounds render near-white while
+     hues survive, so neon green stays green instead of becoming magenta.
+     Declaring the scheme is the documented opt-out and also fixes native form
+     controls and scrollbars. Never remove this. */
+  color-scheme: dark;
+
   /* ========================================
      MINISCAN / COGITATOR THEME (Imperial)
      ======================================== */

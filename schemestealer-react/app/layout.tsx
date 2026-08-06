@@ -40,6 +40,12 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: "#050505",
+  // Emits <meta name="color-scheme" content="dark"> in the head, so the browser
+  // knows the page is already dark BEFORE the stylesheet parses. Pairs with the
+  // :root declaration in globals.css — the meta wins the race, the CSS is the
+  // canonical property. Without either, Chrome's Auto Dark Theme inverts the
+  // whole design into a light one.
+  colorScheme: "dark",
   width: "device-width",
   initialScale: 1,
   // Without cover, env(safe-area-inset-*) is 0 on iOS and every pb-nav-safe /
