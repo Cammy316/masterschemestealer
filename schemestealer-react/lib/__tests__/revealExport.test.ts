@@ -100,6 +100,27 @@ describe('garbleReveal', () => {
     expect(mid).toContain(' '); // space preserved
     expect(mid.length).toBe('BLOOD RED'.length);
   });
+
+  // Intent: real exports rendered CYSJ, SCGRBP, MAGENR9, BLASH, REB — plausible
+  // fake WORDS, held long enough to read at 30 fps. A product selling measured
+  // accuracy cannot look like it can't spell. Symbols make that impossible by
+  // construction: every unresolved character is a non-letter.
+  it('never emits a letter that is not the true prefix', () => {
+    for (const word of ['CYAN', 'SILVER', 'MAGENTA', 'BLACK', 'DARK GREY']) {
+      for (let p = 0; p <= 1.0001; p += 0.02) {
+        const out = garbleReveal(word, p);
+        const resolved = Math.floor(Math.min(1, p) * word.length);
+        for (let i = 0; i < out.length; i++) {
+          if (i < resolved || word[i] === ' ') {
+            expect(out[i]).toBe(word[i]);
+          } else {
+            // unresolved → must be a symbol, never A–Z or 0–9
+            expect(out[i]).not.toMatch(/[A-Z0-9]/i);
+          }
+        }
+      }
+    }
+  });
 });
 
 describe('fitRect', () => {
@@ -256,25 +277,38 @@ describe('captionText', () => {
   const spec = buildRevealSpec(colors, [], 'Citadel', 'imperial', 'colours', 13000, 0);
   const at = (f: number) => captionText(spec, frameState(spec.durationMs * f, spec));
 
-  // Intent: the first frame needs a written promise as well as the visual —
-  // research: question hooks on frame 0 outperform naked visuals. v2 left the
-  // hero captionless and it read as a mute product shot.
-  it('opens on the question hook', () => {
-    expect(at(0)).toBe('CAN THE MACHINE READ THIS PAINT JOB?');
+  // Intent: the opening sells the RESULT, not the process. The old
+  // "CAN THE MACHINE READ THIS PAINT JOB?" was a yes/no question whose answer
+  // the viewer already assumed, so it bought no attention.
+  it('opens on a result, not a question', () => {
+    const opener = at(0);
+    expect(opener).toBe('THE EXACT PAINTS ON THIS MODEL');
+    expect(opener).not.toMatch(/\?$/);
   });
 
   // Intent: a static "IDENTIFIED IN 5 COLOURS" from second one gives a viewer
   // nothing to watch for. The count climbs, then pays off.
   it('counts up during the reveal and resolves to the total', () => {
-    expect(at(0.16)).toBe('SCANNING…');
-    expect(at(0.4)).toMatch(/^READING… \d\/3 COLOURS$/);
-    expect(at(0.85)).toBe('3 COLOURS IDENTIFIED');
+    expect(at(0.14)).toBe('SCANNING…');
+    expect(at(0.3)).toMatch(/^READING… \d\/3 COLOURS$/);
+    expect(at(0.8)).toBe('3 COLOURS IDENTIFIED');
   });
 
-  it('honours the other presets', () => {
-    const ms = buildRevealSpec(colors, [], 'Citadel', 'imperial', 'machine-spirit', 13000, 0);
-    expect(captionText(ms, frameState(0, ms))).toBe('THE MACHINE SPIRIT KNOWS YOUR RECIPE');
-    const none = buildRevealSpec(colors, [], 'Citadel', 'imperial', 'none', 13000, 0);
+  // Intent: presets must never assert what the engine cannot know. It detects
+  // colours, not factions — an auto-generated chapter name would be fabrication.
+  it('honours the fixed result presets without inventing facts', () => {
+    const mk = (p: 'never-guess' | 'exact-paints' | 'measured' | 'none') =>
+      buildRevealSpec(colors, [{ role: 'base', name: 'X', hex: '#111', deltaE: 1.8 }], 'Citadel', 'imperial', p, 11000, 0);
+    const ng = mk('never-guess');
+    expect(captionText(ng, frameState(0, ng))).toBe('NEVER GUESS A RECIPE AGAIN');
+    const ep = mk('exact-paints');
+    expect(captionText(ep, frameState(6000, ep))).toBe('THE EXACT PAINTS ON THIS MODEL');
+    // ΔE copy uses the REAL measured number or drops the claim entirely.
+    const me = mk('measured');
+    expect(captionText(me, frameState(0, me))).toBe('ΔE 1.8. MEASURED, NOT GUESSED.');
+    const noDelta = buildRevealSpec(colors, [], 'Citadel', 'imperial', 'measured', 11000, 0);
+    expect(captionText(noDelta, frameState(0, noDelta))).toBe('MEASURED, NOT GUESSED.');
+    const none = mk('none');
     expect(captionText(none, frameState(6000, none))).toBeNull();
   });
 });

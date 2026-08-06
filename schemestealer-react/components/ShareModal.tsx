@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useMemo } from 'react';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import type { ScanResult, Color, PaintRecipe } from '@/lib/types';
 import { renderRevealVideo, canExportReveal } from '@/lib/reveal/renderRevealVideo';
+import { deltaBandColour } from '@/lib/reveal/revealCompose';
 import { buildRevealCaptions } from '@/lib/reveal/revealCaptions';
 import type { CaptionPreset } from '@/lib/reveal/revealTimeline';
 import { analytics } from '@/lib/analytics';
@@ -25,7 +26,9 @@ const BRAND_LABELS: Record<string, string> = {
 
 const PRESETS: { id: CaptionPreset; label: string }[] = [
   { id: 'colours', label: 'COLOUR COUNT' },
-  { id: 'machine-spirit', label: 'MACHINE SPIRIT' },
+  { id: 'exact-paints', label: 'EXACT PAINTS' },
+  { id: 'never-guess', label: 'NEVER GUESS' },
+  { id: 'measured', label: 'ΔE MEASURED' },
   { id: 'none', label: 'NO CAPTION' },
 ];
 
@@ -79,6 +82,18 @@ export function ShareModal({ mode, scan, onClose }: ShareModalProps) {
   const abortRef = useRef<AbortController | null>(null);
 
   const best = useMemo(() => pickBestRecipe(colors), [colors]);
+
+  // Scan quality, surfaced BEFORE export. A real export shipped with ΔE 10.2 —
+  // "distant" by the app's own vocabulary — as its climax, in red, and nothing
+  // objected. The ΔE is never altered (honesty invariant); the user is simply
+  // told what the clip will show, and can rescan or post anyway.
+  const quality = useMemo(() => {
+    const brandRecipe = best.recipe?.[best.brand];
+    const dE = brandRecipe?.base?.deltaE;
+    if (typeof dE !== 'number' || !(dE > 0)) return null;
+    const band = dE <= 2 ? 'perfect' : dE <= 5 ? 'close' : dE <= 10 ? 'fair' : 'distant';
+    return { dE, band, poor: dE > 5, colour: deltaBandColour(dE) };
+  }, [best]);
   const captions = useMemo(
     () => buildRevealCaptions({ colourCount: colors.length, topFamily: best.topFamily, brandLabel: best.label }),
     [colors.length, best.topFamily, best.label],
@@ -220,6 +235,27 @@ export function ShareModal({ mode, scan, onClose }: ShareModalProps) {
 
             {exportable && phase === 'idle' && (
               <>
+                {quality && (
+                  <div
+                    className="rounded border px-3 py-2 space-y-1"
+                    style={{
+                      borderColor: quality.poor ? `${quality.colour}66` : 'rgba(255,255,255,0.12)',
+                      background: quality.poor ? `${quality.colour}12` : 'transparent',
+                    }}
+                  >
+                    <p className="text-xs cyber-text" style={{ color: quality.colour }}>
+                      CLOSEST {best.label.toUpperCase()} MATCH · ΔE {quality.dE.toFixed(1)} ·{' '}
+                      {quality.band.toUpperCase()}
+                    </p>
+                    {quality.poor && (
+                      <p className="text-xs tech-text" style={{ color: 'var(--text-secondary)' }}>
+                        The clip will show that number. Rescanning in even, neutral light usually
+                        pulls it down.
+                      </p>
+                    )}
+                  </div>
+                )}
+
                 <div>
                   <h3 className="text-xs cyber-text mb-2" style={{ color: accentDim }}>
                     ON-SCREEN CAPTION

@@ -51,19 +51,18 @@ test('pict-cast export: UI wired + storyboard frames render', async ({ page }) =
   );
   console.log('TIMER PROBE:', JSON.stringify(probe));
 
-  // (b) Deterministic storyboard frames via the dev render hook.
-  // One frame per storyboard phase, for eyeball QA of the exported look.
-  // `hero` must show the model in FULL COLOUR — it is the hook and the loop target.
+  // (b) Deterministic storyboard frames via the dev render hook: one per phase
+  // of the 11 s proof-first cut, for eyeball QA of the exported look.
   // `frame0` and `loop` must be pixel-identical — that pair IS the loop seam.
-  // `hero` is sampled mid-pull-back, so it legitimately differs from both.
   const FRAMES: Record<string, number> = {
     frame0: 0,
-    hero: 500,
-    snap: 1250,
-    sweep: 2200,
-    reveal: 6500,
-    recipe: 10800,
-    loop: 13000,
+    proof: 350,
+    smash: 950,
+    sweep: 1700,
+    reveal: 3300,
+    slam: 4600,
+    recipe: 8500,
+    loop: 11000,
   };
   const result = await page.evaluate(async (frames) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -73,7 +72,7 @@ test('pict-cast export: UI wired + storyboard frames render', async ({ page }) =
     if (!R || !scan) return { error: `hook=${!!R} scan=${!!scan}` } as const;
     const colors = scan.detectedColors;
     const steps = R.recipeSteps(colors[0].paintRecipe, 'citadel');
-    const spec = R.buildRevealSpec(colors, steps, 'Citadel', 'imperial', 'colours', 13000, 0);
+    const spec = R.buildRevealSpec(colors, steps, 'Citadel', 'imperial', 'colours', 11000, 0);
     const res = await R.prepareResources(scan.imageUrl, colors, scan.maskFrame, spec);
     const canvas = document.createElement('canvas');
     canvas.width = 1080;
@@ -106,9 +105,9 @@ test('pict-cast export: UI wired + storyboard frames render', async ({ page }) =
     const R = (window as any).__revealDebug;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const scan = (window as any).__seedScan;
-    const spec = R.buildRevealSpec(scan.detectedColors, [], 'Citadel', 'imperial', 'colours', 13000, 0);
+    const spec = R.buildRevealSpec(scan.detectedColors, [], 'Citadel', 'imperial', 'colours', 11000, 0);
     const sr = 48000;
-    const ctx = new OfflineAudioContext(1, Math.ceil(sr * 13.6), sr);
+    const ctx = new OfflineAudioContext(1, Math.ceil(sr * 11.6), sr);
     R.scheduleRevealAudio(ctx, ctx.destination, spec, 0.05);
     const d = (await ctx.startRendering()).getChannelData(0);
     let sum = 0;
@@ -187,7 +186,7 @@ test('pict-cast perf gate: compose stays in budget at phone-photo resolution', a
       { role: 'shade', name: 'Dechala Lilac', hex: '#8a7ab5' },
       { role: 'wash', name: 'Carroburg Crimson', hex: '#7a1f3d' },
     ];
-    const spec = R.buildRevealSpec(colors, steps, 'Citadel', 'imperial', 'colours', 13000, 0);
+    const spec = R.buildRevealSpec(colors, steps, 'Citadel', 'imperial', 'colours', 11000, 0);
     const res = await R.prepareResources(
       src, colors,
       { width: W, height: H, cropX: 0, cropY: 0, cropW: W, cropH: H, frameW: W, frameH: H },
@@ -197,7 +196,7 @@ test('pict-cast perf gate: compose stays in budget at phone-photo resolution', a
     canvas.width = 1080;
     canvas.height = 1920;
     const ctx = canvas.getContext('2d')!;
-    const phases: Record<string, number> = { hero: 400, snap: 1300, sweep: 2000, reveal: 6000, recipe: 11000, loop: 12800 };
+    const phases: Record<string, number> = { proof: 300, smash: 900, sweep: 1600, reveal: 3200, slam: 4600, recipe: 8500, loop: 10900 };
     const timings: Record<string, number> = {};
     for (const [name, t0] of Object.entries(phases)) {
       R.composeAt(ctx, t0, res); // warm

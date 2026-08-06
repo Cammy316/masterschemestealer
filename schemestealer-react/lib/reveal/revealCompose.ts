@@ -37,11 +37,13 @@ export const CANVAS_H = 1920;
 
 /** Reveal framing: the model owns the frame. */
 const FULL_BOX = { x: 70, y: 150, w: 940, h: 1250 };
-/** Outro framing: the model eases up and back to clear room for the recipe. */
-const COMPACT_BOX = { x: 250, y: 180, w: 580, h: 800 };
-const RECIPE_TOP = 1060;
-const CHIP_H = 96;
-const CHIP_GAP = 18;
+/** Outro framing: the model eases back to clear room for the recipe — but stays
+ *  LARGE. It previously shrank to ~30% of frame height and left a dead band
+ *  above the recipe; the painter's model is the reason anyone posts this. */
+const COMPACT_BOX = { x: 150, y: 120, w: 780, h: 1000 };
+const RECIPE_TOP = 1215;
+const CHIP_H = 88;
+const CHIP_GAP = 14;
 
 /** Model dimming ahead of the scan line, so the sweep visibly lights it up.
  *  Kept shallow — the pre-scan model still has to READ at feed size. */
@@ -355,7 +357,16 @@ function loadImage(url: string): Promise<HTMLImageElement> {
 }
 
 // ---- text helpers ------------------------------------------------------------
-const GARBLE_GLYPHS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+/**
+ * Block/symbol glyphs ONLY — never A–Z.
+ *
+ * The letter-based garble spelled plausible fake words: real exports showed
+ * CYSJ, SCGRBP, MAGENR9, BLASH, REB — each held long enough to read at 30 fps.
+ * A product whose brand is measured accuracy cannot appear unable to spell.
+ * With symbols an unresolved label reads unmistakably as decryption, and a
+ * wrong-looking word is impossible by construction rather than unlikely.
+ */
+const GARBLE_GLYPHS = '▓▒░#/\\<>|';
 
 /** Left-to-right resolve; deterministic (no per-frame random) so it's stable. */
 export function garbleReveal(text: string, progress: number): string {
@@ -441,9 +452,23 @@ function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: numbe
  */
 export function captionText(spec: RevealSpec, state: RevealFrameState): string | null {
   if (spec.captionPreset === 'none') return null;
-  if (spec.captionPreset === 'machine-spirit') return 'THE MACHINE SPIRIT KNOWS YOUR RECIPE';
-  if (state.phase === 'hero') return 'CAN THE MACHINE READ THIS PAINT JOB?';
-  if (state.phase === 'snap' || state.phase === 'sweep') return 'SCANNING…';
+
+  // Result-oriented headline copy. The old "CAN THE MACHINE READ THIS PAINT
+  // JOB?" was a yes/no question the viewer already knew the answer to, and it
+  // sold the process rather than the payoff. These never assert anything the
+  // engine cannot know — no chapter or army names, which it does not detect.
+  if (spec.captionPreset === 'never-guess') return 'NEVER GUESS A RECIPE AGAIN';
+  if (spec.captionPreset === 'exact-paints') return 'THE EXACT PAINTS ON THIS MODEL';
+  if (spec.captionPreset === 'measured') {
+    const dE = spec.recipe.find((s) => s.role === 'base')?.deltaE;
+    return typeof dE === 'number' && dE > 0
+      ? `ΔE ${dE.toFixed(1)}. MEASURED, NOT GUESSED.`
+      : 'MEASURED, NOT GUESSED.';
+  }
+
+  // 'colours' — the progress counter, now opening on the proof rather than a question.
+  if (state.phase === 'proof' || state.phase === 'smash') return 'THE EXACT PAINTS ON THIS MODEL';
+  if (state.phase === 'sweep') return 'SCANNING…';
   if (state.phase === 'reveal') return `READING… ${state.identifiedCount}/${spec.colourCount} COLOURS`;
   return `${spec.colourCount} COLOURS IDENTIFIED`;
 }
@@ -541,9 +566,16 @@ function drawGreyModel(
   ctx.restore();
 }
 
-/** Frame-1 / loop-target composition, DERIVED from frameState(0) so the loop
- *  and the opening frame can never drift apart: backdrop + breathing glow +
- *  the punched-in full-colour hero + brackets + the hook caption. */
+/**
+ * Frame-0 / loop-target composition, DERIVED from frameState(0) so the loop and
+ * the opening frame can never drift apart.
+ *
+ * This is the PROOF frame: the painter's model in full colour with the finished
+ * recipe already stamped over it. Proof-first — the answer before the question —
+ * while the model stays the hero, because painters post these to show off their
+ * own work, not to advertise us. It also makes the loop perfect for free: the
+ * clip ends on model + recipe, which is exactly this.
+ */
 export function drawLoopTarget(ctx: CanvasRenderingContext2D, res: RevealResources): void {
   const s0 = frameState(0, res.spec);
   const r = modelRectAt(s0.camera, res.imgW, res.imgH);
@@ -563,6 +595,9 @@ export function drawLoopTarget(ctx: CanvasRenderingContext2D, res: RevealResourc
       letter: 2,
       maxWidth: CANVAS_W - 120,
     });
+  // Same renderer as the outro cascade at full progress, so the flash and the
+  // payoff can never show different recipes.
+  if (s0.proofAlpha > 0) drawRecipe(ctx, 1, s0.proofAlpha, res);
 }
 
 export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameState, res: RevealResources): void {
@@ -681,32 +716,44 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
     const anchorX = r.x + c.anchorX * r.w;
     const anchorY = r.y + c.anchorY * r.h;
     const dir = c.side === 'left' ? 1 : -1;
-    const elbowX = railX + dir * 40;
+    // Run in along the rail, turn at the model's EDGE, then make the final hop
+    // to the anchor. Elbowing at a fixed offset from the rail sent leaders
+    // straight across the model — obscuring the paint job the clip exists to
+    // show off — and left short leaders looking unconnected. Clamping the turn
+    // to the model edge also guarantees a minimum visible run.
+    const modelEdge = c.side === 'left' ? r.x : r.x + r.w;
+    const elbowX =
+      c.side === 'left'
+        ? Math.min(Math.max(railX + 40, modelEdge - 26), anchorX - 12)
+        : Math.max(Math.min(railX - 40, modelEdge + 26), anchorX + 12);
     // The recipe belongs to ONE region — keep its chip alive while the cascade runs.
     const owns = c.index === spec.recipeRegionIndex && state.recipeProgress > 0;
     const ownPulse = owns ? 0.5 + 0.5 * Math.sin(state.recipeProgress * Math.PI * 6) : 0;
 
+    // ALL callout chrome uses a lightness-lifted tint. Drawing it in the true
+    // hex left BLACK's leader as #141414 on a void backdrop — a label connected
+    // to nothing. The honest colour story is carried by the revealed region on
+    // the model itself, which shows the actual paint; the leader is chrome.
+    const tint = labelTint(hex);
+
     ctx.save();
     ctx.globalAlpha = rs.labelReveal * hud;
     // leader line (circuit elbow)
-    ctx.strokeStyle = hex;
+    ctx.strokeStyle = tint;
     ctx.lineWidth = owns ? 4 : 2.5;
-    ctx.shadowColor = hex;
+    ctx.shadowColor = tint;
     ctx.shadowBlur = 8 + ownPulse * 18;
     ctx.beginPath();
-    ctx.moveTo(railX, railY);
+    ctx.moveTo(railX + dir * 34, railY); // start at the chip edge, not its centre
     ctx.lineTo(elbowX, railY);
-    ctx.lineTo(elbowX + dir * 30, anchorY);
+    ctx.lineTo(elbowX, anchorY);
     ctx.lineTo(anchorX, anchorY);
     ctx.stroke();
     // anchor dot
-    ctx.fillStyle = hex;
+    ctx.fillStyle = tint;
     ctx.beginPath();
     ctx.arc(anchorX, anchorY, 8, 0, Math.PI * 2);
     ctx.fill();
-    // chip + type in a text-safe tint — a BLACK or BROWN callout in its own
-    // hex is invisible on the void backdrop; the line/dot above stay true-hex.
-    const tint = labelTint(hex);
     ctx.beginPath();
     ctx.arc(railX, railY, 34, 0, Math.PI * 2);
     ctx.fillStyle = 'rgba(5,7,10,0.92)';
@@ -750,6 +797,10 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
     ctx.restore();
   }
 
+  // Proof stamp: the finished recipe, up front, before it is torn away. Same
+  // renderer at full progress as the outro, so the two can never disagree.
+  if (state.proofAlpha > 0) drawRecipe(ctx, 1, state.proofAlpha, res);
+
   // Recipe outro cascade. Gated on the box morph so the heading never draws
   // over the model's feet while it is still easing into the compact framing.
   const recipeAlpha = hud * (state.phase === 'recipe' ? smoothstep(state.camera.boxLerp) : 1);
@@ -757,7 +808,7 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
 
   // Brand plate + persistent watermark.
   if (state.plateAlpha > 0 && hud > 0) drawPlate(ctx, state.plateAlpha * hud, res);
-  if (state.phase !== 'hero' && hud > 0) drawWatermark(ctx, hud, res);
+  if (state.phase !== 'proof' && hud > 0) drawWatermark(ctx, hud, res);
 
   // Loop dissolve back to frame 1 (the hero) — a blit of the pre-baked target.
   // The HUD has already faded, so nothing ghosts through the crossfade.
@@ -775,6 +826,21 @@ function drawRecipe(ctx: CanvasRenderingContext2D, progress: number, hud: number
   if (steps.length === 0) return;
   const accent = accentFor(spec.skin);
   const owner = spec.recipeRegionIndex >= 0 ? spec.regions[spec.recipeRegionIndex] : undefined;
+
+  // Scrim behind the block. During the proof stamp the model is punched in and
+  // the heading lands ON it, so unbacked text is unreadable; in the outro the
+  // area is already void, where this is invisible.
+  const blockTop = RECIPE_TOP - 60;
+  const scrim = ctx.createLinearGradient(0, blockTop, 0, blockTop + 120);
+  scrim.addColorStop(0, 'rgba(3,5,8,0)');
+  scrim.addColorStop(1, 'rgba(3,5,8,0.82)');
+  ctx.save();
+  ctx.globalAlpha = hud;
+  ctx.fillStyle = scrim;
+  ctx.fillRect(0, blockTop, CANVAS_W, 120);
+  ctx.fillStyle = 'rgba(3,5,8,0.82)';
+  ctx.fillRect(0, blockTop + 120, CANVAS_W, CANVAS_H - blockTop - 120);
+  ctx.restore();
 
   ctx.save();
   ctx.globalAlpha = hud;
@@ -878,13 +944,13 @@ function drawPlate(ctx: CanvasRenderingContext2D, alpha: number, res: RevealReso
   ctx.save();
   ctx.globalAlpha = alpha;
   const accent = accentFor(res.spec.skin);
-  drawText(ctx, 'SCHEMESTEALER', CANVAS_W / 2, 1670, {
+  drawText(ctx, 'SCHEMESTEALER', CANVAS_W / 2, 1762, {
     font: res.fonts.gothic,
     size: 40,
     colour: accent,
     glow: 14,
   });
-  drawText(ctx, '1,312 measured paints · scan yours free', CANVAS_W / 2, 1716, {
+  drawText(ctx, '1,312 measured paints · scan yours free', CANVAS_W / 2, 1808, {
     font: res.fonts.cyber,
     size: 23,
     colour: '#8a9a8a',

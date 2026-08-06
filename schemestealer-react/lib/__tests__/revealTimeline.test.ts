@@ -26,7 +26,7 @@ const SPEC: RevealSpec = {
   ],
   brand: 'Citadel',
   colourCount: 3,
-  durationMs: 13000,
+  durationMs: 11000,
   captionPreset: 'colours',
   recipeRegionIndex: 2,
 };
@@ -35,9 +35,11 @@ describe('revealTimeline', () => {
   // Intent: the hook. A feed viewer decides to scroll inside ~1.7 s, so frame 0
   // must be the painter's model in full colour, PUNCHED IN and MOVING — v2
   // opened on a small static product shot and it read as an ad.
-  it('opens punched-in on the full-colour model', () => {
+  it('opens punched-in on the full-colour model WITH the recipe stamped', () => {
     const first = frameState(0, SPEC);
-    expect(first.phase).toBe('hero');
+    expect(first.phase).toBe('proof');
+    // proof-first: the finished answer is on screen before the question exists
+    expect(first.proofAlpha).toBe(1);
     expect(first.heroAlpha).toBe(1);
     expect(first.baseAlpha).toBe(0);
     expect(first.camera.scale).toBeCloseTo(HERO_SCALE, 5);
@@ -72,10 +74,13 @@ describe('revealTimeline', () => {
   // Intent: the first export ghosted labels and recipe chips through the loop
   // dissolve because they were still drawn under it. The HUD must be gone before
   // the crossfade carries any real weight.
-  it('fades the HUD out before the dissolve is half-way', () => {
-    for (let t = 0; t <= SPEC.durationMs; t += 25) {
+  it('finishes the HUD fade BEFORE the dissolve starts at all', () => {
+    // v4 let them overlap for ~0.26 s and the outgoing caption ghosted through
+    // the incoming one. The old assertion only checked crossfade >= 0.5, so it
+    // passed while the defect was on screen.
+    for (let t = 0; t <= SPEC.durationMs; t += 10) {
       const s = frameState(t, SPEC);
-      if (s.loopCrossfade >= 0.5) expect(s.hudFade).toBeCloseTo(1, 5);
+      if (s.loopCrossfade > 0) expect(s.hudFade).toBeCloseTo(1, 5);
     }
     expect(frameState(SPEC.durationMs, SPEC).hudFade).toBeCloseTo(1, 5);
   });
@@ -95,8 +100,8 @@ describe('revealTimeline', () => {
   // Intent: the model lights up BEHIND the scan line — the sweep has to actually
   // do something to the model, not just slide a decorative bar over it.
   it('the scanned fraction tracks the sweep and stays lit afterwards', () => {
-    expect(frameState(SPEC.durationMs * 0.1, SPEC).scanned).toBe(0); // pre-sweep
-    const mid = frameState(SPEC.durationMs * 0.16, SPEC).scanned;
+    expect(frameState(SPEC.durationMs * 0.05, SPEC).scanned).toBe(0); // pre-sweep
+    const mid = frameState(SPEC.durationMs * 0.14, SPEC).scanned;
     expect(mid).toBeGreaterThan(0);
     expect(mid).toBeLessThan(1);
     expect(frameState(SPEC.durationMs * 0.5, SPEC).scanned).toBe(1);
@@ -122,9 +127,9 @@ describe('revealTimeline', () => {
   // and the last one still finishes exactly on the phase boundary.
   it('caps bloom length and keeps the stagger accelerating', () => {
     const slots = regionSchedule(5);
-    const capMs = 0.09 * 13000;
+    const capMs = 0.055 * 11000;
     for (let i = 0; i < slots.length; i++) {
-      expect(slots[i].dur * 13000).toBeLessThanOrEqual(capMs);
+      expect(slots[i].dur * 11000).toBeLessThanOrEqual(capMs);
       if (i > 0) {
         expect(slots[i].start).toBeGreaterThan(slots[i - 1].start);
         expect(slots[i].dur).toBeLessThanOrEqual(slots[i - 1].dur + 1e-9);
@@ -157,7 +162,7 @@ describe('revealTimeline', () => {
       prev = p;
     }
     expect(frameState(SPEC.durationMs * PHASE_FRACTIONS.recipeEnd, SPEC).recipeProgress).toBeCloseTo(1, 5);
-    expect(frameState(SPEC.durationMs * 0.91, SPEC).plateAlpha).toBeGreaterThan(0);
+    expect(frameState(SPEC.durationMs * 0.89, SPEC).plateAlpha).toBeGreaterThan(0);
   });
 
   // Intent: determinism — same t, same state, no matter when it's called.
@@ -179,12 +184,13 @@ describe('revealTimeline', () => {
     expect(sortRegionsForReveal(tied).map((r) => r.index)).toEqual([0, 1, 2]);
   });
 
-  it('phaseAt walks hero→snap→sweep→reveal→recipe→plate', () => {
-    expect(phaseAt(0)).toBe('hero');
-    expect(phaseAt(0.1)).toBe('snap');
+  it('phaseAt walks proof→smash→sweep→reveal→slam→recipe→plate', () => {
+    expect(phaseAt(0)).toBe('proof');
+    expect(phaseAt(0.08)).toBe('smash');
     expect(phaseAt(0.15)).toBe('sweep');
-    expect(phaseAt(0.5)).toBe('reveal');
-    expect(phaseAt(0.8)).toBe('recipe');
+    expect(phaseAt(0.3)).toBe('reveal');
+    expect(phaseAt(0.42)).toBe('slam');
+    expect(phaseAt(0.7)).toBe('recipe');
     expect(phaseAt(1)).toBe('plate');
   });
 });
