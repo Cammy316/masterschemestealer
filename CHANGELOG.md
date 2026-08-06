@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-08-06 (Pict-Cast v5.1 — legibility and weight)
+
+Follow-up on the first v5 device export (`MobileV5.mp4` — verified as a genuine
+v5 build: 11.03 s, 330 frames, H.264). A reviewer reported the cipher garble as
+"missing" and the leaders as still crossing the model; extracting the callout
+row at 30 fps showed the cipher working exactly as built (`Y><▓` → `YEL>▓` →
+`YELLOW`), so the report was wrong on the mechanism but right that something was
+off. Two real defects were behind it, plus three genuine catches.
+
+### Fixed
+- **The leader line was drawn straight through the label text.** On long labels
+  like `DARK GREY` nearly the whole leader was buried under the glyphs, which is
+  why those callouts looked attached to nothing — the geometry was fine, the
+  z-order was not. Leaders now start clear of the measured label width.
+- **Leaders drove to the region's centroid**, ploughing across the model to get
+  there. Region masks are now measured for their normalised extent
+  (`measureMaskBounds`, sampled at low resolution) and the leader stops at the
+  region's NEAR EDGE.
+- **The cipher was too fast to read.** Compressing extraction left the resolve at
+  40 % of a much shorter bloom — ~0.23 s, present but subliminal. The label
+  resolve is now decoupled from bloom length (~0.39 s, clamped so every label
+  still lands by the end of the reveal).
+- **The watermark sat in the platform's dead zone** at y=1874 (97.6 % down),
+  where TikTok and Reels bury it under the caption and action rail. The whole
+  lower block is now laid out against the safe area: everything that must be
+  read finishes above ~82 %, and the empty band beneath is deliberate margin.
+- **The slam had no sound.** The model resolving to full colour is the biggest
+  visual beat in the clip and measured a −25 dBFS hole right before the payoff;
+  it now lands on a sub impact with body and air (that bucket: −20.1 → −11.5).
+
+### Changed
+- **Region hits are mechanical clacks, not chimes.** Clean sine pips read as
+  generic UI; a cogitator tearing data off a model should sound industrial. Each
+  strike is a tight noise crack plus a low body, with only a trace of pitch so
+  successive hits still climb.
+- Pacing deliberately unchanged — the rapid extraction is doing its job, and
+  missing a label on first watch is what earns the rewatch.
+
 ## [Unreleased] - 2026-08-06 (Pict-Cast v5 — proof-first restructure)
 
 v4 fixed the machine: both device exports measured **390/390 frames, every frame

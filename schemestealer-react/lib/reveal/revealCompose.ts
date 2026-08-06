@@ -15,8 +15,10 @@ import {
   buildRegionRimLayer,
   decodeMask,
   drawCornerBrackets,
+  measureMaskBounds,
   measureMeanLuma,
   paintBackdrop,
+  type MaskBounds,
   type RevealSkin,
 } from './revealLayers';
 import { scheduleRevealAudio } from './revealAudio';
@@ -40,14 +42,25 @@ const FULL_BOX = { x: 70, y: 150, w: 940, h: 1250 };
 /** Outro framing: the model eases back to clear room for the recipe — but stays
  *  LARGE. It previously shrank to ~30% of frame height and left a dead band
  *  above the recipe; the painter's model is the reason anyone posts this. */
-const COMPACT_BOX = { x: 150, y: 120, w: 780, h: 1000 };
-const RECIPE_TOP = 1215;
+const COMPACT_BOX = { x: 150, y: 110, w: 780, h: 900 };
+/* Lower-block layout is driven by the platform safe area: TikTok/Reels bury
+   roughly the bottom 18% under caption, username and action rail, so every
+   element that must be READ finishes above ~82% (y≈1574). */
+const RECIPE_TOP = 1090;
+const WATERMARK_Y = 1610;
+const PLATE_TITLE_Y = 1672;
+const PLATE_SUB_Y = 1716;
 const CHIP_H = 88;
 const CHIP_GAP = 14;
 
 /** Model dimming ahead of the scan line, so the sweep visibly lights it up.
  *  Kept shallow — the pre-scan model still has to READ at feed size. */
 const PRE_SCAN_DIM = 0.62;
+
+/** Callout label type. Shared by the draw call and the leader-start measurement
+ *  so the line always begins clear of the glyphs. */
+const LABEL_SIZE = 36;
+const LABEL_MAX_W = 380;
 
 const ROLE_ACCENT: Record<RevealRecipeStep['role'], string> = {
   base: '#00FF41',
@@ -188,6 +201,9 @@ export interface RevealResources {
   revealedLayer: HTMLCanvasElement | null;
   regionLayers: (HTMLCanvasElement | null)[]; // aligned to spec.regions order
   rimLayers: (HTMLCanvasElement | null)[];
+  /** Normalised extent per region, so leaders can stop at the near EDGE of a
+   *  region instead of driving to its centroid across the model. */
+  regionBounds: (MaskBounds | null)[];
   callouts: RailCallout[];
 }
 
@@ -303,10 +319,11 @@ export async function prepareResources(
       const b64 = colors[r.index]?.mask;
       if (!b64) return { region: null, rim: null };
       const mask = await decodeMask(b64);
-      if (!mask) return { region: null, rim: null };
+      if (!mask) return { region: null, rim: null, bounds: null };
       return {
         region: buildRegionLayer(img, mask, imgW, imgH, maskFrame),
         rim: buildRegionRimLayer(mask, imgW, imgH, maskFrame, r.hex),
+        bounds: measureMaskBounds(mask, maskFrame, imgW, imgH),
       };
     }),
   );
@@ -334,6 +351,7 @@ export async function prepareResources(
     revealedLayer,
     regionLayers: built.map((b) => b.region),
     rimLayers: built.map((b) => b.rim),
+    regionBounds: built.map((b) => b.bounds ?? null),
     callouts: layoutRailCallouts(spec.regions.map((r) => r.position)),
   };
 
@@ -713,14 +731,23 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
     const hex = region.hex;
     const railX = c.side === 'left' ? 52 : CANVAS_W - 52;
     const railY = r.y + c.railY * r.h;
-    const anchorX = r.x + c.anchorX * r.w;
-    const anchorY = r.y + c.anchorY * r.h;
     const dir = c.side === 'left' ? 1 : -1;
-    // Run in along the rail, turn at the model's EDGE, then make the final hop
-    // to the anchor. Elbowing at a fixed offset from the rail sent leaders
-    // straight across the model — obscuring the paint job the clip exists to
-    // show off — and left short leaders looking unconnected. Clamping the turn
-    // to the model edge also guarantees a minimum visible run.
+
+    // Anchor at the region's NEAR EDGE, not its centroid. The backend gives one
+    // point per colour — its centre — so a leader aimed at it drove deep across
+    // the model, over the paint job the clip exists to show off. With the mask's
+    // extent known the line stops the moment it reaches the region.
+    const bounds = res.regionBounds[c.index];
+    const anchorFx = bounds
+      ? c.side === 'left'
+        ? Math.min(bounds.x0 + 0.02, c.anchorX)
+        : Math.max(bounds.x1 - 0.02, c.anchorX)
+      : c.anchorX;
+    const anchorFy = bounds ? Math.min(Math.max(c.anchorY, bounds.y0), bounds.y1) : c.anchorY;
+    const anchorX = r.x + anchorFx * r.w;
+    const anchorY = r.y + anchorFy * r.h;
+
+    // Run in along the rail, turn just outside the model, then hop to the anchor.
     const modelEdge = c.side === 'left' ? r.x : r.x + r.w;
     const elbowX =
       c.side === 'left'
@@ -736,6 +763,17 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
     // the model itself, which shows the actual paint; the leader is chrome.
     const tint = labelTint(hex);
 
+    // The leader must begin PAST the label, not at the chip. Starting at the
+    // chip edge drew the line straight through the type — on long labels like
+    // DARK GREY almost the whole leader was buried under the glyphs, which is
+    // exactly why those callouts looked attached to nothing.
+    const label = garbleReveal((region.family || region.hex).toUpperCase(), rs.labelReveal);
+    ctx.save();
+    ctx.font = `700 ${LABEL_SIZE}px ${res.fonts.cyber}`;
+    const labelW = Math.min(LABEL_MAX_W, ctx.measureText(label).width);
+    ctx.restore();
+    const leaderStart = railX + dir * (52 + labelW + 18);
+
     ctx.save();
     ctx.globalAlpha = rs.labelReveal * hud;
     // leader line (circuit elbow)
@@ -744,7 +782,7 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
     ctx.shadowColor = tint;
     ctx.shadowBlur = 8 + ownPulse * 18;
     ctx.beginPath();
-    ctx.moveTo(railX + dir * 34, railY); // start at the chip edge, not its centre
+    ctx.moveTo(leaderStart, railY);
     ctx.lineTo(elbowX, railY);
     ctx.lineTo(elbowX, anchorY);
     ctx.lineTo(anchorX, anchorY);
@@ -766,15 +804,14 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
     ctx.save();
     ctx.globalAlpha = rs.labelReveal * hud;
     drawText(ctx, String(c.index + 1), railX, railY, { font: res.fonts.cyber, size: 32, colour: tint });
-    const label = garbleReveal((region.family || region.hex).toUpperCase(), rs.labelReveal);
     const labelX = c.side === 'left' ? railX + 52 : railX - 52;
     drawText(ctx, label, labelX, railY, {
       font: res.fonts.cyber,
-      size: 36,
+      size: LABEL_SIZE,
       colour: tint,
       align: c.side === 'left' ? 'left' : 'right',
       glow: 12,
-      maxWidth: 380,
+      maxWidth: LABEL_MAX_W,
     });
     ctx.restore();
   });
@@ -924,12 +961,20 @@ function drawRecipe(ctx: CanvasRenderingContext2D, progress: number, hud: number
   });
 }
 
-/** Small, persistent, corner-set. The flex is the recipe — the brand only has
- *  to be findable, not shouted, or nobody posts this to their own grid. */
+/**
+ * Small, persistent, and ABOVE the platform's furniture. The flex is the recipe
+ * — the brand only has to be findable, not shouted, or nobody posts this to
+ * their own grid.
+ *
+ * It used to sit at y=1874 (97.6% down), which TikTok and Reels bury completely
+ * under the caption, username and action rail. Anything that must be read lives
+ * above ~82% of the frame; the empty band below is deliberate safe margin, not
+ * wasted space.
+ */
 function drawWatermark(ctx: CanvasRenderingContext2D, alpha: number, res: RevealResources): void {
   ctx.save();
   ctx.globalAlpha = alpha * 0.6;
-  drawText(ctx, 'schemestealer.com', 56, CANVAS_H - 46, {
+  drawText(ctx, 'schemestealer.com', 56, WATERMARK_Y, {
     font: res.fonts.cyber,
     size: 24,
     weight: 600,
@@ -944,13 +989,13 @@ function drawPlate(ctx: CanvasRenderingContext2D, alpha: number, res: RevealReso
   ctx.save();
   ctx.globalAlpha = alpha;
   const accent = accentFor(res.spec.skin);
-  drawText(ctx, 'SCHEMESTEALER', CANVAS_W / 2, 1762, {
+  drawText(ctx, 'SCHEMESTEALER', CANVAS_W / 2, PLATE_TITLE_Y, {
     font: res.fonts.gothic,
     size: 40,
     colour: accent,
     glow: 14,
   });
-  drawText(ctx, '1,312 measured paints · scan yours free', CANVAS_W / 2, 1808, {
+  drawText(ctx, '1,312 measured paints · scan yours free', CANVAS_W / 2, PLATE_SUB_Y, {
     font: res.fonts.cyber,
     size: 23,
     colour: '#8a9a8a',
