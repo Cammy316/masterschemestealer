@@ -116,15 +116,108 @@ test('pict-cast export: UI wired + storyboard frames render', async ({ page }) =
       sum += d[i] * d[i];
       if (Math.abs(d[i]) > peak) peak = Math.abs(d[i]);
     }
+    // Spectral balance, measured the same way the defect was found: a real FFT
+    // over the whole bed. A phone speaker rolls off hard below ~500 Hz, so a bed
+    // whose energy is all sub-1 kHz is inaudible to most viewers however loud it
+    // measures. The shipped bed was 99% below 1 kHz and 0.0% above 2 kHz.
+    let N = 1;
+    while (N < d.length) N <<= 1;
+    const re = new Float64Array(N);
+    const im = new Float64Array(N);
+    for (let i = 0; i < d.length; i++) re[i] = d[i] * (0.5 - 0.5 * Math.cos((2 * Math.PI * i) / d.length));
+    for (let i = 1, j = 0; i < N; i++) {
+      let bit = N >> 1;
+      for (; j & bit; bit >>= 1) j ^= bit;
+      j ^= bit;
+      if (i < j) {
+        [re[i], re[j]] = [re[j], re[i]];
+        [im[i], im[j]] = [im[j], im[i]];
+      }
+    }
+    for (let len = 2; len <= N; len <<= 1) {
+      const ang = (-2 * Math.PI) / len;
+      const wr = Math.cos(ang);
+      const wi = Math.sin(ang);
+      for (let i = 0; i < N; i += len) {
+        let cr = 1;
+        let ci = 0;
+        for (let k = 0; k < len / 2; k++) {
+          const ur = re[i + k];
+          const ui = im[i + k];
+          const vr = re[i + k + len / 2] * cr - im[i + k + len / 2] * ci;
+          const vi = re[i + k + len / 2] * ci + im[i + k + len / 2] * cr;
+          re[i + k] = ur + vr;
+          im[i + k] = ui + vi;
+          re[i + k + len / 2] = ur - vr;
+          im[i + k + len / 2] = ui - vi;
+          const ncr = cr * wr - ci * wi;
+          ci = cr * wi + ci * wr;
+          cr = ncr;
+        }
+      }
+    }
+    const binHz = sr / N;
+    let low = 0;
+    let high = 0;
+    for (let k = 1; k < N / 2; k++) {
+      const f = k * binHz;
+      if (f < 40) continue;
+      const p = re[k] * re[k] + im[k] * im[k];
+      if (f < 1000) low += p;
+      else if (f < 12000) high += p;
+    }
+
+    // Integrated loudness, K-weighted per BS.1770 (shelf + high-pass), gated.
+    const kw = new Float64Array(d.length);
+    let x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+    for (let i = 0; i < d.length; i++) {
+      const x = d[i];
+      const y = 1.53512485958 * x - 2.69169618940 * x1 + 1.19839281085 * x2
+        + 1.69065929318 * y1 - 0.73248077421 * y2;
+      x2 = x1; x1 = x; y2 = y1; y1 = y;
+      kw[i] = y;
+    }
+    let z1 = 0, z2 = 0, w1 = 0, w2 = 0;
+    for (let i = 0; i < kw.length; i++) {
+      const x = kw[i];
+      const y = 1.0 * x - 2.0 * z1 + 1.0 * z2 + 1.99004745483 * w1 - 0.99007225036 * w2;
+      z2 = z1; z1 = x; w2 = w1; w1 = y;
+      kw[i] = y;
+    }
+    const block = Math.floor(sr * 0.4);
+    const loud: number[] = [];
+    for (let s = 0; s + block <= kw.length; s += Math.floor(block * 0.25)) {
+      let ss = 0;
+      for (let i = s; i < s + block; i++) ss += kw[i] * kw[i];
+      loud.push(-0.691 + 10 * Math.log10(ss / block + 1e-12));
+    }
+    const gated = loud.filter((l) => l > -70);
+    const rel = gated.length
+      ? -0.691 + 10 * Math.log10(gated.reduce((a, l) => a + 10 ** ((l + 0.691) / 10), 0) / gated.length) - 10
+      : -70;
+    const kept = gated.filter((l) => l > rel);
+    const lufs = kept.length
+      ? -0.691 + 10 * Math.log10(kept.reduce((a, l) => a + 10 ** ((l + 0.691) / 10), 0) / kept.length)
+      : -70;
+
     return {
       rmsDb: 20 * Math.log10(Math.sqrt(sum / d.length) + 1e-9),
       peakDb: 20 * Math.log10(peak + 1e-9),
+      highFraction: high / (low + high),
+      lufs,
     };
   });
   console.log('AUDIO BED:', JSON.stringify(audio));
   expect(audio.rmsDb).toBeGreaterThan(-26);
-  expect(audio.peakDb).toBeLessThan(0); // the limiter must stop it clipping
+  expect(audio.peakDb).toBeLessThan(-1); // true-peak headroom: platforms add ~2 dB
   expect(audio.peakDb).toBeGreaterThan(-12); // …but it still has to have transients
+  // Intent: the shipped bed had 1.0% of its energy above 1 kHz and literally
+  // nothing above 2 kHz, so a phone speaker reproduced almost none of it.
+  expect(audio.highFraction, 'energy above 1 kHz').toBeGreaterThan(0.15);
+  // Intent: platforms normalise to about -14 LUFS. At -16.2 they add ~2 dB to a
+  // file with 0.5 dB of headroom, and it clips on their servers.
+  expect(audio.lufs, 'integrated loudness').toBeGreaterThan(-15);
+  expect(audio.lufs, 'integrated loudness').toBeLessThan(-13);
 });
 
 // Perf gate. The stutter bug was invisible to this suite for two rounds because
