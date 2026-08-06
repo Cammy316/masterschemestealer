@@ -35,7 +35,7 @@ export function scheduleRevealAudio(
   t0: number,
 ): void {
   const master = ctx.createGain();
-  master.gain.value = 0.9;
+  master.gain.value = 1.7;
 
   // Soft-knee limiter: tanh curve keeps the snap hit and chimes from clipping
   // now that the bed runs hot.
@@ -47,7 +47,12 @@ export function scheduleRevealAudio(
   }
   limiter.curve = curve;
   limiter.oversample = '4x';
-  master.connect(limiter).connect(output);
+  // Post-limiter trim. Platforms normalise to about −14 LUFS, so they ADD gain;
+  // shipping at −0.5 dBFS peak meant they clipped it on their own servers.
+  // This guarantees true-peak headroom no matter how hard the limiter is driven.
+  const trim = ctx.createGain();
+  trim.gain.value = 0.8;
+  master.connect(limiter).connect(trim).connect(output);
 
   const durSec = spec.durationMs / 1000;
 
@@ -102,6 +107,10 @@ export function scheduleRevealAudio(
   const at = (fraction: number) => t0 + fraction * durSec;
 
   // Cogitator hum: brown noise → lowpass drone, slowly breathing via an LFO.
+  // Deliberately quieter than it was. Measured on the shipped bed, 54.6% of ALL
+  // energy sat in 120–250 Hz and only 1.0% above 1 kHz — a phone speaker rolls
+  // off hard below ~500 Hz, so most viewers heard almost nothing. The hum is now
+  // a floor under the HF texture rather than the whole mix.
   const noise = ctx.createBufferSource();
   noise.buffer = noiseBuffer(Math.max(2, durSec), true);
   noise.loop = true;
@@ -109,7 +118,7 @@ export function scheduleRevealAudio(
   lp.type = 'lowpass';
   lp.frequency.value = 220;
   const humGain = ctx.createGain();
-  humGain.gain.value = 0.3;
+  humGain.gain.value = 0.05;
   noise.connect(lp).connect(humGain).connect(master);
   const lfo = ctx.createOscillator();
   lfo.frequency.value = 0.15;
@@ -120,6 +129,38 @@ export function scheduleRevealAudio(
   lfo.start(t0);
   noise.stop(t0 + durSec + 0.3);
   lfo.stop(t0 + durSec + 0.3);
+
+  // Cogitator hiss — a continuous 2–7 kHz bed. This is what makes the clip
+  // audible on a phone: transients alone carry almost no ENERGY, so a mix that
+  // is only hum plus ticks still measures as sub-1 kHz and disappears.
+  const hiss = ctx.createBufferSource();
+  hiss.buffer = noiseBuffer(Math.max(2, durSec), false);
+  hiss.loop = true;
+  const hissHp = ctx.createBiquadFilter();
+  hissHp.type = 'highpass';
+  hissHp.frequency.value = 2000;
+  hissHp.Q.value = 0.7;
+  const hissLp = ctx.createBiquadFilter();
+  hissLp.type = 'lowpass';
+  hissLp.frequency.value = 7000;
+  const hissGain = ctx.createGain();
+  hissGain.gain.value = 0.105;
+  hiss.connect(hissHp).connect(hissLp).connect(hissGain).connect(master);
+  // Breathing, so it reads as a machine idling rather than tape noise.
+  const hissLfo = ctx.createOscillator();
+  hissLfo.frequency.value = 0.23;
+  const hissLfoGain = ctx.createGain();
+  hissLfoGain.gain.value = 0.04;
+  hissLfo.connect(hissLfoGain).connect(hissGain.gain);
+  hiss.start(t0);
+  hissLfo.start(t0);
+  hiss.stop(t0 + durSec + 0.3);
+  hissLfo.stop(t0 + durSec + 0.3);
+
+  // Motion-tracker ticks the whole way through — the machine is always working.
+  for (let tick = 0; tick < durSec; tick += 0.31) {
+    burst(t0 + tick, 0.035, 0.16, 2900, 3.0);
+  }
 
   // Frame 0 needs a transient or the clip opens on silence — a low thud under
   // the proof stamp, then a charge rising into the smash cut.
