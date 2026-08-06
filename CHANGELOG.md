@@ -2,6 +2,75 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-08-06 (Pict-Cast v5 — proof-first restructure)
+
+v4 fixed the machine: both device exports measured **390/390 frames, every frame
+gap identical, H.264 MP4 + AAC**. Three independent critiques then agreed the
+*content* still failed as short-form — it read as a polite diagnostic tool. This
+is the content rebuild. No pipeline work.
+
+### Changed
+- **The clip now opens on the answer.** Frame 0 is the painter's model in full
+  colour with the finished recipe already stamped over it, held ~0.6 s, then a
+  glitch smash-cut to greyscale. The old opening asked "CAN THE MACHINE READ
+  THIS PAINT JOB?" over a static model for two seconds — a yes/no question whose
+  answer the viewer already assumed, spending the scroll decision on nothing.
+  Keeping the *model* in the proof frame (rather than a bare recipe card) means
+  painters are still posting their own work, which is the entire reason Engine A
+  exists — and it makes the loop perfect for free, since the clip already ends
+  on model + recipe.
+- **Extraction compressed from ~6 s to ~2.2 s.** Five callouts landing one at a
+  time was where mid-clip retention died. Labels persist once landed, so fast
+  entries cost nothing in legibility.
+- **Clip length 13 s → 11 s** — shorter loop, higher completion, and it stops the
+  recipe phase padding once extraction is tightened. Every boundary is a fraction
+  of the duration and the audio bed schedules off the same fractions, so both
+  rebalanced automatically.
+- **Model stays large in the outro** (~52 % frame height, was ~30 %) and the dead
+  band above the recipe is closed.
+- **Audio envelope inverted**: the recipe cascade is now the loudest passage,
+  with a rising bed and a stamp per chip. It previously troughed at −24.6 dBFS
+  exactly at the emotional peak while peaking mid-reveal.
+- **Caption presets sell the result**: `THE EXACT PAINTS ON THIS MODEL`,
+  `NEVER GUESS A RECIPE AGAIN`, `ΔE {n}. MEASURED, NOT GUESSED.` (real measured
+  value only). None asserts anything the engine cannot know — no auto-generated
+  chapter or army names, because it detects colours, not factions.
+
+### Fixed
+- **Garble no longer spells fake words.** Real exports rendered `CYSJ`,
+  `SCGRBP`, `MAGENR9`, `BLASH`, `REB` — held long enough to read at 30 fps. A
+  product selling measured accuracy cannot look like it can't spell. Unresolved
+  characters are now block/symbol glyphs only, so a wrong-looking word is
+  impossible by construction; the test asserts every intermediate character is
+  either the true prefix or a non-letter.
+- **Leaders no longer cross the model** — they run along the rail, turn at the
+  model's edge, then make the final hop to the anchor.
+- **Callouts for dark families are visible again.** The leader line and anchor
+  dot were drawn in the region's true hex, so `BLACK` rendered as `#141414` on a
+  void backdrop — a label connected to nothing. All callout chrome now uses the
+  lightness-lifted tint; the honest colour story is carried by the revealed
+  region on the model, which shows the actual paint.
+- **The loop seam no longer doubles text.** `hudFade` now completes *before*
+  `loopCrossfade` starts; they previously overlapped for ~0.26 s and the outgoing
+  caption ghosted through the incoming one. The old test only checked
+  `hudFade == 1` once `crossfade >= 0.5`, so it passed while the defect was on
+  screen — it now asserts for any `crossfade > 0`.
+- Recipe block gains a scrim so the heading is readable where it lands over the
+  model during the proof stamp.
+
+### Added
+- **Export quality gate.** The share modal now names the dominant match and its
+  ΔE band before you export, and warns plainly when it is `fair` or `distant`.
+  A real export shipped with `ΔE 10.2` — distant, in red — as its climax and
+  nothing objected. The honesty invariant is absolute: no ΔE is ever altered and
+  the recipe still goes to the genuinely dominant colour. Export is never
+  blocked; the user decides.
+- `color-scheme: dark` on `:root` and via the viewport meta, with
+  `tests/color-scheme.spec.ts` guarding six routes. An auto-dark extension was
+  inverting the already-dark UI (CIELAB lightness flip — hues survived, so green
+  stayed green); the declaration is the standards-level opt-out for any
+  extension or browser auto-dark, and it fixes native scrollbars and controls.
+
 ## [Unreleased] - 2026-08-05 (Pict-Cast v4 — offline render: real MP4, no dropped frames)
 
 Two device exports and the browser's own codec-support map settled both open

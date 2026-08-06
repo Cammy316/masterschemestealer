@@ -6,26 +6,35 @@
  * off `t` (not a frame counter) means a dropped frame never desyncs the result,
  * and the whole storyboard is unit-testable.
  *
- * Storyboard (fractions of duration; ~13 s default):
- *   hero   0.000–0.085  the model in FULL COLOUR, punched in close and pulling
- *                       back, rocking gently, lit by a breathing glow — visible
- *                       motion from frame 0, because the scroll decision lands
- *                       inside ~1.7 s and a static product shot loses it
- *   snap   0.085–0.125  glitch-strobe to greyscale + impact flash
- *   sweep  0.125–0.200  scan line passes; the model lights up BEHIND the line
- *   reveal 0.200–0.680  regions bloom back to colour, SMALLEST FIRST — quick
- *                       wins escalating to the dominant colour as the finale
- *   recipe 0.680–0.900  model eases up/back, recipe chips cascade in
- *   plate  0.900–1.000  brand plate, HUD fades, camera dives back into the
- *                       hero close-up — the final frame IS frame 1 (the loop)
+ * PROOF-FIRST storyboard (fractions of duration; 11 s default):
+ *   proof  0.000–0.055  the painter's model in FULL COLOUR with the finished
+ *                       recipe already stamped over it. The ANSWER, before the
+ *                       question exists — the previous cut opened on a question
+ *                       over a static model and lost the scroll before the
+ *                       laser even dropped.
+ *   smash  0.055–0.100  glitch cut: chips blow out, colour drains to greyscale
+ *   sweep  0.100–0.180  scan line passes; the model lights up BEHIND the line
+ *   reveal 0.180–0.380  five regions in RAPID succession (~0.44 s each) with
+ *                       hard hits. Labels persist once landed, so fast entries
+ *                       cost nothing in legibility — the old 6 s crawl was
+ *                       where mid-clip retention died.
+ *   slam   0.380–0.450  full-colour resolution + count caption, model big
+ *   recipe 0.450–0.870  chips cascade over a model held LARGE; the loudest,
+ *                       densest passage — this is the shareable money shot
+ *   plate  0.870–1.000  brand plate, HUD fades, dissolve back to `proof`
+ *
+ * The loop is perfect by construction: the clip ENDS on model + recipe, which
+ * is exactly what frame 0 shows.
  */
 
 import type { RevealSkin } from './revealLayers';
 
-export type RevealPhase = 'hero' | 'snap' | 'sweep' | 'reveal' | 'recipe' | 'plate';
+export type RevealPhase = 'proof' | 'smash' | 'sweep' | 'reveal' | 'slam' | 'recipe' | 'plate';
 
-/** Clip length. Lives here because every phase boundary is a fraction of it. */
-export const DEFAULT_DURATION_MS = 13000;
+/** Clip length. Lives here because every phase boundary is a fraction of it.
+ *  11 s over 13: a shorter loop completes more often and rewatches more, and it
+ *  stops the recipe phase padding once extraction is compressed. */
+export const DEFAULT_DURATION_MS = 11000;
 
 export interface RevealRegion {
   index: number; // index into the scan's colours
@@ -58,7 +67,10 @@ export interface RevealSpec {
   recipeRegionIndex: number;
 }
 
-export type CaptionPreset = 'colours' | 'machine-spirit' | 'none';
+/** Burned-in headline. `colours` is the progress counter; the rest are fixed
+ *  result-oriented lines. None of them asserts anything the engine cannot know
+ *  (no chapter or army names — it detects colours, not factions). */
+export type CaptionPreset = 'colours' | 'never-guess' | 'exact-paints' | 'measured' | 'none';
 
 export interface RevealRegionState {
   index: number;
@@ -84,8 +96,11 @@ export interface RevealFrameState {
   phase: RevealPhase;
   heroAlpha: number; // full-colour model on top of the greyscale base
   baseAlpha: number; // greyscale base opacity
-  snapFlash: number; // 0..1 impact flash + chromatic glitch at the snap
+  snapFlash: number; // 0..1 impact flash + chromatic glitch at the smash cut
   heroGlow: number; // 0..1 breathing backlight behind the hero
+  /** 0..1 opacity of the PRE-STAMPED recipe during the proof flash. The clip
+   *  opens on the finished answer, then tears it away. */
+  proofAlpha: number;
   scanned: number; // 0..1 fraction of the model lit behind the scan line
   sweepY: number | null; // 0..1 during the sweep, else null
   regions: RevealRegionState[];
@@ -93,35 +108,36 @@ export interface RevealFrameState {
   recipeProgress: number; // 0..1 across the recipe cascade
   plateAlpha: number; // 0..1 brand plate
   hudFade: number; // 0..1 — HUD chrome fades BEFORE the dissolve so nothing ghosts
-  loopCrossfade: number; // 0..1 dissolve to the loop target (the frame-1 hero)
+  loopCrossfade: number; // 0..1 dissolve to the loop target (the frame-0 proof)
   camera: RevealCamera;
 }
 
-// Phase boundaries as fractions of the total duration. The greyscale stretch
-// (snap+sweep) is deliberately short: the scroll decision lands around 2.5 s, so
-// the first colour must be blooming back by then, not still scanning.
-const HERO_END = 0.085;
-const SNAP_END = 0.125;
-const SWEEP_END = 0.2;
-const REVEAL_END = 0.68;
-const RECIPE_END = 0.9;
+// Phase boundaries as fractions of the total duration. Proof lands first, the
+// greyscale stretch is short, and extraction is compressed hard — the scroll
+// decision lands around 1.7 s and the old cut was still asking a question then.
+const PROOF_END = 0.055;
+const SMASH_END = 0.1;
+const SWEEP_END = 0.18;
+const REVEAL_END = 0.38;
+const SLAM_END = 0.45;
+const RECIPE_END = 0.87;
 
 /** The cascade finishes before the plate arrives so they never race. */
-const RECIPE_CASCADE_END = 0.865;
+const RECIPE_CASCADE_END = 0.84;
 /** Model eases into the compact box over this much of the duration. */
-const BOX_MORPH = 0.08;
-/** Camera is back on the frame-1 hero close-up by here, so the dissolve has no jump. */
-const CAMERA_HOME = 0.975;
-const HUD_FADE_START = 0.945;
-/** HUD is fully gone before the dissolve is half-way — earlier cuts ghosted
- *  labels and recipe chips through the crossfade. */
-const HUD_FADE_END = 0.975;
-const LOOP_START = 0.955;
+const BOX_MORPH = 0.06;
+/** Camera is back on the frame-0 proof framing by here, so the dissolve has no jump. */
+const CAMERA_HOME = 0.945;
+const HUD_FADE_START = 0.9;
+/** HUD is fully gone BEFORE the dissolve even starts. The previous cut overlapped
+ *  them for ~0.26 s and the outgoing caption ghosted through the incoming one. */
+const HUD_FADE_END = 0.945;
+const LOOP_START = 0.95;
 
 /** The hero opens punched-in: the model fills the frame, then pulls back. The
  *  pull-back IS the hook motion — research: motion in the first frame stops the
  *  scroll, a static product shot does not. Also the loop-target scale. */
-export const HERO_SCALE = 1.35;
+export const HERO_SCALE = 1.5;
 /** Hero focus sits above centre — faces live in the model's upper half. */
 export const HERO_FOCUS_Y = 0.45;
 /** Turntable-substitute rock: amplitude (deg) and frequency (Hz). sin() phase
@@ -142,20 +158,23 @@ export const MAX_CAMERA_SCALE = HERO_SCALE + REGION_PUNCH;
 const FOCUS_DRIFT = 0.35;
 
 /** Later regions bloom faster than earlier ones — the reveal accelerates instead
- *  of metronoming — and no single bloom may exceed the cap: v2 let the first
- *  bloom run 2.6 s alone, right on the 3–6 s retention cliff. */
+ *  of metronoming — and no single bloom may exceed the cap. The whole phase is
+ *  now ~2.2 s for five regions: labels PERSIST once landed, so a fast entry
+ *  costs nothing in legibility, and the leisurely one-at-a-time crawl was where
+ *  mid-clip retention died. */
 const REVEAL_ACCEL = 0.35;
-const BLOOM_CAP = 0.085; // ≈1.1 s at 13 s
+const BLOOM_CAP = 0.05; // ≈0.55 s at 11 s
 /** Bloom overhang past its slot, so neighbouring blooms overlap slightly. */
 const BLOOM_TAIL = 0.4;
 
 /** Phase boundaries as fractions of duration — exported so the audio bed can
  *  schedule to the same beats the visuals use. */
 export const PHASE_FRACTIONS = {
-  heroEnd: HERO_END,
-  snapEnd: SNAP_END,
+  proofEnd: PROOF_END,
+  smashEnd: SMASH_END,
   sweepEnd: SWEEP_END,
   revealEnd: REVEAL_END,
+  slamEnd: SLAM_END,
   recipeEnd: RECIPE_END,
   loopStart: LOOP_START,
 } as const;
@@ -218,10 +237,11 @@ export function sortRegionsForReveal(regions: RevealRegion[]): RevealRegion[] {
 }
 
 export function phaseAt(f: number): RevealPhase {
-  if (f <= HERO_END) return 'hero';
-  if (f <= SNAP_END) return 'snap';
+  if (f <= PROOF_END) return 'proof';
+  if (f <= SMASH_END) return 'smash';
   if (f <= SWEEP_END) return 'sweep';
   if (f <= REVEAL_END) return 'reveal';
+  if (f <= SLAM_END) return 'slam';
   if (f <= RECIPE_END) return 'recipe';
   return 'plate';
 }
@@ -231,27 +251,33 @@ export function frameState(t: number, spec: RevealSpec): RevealFrameState {
   const tSec = (f * spec.durationMs) / 1000;
   const phase = phaseAt(f);
 
-  // Hero: the user's paint job, full colour. Strobes away during the snap.
+  // Proof: the painter's model in full colour with the finished recipe already
+  // stamped over it — the answer before the question. Strobes away at the smash.
   let heroAlpha = 0;
   let snapFlash = 0;
-  if (f <= HERO_END) {
+  let proofAlpha = 0;
+  if (f <= PROOF_END) {
     heroAlpha = 1;
-  } else if (f <= SNAP_END) {
-    const ls = (f - HERO_END) / (SNAP_END - HERO_END);
+    proofAlpha = 1;
+  } else if (f <= SMASH_END) {
+    const ls = (f - PROOF_END) / (SMASH_END - PROOF_END);
     heroAlpha = snapFlicker(ls);
     snapFlash = Math.max(0, 1 - ls / 0.45);
+    // The chips blow out faster than the colour drains — the recipe is torn
+    // away first, which is what makes the viewer wait to see it earned back.
+    proofAlpha = Math.max(0, 1 - ls / 0.3);
   }
-  // Greyscale base sits underneath from the snap onward.
-  const baseAlpha = f <= HERO_END ? 0 : 1;
+  // Greyscale base sits underneath from the smash onward.
+  const baseAlpha = f <= PROOF_END ? 0 : 1;
 
-  // Hero motion envelope: full during the hero, gone by the end of the snap.
-  const heroEnv = 1 - smoothstep((f - HERO_END) / (SNAP_END - HERO_END));
+  // Hero motion envelope: full during the proof, gone by the end of the smash.
+  const heroEnv = 1 - smoothstep((f - PROOF_END) / (SMASH_END - PROOF_END));
   const heroGlow = heroEnv * (0.7 + 0.3 * Math.sin(2 * Math.PI * GLOW_HZ * tSec));
   const rotationDeg = ROCK_DEG * Math.sin(2 * Math.PI * ROCK_HZ * tSec) * heroEnv;
 
   // Scan sweep top→bottom; the model lights up behind the line.
-  const sweeping = f > SNAP_END && f <= SWEEP_END;
-  const scanned = f <= SNAP_END ? 0 : sweeping ? smoothstep((f - SNAP_END) / (SWEEP_END - SNAP_END)) : 1;
+  const sweeping = f > SMASH_END && f <= SWEEP_END;
+  const scanned = f <= SMASH_END ? 0 : sweeping ? smoothstep((f - SMASH_END) / (SWEEP_END - SMASH_END)) : 1;
   const sweepY = sweeping ? scanned : null;
 
   // Staggered region blooms, accelerating, capped; the last (dominant) finishes
@@ -267,26 +293,28 @@ export function frameState(t: number, spec: RevealSpec): RevealFrameState {
   });
   const identifiedCount = regions.reduce((acc, r) => acc + (r.labelReveal >= 1 ? 1 : 0), 0);
 
+  // The cascade only starts once the model is fully resolved (after the slam),
+  // so the payoff never competes with the reveal for attention.
   const recipeProgress =
-    f > REVEAL_END ? clamp((f - REVEAL_END) / (RECIPE_CASCADE_END - REVEAL_END)) : 0;
-  const plateAlpha = f > RECIPE_END ? smoothstep((f - RECIPE_END) / 0.035) : 0;
+    f > SLAM_END ? clamp((f - SLAM_END) / (RECIPE_CASCADE_END - SLAM_END)) : 0;
+  const plateAlpha = f > RECIPE_END ? smoothstep((f - RECIPE_END) / 0.03) : 0;
   const hudFade = clamp((f - HUD_FADE_START) / (HUD_FADE_END - HUD_FADE_START));
   const loopCrossfade = f >= LOOP_START ? smoothstep((f - LOOP_START) / (1 - LOOP_START)) : 0;
 
-  // Camera. Hero: punched in at HERO_SCALE, pulling back to 1 by the snap.
+  // Camera. Proof: punched in at HERO_SCALE, pulling back to 1 by the smash.
   // Body: slow Ken Burns push + a punch toward whichever region is blooming.
-  // Tail: dive from the compact framing back into the frame-1 hero close-up,
+  // Tail: dive from the compact framing back into the frame-0 proof close-up,
   // arriving by CAMERA_HOME so the dissolve lands with zero jump.
   const homeT = smoothstep((f - RECIPE_END) / (CAMERA_HOME - RECIPE_END));
   let scale: number;
   let focusX = 0.5;
   let focusY = 0.5;
-  if (f <= SNAP_END) {
-    const out = smoothstep(f / SNAP_END);
+  if (f <= SMASH_END) {
+    const out = smoothstep(f / SMASH_END);
     scale = lerp(HERO_SCALE, 1, out);
     focusY = lerp(HERO_FOCUS_Y, 0.5, out);
   } else if (f <= RECIPE_END) {
-    scale = 1 + PUSH_IN * smoothstep((f - SNAP_END) / (RECIPE_END - SNAP_END));
+    scale = 1 + PUSH_IN * smoothstep((f - SMASH_END) / (RECIPE_END - SMASH_END));
   } else {
     scale = lerp(1 + PUSH_IN, HERO_SCALE, homeT);
     focusY = lerp(0.5, HERO_FOCUS_Y, homeT);
@@ -307,8 +335,10 @@ export function frameState(t: number, spec: RevealSpec): RevealFrameState {
     scale += REGION_PUNCH * strength;
   }
 
+  // The model only eases back once the slam has landed, so it stays large
+  // through the whole reveal.
   let boxLerp = 0;
-  if (f > REVEAL_END && f <= RECIPE_END) boxLerp = smoothstep((f - REVEAL_END) / BOX_MORPH);
+  if (f > SLAM_END && f <= RECIPE_END) boxLerp = smoothstep((f - SLAM_END) / BOX_MORPH);
   else if (f > RECIPE_END) boxLerp = 1 - homeT;
 
   return {
@@ -317,6 +347,7 @@ export function frameState(t: number, spec: RevealSpec): RevealFrameState {
     baseAlpha,
     snapFlash,
     heroGlow,
+    proofAlpha,
     scanned,
     sweepY,
     regions,

@@ -121,10 +121,10 @@ export function scheduleRevealAudio(
   noise.stop(t0 + durSec + 0.3);
   lfo.stop(t0 + durSec + 0.3);
 
-  // Frame 1 needs a transient or the clip opens on silence — a low boot thud
-  // under the hero, then a charge rising into the snap.
+  // Frame 0 needs a transient or the clip opens on silence — a low thud under
+  // the proof stamp, then a charge rising into the smash cut.
   ping(58, t0, 0.9, 0.5);
-  const snapAt = at(PHASE_FRACTIONS.heroEnd);
+  const snapAt = at(PHASE_FRACTIONS.proofEnd);
   const charge = ctx.createOscillator();
   charge.type = 'sawtooth';
   charge.frequency.setValueAtTime(70, t0);
@@ -145,7 +145,7 @@ export function scheduleRevealAudio(
   ping(92, snapAt, 0.55, 0.6);
 
   // Sweep whine tracking the scan pass.
-  const sweepStart = at(PHASE_FRACTIONS.snapEnd);
+  const sweepStart = at(PHASE_FRACTIONS.smashEnd);
   const sweepEnd = at(PHASE_FRACTIONS.sweepEnd);
   const whine = ctx.createOscillator();
   whine.type = 'sine';
@@ -162,22 +162,52 @@ export function scheduleRevealAudio(
   // Per-region reveal chimes (pentatonic so any count sounds musical), on the
   // same accelerating schedule the blooms use. The LAST region is the dominant
   // colour igniting — it lands as a chord with a low thump, not another tick.
+  // Per-region hits, on the same accelerating schedule the blooms use. Short
+  // hard strikes now — the extraction is compressed to ~2.2 s, so these are a
+  // rapid boom-boom-boom, and they sit BELOW the cascade: the payoff has to be
+  // the loudest passage and the mid-reveal used to peak over it.
   const n = spec.regions.length;
   const pent = [523.25, 587.33, 659.25, 783.99, 880.0];
   spec.regions.forEach((_, i) => {
     const hit = at(regionRevealFraction(i, n));
-    ping(pent[i % pent.length], hit, 0.6, 0.28);
-    burst(hit, 0.12, 0.1, 2600, 1.4);
+    ping(pent[i % pent.length], hit, 0.28, 0.2);
+    burst(hit, 0.09, 0.14, 2600, 1.4);
     if (i === n - 1 && n > 1) {
-      ping(pent[i % pent.length] * 2, hit + 0.04, 0.8, 0.2); // octave shimmer
-      ping(65.4, hit, 0.7, 0.4); // low thump — the finale beat
+      ping(pent[i % pent.length] * 2, hit + 0.04, 0.5, 0.16); // octave shimmer
+      ping(65.4, hit, 0.7, 0.36); // low thump — the finale beat
     }
   });
 
-  // Outro stamp as the recipe cascade starts.
-  const outroAt = at(PHASE_FRACTIONS.revealEnd);
-  ping(196, outroAt, 0.9, 0.4);
-  ping(659.25, outroAt + 0.06, 0.7, 0.16);
+  // The recipe cascade is the money shot, so it gets the biggest stamp and a
+  // rising bed underneath it. The previous mix troughed at −24.6 dBFS exactly
+  // here while peaking mid-reveal — the emotional peak was the quietest moment.
+  const outroAt = at(PHASE_FRACTIONS.slamEnd);
+  const recipeEndAt = at(PHASE_FRACTIONS.recipeEnd);
+  ping(196, outroAt, 1.1, 0.62);
+  ping(392, outroAt + 0.05, 0.9, 0.3);
+  ping(659.25, outroAt + 0.1, 0.8, 0.22);
+
+  const bed = ctx.createBufferSource();
+  bed.buffer = noiseBuffer(Math.max(0.5, recipeEndAt - outroAt) + 0.4, true);
+  const bedFilter = ctx.createBiquadFilter();
+  bedFilter.type = 'lowpass';
+  bedFilter.frequency.setValueAtTime(180, outroAt);
+  bedFilter.frequency.linearRampToValueAtTime(900, recipeEndAt);
+  const bedGain = ctx.createGain();
+  bedGain.gain.setValueAtTime(0.0001, outroAt);
+  bedGain.gain.linearRampToValueAtTime(0.42, recipeEndAt);
+  bedGain.gain.linearRampToValueAtTime(0.0001, recipeEndAt + 0.35);
+  bed.connect(bedFilter).connect(bedGain).connect(master);
+  bed.start(outroAt);
+  bed.stop(recipeEndAt + 0.5);
+
+  // One stamp per chip as it lands, so the cascade is felt as well as read.
+  const stepCount = Math.max(1, spec.recipe.length);
+  for (let i = 0; i < stepCount; i++) {
+    const chipAt = outroAt + ((recipeEndAt - outroAt) * 0.75 * i) / stepCount;
+    ping(147 * (1 + i * 0.18), chipAt, 0.45, 0.3);
+    burst(chipAt, 0.07, 0.12, 1400, 1.1);
+  }
 
   // Rising swell into the loop point, so the restart feels intended.
   const loopAt = at(PHASE_FRACTIONS.loopStart);
