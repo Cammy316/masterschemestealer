@@ -60,6 +60,60 @@ export function measureMeanLuma(layer: HTMLCanvasElement): number {
   return count > 0 ? sum / count : 128;
 }
 
+/** Normalised extent of a region within the image, 0..1. */
+export interface MaskBounds {
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
+}
+
+/**
+ * Where a region actually sits, as a normalised box.
+ *
+ * Leaders previously ran to the backend's single anchor POINT, which is the
+ * region's centroid — so the line ploughed from the frame edge deep into the
+ * middle of the model, straight over the paint job the clip exists to show off.
+ * With the region's extent known, the leader can stop at its NEAR edge instead.
+ *
+ * Sampled at low resolution: this only needs to be accurate to a few pixels of
+ * a 1080-wide frame, and a full-res readback per region would be far too slow.
+ */
+export function measureMaskBounds(
+  mask: ImageBitmap,
+  maskFrame: MaskFrame | undefined,
+  w: number,
+  h: number,
+): MaskBounds | null {
+  const S = 96;
+  const probe = document.createElement('canvas');
+  probe.width = S;
+  probe.height = S;
+  const ctx = probe.getContext('2d', { willReadFrequently: true });
+  if (!ctx) return null;
+  const dst = maskDestRect(maskFrame, w, h);
+  // Same placement buildRegionLayer uses, scaled into the probe.
+  const sx = S / w;
+  const sy = S / h;
+  ctx.drawImage(mask, 0, 0, mask.width, mask.height, dst.x * sx, dst.y * sy, dst.w * sx, dst.h * sy);
+  const { data } = ctx.getImageData(0, 0, S, S);
+  let x0 = S;
+  let y0 = S;
+  let x1 = -1;
+  let y1 = -1;
+  for (let y = 0; y < S; y++) {
+    for (let x = 0; x < S; x++) {
+      if (data[(y * S + x) * 4 + 3] < 48) continue;
+      if (x < x0) x0 = x;
+      if (x > x1) x1 = x;
+      if (y < y0) y0 = y;
+      if (y > y1) y1 = y;
+    }
+  }
+  if (x1 < 0) return null;
+  return { x0: x0 / S, y0: y0 / S, x1: (x1 + 1) / S, y1: (y1 + 1) / S };
+}
+
 /**
  * Fixed dimming failed on real schemes: a red marine converts to ~35% luma and
  * reads as a black silhouette for the whole scan phase (the pink test mini only

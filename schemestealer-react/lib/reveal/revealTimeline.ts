@@ -167,6 +167,13 @@ const BLOOM_CAP = 0.05; // ≈0.55 s at 11 s
 /** Bloom overhang past its slot, so neighbouring blooms overlap slightly. */
 const BLOOM_TAIL = 0.4;
 
+/** How long a label takes to decrypt, as a fraction of duration (≈0.39 s).
+ *  Decoupled from the bloom: tying it to 40% of a bloom made the cipher resolve
+ *  in ~0.23 s once extraction was compressed — present, but far too fast to read
+ *  as decryption, which is why a reviewer thought it had been dropped entirely.
+ *  Always clamped so every label still lands by REVEAL_END. */
+const LABEL_RESOLVE = 0.035;
+
 /** Phase boundaries as fractions of duration — exported so the audio bed can
  *  schedule to the same beats the visuals use. */
 export const PHASE_FRACTIONS = {
@@ -288,7 +295,8 @@ export function frameState(t: number, spec: RevealSpec): RevealFrameState {
     const { start, dur } = slots[i];
     const revealProgress = smoothstep((f - start) / dur);
     const pulse = revealProgress > 0 ? Math.max(0, 1 - clamp((f - start) / (dur * 2))) * revealProgress : 0;
-    const labelReveal = clamp((f - (start + dur * 0.15)) / (dur * 0.4));
+    const labelSpan = Math.max(1e-6, Math.min(LABEL_RESOLVE, REVEAL_END - start));
+    const labelReveal = clamp((f - start) / labelSpan);
     return { index: r.index, revealProgress, pulse, labelReveal };
   });
   const identifiedCount = regions.reduce((acc, r) => acc + (r.labelReveal >= 1 ? 1 : 0), 0);

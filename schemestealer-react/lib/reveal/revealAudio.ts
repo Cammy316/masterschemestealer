@@ -162,21 +162,32 @@ export function scheduleRevealAudio(
   // Per-region reveal chimes (pentatonic so any count sounds musical), on the
   // same accelerating schedule the blooms use. The LAST region is the dominant
   // colour igniting — it lands as a chord with a low thump, not another tick.
-  // Per-region hits, on the same accelerating schedule the blooms use. Short
-  // hard strikes now — the extraction is compressed to ~2.2 s, so these are a
-  // rapid boom-boom-boom, and they sit BELOW the cascade: the payoff has to be
-  // the loudest passage and the mid-reveal used to peak over it.
+  // Per-region hits, on the same accelerating schedule the blooms use. These are
+  // MECHANICAL CLACKS, not chimes: a cogitator tearing data off a model should
+  // sound industrial, and clean sine pips read as generic UI. Each strike is a
+  // tight noise crack plus a low body, with only a trace of pitch so successive
+  // hits still climb. They sit BELOW the cascade — the payoff is the loudest
+  // passage and the mid-reveal used to peak over it.
   const n = spec.regions.length;
   const pent = [523.25, 587.33, 659.25, 783.99, 880.0];
   spec.regions.forEach((_, i) => {
     const hit = at(regionRevealFraction(i, n));
-    ping(pent[i % pent.length], hit, 0.28, 0.2);
-    burst(hit, 0.09, 0.14, 2600, 1.4);
+    burst(hit, 0.05, 0.34, 1150, 2.2); // the clack itself
+    burst(hit + 0.012, 0.04, 0.18, 3200, 1.6); // bright edge, a hair late
+    ping(96 + i * 5, hit, 0.14, 0.34); // solid low body
+    ping(pent[i % pent.length], hit, 0.1, 0.07); // trace of pitch, climbing
     if (i === n - 1 && n > 1) {
-      ping(pent[i % pent.length] * 2, hit + 0.04, 0.5, 0.16); // octave shimmer
-      ping(65.4, hit, 0.7, 0.36); // low thump — the finale beat
+      ping(65.4, hit, 0.7, 0.4); // low thump — the finale beat
     }
   });
+
+  // The SLAM: the model resolving to full colour is the biggest visual beat in
+  // the clip and it had nothing under it — a measured −25 dBFS hole sat exactly
+  // there, right before the payoff.
+  const slamAt = at(PHASE_FRACTIONS.revealEnd);
+  ping(49, slamAt, 1.2, 0.68); // sub impact
+  burst(slamAt, 0.5, 0.34, 420, 0.5); // body
+  burst(slamAt + 0.02, 0.35, 0.2, 5200, 0.8); // air
 
   // The recipe cascade is the money shot, so it gets the biggest stamp and a
   // rising bed underneath it. The previous mix troughed at −24.6 dBFS exactly
