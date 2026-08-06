@@ -6,22 +6,20 @@
  * off `t` (not a frame counter) means a dropped frame never desyncs the result,
  * and the whole storyboard is unit-testable.
  *
- * PROOF-FIRST storyboard (fractions of duration; 11 s default):
- *   proof  0.000–0.055  the painter's model in FULL COLOUR with the finished
- *                       recipe already stamped over it. The ANSWER, before the
- *                       question exists — the previous cut opened on a question
- *                       over a static model and lost the scroll before the
- *                       laser even dropped.
- *   smash  0.055–0.100  glitch cut: chips blow out, colour drains to greyscale
- *   sweep  0.100–0.180  scan line passes; the model lights up BEHIND the line
- *   reveal 0.180–0.380  five regions in RAPID succession (~0.44 s each) with
- *                       hard hits. Labels persist once landed, so fast entries
- *                       cost nothing in legibility — the old 6 s crawl was
- *                       where mid-clip retention died.
- *   slam   0.380–0.450  full-colour resolution + count caption, model big
- *   recipe 0.450–0.870  chips cascade over a model held LARGE; the loudest,
- *                       densest passage — this is the shareable money shot
- *   plate  0.870–1.000  brand plate, HUD fades, dissolve back to `proof`
+ * PROOF-FIRST storyboard (fractions of duration; 11 s default, seconds shown):
+ *   proof  0.000–0.182  0.00–2.00  the model in FULL COLOUR with the finished
+ *                                  recipe stamped over it — the ANSWER first,
+ *                                  held long enough to actually READ
+ *   smash  0.182–0.209  2.00–2.30  glitch cut, colour drains to greyscale
+ *   sweep  0.209–0.273  2.30–3.00  scan line; the model lights up behind it
+ *   reveal 0.273–0.455  3.00–5.00  five region locks, 0.40 s each
+ *   slam   0.455–0.491  5.00–5.40  full-colour restore + count caption
+ *   recipe 0.491–0.873  5.40–9.60  cascade lands all four rows by 6.40 s, then
+ *                                  the complete state HOLDS for 3.0 s — the
+ *                                  screenshot frame, which previously existed
+ *                                  for only 1.4 s of the whole clip
+ *   plate  0.873–1.000  9.60–11.0  rows clear, end card owns a clean frame for
+ *                                  1.0 s, then dissolve back to `proof`
  *
  * The loop is perfect by construction: the clip ENDS on model + recipe, which
  * is exactly what frame 0 shows.
@@ -115,24 +113,35 @@ export interface RevealFrameState {
 // Phase boundaries as fractions of the total duration. Proof lands first, the
 // greyscale stretch is short, and extraction is compressed hard — the scroll
 // decision lands around 1.7 s and the old cut was still asking a question then.
-const PROOF_END = 0.055;
-const SMASH_END = 0.1;
-const SWEEP_END = 0.18;
-const REVEAL_END = 0.38;
-const SLAM_END = 0.45;
-const RECIPE_END = 0.87;
+// Measured from a shipped export: the complete state (all four rows + coloured
+// model) existed for only 1.4 s of 11, while 4.0 s of the clip was frame-identical
+// and the hook showed the proof for 0.6 s — not long enough to read a headline
+// plus four paint names. Redistributed so the hook holds 2.0 s and the payoff
+// holds 3.0 s, with no build window longer than 0.4 s without a state change.
+const PROOF_END = 0.182;   // 2.00 s — hook holds long enough to READ
+const SMASH_END = 0.209;   // 2.30 s
+const SWEEP_END = 0.273;   // 3.00 s
+const REVEAL_END = 0.455;  // 5.00 s — five region locks at 0.40 s each
+const SLAM_END = 0.491;    // 5.40 s
+const RECIPE_END = 0.873;  // 9.60 s (cascade, then the payoff HOLD)
 
-/** The cascade finishes before the plate arrives so they never race. */
-const RECIPE_CASCADE_END = 0.84;
+/** Cascade lands all four rows by 6.40 s, leaving a 3.0 s hold on the complete
+ *  state — the screenshot frame, previously the shortest-lived in the video. */
+const RECIPE_CASCADE_END = 0.582;
+/** The full state is held, untouched, from here to RECIPE_END. */
+export const PAYOFF_HOLD = { start: RECIPE_CASCADE_END, end: 0.855 } as const;
+/** Callouts and rows clear, then the end card owns a clean frame for 1.0 s. */
+const CLEAR_END = 0.873;
+const END_CARD_END = 0.964;
 /** Model eases into the compact box over this much of the duration. */
 const BOX_MORPH = 0.06;
 /** Camera is back on the frame-0 proof framing by here, so the dissolve has no jump. */
-const CAMERA_HOME = 0.945;
-const HUD_FADE_START = 0.9;
+const CAMERA_HOME = 0.99;
+const HUD_FADE_START = 0.855;
 /** HUD is fully gone BEFORE the dissolve even starts. The previous cut overlapped
  *  them for ~0.26 s and the outgoing caption ghosted through the incoming one. */
-const HUD_FADE_END = 0.945;
-const LOOP_START = 0.95;
+const HUD_FADE_END = CLEAR_END;
+const LOOP_START = END_CARD_END;
 
 /** The hero opens punched-in: the model fills the frame, then pulls back. The
  *  pull-back IS the hook motion — research: motion in the first frame stops the
@@ -205,19 +214,11 @@ function lerp(a: number, b: number, t: number): number {
 export function regionSchedule(n: number): { start: number; dur: number }[] {
   if (n <= 0) return [];
   const span = REVEAL_END - SWEEP_END;
-  const w = Array.from({ length: n }, (_, i) => 1 / (1 + REVEAL_ACCEL * i));
-  const total = w.reduce((a, b) => a + b, 0);
-  const starts: number[] = [];
-  let acc = 0;
-  for (const wi of w) {
-    starts.push(SWEEP_END + (span * acc) / total);
-    acc += wi;
-  }
-  return starts.map((start, i) => {
-    const next = i + 1 < n ? starts[i + 1] : REVEAL_END;
-    const dur = Math.min((next - start) * (1 + BLOOM_TAIL), BLOOM_CAP, REVEAL_END - start);
-    return { start, dur };
-  });
+  const slot = span / n;
+  return Array.from({ length: n }, (_, i) => ({
+    start: SWEEP_END + i * slot,
+    dur: Math.min(slot * (1 + BLOOM_TAIL), BLOOM_CAP, REVEAL_END - (SWEEP_END + i * slot)),
+  }));
 }
 
 /** Fraction of duration at which region i (of n) begins to bloom. */
@@ -225,13 +226,20 @@ export function regionRevealFraction(i: number, n: number): number {
   return regionSchedule(n)[i]?.start ?? SWEEP_END;
 }
 
-/** Deterministic strobe as the full-colour hero cuts to greyscale. */
+/**
+ * Deterministic strobe as the full-colour hero cuts to greyscale.
+ *
+ * MONOTONICALLY NON-INCREASING. The previous pattern returned 0.85, then 0, then
+ * 0.35 — so the colour model flashed back one frame AFTER it had already gone
+ * grey. Measured saturation across the transition went 4.9 → 4.5 → 9.7 → 4.0,
+ * which reads as a stutter rather than a glitch. A decaying strobe keeps the
+ * cogitator feel and cannot produce an isolated pop.
+ */
 function snapFlicker(ls: number): number {
   if (ls < 0.12) return 1;
-  if (ls < 0.22) return 0;
-  if (ls < 0.32) return 0.85;
-  if (ls < 0.42) return 0;
-  if (ls < 0.48) return 0.35;
+  if (ls < 0.24) return 0.6;
+  if (ls < 0.36) return 0.25;
+  if (ls < 0.48) return 0.08;
   return 0;
 }
 
@@ -305,7 +313,11 @@ export function frameState(t: number, spec: RevealSpec): RevealFrameState {
   // so the payoff never competes with the reveal for attention.
   const recipeProgress =
     f > SLAM_END ? clamp((f - SLAM_END) / (RECIPE_CASCADE_END - SLAM_END)) : 0;
-  const plateAlpha = f > RECIPE_END ? smoothstep((f - RECIPE_END) / 0.03) : 0;
+  // End card: full opacity on a CLEAN frame for a full second. It previously got
+  // 0.5 s, never reached full alpha, and overlapped the rows fading beneath it.
+  // Deliberately NOT gated on hudFade — the HUD clearing is what makes the frame
+  // clean, so the card has to outlive it.
+  const plateAlpha = f > CLEAR_END ? clamp((f - CLEAR_END) / 0.012) : 0;
   const hudFade = clamp((f - HUD_FADE_START) / (HUD_FADE_END - HUD_FADE_START));
   const loopCrossfade = f >= LOOP_START ? smoothstep((f - LOOP_START) / (1 - LOOP_START)) : 0;
 

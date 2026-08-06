@@ -23,6 +23,21 @@ import {
 } from './revealLayers';
 import { scheduleRevealAudio } from './revealAudio';
 import {
+  CANVAS_H,
+  CANVAS_W,
+  CALLOUT_CHIP_R,
+  CALLOUT_RAIL,
+  CONTENT_CX,
+  CHIP_GAP,
+  CHIP_H,
+  COMPACT_BOX,
+  FULL_BOX,
+  LAYOUT,
+  RECIPE_SCRIM_TOP,
+  recipeRowY,
+  type Rect,
+} from './revealLayout';
+import {
   frameState,
   smoothstep,
   sortRegionsForReveal,
@@ -34,24 +49,9 @@ import {
   type CaptionPreset,
 } from './revealTimeline';
 
-export const CANVAS_W = 1080;
-export const CANVAS_H = 1920;
-
-/** Reveal framing: the model owns the frame. */
-const FULL_BOX = { x: 70, y: 150, w: 940, h: 1250 };
-/** Outro framing: the model eases back to clear room for the recipe — but stays
- *  LARGE. It previously shrank to ~30% of frame height and left a dead band
- *  above the recipe; the painter's model is the reason anyone posts this. */
-const COMPACT_BOX = { x: 150, y: 110, w: 780, h: 900 };
-/* Lower-block layout is driven by the platform safe area: TikTok/Reels bury
-   roughly the bottom 18% under caption, username and action rail, so every
-   element that must be READ finishes above ~82% (y≈1574). */
-const RECIPE_TOP = 1090;
-const WATERMARK_Y = 1610;
-const PLATE_TITLE_Y = 1672;
-const PLATE_SUB_Y = 1716;
-const CHIP_H = 88;
-const CHIP_GAP = 14;
+// Every position lives in revealLayout — the single source of truth for what is
+// inside the platform safe area. Re-exported so existing importers are unaffected.
+export { CANVAS_W, CANVAS_H, SAFE_RECT, type Rect } from './revealLayout';
 
 /** Model dimming ahead of the scan line, so the sweep visibly lights it up.
  *  Kept shallow — the pre-scan model still has to READ at feed size. */
@@ -137,13 +137,6 @@ export function resolveFonts(): RevealFonts {
 }
 
 // ---- geometry ----------------------------------------------------------------
-export interface Rect {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-}
-
 /** Contain-fit source dims into a box, centred. */
 export function fitRect(srcW: number, srcH: number, box: Rect): Rect {
   const scale = Math.min(box.w / srcW, box.h / srcH);
@@ -605,13 +598,13 @@ export function drawLoopTarget(ctx: CanvasRenderingContext2D, res: RevealResourc
   drawCornerBrackets(ctx, CANVAS_W, CANVAS_H, accentFor(res.spec.skin));
   const cap = captionText(res.spec, s0);
   if (cap)
-    drawText(ctx, cap, CANVAS_W / 2, 130, {
+    drawText(ctx, cap, CONTENT_CX, LAYOUT.headline.y + 24, {
       font: res.fonts.cyber,
       size: 40,
       colour: accentFor(res.spec.skin),
       glow: 16,
       letter: 2,
-      maxWidth: CANVAS_W - 120,
+      maxWidth: LAYOUT.headline.w,
     });
   // Same renderer as the outro cascade at full progress, so the flash and the
   // payoff can never show different recipes.
@@ -674,17 +667,11 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
     // a chromatic-aberration hit as it goes (hue-shifted echoes; browsers
     // without canvas filters just get the ghost offsets, which still read).
     if (state.heroAlpha > 0) {
-      if (state.snapFlash > 0) {
-        const shift = 7 * state.snapFlash;
-        ctx.save();
-        ctx.globalCompositeOperation = 'lighter';
-        ctx.globalAlpha = 0.22 * state.snapFlash;
-        ctx.filter = 'hue-rotate(120deg)';
-        ctx.drawImage(res.heroLayer, 0, 0, res.imgW, res.imgH, r.x + shift, r.y, r.w, r.h);
-        ctx.filter = 'hue-rotate(-120deg)';
-        ctx.drawImage(res.heroLayer, 0, 0, res.imgW, res.imgH, r.x - shift, r.y, r.w, r.h);
-        ctx.restore();
-      }
+      // NOTE: no colour wash over the model. The smash cut used to draw the hero
+      // twice under hue-rotate(±120°) — rotating red by 120° yields green, so the
+      // proof frame measured G exceeding R by 22 levels for ~3 frames. Tinting the
+      // subject is the one thing a colour-accuracy product must never do, even
+      // briefly. The glitch now lives on the backdrop and chrome only.
       ctx.save();
       ctx.globalAlpha = state.heroAlpha;
       ctx.drawImage(res.heroLayer, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
@@ -712,14 +699,23 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
     ctx.restore();
   }
 
-  // Impact flash on the cut to greyscale — a sharp pop, not a wash: the square
-  // falloff keeps it to the first frames so the backdrop never sits tinted.
+  // Impact flash + chromatic tear on the cut to greyscale. Both are drawn on the
+  // BACKDROP band above and below the model, never over the subject: a sharp pop
+  // with square falloff so the frame never sits tinted.
   if (state.snapFlash > 0) {
     const pop = state.snapFlash * state.snapFlash;
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
-    ctx.fillStyle = hexToRgba(accent, 0.22 * pop);
-    ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+    ctx.fillStyle = hexToRgba(accent, 0.16 * pop);
+    ctx.fillRect(0, 0, CANVAS_W, r.y);
+    ctx.fillRect(0, r.y + r.h, CANVAS_W, CANVAS_H - (r.y + r.h));
+    // torn scan bands across the chrome, offset like a mistracked signal
+    const shift = 10 * pop;
+    ctx.fillStyle = hexToRgba(accent, 0.1 * pop);
+    for (let i = 0; i < 6; i++) {
+      const by = ((i * 317) % Math.max(1, Math.floor(CANVAS_H))) as number;
+      ctx.fillRect(shift * (i % 2 ? 1 : -1), by, CANVAS_W, 6);
+    }
     ctx.restore();
   }
 
@@ -729,7 +725,7 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
     const region = spec.regions[c.index];
     if (!rs || !region || rs.labelReveal <= 0 || hud <= 0) return;
     const hex = region.hex;
-    const railX = c.side === 'left' ? 52 : CANVAS_W - 52;
+    const railX = c.side === 'left' ? CALLOUT_RAIL.left : CALLOUT_RAIL.right;
     const railY = r.y + c.railY * r.h;
     const dir = c.side === 'left' ? 1 : -1;
 
@@ -747,12 +743,6 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
     const anchorX = r.x + anchorFx * r.w;
     const anchorY = r.y + anchorFy * r.h;
 
-    // Run in along the rail, turn just outside the model, then hop to the anchor.
-    const modelEdge = c.side === 'left' ? r.x : r.x + r.w;
-    const elbowX =
-      c.side === 'left'
-        ? Math.min(Math.max(railX + 40, modelEdge - 26), anchorX - 12)
-        : Math.max(Math.min(railX - 40, modelEdge + 26), anchorX + 12);
     // The recipe belongs to ONE region — keep its chip alive while the cascade runs.
     const owns = c.index === spec.recipeRegionIndex && state.recipeProgress > 0;
     const ownPulse = owns ? 0.5 + 0.5 * Math.sin(state.recipeProgress * Math.PI * 6) : 0;
@@ -772,7 +762,16 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
     ctx.font = `700 ${LABEL_SIZE}px ${res.fonts.cyber}`;
     const labelW = Math.min(LABEL_MAX_W, ctx.measureText(label).width);
     ctx.restore();
-    const leaderStart = railX + dir * (52 + labelW + 18);
+    const leaderStart = railX + dir * (CALLOUT_CHIP_R + 18 + labelW + 18);
+
+    // Turn the corner on the FAR side of the label, then hop to the anchor.
+    // Clamping the elbow to the model's edge alone put it between the chip and
+    // the label, so the horizontal run doubled back straight through the type.
+    const modelEdge = c.side === 'left' ? r.x : r.x + r.w;
+    const elbowX =
+      c.side === 'left'
+        ? Math.min(Math.max(leaderStart, modelEdge - 26), Math.max(anchorX - 12, leaderStart))
+        : Math.max(Math.min(leaderStart, modelEdge + 26), Math.min(anchorX + 12, leaderStart));
 
     ctx.save();
     ctx.globalAlpha = rs.labelReveal * hud;
@@ -793,7 +792,7 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
     ctx.arc(anchorX, anchorY, 8, 0, Math.PI * 2);
     ctx.fill();
     ctx.beginPath();
-    ctx.arc(railX, railY, 34, 0, Math.PI * 2);
+    ctx.arc(railX, railY, CALLOUT_CHIP_R, 0, Math.PI * 2);
     ctx.fillStyle = 'rgba(5,7,10,0.92)';
     ctx.fill();
     ctx.lineWidth = owns ? 5 : 3;
@@ -804,7 +803,7 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
     ctx.save();
     ctx.globalAlpha = rs.labelReveal * hud;
     drawText(ctx, String(c.index + 1), railX, railY, { font: res.fonts.cyber, size: 32, colour: tint });
-    const labelX = c.side === 'left' ? railX + 52 : railX - 52;
+    const labelX = c.side === 'left' ? railX + CALLOUT_CHIP_R + 18 : railX - CALLOUT_CHIP_R - 18;
     drawText(ctx, label, labelX, railY, {
       font: res.fonts.cyber,
       size: LABEL_SIZE,
@@ -823,13 +822,13 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
   if (cap && hud > 0) {
     ctx.save();
     ctx.globalAlpha = hud;
-    drawText(ctx, cap, CANVAS_W / 2, 130, {
+    drawText(ctx, cap, CONTENT_CX, LAYOUT.headline.y + 24, {
       font: res.fonts.cyber,
       size: 40,
       colour: accent,
       glow: 16,
       letter: 2,
-      maxWidth: CANVAS_W - 120,
+      maxWidth: LAYOUT.headline.w,
     });
     ctx.restore();
   }
@@ -844,7 +843,8 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
   if (state.recipeProgress > 0 && recipeAlpha > 0) drawRecipe(ctx, state.recipeProgress, recipeAlpha, res);
 
   // Brand plate + persistent watermark.
-  if (state.plateAlpha > 0 && hud > 0) drawPlate(ctx, state.plateAlpha * hud, res);
+  // NOT gated on hud: the HUD clearing is what makes the end card's frame clean.
+  if (state.plateAlpha > 0) drawPlate(ctx, state.plateAlpha, res);
   if (state.phase !== 'proof' && hud > 0) drawWatermark(ctx, hud, res);
 
   // Loop dissolve back to frame 1 (the hero) — a blit of the pre-baked target.
@@ -867,7 +867,7 @@ function drawRecipe(ctx: CanvasRenderingContext2D, progress: number, hud: number
   // Scrim behind the block. During the proof stamp the model is punched in and
   // the heading lands ON it, so unbacked text is unreadable; in the outro the
   // area is already void, where this is invisible.
-  const blockTop = RECIPE_TOP - 60;
+  const blockTop = RECIPE_SCRIM_TOP;
   const scrim = ctx.createLinearGradient(0, blockTop, 0, blockTop + 120);
   scrim.addColorStop(0, 'rgba(3,5,8,0)');
   scrim.addColorStop(1, 'rgba(3,5,8,0.82)');
@@ -881,12 +881,12 @@ function drawRecipe(ctx: CanvasRenderingContext2D, progress: number, hud: number
 
   ctx.save();
   ctx.globalAlpha = hud;
-  drawText(ctx, `${spec.brand.toUpperCase()} RECIPE`, CANVAS_W / 2, RECIPE_TOP, {
+  drawText(ctx, `${spec.brand.toUpperCase()} RECIPE`, CONTENT_CX, LAYOUT.recipeHeading.y + 26, {
     font: res.fonts.gothic,
     size: 44,
     colour: accent,
     glow: 12,
-    maxWidth: CANVAS_W - 160,
+    maxWidth: LAYOUT.recipeHeading.w,
   });
   // Name WHICH colour this recipe is for — five regions were called out, only
   // one gets a breakdown, and the viewer should never have to guess which.
@@ -894,21 +894,22 @@ function drawRecipe(ctx: CanvasRenderingContext2D, progress: number, hud: number
     drawText(
       ctx,
       `DOMINANT · ${spec.recipeRegionIndex + 1} ${(owner.family || owner.hex).toUpperCase()}`,
-      CANVAS_W / 2,
-      RECIPE_TOP + 44,
-      { font: res.fonts.cyber, size: 26, colour: labelTint(owner.hex), letter: 2, maxWidth: CANVAS_W - 200 },
+      CONTENT_CX,
+      LAYOUT.recipeSubheading.y + 15,
+      { font: res.fonts.cyber, size: 26, colour: labelTint(owner.hex), letter: 2, maxWidth: LAYOUT.recipeSubheading.w },
     );
   }
   ctx.restore();
 
-  const startY = RECIPE_TOP + 84;
   steps.forEach((step, i) => {
     const appear = Math.max(0, Math.min(1, progress * steps.length - i));
     if (appear <= 0) return;
     const roleAccent = ROLE_ACCENT[step.role];
-    const y = startY + i * (CHIP_H + CHIP_GAP);
-    const x = 110;
-    const w = CANVAS_W - 220;
+    // Row geometry comes from the layout table; the right edge stops at 900 so
+    // the delta-E badge clears the platform's action rail.
+    const y = recipeRowY(i);
+    const x = LAYOUT.recipeRows.x;
+    const w = LAYOUT.recipeRows.w;
     // ΔE is the distance from the DETECTED colour, which only the base match
     // measures — showing it on derived partners would compare two different
     // quantities under one label. Honest badge or no badge.
@@ -974,12 +975,12 @@ function drawRecipe(ctx: CanvasRenderingContext2D, progress: number, hud: number
 function drawWatermark(ctx: CanvasRenderingContext2D, alpha: number, res: RevealResources): void {
   ctx.save();
   ctx.globalAlpha = alpha * 0.6;
-  drawText(ctx, 'schemestealer.com', 56, WATERMARK_Y, {
+  drawText(ctx, 'schemestealer.com', LAYOUT.watermark.x + LAYOUT.watermark.w, LAYOUT.watermark.y + 22, {
     font: res.fonts.cyber,
     size: 24,
     weight: 600,
     colour: '#c8d8cc',
-    align: 'left',
+    align: 'right',
     letter: 1,
   });
   ctx.restore();
@@ -989,18 +990,18 @@ function drawPlate(ctx: CanvasRenderingContext2D, alpha: number, res: RevealReso
   ctx.save();
   ctx.globalAlpha = alpha;
   const accent = accentFor(res.spec.skin);
-  drawText(ctx, 'SCHEMESTEALER', CANVAS_W / 2, PLATE_TITLE_Y, {
+  drawText(ctx, 'SCHEMESTEALER', CONTENT_CX, LAYOUT.endCardTitle.y + 30, {
     font: res.fonts.gothic,
     size: 40,
     colour: accent,
     glow: 14,
   });
-  drawText(ctx, '1,312 measured paints · scan yours free', CANVAS_W / 2, PLATE_SUB_Y, {
+  drawText(ctx, 'measured, not guessed · scan yours free', CONTENT_CX, LAYOUT.endCardSub.y + 18, {
     font: res.fonts.cyber,
     size: 23,
     colour: '#8a9a8a',
     letter: 2,
-    maxWidth: CANVAS_W - 140,
+    maxWidth: LAYOUT.endCardSub.w,
   });
   ctx.restore();
 }

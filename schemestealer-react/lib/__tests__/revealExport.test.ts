@@ -289,9 +289,9 @@ describe('captionText', () => {
   // Intent: a static "IDENTIFIED IN 5 COLOURS" from second one gives a viewer
   // nothing to watch for. The count climbs, then pays off.
   it('counts up during the reveal and resolves to the total', () => {
-    expect(at(0.14)).toBe('SCANNING…');
-    expect(at(0.3)).toMatch(/^READING… \d\/3 COLOURS$/);
-    expect(at(0.8)).toBe('3 COLOURS IDENTIFIED');
+    expect(at(0.24)).toBe('SCANNING…'); // sweep
+    expect(at(0.35)).toMatch(/^READING… \d\/3 COLOURS$/); // region locks
+    expect(at(0.8)).toBe('3 COLOURS IDENTIFIED'); // payoff hold
   });
 
   // Intent: presets must never assert what the engine cannot know. It detects
