@@ -19,10 +19,11 @@
 import {
   AudioBufferSource,
   BufferTarget,
-  CanvasSource,
   Mp4OutputFormat,
   Output,
   QUALITY_HIGH,
+  VideoSample,
+  VideoSampleSource,
   WebMOutputFormat,
   getFirstEncodableAudioCodec,
   getFirstEncodableVideoCodec,
@@ -44,8 +45,33 @@ import { frameState, DEFAULT_DURATION_MS, type RevealSpec } from './revealTimeli
 import { scheduleRevealAudio } from './revealAudio';
 import type { RenderRevealOptions, RenderRevealResult } from './renderRevealVideo';
 
+/**
+ * Every frame is tagged BT.709 explicitly.
+ *
+ * We compose sRGB pixels on a canvas, which is BT.709 primaries and transfer —
+ * but nothing in the pipeline SAID so, and the tag was left to whatever encoder
+ * the device picked. Measured on real exports: desktop shipped
+ * `smpte170m,smpte170m,smpte170m` and mobile `bt470bg,smpte170m,smpte170m` —
+ * BT.601, i.e. SD/PAL tagging on a 1080×1920 file. Players and platform
+ * transcoders assume BT.709 for HD, so the same frame decoded under the wrong
+ * matrix drifts by up to ΔE 4.9 — a full band — while the card claims ΔE 0.8.
+ * A colour-accuracy product cannot ship a file that contradicts its own measurement.
+ *
+ * Note this reproduces ONLY with a hardware encoder: headless Chrome uses the
+ * software encoder and already tagged BT.709, so the test suite could not catch
+ * it. Device export is the real verification.
+ */
+const BT709 = {
+  primaries: 'bt709',
+  transfer: 'bt709',
+  matrix: 'bt709',
+  fullRange: false,
+} as const;
+
 /** MP4 is the goal (Instagram's uploader refuses WebM and iOS won't play it), so
- *  H.264 is tried first; WebM is a fallback that still gets perfect pacing. */
+ *  H.264 is tried first; WebM is a fallback that still gets perfect pacing.
+ *  The WebM fallback carries the same per-sample tag; Matroska stores colour in
+ *  its Colour element, which mediabunny writes from the same sample metadata. */
 const VIDEO_LADDER: VideoCodec[] = ['avc', 'vp9', 'vp8'];
 const AUDIO_LADDER: AudioCodec[] = ['aac', 'opus'];
 
@@ -165,7 +191,9 @@ export async function renderRevealOffline(
     target: new BufferTarget(),
   });
 
-  const videoSource = new CanvasSource(canvas, {
+  // VideoSampleSource, not CanvasSource — see BT709 below. CanvasSource builds
+  // the sample internally and gives us no way to state a colour space.
+  const videoSource = new VideoSampleSource({
     codec: opts.plan.video,
     quality: QUALITY_HIGH,
     keyFrameInterval: 2,
@@ -188,9 +216,18 @@ export async function renderRevealOffline(
       if (opts.signal?.aborted) throw new DOMException('Export cancelled', 'AbortError');
       applyOutputScale(ctx, outputScale);
       composeReveal(ctx, frameState(stamps[i], spec), res);
-      // Awaiting respects encoder + writer backpressure; an unbounded queue is a
-      // documented way to crash the encoder.
-      await videoSource.add(stamps[i] / 1000, frameDur);
+      const sample = new VideoSample(canvas, {
+        timestamp: stamps[i] / 1000,
+        duration: frameDur,
+        colorSpace: BT709,
+      });
+      try {
+        // Awaiting respects encoder + writer backpressure; an unbounded queue is a
+        // documented way to crash the encoder.
+        await videoSource.add(sample);
+      } finally {
+        sample.close(); // un-closed samples leak GPU memory
+      }
       opts.onProgress?.((i + 1) / (stamps.length + 1));
       // Yield periodically so the progress ring paints and the tab stays alive.
       if (i % 8 === 7) await new Promise((r) => setTimeout(r, 0));

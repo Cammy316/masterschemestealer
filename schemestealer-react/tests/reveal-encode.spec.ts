@@ -10,9 +10,20 @@
  * encode CAN be driven end to end in a test instead of only on a device.
  */
 import { test, expect } from '@playwright/test';
+import { execFileSync } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { seedScan } from './revealSeed';
+
+/** Remotion ships a static ffprobe; no system install required. */
+const FFPROBE = resolve(
+  '..',
+  'video-factory',
+  'node_modules',
+  '@remotion',
+  'compositor-win32-x64-msvc',
+  'ffprobe.exe',
+);
 
 test.use({ channel: 'chrome' });
 
@@ -93,8 +104,25 @@ test('pict-cast offline render: real encode, exact frame count', async ({ page }
 
   // Keep the artefact so its pacing can be parsed offline if ever in doubt.
   mkdirSync(OUT_DIR, { recursive: true });
-  writeFileSync(
-    resolve(OUT_DIR, `offline.${out.mime.includes('mp4') ? 'mp4' : 'webm'}`),
-    Buffer.from(out.bytes, 'base64'),
-  );
+  const file = resolve(OUT_DIR, `offline.${out.mime.includes('mp4') ? 'mp4' : 'webm'}`);
+  writeFileSync(file, Buffer.from(out.bytes, 'base64'));
+
+  // Intent: the shipped file was tagged BT.601 (bt470bg/smpte170m) on a 1080×1920
+  // canvas. Every modern player assumes BT.709 for HD, so the same frame decoded
+  // under the wrong matrix drifts by up to ΔE 4.9 — a full band — while the card
+  // claims ΔE 0.8. That makes the video contradict the engine's own measurement,
+  // which is the one thing this product cannot do. PERMANENT ASSERTION.
+  if (out.mime.includes('mp4')) {
+    const probe = execFileSync(
+      FFPROBE,
+      ['-v', 'error', '-select_streams', 'v', '-show_entries',
+       'stream=color_primaries,color_transfer,color_space', '-of', 'csv=p=0', file],
+      { encoding: 'utf8' },
+    ).trim();
+    console.log('COLOUR TAGS:', probe);
+    const [primaries, transfer, matrix] = probe.split(',').map((s) => s.trim());
+    expect(primaries, 'color_primaries').toBe('bt709');
+    expect(transfer, 'color_transfer').toBe('bt709');
+    expect(matrix, 'color_space').toBe('bt709');
+  }
 });
