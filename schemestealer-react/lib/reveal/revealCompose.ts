@@ -106,6 +106,16 @@ export function labelTint(hex: string, floor = 140): string {
   return `rgb(${r}, ${g}, ${b})`;
 }
 
+/** The app's fixed band vocabulary. A bare number means nothing to a viewer who
+ *  has never used the product; the word is what makes ΔE legible. Computed from
+ *  the value, never hardcoded. */
+export function deltaBandName(deltaE: number): string {
+  if (deltaE <= 2) return 'PERFECT';
+  if (deltaE <= 5) return 'CLOSE';
+  if (deltaE <= 10) return 'FAIR';
+  return 'DISTANT';
+}
+
 /** ΔE badge colour follows the app's band vocabulary (DeltaEBadge):
  *  perfect ≤2 · close ≤5 · fair ≤10 · distant beyond. */
 export function deltaBandColour(deltaE: number): string {
@@ -480,7 +490,9 @@ export function captionText(spec: RevealSpec, state: RevealFrameState): string |
   // 'colours' — the progress counter, now opening on the proof rather than a question.
   if (state.phase === 'proof' || state.phase === 'smash') return 'THE EXACT PAINTS ON THIS MODEL';
   if (state.phase === 'sweep') return 'SCANNING…';
-  if (state.phase === 'reveal') return `READING… ${state.identifiedCount}/${spec.colourCount} COLOURS`;
+  if (state.phase === 'reveal')
+    // Never render 0/n — announcing that nothing has happened yet is not a hook.
+    return `READING… ${Math.max(1, state.identifiedCount)}/${spec.colourCount} COLOURS`;
   return `${spec.colourCount} COLOURS IDENTIFIED`;
 }
 
@@ -632,7 +644,11 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
     state.regions.every((rs) => rs.revealProgress >= 1 && rs.pulse <= 0);
 
   withRock(ctx, r, state.camera.rotationDeg, () => {
-    if (settled) {
+    if (state.fullRestore >= 1) {
+      // Past the slam the entire photo is back in colour — base, scenic, all of
+      // it. Nothing left to composite per region.
+      ctx.drawImage(res.heroLayer, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
+    } else if (settled) {
       ctx.drawImage(res.revealedLayer!, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
     } else {
       drawGreyModel(ctx, res, r, state.baseAlpha, state.scanned);
@@ -661,6 +677,15 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
           ctx.restore();
         }
       });
+    }
+
+    // The slam: the rest of the image fades back to full colour over the
+    // detected-region composite.
+    if (state.fullRestore > 0 && state.fullRestore < 1) {
+      ctx.save();
+      ctx.globalAlpha = state.fullRestore;
+      ctx.drawImage(res.heroLayer, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
+      ctx.restore();
     }
 
     // The hero (full colour) sits on top until the snap strobes it away, with
@@ -893,7 +918,7 @@ function drawRecipe(ctx: CanvasRenderingContext2D, progress: number, hud: number
   if (owner) {
     drawText(
       ctx,
-      `DOMINANT · ${spec.recipeRegionIndex + 1} ${(owner.family || owner.hex).toUpperCase()}`,
+      `DOMINANT · ${(owner.family || owner.hex).toUpperCase()}`,
       CONTENT_CX,
       LAYOUT.recipeSubheading.y + 15,
       { font: res.fonts.cyber, size: 26, colour: labelTint(owner.hex), letter: 2, maxWidth: LAYOUT.recipeSubheading.w },
@@ -948,10 +973,10 @@ function drawRecipe(ctx: CanvasRenderingContext2D, progress: number, hud: number
       size: 34,
       colour: '#e8f0e8',
       align: 'left',
-      maxWidth: w - 118 - 20 - (showDelta ? 140 : 0),
+      maxWidth: w - 118 - 20 - (showDelta ? 250 : 0),
     });
     if (showDelta) {
-      drawText(ctx, `ΔE ${step.deltaE!.toFixed(1)}`, x + w - 26, y + CHIP_H / 2, {
+      drawText(ctx, `ΔE ${step.deltaE!.toFixed(1)} · ${deltaBandName(step.deltaE!)}`, x + w - 26, y + CHIP_H / 2, {
         font: res.fonts.cyber,
         size: 26,
         colour: deltaBandColour(step.deltaE!),

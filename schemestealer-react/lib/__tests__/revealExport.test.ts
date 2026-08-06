@@ -8,6 +8,7 @@ import {
   hexToRgba,
   labelTint,
   deltaBandColour,
+  deltaBandName,
   captionText,
   recipeSteps,
   buildRevealSpec,
@@ -160,6 +161,32 @@ describe('labelTint', () => {
   });
 });
 
+describe('deltaBandName', () => {
+  // Intent: "ΔE 0.8" means nothing to someone who has never used the product.
+  // The word is computed from the value — never hardcoded — so the clip can
+  // never claim a band the number does not support.
+  it('maps the fixed vocabulary at every boundary', () => {
+    expect(deltaBandName(2.0)).toBe('PERFECT');
+    expect(deltaBandName(2.01)).toBe('CLOSE');
+    expect(deltaBandName(5.0)).toBe('CLOSE');
+    expect(deltaBandName(5.01)).toBe('FAIR');
+    expect(deltaBandName(10.0)).toBe('FAIR');
+    expect(deltaBandName(10.01)).toBe('DISTANT');
+  });
+});
+
+describe('paint-count copy', () => {
+  // Intent: a hardcoded count is a stale claim waiting to happen — the database
+  // changes and a number burned into an exported video can never be corrected.
+  // The honest claim ("physically measured") survives; the figure does not.
+  it('no reveal-surface string quotes a paint count', () => {
+    const caps = buildRevealCaptions({ colourCount: 5, topFamily: 'Red', brandLabel: 'Citadel' });
+    for (const text of [caps.tiktok, caps.reels, caps.shorts]) {
+      expect(text).not.toMatch(/\d[\d,]{2,}\s*(measured\s+)?paints?/i);
+    }
+  });
+});
+
 describe('deltaBandColour', () => {
   // Intent: the badge is the brand's honesty signal — its colour must follow the
   // app's band vocabulary, not flatter every match with green.
@@ -291,6 +318,10 @@ describe('captionText', () => {
   it('counts up during the reveal and resolves to the total', () => {
     expect(at(0.24)).toBe('SCANNING…'); // sweep
     expect(at(0.35)).toMatch(/^READING… \d\/3 COLOURS$/); // region locks
+    // Intent: never announce that nothing has happened yet.
+    for (let f = 0.273; f < 0.455; f += 0.002) {
+      expect(at(f), `counter showed 0/ at f=${f.toFixed(3)}`).not.toMatch(/READING… 0\//);
+    }
     expect(at(0.8)).toBe('3 COLOURS IDENTIFIED'); // payoff hold
   });
 
