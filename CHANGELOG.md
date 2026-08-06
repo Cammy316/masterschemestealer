@@ -2,6 +2,67 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-08-06 (Pict-Cast v5.2 — correctness & delivery)
+
+Driven by a measured analysis of a real device export. Every item below was
+measured from a shipped file, not guessed. Note the analysed export predated
+v5.1 by 36 minutes, so three of its nine findings were already partly addressed
+— the rest were real and are fixed here.
+
+### Fixed
+- **The MP4 was tagged BT.601.** Measured: desktop shipped
+  `smpte170m,smpte170m,smpte170m` and mobile `bt470bg,smpte170m,smpte170m` on a
+  1080×1920 file. Players and platform transcoders assume BT.709 for HD, so the
+  same frame decoded under the wrong matrix drifts by up to **ΔE 4.9 — a full
+  band — while the card claims ΔE 0.8**. A colour-accuracy product cannot ship a
+  file that contradicts its own measurement. Nothing in our path ever stated a
+  colour space; `CanvasSource` gave no injection point, so the renderer now uses
+  `VideoSampleSource` and tags every frame explicitly.
+- **Half the recipe sat under platform UI.** The SHADE and WASH rows were
+  entirely inside TikTok's caption zone, the ΔE badge under the action rail, and
+  the watermark at y≈1880 where nobody has ever seen it. New
+  `lib/reveal/revealLayout.ts` owns a `SAFE_RECT` and a declared rect for every
+  element that carries information. **The previous pass only considered the
+  bottom edge — the right-hand action rail was never accounted for**, which is
+  how the badge and both callout rails ended up underneath it.
+- **The payoff was the shortest-lived state in the video.** All four rows plus
+  the coloured model existed for 1.4 s of 11, while 4.0 s of the clip was
+  frame-identical and the hook showed the proof for 0.6 s — not long enough to
+  read a headline plus four paint names. Retimed at the same 11 s: proof holds
+  2.0 s, five uniform 0.40 s region locks, and the complete state **holds for
+  3.0 s** before a clean end card.
+- **The end card was a ghost** — 0.5 s, never at full opacity, overlapping the
+  rows fading beneath it. It now owns a clean frame for a full second.
+- **The audio was physically inaudible on a phone.** 99% of its energy sat below
+  1 kHz with literally nothing above 2 kHz, and phone speakers roll off hard
+  below ~500 Hz. Hum cut, continuous 2–7 kHz cogitator hiss added, motion-tracker
+  ticks throughout. Measured: **23.5% of energy above 1 kHz (was 1.0%),
+  −14.5 LUFS (was −16.2), −1.9 dBTP (was −0.5)** — it was being clipped by the
+  platforms' own normalisation.
+- **A green wash over the hero.** The smash cut drew the model twice under
+  `hue-rotate(±120°)`; rotating red by 120° yields green, measured as G exceeding
+  R by 22 levels. Tinting the subject is the one thing this product must never
+  do. The glitch moved to the backdrop and chrome.
+- **A one-frame red pop.** `snapFlicker` returned 0.85 → 0 → 0.35, flashing the
+  colour model back *after* it had gone grey. Now monotonically non-increasing.
+- **The model's base stayed grey** through the reveal then popped back at the
+  loop, reading as "the app missed half the model". The whole image now restores
+  at the slam; the numbered callouts carry the detection message.
+
+### Changed
+- Model held at 40.1% of frame height (it had regressed while buying margin), and
+  the dead band above the recipe closed.
+- Copy: the counter never renders `0/n`; `DOMINANT · 5 RED` → `DOMINANT · RED`
+  (it parsed as "five red" — the owning callout's pulse carries the link);
+  `ΔE 0.8` → `ΔE 0.8 · PERFECT`, band word computed from the value.
+- **The hardcoded paint count is gone from all public-facing copy.** A burned-in
+  number in an exported video can never be corrected once the database changes;
+  the honest claim ("physically measured") survives without it. Guarded by a test.
+
+### Added
+- Permanent ffprobe colour assertion, a layout-containment suite, an anti-freeze
+  timeline guard, and FFT + BS.1770 loudness gates.
+
 ## [Unreleased] - 2026-08-06 (Pict-Cast v5.1 — legibility and weight)
 
 Follow-up on the first v5 device export (`MobileV5.mp4` — verified as a genuine

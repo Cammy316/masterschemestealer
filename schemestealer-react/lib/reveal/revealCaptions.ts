@@ -40,7 +40,7 @@ export function buildRevealCaptions(input: RevealCaptionInput): RevealCaptions {
       tags(['#miniaturepainting', '#warhammercommunity']),
     shorts:
       `TITLE: I Scanned My Mini and Got the Exact Paint Recipe (${n} Colours)\n\n` +
-      `A colour engine built on 1,312 measured paint swatches reads your model and returns a base→shade→highlight→wash recipe.\n` +
+      `A colour engine built on physically measured paint swatches reads your model and returns a base→shade→highlight→wash recipe.\n` +
       `Try it free: schemestealer.com/daily\n\n` +
       tags(['#warhammertips', '#paintingtutorial']),
   };

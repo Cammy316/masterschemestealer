@@ -100,6 +100,11 @@ export interface RevealFrameState {
    *  opens on the finished answer, then tears it away. */
   proofAlpha: number;
   scanned: number; // 0..1 fraction of the model lit behind the scan line
+  /** 0..1 restore of the WHOLE image at the slam. The colour return was masked
+   *  to detected regions, so the scenic base and grass stayed grey from ~5.5 s
+   *  until the loop blitted the hero over them — which reads as "the app missed
+   *  half the model", the opposite of the intended message. */
+  fullRestore: number;
   sweepY: number | null; // 0..1 during the sweep, else null
   regions: RevealRegionState[];
   identifiedCount: number; // regions whose label has fully resolved (counting caption)
@@ -311,6 +316,11 @@ export function frameState(t: number, spec: RevealSpec): RevealFrameState {
 
   // The cascade only starts once the model is fully resolved (after the slam),
   // so the payoff never competes with the reveal for attention.
+  // The whole photo returns to colour at the slam; the numbered callouts carry
+  // the "these five were detected" message from here on. This also removes the
+  // pop at the loop point, because the hero and the payoff now agree.
+  const fullRestore = f > REVEAL_END ? smoothstep((f - REVEAL_END) / (SLAM_END - REVEAL_END)) : 0;
+
   const recipeProgress =
     f > SLAM_END ? clamp((f - SLAM_END) / (RECIPE_CASCADE_END - SLAM_END)) : 0;
   // End card: full opacity on a CLEAN frame for a full second. It previously got
@@ -369,6 +379,7 @@ export function frameState(t: number, spec: RevealSpec): RevealFrameState {
     heroGlow,
     proofAlpha,
     scanned,
+    fullRestore,
     sweepY,
     regions,
     identifiedCount,
