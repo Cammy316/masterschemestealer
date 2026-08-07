@@ -43,6 +43,7 @@ import {
 } from './revealCompose';
 import { frameState, DEFAULT_DURATION_MS, type RevealSpec } from './revealTimeline';
 import { scheduleRevealAudio } from './revealAudio';
+import { patchColrToBt709, type ColrPatchResult } from './mp4ColrPatch';
 import type { RenderRevealOptions, RenderRevealResult } from './renderRevealVideo';
 
 /**
@@ -245,6 +246,18 @@ export async function renderRevealOffline(
 
   const buffer = (output.target as BufferTarget).buffer;
   if (!buffer) throw new Error('Encoder produced no output.');
+
+  // Force BT.709 in the muxed bytes. Tagging the input VideoSample was not
+  // enough: mediabunny writes the `colr` atom from decoderConfig.colorSpace —
+  // the ENCODER'S output metadata — and a hardware encoder reports BT.601,
+  // which shipped on every device export. `previous` is logged because it tells
+  // us what the device's encoder actually claimed, which nothing else does.
+  let colr: ColrPatchResult | null = null;
+  if (opts.plan.container === 'mp4') {
+    colr = patchColrToBt709(buffer);
+    console.info('[pict-cast] colr atoms patched:', colr.patched, 'was:', JSON.stringify(colr.previous));
+  }
+
   opts.onProgress?.(1);
 
   return {
@@ -252,6 +265,8 @@ export async function renderRevealOffline(
     mime: opts.plan.mimeType,
     durationMs,
     engine: 'webcodecs',
+    colrPatched: colr?.patched ?? 0,
+    colrPrevious: colr?.previous ?? [],
     width,
     height,
     codec: opts.plan.video,
