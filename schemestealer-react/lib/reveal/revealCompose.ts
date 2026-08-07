@@ -21,7 +21,7 @@ import {
   type MaskBounds,
   type RevealSkin,
 } from './revealLayers';
-import { scheduleRevealAudio } from './revealAudio';
+import { scheduleRevealAudio, revealAudioBeats } from './revealAudio';
 import {
   CANVAS_H,
   CANVAS_W,
@@ -1048,6 +1048,7 @@ if (process.env.NODE_ENV !== 'production' && typeof window !== 'undefined') {
     applyOutputScale,
     outputSize,
     scheduleRevealAudio,
+    revealAudioBeats,
     // The offline encoder is a dynamic chunk in production; tests pull it in on
     // demand, which registers window.__revealOfflineDebug.
     loadOffline: () => import('./renderRevealOffline'),

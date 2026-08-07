@@ -96,10 +96,33 @@ test('pict-cast export: UI wired + storyboard frames render', async ({ page }) =
     expect(b64.length).toBeGreaterThan(2000); // non-trivial frame
   }
 
-  // (c) The audio bed must be AUDIBLE. The first shipped export measured
-  // −40 dBFS RMS — inaudible once a platform normalises toward ~−14 LUFS, and a
-  // silent clip gets demoted outright. Rendering the same graph offline is the
-  // only way to check this without a real-time MediaRecorder.
+});
+
+/**
+ * (c) The audio gates.
+ *
+ * These replace a set that measured PROXIES. v5.2 asked for "at least 15% of
+ * energy above 1 kHz" as a stand-in for "audible on a phone speaker", and the
+ * cheapest way to pass it was a continuous 2-7 kHz hiss - which passed, and made
+ * the clip sound like tape noise. So each gate below measures the property
+ * itself:
+ *
+ *  - the SUSTAINED layer, alone, must be a low rumble (bed-isolation render);
+ *  - the highs must arrive ON the beats, not smeared across the clip;
+ *  - the mix must be loud enough to survive platform normalisation, with true-
+ *    peak headroom, and still have transient range (crest factor).
+ *
+ * Rendering the same graph offline is the only way to check any of this without
+ * a real-time recorder.
+ */
+test('pict-cast audio: rumble bed, transient highs, broadcast loudness', async ({ page }) => {
+  page.on('pageerror', (e) => console.log('PAGEERROR:', e.message));
+  await page.route('**/api/**', (r) =>
+    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ status: 'ok', ready: true }) }),
+  );
+  await page.addInitScript(seedScan, STORAGE_KEY);
+  await page.goto('/miniature/results');
+
   const audio = await page.evaluate(async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const R = (window as any).__revealDebug;
@@ -107,117 +130,180 @@ test('pict-cast export: UI wired + storyboard frames render', async ({ page }) =
     const scan = (window as any).__seedScan;
     const spec = R.buildRevealSpec(scan.detectedColors, [], 'Citadel', 'imperial', 'colours', 11000, 0);
     const sr = 48000;
-    const ctx = new OfflineAudioContext(1, Math.ceil(sr * 11.6), sr);
-    R.scheduleRevealAudio(ctx, ctx.destination, spec, 0.05);
-    const d = (await ctx.startRendering()).getChannelData(0);
+    const T0 = 0.05;
+
+    const render = async (layers: 'all' | 'bed') => {
+      const ctx = new OfflineAudioContext(1, Math.ceil(sr * 11.6), sr);
+      R.scheduleRevealAudio(ctx, ctx.destination, spec, T0, { layers });
+      return (await ctx.startRendering()).getChannelData(0);
+    };
+
+    /** Power in three bands, via a real FFT over the whole signal. */
+    const bands = (d: Float32Array) => {
+      let N = 1;
+      while (N < d.length) N <<= 1;
+      const re = new Float64Array(N);
+      const im = new Float64Array(N);
+      for (let i = 0; i < d.length; i++) re[i] = d[i] * (0.5 - 0.5 * Math.cos((2 * Math.PI * i) / d.length));
+      for (let i = 1, j = 0; i < N; i++) {
+        let bit = N >> 1;
+        for (; j & bit; bit >>= 1) j ^= bit;
+        j ^= bit;
+        if (i < j) {
+          [re[i], re[j]] = [re[j], re[i]];
+          [im[i], im[j]] = [im[j], im[i]];
+        }
+      }
+      for (let len = 2; len <= N; len <<= 1) {
+        const ang = (-2 * Math.PI) / len;
+        const wr = Math.cos(ang);
+        const wi = Math.sin(ang);
+        for (let i = 0; i < N; i += len) {
+          let cr = 1;
+          let ci = 0;
+          for (let k = 0; k < len / 2; k++) {
+            const ur = re[i + k];
+            const ui = im[i + k];
+            const vr = re[i + k + len / 2] * cr - im[i + k + len / 2] * ci;
+            const vi = re[i + k + len / 2] * ci + im[i + k + len / 2] * cr;
+            re[i + k] = ur + vr;
+            im[i + k] = ui + vi;
+            re[i + k + len / 2] = ur - vr;
+            im[i + k + len / 2] = ui - vi;
+            const ncr = cr * wr - ci * wi;
+            ci = cr * wi + ci * wr;
+            cr = ncr;
+          }
+        }
+      }
+      const binHz = sr / N;
+      let sub = 0; // < 250 Hz
+      let mid = 0; // 250 Hz - 3 kHz
+      let hi = 0; // > 3 kHz
+      for (let k = 1; k < N / 2; k++) {
+        const f = k * binHz;
+        if (f < 40) continue;
+        const p = re[k] * re[k] + im[k] * im[k];
+        if (f < 250) sub += p;
+        else if (f < 3000) mid += p;
+        else if (f < 16000) hi += p;
+      }
+      const total = sub + mid + hi;
+      return { subFraction: sub / total, midFraction: mid / total, highFraction: hi / total };
+    };
+
+    /** Integrated loudness, K-weighted per BS.1770 (shelf + high-pass), gated. */
+    const integratedLufs = (d: Float32Array) => {
+      const kw = new Float64Array(d.length);
+      let x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+      for (let i = 0; i < d.length; i++) {
+        const x = d[i];
+        const y = 1.53512485958 * x - 2.69169618940 * x1 + 1.19839281085 * x2
+          + 1.69065929318 * y1 - 0.73248077421 * y2;
+        x2 = x1; x1 = x; y2 = y1; y1 = y;
+        kw[i] = y;
+      }
+      let z1 = 0, z2 = 0, w1 = 0, w2 = 0;
+      for (let i = 0; i < kw.length; i++) {
+        const x = kw[i];
+        const y = 1.0 * x - 2.0 * z1 + 1.0 * z2 + 1.99004745483 * w1 - 0.99007225036 * w2;
+        z2 = z1; z1 = x; w2 = w1; w1 = y;
+        kw[i] = y;
+      }
+      const block = Math.floor(sr * 0.4);
+      const loud: number[] = [];
+      for (let s = 0; s + block <= kw.length; s += Math.floor(block * 0.25)) {
+        let ss = 0;
+        for (let i = s; i < s + block; i++) ss += kw[i] * kw[i];
+        loud.push(-0.691 + 10 * Math.log10(ss / block + 1e-12));
+      }
+      const gated = loud.filter((l) => l > -70);
+      const rel = gated.length
+        ? -0.691 + 10 * Math.log10(gated.reduce((a, l) => a + 10 ** ((l + 0.691) / 10), 0) / gated.length) - 10
+        : -70;
+      const kept = gated.filter((l) => l > rel);
+      return kept.length
+        ? -0.691 + 10 * Math.log10(kept.reduce((a, l) => a + 10 ** ((l + 0.691) / 10), 0) / kept.length)
+        : -70;
+    };
+
+    const full = await render('all');
+    const bed = await render('bed');
+
     let sum = 0;
     let peak = 0;
-    for (let i = 0; i < d.length; i++) {
-      sum += d[i] * d[i];
-      if (Math.abs(d[i]) > peak) peak = Math.abs(d[i]);
+    for (let i = 0; i < full.length; i++) {
+      sum += full[i] * full[i];
+      if (Math.abs(full[i]) > peak) peak = Math.abs(full[i]);
     }
-    // Spectral balance, measured the same way the defect was found: a real FFT
-    // over the whole bed. A phone speaker rolls off hard below ~500 Hz, so a bed
-    // whose energy is all sub-1 kHz is inaudible to most viewers however loud it
-    // measures. The shipped bed was 99% below 1 kHz and 0.0% above 2 kHz.
-    let N = 1;
-    while (N < d.length) N <<= 1;
-    const re = new Float64Array(N);
-    const im = new Float64Array(N);
-    for (let i = 0; i < d.length; i++) re[i] = d[i] * (0.5 - 0.5 * Math.cos((2 * Math.PI * i) / d.length));
-    for (let i = 1, j = 0; i < N; i++) {
-      let bit = N >> 1;
-      for (; j & bit; bit >>= 1) j ^= bit;
-      j ^= bit;
-      if (i < j) {
-        [re[i], re[j]] = [re[j], re[i]];
-        [im[i], im[j]] = [im[j], im[i]];
+    const rmsDb = 20 * Math.log10(Math.sqrt(sum / full.length) + 1e-9);
+    const peakDb = 20 * Math.log10(peak + 1e-9);
+
+    // Where does the HF energy actually live in TIME? Four cascaded one-pole
+    // high-passes at 3 kHz (24 dB/oct, so the hum cannot leak in and flatter the
+    // result), then energy per sample against the real beat table.
+    const a = 0.7181; // RC/(RC+dt) for fc = 3 kHz at 48 kHz
+    const st = [0, 0, 0, 0];
+    const sx = [0, 0, 0, 0];
+    const hf = new Float64Array(full.length);
+    for (let i = 0; i < full.length; i++) {
+      let v: number = full[i];
+      for (let s = 0; s < 4; s++) {
+        const y = a * (st[s] + v - sx[s]);
+        sx[s] = v;
+        st[s] = y;
+        v = y;
       }
+      hf[i] = v * v;
     }
-    for (let len = 2; len <= N; len <<= 1) {
-      const ang = (-2 * Math.PI) / len;
-      const wr = Math.cos(ang);
-      const wi = Math.sin(ang);
-      for (let i = 0; i < N; i += len) {
-        let cr = 1;
-        let ci = 0;
-        for (let k = 0; k < len / 2; k++) {
-          const ur = re[i + k];
-          const ui = im[i + k];
-          const vr = re[i + k + len / 2] * cr - im[i + k + len / 2] * ci;
-          const vi = re[i + k + len / 2] * ci + im[i + k + len / 2] * cr;
-          re[i + k] = ur + vr;
-          im[i + k] = ui + vi;
-          re[i + k + len / 2] = ur - vr;
-          im[i + k + len / 2] = ui - vi;
-          const ncr = cr * wr - ci * wi;
-          ci = cr * wi + ci * wr;
-          cr = ncr;
+    const beats: number[] = R.revealAudioBeats(spec).map((b: number) => b + T0);
+    const WINDOW = 0.06;
+    let near = 0;
+    let total = 0;
+    for (let i = 0; i < hf.length; i++) {
+      total += hf[i];
+      const t = i / sr;
+      for (let b = 0; b < beats.length; b++) {
+        if (Math.abs(t - beats[b]) <= WINDOW) {
+          near += hf[i];
+          break;
         }
       }
     }
-    const binHz = sr / N;
-    let low = 0;
-    let high = 0;
-    for (let k = 1; k < N / 2; k++) {
-      const f = k * binHz;
-      if (f < 40) continue;
-      const p = re[k] * re[k] + im[k] * im[k];
-      if (f < 1000) low += p;
-      else if (f < 12000) high += p;
-    }
-
-    // Integrated loudness, K-weighted per BS.1770 (shelf + high-pass), gated.
-    const kw = new Float64Array(d.length);
-    let x1 = 0, x2 = 0, y1 = 0, y2 = 0;
-    for (let i = 0; i < d.length; i++) {
-      const x = d[i];
-      const y = 1.53512485958 * x - 2.69169618940 * x1 + 1.19839281085 * x2
-        + 1.69065929318 * y1 - 0.73248077421 * y2;
-      x2 = x1; x1 = x; y2 = y1; y1 = y;
-      kw[i] = y;
-    }
-    let z1 = 0, z2 = 0, w1 = 0, w2 = 0;
-    for (let i = 0; i < kw.length; i++) {
-      const x = kw[i];
-      const y = 1.0 * x - 2.0 * z1 + 1.0 * z2 + 1.99004745483 * w1 - 0.99007225036 * w2;
-      z2 = z1; z1 = x; w2 = w1; w1 = y;
-      kw[i] = y;
-    }
-    const block = Math.floor(sr * 0.4);
-    const loud: number[] = [];
-    for (let s = 0; s + block <= kw.length; s += Math.floor(block * 0.25)) {
-      let ss = 0;
-      for (let i = s; i < s + block; i++) ss += kw[i] * kw[i];
-      loud.push(-0.691 + 10 * Math.log10(ss / block + 1e-12));
-    }
-    const gated = loud.filter((l) => l > -70);
-    const rel = gated.length
-      ? -0.691 + 10 * Math.log10(gated.reduce((a, l) => a + 10 ** ((l + 0.691) / 10), 0) / gated.length) - 10
-      : -70;
-    const kept = gated.filter((l) => l > rel);
-    const lufs = kept.length
-      ? -0.691 + 10 * Math.log10(kept.reduce((a, l) => a + 10 ** ((l + 0.691) / 10), 0) / kept.length)
-      : -70;
 
     return {
-      rmsDb: 20 * Math.log10(Math.sqrt(sum / d.length) + 1e-9),
-      peakDb: 20 * Math.log10(peak + 1e-9),
-      highFraction: high / (low + high),
-      lufs,
+      rmsDb,
+      peakDb,
+      crestDb: peakDb - rmsDb,
+      lufs: integratedLufs(full),
+      mix: bands(full),
+      bed: bands(bed),
+      hfOnBeat: near / (total + 1e-30),
+      beatCount: beats.length,
+      // What share of the clip the +/-60 ms windows even cover - without this the
+      // alignment number is unreadable: hitting 65% would be unremarkable if the
+      // windows covered 65% of the runtime.
+      windowCoverage: (beats.length * 2 * WINDOW) / (full.length / sr),
     };
   });
-  console.log('AUDIO BED:', JSON.stringify(audio));
-  expect(audio.rmsDb).toBeGreaterThan(-26);
-  expect(audio.peakDb).toBeLessThan(-1); // true-peak headroom: platforms add ~2 dB
-  expect(audio.peakDb).toBeGreaterThan(-12); // …but it still has to have transients
-  // Intent: the shipped bed had 1.0% of its energy above 1 kHz and literally
-  // nothing above 2 kHz, so a phone speaker reproduced almost none of it.
-  expect(audio.highFraction, 'energy above 1 kHz').toBeGreaterThan(0.15);
-  // Intent: platforms normalise to about -14 LUFS. At -16.2 they add ~2 dB to a
-  // file with 0.5 dB of headroom, and it clips on their servers.
+  console.log('AUDIO:', JSON.stringify(audio, null, 1));
+
+  // Intent: the sustained layer is a RUMBLE. v5.2 replaced it with a continuous
+  // 2-7 kHz hiss, which is what made the clip sound broken on a phone.
+  expect(audio.bed.subFraction, 'bed energy below 250 Hz').toBeGreaterThan(0.6);
+  expect(audio.bed.highFraction, 'bed energy above 3 kHz').toBeLessThan(0.1);
+
+  // Intent: the highs are EVENTS. If they drift back into a continuous layer
+  // this fraction collapses, whatever the overall spectrum says.
+  expect(audio.hfOnBeat, 'HF energy within +/-60 ms of a scheduled beat').toBeGreaterThan(0.65);
+
+  // Intent: survives platform normalisation to ~-14 LUFS without being clipped
+  // on their servers, and still has transient range rather than being squashed
+  // flat by the limiter.
   expect(audio.lufs, 'integrated loudness').toBeGreaterThan(-15);
   expect(audio.lufs, 'integrated loudness').toBeLessThan(-13);
+  expect(audio.peakDb, 'true-peak headroom').toBeLessThan(-1);
+  expect(audio.crestDb, 'crest factor').toBeGreaterThan(12);
 });
 
 // Perf gate. The stutter bug was invisible to this suite for two rounds because
