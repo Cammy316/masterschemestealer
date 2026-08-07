@@ -109,6 +109,10 @@ export interface RenderRevealResult {
   height?: number;
   codec?: string;
   frameCount?: number;
+  /** How many `colr` atoms the BT.709 backstop rewrote, and what they said —
+   *  the only signal we get about what a device's encoder actually reported. */
+  colrPatched?: number;
+  colrPrevious?: { primaries: number; transfer: number; matrix: number }[];
   /** isTypeSupported result per candidate — export telemetry (see videoMimeSupport). */
   mimeSupport?: Record<string, boolean>;
 }
