@@ -306,6 +306,109 @@ test('pict-cast audio: rumble bed, transient highs, broadcast loudness', async (
   expect(audio.crestDb, 'crest factor').toBeGreaterThan(12);
 });
 
+/**
+ * The anti-freeze gate, measured on RENDERED PIXELS.
+ *
+ * There was already a unit test called "never goes 0.4s without an information
+ * change during the build". It could not fail. It serialised fields off
+ * `frameState` and then explicitly skipped both holds -- `if (t < proofEnd)
+ * continue` and a loop that stopped 400 ms short of the payoff hold -- so the
+ * one thing it was named for was the one thing it never looked at. Meanwhile a
+ * shipped export held a frame-identical image for three seconds.
+ *
+ * It also measured the wrong quantity. Camera drift mutates `frameState` every
+ * single frame, so ANY field-based assertion passes while the screen is still:
+ * during the payoff hold the camera moves ~0.0127% scale per frame, which is
+ * about 0.1 px on a 780 px model.
+ *
+ * So this composes the real frames and diffs them. A hold is allowed to be
+ * calm; it is not allowed to be a still image.
+ */
+test('pict-cast anti-freeze: no 0.4s window is a still image', async ({ page }) => {
+  test.setTimeout(300000);
+  page.on('pageerror', (e) => console.log('PAGEERROR:', e.message));
+  await page.route('**/api/**', (r) =>
+    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ status: 'ok', ready: true }) }),
+  );
+  await page.addInitScript(seedScan, STORAGE_KEY);
+  await page.goto('/miniature/results');
+
+  const motion = await page.evaluate(async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const R = (window as any).__revealDebug;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const scan = (window as any).__seedScan;
+    if (!R || !scan) return { error: `hook=${!!R} scan=${!!scan}` } as const;
+    const colors = scan.detectedColors;
+    const steps = R.recipeSteps(colors[0].paintRecipe, 'citadel');
+    const DURATION = 11000;
+    const spec = R.buildRevealSpec(colors, steps, 'Citadel', 'imperial', 'colours', DURATION, 0);
+    const res = await R.prepareResources(scan.imageUrl, colors, scan.maskFrame, spec);
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 1080;
+    canvas.height = 1920;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true })!;
+
+    // Up to the loop dissolve. Past that the frame is a crossfade onto the
+    // pre-baked target, which is motion by construction and proves nothing.
+    const END_FRACTION = 0.9455;
+    const FPS = 30;
+    const step = 1000 / FPS;
+    const last = Math.floor((END_FRACTION * DURATION) / step);
+
+    // Mean absolute per-channel difference between consecutive frames.
+    const diffs: number[] = [];
+    let prev: Uint8ClampedArray | null = null;
+    for (let i = 0; i <= last; i++) {
+      R.composeAt(ctx, i * step, res);
+      const cur = ctx.getImageData(0, 0, 1080, 1920).data;
+      if (prev) {
+        let sum = 0;
+        // Stride over pixels: every 4th pixel is plenty for a mean, and a full
+        // 8.3 MB per-byte walk on 320 frames is not.
+        let n = 0;
+        for (let k = 0; k < cur.length; k += 16) {
+          sum += Math.abs(cur[k] - prev[k]) + Math.abs(cur[k + 1] - prev[k + 1]) + Math.abs(cur[k + 2] - prev[k + 2]);
+          n += 3;
+        }
+        diffs.push(sum / n);
+      }
+      prev = cur;
+    }
+
+    // Slide a 0.4 s window and record the calmest one.
+    const WIN = Math.round(0.4 * FPS);
+    let worst = { at: 0, mean: Infinity };
+    for (let i = 0; i + WIN <= diffs.length; i++) {
+      let sum = 0;
+      for (let k = i; k < i + WIN; k++) sum += diffs[k];
+      const mean = sum / WIN;
+      if (mean < worst.mean) worst = { at: Math.round(i * step), mean };
+    }
+    return {
+      worstWindowMs: worst.at,
+      worstWindowMean: worst.mean,
+      overallMean: diffs.reduce((a, b) => a + b, 0) / diffs.length,
+      frames: diffs.length + 1,
+    } as const;
+  });
+
+  console.log('ANTI-FREEZE:', JSON.stringify(motion));
+  expect('error' in motion ? motion.error : null).toBeNull();
+  if ('error' in motion) return;
+
+  // Intent: a shipped export held an identical image for 3 s and the suite was
+  // green. The threshold is on MEAN ABSOLUTE CHANNEL DIFFERENCE, so 0.5 is a
+  // low bar deliberately -- it does not demand a busy frame, only that the
+  // picture is not frozen. Nothing here may be weakened to make a phase pass:
+  // if a hold cannot clear it, the hold needs motion, not a smaller number.
+  expect(
+    motion.worstWindowMean,
+    `frozen 0.4s window at ${motion.worstWindowMs}ms (mean channel delta ${motion.worstWindowMean.toFixed(3)})`,
+  ).toBeGreaterThan(0.5);
+});
+
 // Perf gate. The stutter bug was invisible to this suite for two rounds because
 // the seed image is 400×600 and composes in 0.2 ms — 200× cheaper than a real
 // background-removed phone photo. This renders at a realistic source size and

@@ -196,6 +196,8 @@ export interface RevealResources {
   imgH: number;
   /** The static cogitator backdrop, rendered once and blitted per frame. */
   backdropLayer: HTMLCanvasElement;
+  /** Pre-baked sensor-grain tiles, cycled per frame — see drawAmbient. */
+  grainTiles: HTMLCanvasElement[];
   /** The finished frame-1 composition, rendered once — the loop dissolve is
    *  frameState(0) every time, so re-composing it per frame was pure waste. */
   loopTargetLayer: HTMLCanvasElement;
@@ -351,6 +353,7 @@ export async function prepareResources(
     imgW,
     imgH,
     backdropLayer,
+    grainTiles: buildGrainTiles(),
     loopTargetLayer,
     heroLayer,
     greyLayer,
@@ -625,9 +628,11 @@ export function drawLoopTarget(ctx: CanvasRenderingContext2D, res: RevealResourc
   // Same renderer as the outro cascade at full progress, so the flash and the
   // payoff can never show different recipes.
   if (s0.proofAlpha > 0) drawRecipe(ctx, 1, s0.proofAlpha, res);
-  // The seam is frame 0 vs this. The watermark now draws in every composed
-  // frame, so it has to be here too or the dissolve would blink it off.
+  // The seam is frame 0 vs this. The watermark and the ambient layer now draw
+  // in every composed frame, so they have to be here too — at p=0, which is
+  // exactly what the live path produces at both ends of the loop.
   drawWatermark(ctx, 1, res);
+  drawAmbient(ctx, res, accentFor(res.spec.skin), 0);
 }
 
 export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameState, res: RevealResources): void {
@@ -888,6 +893,10 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
   if (state.plateAlpha > 0) drawPlate(ctx, state.plateAlpha, res);
   drawWatermark(ctx, 1, res);
 
+  // Continuous motion — above everything, below the loop crossfade so the
+  // dissolve blends two frames that have both already been grained.
+  drawAmbient(ctx, res, accent, state.progress);
+
   // Loop dissolve back to frame 1 (the hero) — a blit of the pre-baked target.
   // The HUD has already faded, so nothing ghosts through the crossfade.
   if (state.loopCrossfade > 0) {
@@ -1024,6 +1033,97 @@ function drawWatermark(ctx: CanvasRenderingContext2D, alpha: number, res: Reveal
     align: 'right',
     letter: 1,
   });
+  ctx.restore();
+}
+
+/** How many grain tiles are cycled. Must divide GRAIN_STEPS exactly, or the
+ *  cycle would not return to tile 0 at the loop point. */
+const GRAIN_TILES = 4;
+/** Tile advances across the clip. A multiple of GRAIN_TILES, so p=1 lands on
+ *  the same tile as p=0 and the loop seam stays pixel-identical. */
+const GRAIN_STEPS = 320;
+/** Half-resolution tiles: 4 × 540×960 is ~8 MB of canvas, against ~33 MB at
+ *  full res. This runs on phones — see the memory rules in CLAUDE.md. */
+const GRAIN_W = 540;
+const GRAIN_H = 960;
+/** Additive, and deliberately low. At 0.024 the grain lifts pure black by ~3
+ *  levels (which OLED prefers anyway) and moves the frame-to-frame delta well
+ *  clear of the anti-freeze floor without reading as noise. */
+const GRAIN_ALPHA = 0.024;
+
+/** Deterministic sensor grain. Same mulberry32 the audio bed uses — a random
+ *  grain would make the export non-reproducible and the loop seam a coin flip. */
+function buildGrainTiles(): HTMLCanvasElement[] {
+  const tiles: HTMLCanvasElement[] = [];
+  let seed = 0x811c9dc5;
+  for (let t = 0; t < GRAIN_TILES; t++) {
+    const c = document.createElement('canvas');
+    c.width = GRAIN_W;
+    c.height = GRAIN_H;
+    const g = c.getContext('2d');
+    if (!g) continue;
+    const img = g.createImageData(GRAIN_W, GRAIN_H);
+    const d = img.data;
+    let s = (seed = (seed + 0x6d2b79f5) | 0);
+    for (let i = 0; i < d.length; i += 4) {
+      s = (s + 0x6d2b79f5) | 0;
+      let x = Math.imul(s ^ (s >>> 15), 1 | s);
+      x = (x + Math.imul(x ^ (x >>> 7), 61 | x)) ^ x;
+      const v = (x ^ (x >>> 14)) >>> 24; // 0..255
+      d[i] = v;
+      d[i + 1] = v;
+      d[i + 2] = v;
+      d[i + 3] = 255;
+    }
+    g.putImageData(img, 0, 0);
+    tiles.push(c);
+  }
+  return tiles;
+}
+
+/**
+ * The continuous motion layer. Runs the WHOLE clip, independent of phase.
+ *
+ * This exists because of a measurement, not a preference: composed at 30 Hz and
+ * diffed pixel-by-pixel, the calmest 0.4 s window of the shipped clip scored a
+ * mean channel delta of 0.012 — 42× below the floor. The payoff hold was a
+ * still image in everything but name. Camera drift during that hold is about
+ * 0.0127% scale per frame, roughly 0.1 px on a 780 px model, which is why every
+ * field-based assertion passed while the screen sat frozen.
+ *
+ * Phase-driven motion cannot fix that, because a hold is BY DEFINITION the
+ * absence of phase change. So the fix has to be something that never asks what
+ * phase it is:
+ *
+ *  - sensor grain, cycled per frame, which touches every pixel including the
+ *    black field that makes up most of the frame;
+ *  - a slow cogitator refresh band traversing the height exactly once.
+ *
+ * Both are periodic in `p` (elapsed fraction), so the frame at p=1 is identical
+ * to p=0 and the loop seam survives.
+ */
+function drawAmbient(ctx: CanvasRenderingContext2D, res: RevealResources, accent: string, p: number): void {
+  // Refresh band: one full traversal per clip, so it is exactly where it
+  // started when the clip loops.
+  const bandH = 460;
+  const cy = -bandH / 2 + p * (CANVAS_H + bandH);
+  const band = ctx.createLinearGradient(0, cy - bandH / 2, 0, cy + bandH / 2);
+  band.addColorStop(0, hexToRgba(accent, 0));
+  band.addColorStop(0.5, hexToRgba(accent, 0.05));
+  band.addColorStop(1, hexToRgba(accent, 0));
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  ctx.fillStyle = band;
+  ctx.fillRect(0, cy - bandH / 2, CANVAS_W, bandH);
+
+  // Grain, additive so it registers on the black field rather than being
+  // swallowed by it (an `overlay` blend over black is a no-op).
+  const tiles = res.grainTiles;
+  if (tiles.length) {
+    const idx = Math.floor(p * GRAIN_STEPS) % tiles.length;
+    ctx.globalAlpha = GRAIN_ALPHA;
+    ctx.drawImage(tiles[idx], 0, 0, CANVAS_W, CANVAS_H);
+  }
   ctx.restore();
 }
 
