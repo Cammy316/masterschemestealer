@@ -135,8 +135,22 @@ const RECIPE_END = 0.873;  // 9.60 s (cascade, then the payoff HOLD)
 
 /** Cascade lands all four rows by 6.40 s, leaving a 3.0 s hold on the complete
  *  state — the screenshot frame, previously the shortest-lived in the video. */
-const RECIPE_CASCADE_END = 0.582;
-/** The full state is held, untouched, from here to RECIPE_END. */
+const RECIPE_CASCADE_END = 0.5818;
+/** The full state is held from here to RECIPE_END.
+ *
+ *  "Held" no longer means "frozen". Composed and diffed pixel-by-pixel this
+ *  window scored a mean channel delta of 0.012 — a still image — while every
+ *  field-based assertion passed, because camera drift mutates frameState every
+ *  frame without moving anything visible. The continuous ambient layer in
+ *  revealCompose is what makes the hold live; these boundaries only decide how
+ *  long the viewer gets to READ it.
+ *
+ *  The v5.3 brief specified 0.5818–0.8364, i.e. a 2.8 s hold. The cascade end is
+ *  taken verbatim; the hold END is not. 3.0 s here came from direct feedback
+ *  that this is the frame people screenshot, and trimming 200 ms off it fixes
+ *  nothing — the hold was never too LONG, it was too STILL, and that is what
+ *  the ambient layer addresses. Shortening it would only have made the defect
+ *  briefer. */
 export const PAYOFF_HOLD = { start: RECIPE_CASCADE_END, end: 0.855 } as const;
 /** Callouts and rows clear, then the end card owns a clean frame for 1.0 s. */
 const CLEAR_END = 0.873;
@@ -145,7 +159,7 @@ const END_CARD_END = 0.964;
 const BOX_MORPH = 0.06;
 /** Camera is back on the frame-0 proof framing by here, so the dissolve has no jump. */
 const CAMERA_HOME = 0.99;
-const HUD_FADE_START = 0.855;
+const HUD_FADE_START = PAYOFF_HOLD.end;
 /** HUD is fully gone BEFORE the dissolve even starts. The previous cut overlapped
  *  them for ~0.26 s and the outgoing caption ghosted through the incoming one. */
 const HUD_FADE_END = CLEAR_END;
