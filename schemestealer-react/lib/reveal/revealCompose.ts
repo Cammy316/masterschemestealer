@@ -63,6 +63,8 @@ const PRE_SCAN_DIM = 0.62;
 /** Callout label type. Shared by the draw call and the leader-start measurement
  *  so the line always begins clear of the glyphs. */
 const LABEL_SIZE = 36;
+/** ΔE pill type. Sized so the longest band word (DISTANT) still fits the pill. */
+const BADGE_TEXT_SIZE = 24;
 const LABEL_MAX_W = 380;
 
 const ROLE_ACCENT: Record<RevealRecipeStep['role'], string> = {
@@ -982,33 +984,66 @@ function drawRecipe(ctx: CanvasRenderingContext2D, progress: number, hud: number
     roundRect(ctx, x, y, 12, CHIP_H, 6);
     ctx.fillStyle = roleAccent;
     ctx.fill();
-    // swatch
-    roundRect(ctx, x + 34, y + 18, 60, 60, 12);
+    // Chip internals are derived from CHIP_H, not hardcoded to it. They were
+    // literals tuned for 84 px, so shrinking the row to 74 dropped every paint
+    // name's descenders through the bottom border and pushed the swatch past it.
+    const swatch = CHIP_H - 26;
+    roundRect(ctx, x + 30, y + 13, swatch, swatch, 12);
     ctx.fillStyle = step.hex;
     ctx.fill();
 
-    drawText(ctx, step.role.toUpperCase(), x + 118, y + 34, {
+    const textX = x + 30 + swatch + 20;
+    drawText(ctx, step.role.toUpperCase(), textX, y + 28, {
       font: res.fonts.cyber,
-      size: 22,
+      size: 20,
       colour: roleAccent,
       align: 'left',
     });
-    drawText(ctx, step.name, x + 118, y + 66, {
+    drawText(ctx, step.name, textX, y + 56, {
       font: res.fonts.tech,
-      size: 34,
+      size: 30,
       colour: '#e8f0e8',
       align: 'left',
-      maxWidth: w - 118 - 20 - (showDelta ? 250 : 0),
+      maxWidth: x + w - 20 - textX,
     });
-    if (showDelta) {
-      drawText(ctx, `ΔE ${step.deltaE!.toFixed(1)} · ${deltaBandName(step.deltaE!)}`, x + w - 26, y + CHIP_H / 2, {
-        font: res.fonts.cyber,
-        size: 26,
-        colour: deltaBandColour(step.deltaE!),
-        align: 'right',
-      });
-    }
     ctx.restore();
+
+    // The ΔE badge, on its own line under the base row.
+    //
+    // It used to sit right-aligned INSIDE this row, which squeezed the paint
+    // name into a 332 px box and made the one measurement in the whole clip
+    // read as a suffix on a product name. It is the proof the app rests on.
+    //
+    // Still base-only: ΔE is the distance from the DETECTED colour, which only
+    // the base match measures. Putting it on derived partners would compare two
+    // different quantities under one label. Honest badge or no badge.
+    if (showDelta) {
+      const b = LAYOUT.deltaBadge;
+      const band = deltaBandColour(step.deltaE!);
+      const text = `ΔE ${step.deltaE!.toFixed(1)} · ${deltaBandName(step.deltaE!)}`;
+      ctx.save();
+      ctx.globalAlpha = appear * hud;
+      ctx.font = `700 ${BADGE_TEXT_SIZE}px ${res.fonts.cyber}`;
+      const pillW = Math.min(b.w, ctx.measureText(text).width + 56);
+      const pillX = FRAME_CX - pillW / 2;
+      roundRect(ctx, pillX, b.y, pillW, b.h, b.h / 2);
+      ctx.fillStyle = hexToRgba(band, 0.12);
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = band;
+      ctx.shadowColor = band;
+      ctx.shadowBlur = 14;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+      drawText(ctx, text, FRAME_CX, b.y + b.h / 2 + 1, {
+        font: res.fonts.cyber,
+        size: BADGE_TEXT_SIZE,
+        colour: band,
+        letter: 1,
+        maxWidth: pillW - 24,
+      });
+      ctx.restore();
+    }
   });
 }
 

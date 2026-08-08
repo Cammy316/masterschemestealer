@@ -96,6 +96,13 @@ test('pict-cast export: UI wired + storyboard frames render', async ({ page }) =
     expect(b64.length).toBeGreaterThan(2000); // non-trivial frame
   }
 
+  // The loop seam, finally asserted. This file has carried a comment saying
+  // "frame0 and loop must be pixel-identical" since v5 and never checked it, so
+  // every layer added since — the watermark, the decor band, the ambient grain
+  // — could have broken the loop silently. Each of them had to be added to
+  // drawLoopTarget as well, and only this catches it when one is not.
+  expect(frames?.loop, 'the final frame is not pixel-identical to frame 0').toBe(frames?.frame0);
+
 });
 
 /**

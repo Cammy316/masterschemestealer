@@ -154,7 +154,12 @@ const RECIPE_CASCADE_END = 0.5818;
 export const PAYOFF_HOLD = { start: RECIPE_CASCADE_END, end: 0.855 } as const;
 /** Callouts and rows clear, then the end card owns a clean frame for 1.0 s. */
 const CLEAR_END = 0.873;
-const END_CARD_END = 0.964;
+/** The dissolve back to frame 0 runs from here to the end: 0.6 s at 11 s.
+ *  It was 0.4 s, which is short enough that the loop reads as a cut rather than
+ *  a return. Safe to lengthen because plateAlpha never ramps back down — the end
+ *  card holds full opacity through the dissolve, so a longer crossfade costs the
+ *  card no on-screen time. */
+const END_CARD_END = 0.9455;
 /** Model eases into the compact box over this much of the duration. */
 const BOX_MORPH = 0.06;
 /** Camera is back on the frame-0 proof framing by here, so the dissolve has no jump. */

@@ -10,6 +10,7 @@ import {
   insideSafeArea,
   modelHeightFraction,
   recipeRowY,
+  recipeBlockHeight,
 } from '../reveal/revealLayout';
 
 describe('revealLayout — platform safe area', () => {
@@ -45,8 +46,23 @@ describe('revealLayout — platform safe area', () => {
       expect(y + CHIP_H, `row ${i} overflows the block`).toBeLessThanOrEqual(block.y + block.h);
       expect(insideSafeArea({ x: block.x, y, w: block.w, h: CHIP_H }), `row ${i} escapes SAFE_RECT`).toBe(true);
     }
-    // the four rows plus their gaps must actually be what the block reserves
-    expect(4 * CHIP_H + 3 * CHIP_GAP).toBeLessThanOrEqual(block.h);
+    // The block must reserve what the rows plus the ΔE badge line actually
+    // consume. The old form (4 rows + 3 gaps) stopped describing the layout the
+    // moment the badge got its own line between rows 0 and 1.
+    expect(recipeBlockHeight()).toBeLessThanOrEqual(block.h);
+    expect(4 * CHIP_H + 3 * CHIP_GAP + LAYOUT.deltaBadge.h).toBeLessThanOrEqual(block.h);
+  });
+
+  // Intent: the badge shared the base row, right-aligned, which squeezed the
+  // paint name into a 332 px box. It is the one MEASUREMENT in the clip and the
+  // proof the product rests on — it gets its own line, and that line has to sit
+  // between the base row and the highlight row rather than on top of either.
+  it('the ΔE badge owns a clear line under the base row', () => {
+    const base = { x: LAYOUT.recipeRows.x, y: recipeRowY(0), w: LAYOUT.recipeRows.w, h: CHIP_H };
+    const next = { x: LAYOUT.recipeRows.x, y: recipeRowY(1), w: LAYOUT.recipeRows.w, h: CHIP_H };
+    expect(LAYOUT.deltaBadge.y, 'badge overlaps the base row').toBeGreaterThanOrEqual(base.y + base.h);
+    expect(LAYOUT.deltaBadge.y + LAYOUT.deltaBadge.h, 'badge overlaps the highlight row').toBeLessThanOrEqual(next.y);
+    expect(insideSafeArea(LAYOUT.deltaBadge)).toBe(true);
   });
 
   // Intent: the model is the reason anyone posts this. It shrank to 29.6% of
