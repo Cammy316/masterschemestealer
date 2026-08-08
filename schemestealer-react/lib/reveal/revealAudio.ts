@@ -96,7 +96,11 @@ export function scheduleRevealAudio(
   // shipping at −0.5 dBFS peak meant they clipped it on their own servers.
   // This guarantees true-peak headroom no matter how hard the limiter is driven.
   const trim = ctx.createGain();
-  trim.gain.value = 0.72;
+  // 0.72 -> 0.745 after SLAM_END moved for the cipher cadence (C6): shifting the
+  // outro beats moved integrated loudness to -15.01, a hair outside the window.
+  // Trim is the right lever — it raises loudness and peak together and leaves
+  // crest factor untouched, and crest is the tightest of the three gates.
+  trim.gain.value = 0.745;
 
   // Master EQ, and the reason it exists: a rumble bed and a −14 LUFS target pull
   // in opposite directions. BS.1770 K-weighting discounts the sub band hard, so

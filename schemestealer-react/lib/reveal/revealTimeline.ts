@@ -111,6 +111,8 @@ export interface RevealFrameState {
   sweepY: number | null; // 0..1 during the sweep, else null
   regions: RevealRegionState[];
   identifiedCount: number; // regions whose label has fully resolved (counting caption)
+  /** 0..1 decrypt progress for the burned-in caption / counter. 1 = readable. */
+  captionResolve: number;
   recipeProgress: number; // 0..1 across the recipe cascade
   plateAlpha: number; // 0..1 brand plate
   hudFade: number; // 0..1 — HUD chrome fades BEFORE the dissolve so nothing ghosts
@@ -130,7 +132,7 @@ const PROOF_END = 0.182;   // 2.00 s — hook holds long enough to READ
 const SMASH_END = 0.209;   // 2.30 s
 const SWEEP_END = 0.273;   // 3.00 s
 const REVEAL_END = 0.455;  // 5.00 s — five region locks at 0.40 s each
-const SLAM_END = 0.491;    // 5.40 s
+const SLAM_END = 0.4837;   // 5.32 s — see CIPHER_MS for why this moved
 const RECIPE_END = 0.873;  // 9.60 s (cascade, then the payoff HOLD)
 
 /** Cascade lands all four rows by 6.40 s, leaving a 3.0 s hold on the complete
@@ -248,6 +250,66 @@ export function regionSchedule(n: number): { start: number; dur: number }[] {
   }));
 }
 
+/**
+ * Cipher burst length, in ms.
+ *
+ * The symbol cipher has existed since v5 but only ran on region labels. It now
+ * also runs on the burned-in caption, the colour counter and the paint names —
+ * the same deterministic glyph substitution, never a rival paint name, never a
+ * random draw.
+ *
+ * 180 ms sits at the bottom of the 0.18–0.22 s window on purpose. The binding
+ * constraint is that a burst must finish CIPHER_CLEARANCE_MS before the next
+ * one begins, and the tightest cadence in the clip is the recipe cascade's row
+ * entrance. At the old SLAM_END the cascade ran 250 ms per row, which cannot
+ * clear 180 + 80; SLAM_END moved 0.491 → 0.4837 to make the row cadence 270 ms.
+ * That shortens the colour-restore slam by 80 ms, which suits it — it is an
+ * impact, not a transition.
+ */
+export const CIPHER_MS = 180;
+/** A burst must be fully resolved this long before the next one starts, or the
+ *  viewer never gets a readable frame between them. */
+export const CIPHER_CLEARANCE_MS = 80;
+
+/**
+ * Every fraction at which burned-in TEXT changes, and therefore re-ciphers.
+ *
+ * Frame 0 is deliberately absent. The loop target IS frameState(0), so a burst
+ * there would render the opening caption as glyphs in the dissolve target and
+ * break the seam.
+ */
+export function cipherBeats(n: number, durationMs: number): number[] {
+  const beats = [SMASH_END, SWEEP_END, REVEAL_END];
+  // Each region's label completing is what increments the "READING… k/n" counter.
+  for (const slot of regionSchedule(n)) beats.push(Math.min(slot.start + LABEL_RESOLVE, REVEAL_END));
+
+  // Collapse beats that land on top of each other, keeping the LATER one.
+  //
+  // Not hypothetical: with five regions the last counter tick lands at 4990 ms
+  // and the phase change to "n COLOURS IDENTIFIED" at 5005 ms — 15 ms apart.
+  // Two bursts that close would read as a stutter, and the second would restart
+  // the scramble before the first had produced a single readable frame. Keeping
+  // the later one merges the final tick and the headline into one burst, which
+  // is what the eye sees anyway.
+  const minGap = (CIPHER_MS + CIPHER_CLEARANCE_MS) / durationMs;
+  const desc = Array.from(new Set(beats)).sort((a, b) => b - a);
+  const kept: number[] = [];
+  for (const b of desc) {
+    if (kept.length === 0 || kept[kept.length - 1] - b >= minGap) kept.push(b);
+  }
+  return kept.reverse();
+}
+
+/**
+ * How much of a recipe row's entrance its name spends decrypting, as a fraction
+ * of that entrance. Expressed against the row span rather than hardcoded so a
+ * non-default duration cannot silently turn a 180 ms burst into a 600 ms one.
+ */
+export function nameCipherFraction(durationMs: number, steps: number): number {
+  const rowSpanMs = ((RECIPE_CASCADE_END - SLAM_END) * durationMs) / Math.max(1, steps);
+  return clamp(CIPHER_MS / Math.max(1, rowSpanMs), 0.05, 1);
+}
+
 /** Fraction of duration at which region i (of n) begins to bloom. */
 export function regionRevealFraction(i: number, n: number): number {
   return regionSchedule(n)[i]?.start ?? SWEEP_END;
@@ -336,6 +398,14 @@ export function frameState(t: number, spec: RevealSpec): RevealFrameState {
   });
   const identifiedCount = regions.reduce((acc, r) => acc + (r.labelReveal >= 1 ? 1 : 0), 0);
 
+  // Caption cipher: the readout re-scrambles whenever its text changes, then
+  // resolves. Deterministic, and readable again well before the next beat.
+  const cipherSpan = CIPHER_MS / spec.durationMs;
+  let captionResolve = 1;
+  for (const b of cipherBeats(spec.regions.length, spec.durationMs)) {
+    if (f >= b && f < b + cipherSpan) captionResolve = clamp((f - b) / cipherSpan);
+  }
+
   // The cascade only starts once the model is fully resolved (after the slam),
   // so the payoff never competes with the reveal for attention.
   // The whole photo returns to colour at the slam; the numbered callouts carry
@@ -396,6 +466,7 @@ export function frameState(t: number, spec: RevealSpec): RevealFrameState {
   return {
     phase,
     progress: f,
+    captionResolve,
     heroAlpha,
     baseAlpha,
     snapFlash,
