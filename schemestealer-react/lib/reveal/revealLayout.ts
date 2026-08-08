@@ -26,20 +26,27 @@ export interface Rect {
  * Bottom ~25% is caption + username + music ticker; the right ~17% is the
  * like/comment/share rail; the top strip is the tab bar.
  */
-export const SAFE_RECT: Rect = { x: 40, y: 190, w: 860, h: 1240 }; // x 40–900, y 190–1430
+export const SAFE_RECT: Rect = { x: 180, y: 190, w: 720, h: 1240 }; // x 180–900, y 190–1430
 
 /**
- * Horizontal centre for all centred text.
+ * Horizontal centre for everything centred: the FRAME centre, 540.
  *
- * NOT the frame centre. The usable band is x 110–900 (the action rail eats the
- * right edge), so centring on 540 would sit every heading 35 px right of the
- * recipe rows stacked directly beneath them. Everything in the information
- * column shares this axis instead.
+ * This replaces a CONTENT_CX of 505. That constant centred text on the usable
+ * band rather than the frame, which was defensible in isolation and wrong in
+ * practice: the corner brackets, the scan sweep and the model are all symmetric
+ * about 540, so every heading sat 35 px left of the furniture around it — read
+ * on a device as the whole layout being subtly askew.
+ *
+ * Symmetry and clearing the action rail together force the safe rect narrower:
+ * the rail eats roughly the right 17%%, so the right edge must stop at 900, and
+ * symmetry then fixes the left edge at 180. That costs 80 px of usable width
+ * versus the asymmetric rect. A badge nobody can see is worth less than a badge
+ * 80 px narrower.
  */
-export const CONTENT_CX = 505;
+export const FRAME_CX = CANVAS_W / 2; // 540 — asserted as a literal in the tests
 /** Widest a centred element can be and still clear both edges of the band. */
-const CENTRED_W = 720;
-const CENTRED_X = CONTENT_CX - CENTRED_W / 2; // 145
+const CENTRED_W = SAFE_RECT.w; // 720
+const CENTRED_X = FRAME_CX - CENTRED_W / 2; // 180
 
 /** Callout chip radius, and the rails they dock to. Both rails are pulled inside
  *  the safe area — the right one used to sit under the action rail. */
@@ -58,8 +65,8 @@ export const LAYOUT = {
   /** Recipe block heading + "DOMINANT · <FAMILY>" line. */
   recipeHeading: { x: CENTRED_X, y: 976, w: CENTRED_W, h: 52 },
   recipeSubheading: { x: CENTRED_X, y: 1030, w: CENTRED_W, h: 30 },
-  /** Four paint rows. Right edge stops at 900 to clear the action rail. */
-  recipeRows: { x: 110, y: 1055, w: 790, h: 372 },
+  /** Four paint rows. Symmetric about 540, right edge at 900 for the rail. */
+  recipeRows: { x: CENTRED_X, y: 1055, w: CENTRED_W, h: 372 },
   /** End card, shown alone on a clean frame. */
   endCardTitle: { x: CENTRED_X, y: 1120, w: CENTRED_W, h: 52 },
   endCardSub: { x: CENTRED_X, y: 1184, w: CENTRED_W, h: 32 },
@@ -85,7 +92,19 @@ export function recipeRowY(i: number): number {
 export const FULL_BOX: Rect = { x: 70, y: 150, w: 940, h: 1250 };
 /** Outro framing. Height is 770 px = 40.1% of the frame: the model must never
  *  drop below 40%, and a previous pass let it shrink to 29.6%. */
-export const COMPACT_BOX: Rect = { x: 150, y: 300, w: 780, h: 770 };
+export const COMPACT_BOX: Rect = { x: 150, y: 190, w: 780, h: 770 }; // y 190–960
+
+/**
+ * Everything below the safe area is DECORATION and carries no information, so a
+ * platform caption bar can cover all of it and the viewer loses nothing. Before
+ * this the band was plain black — 490 px of dead frame, a quarter of the height.
+ */
+export const DECOR_BAND: Rect = {
+  x: 0,
+  y: SAFE_RECT.y + SAFE_RECT.h,
+  w: CANVAS_W,
+  h: CANVAS_H - (SAFE_RECT.y + SAFE_RECT.h),
+};
 
 /** Where the recipe scrim begins its fade — above the heading, over the model. */
 export const RECIPE_SCRIM_TOP = LAYOUT.recipeHeading.y - 60;
@@ -98,6 +117,61 @@ export function insideSafeArea(r: Rect): boolean {
     r.x + r.w <= SAFE_RECT.x + SAFE_RECT.w &&
     r.y + r.h <= SAFE_RECT.y + SAFE_RECT.h
   );
+}
+
+export interface Pt {
+  x: number;
+  y: number;
+}
+
+/**
+ * The dog-leg a callout's leader line takes: label end → elbow → anchor.
+ *
+ * Pulled out of the draw call and made pure so the one property that actually
+ * matters can be asserted. On a shipped export BROWN's leader ended in a stub
+ * pointing at empty space and RED had no visible line at all, and neither was
+ * catchable while the geometry lived inline between `ctx.moveTo` calls.
+ *
+ * The path always TERMINATES ON the anchor — that is the contract, and the test
+ * checks the last point, not the intent.
+ */
+export function calloutLeaderPath(opts: {
+  side: 'left' | 'right';
+  /** x where the line may start: past the chip AND past the label glyphs. */
+  leaderStart: number;
+  railY: number;
+  anchorX: number;
+  anchorY: number;
+  /** Near edge of the model rect, so the elbow turns outside the artwork. */
+  modelEdge: number;
+}): Pt[] {
+  const { side, leaderStart, railY, anchorX, anchorY, modelEdge } = opts;
+  // Turn the corner on the FAR side of the label, then hop to the anchor.
+  // Clamping the elbow to the model's edge alone put it between the chip and
+  // the label, so the horizontal run doubled back straight through the type.
+  const elbowX =
+    side === 'left'
+      ? Math.min(Math.max(leaderStart, modelEdge - 26), Math.max(anchorX - 12, leaderStart))
+      : Math.max(Math.min(leaderStart, modelEdge + 26), Math.min(anchorX + 12, leaderStart));
+  return [
+    { x: leaderStart, y: railY },
+    { x: elbowX, y: railY },
+    { x: elbowX, y: anchorY },
+    { x: anchorX, y: anchorY },
+  ];
+}
+
+/** Total drawn length of a polyline — a leader with no length is a leader the
+ *  viewer never sees, however correct its endpoints are. */
+export function pathLength(pts: Pt[]): number {
+  let d = 0;
+  for (let i = 1; i < pts.length; i++) d += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y);
+  return d;
+}
+
+/** True when two rects overlap at all. */
+export function intersects(a: Rect, b: Rect): boolean {
+  return a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
 }
 
 /** Model height as a fraction of the frame, for the ≥40% guard. */

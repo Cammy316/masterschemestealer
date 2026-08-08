@@ -27,10 +27,12 @@ import {
   CANVAS_W,
   CALLOUT_CHIP_R,
   CALLOUT_RAIL,
-  CONTENT_CX,
+  calloutLeaderPath,
+  FRAME_CX,
   CHIP_GAP,
   CHIP_H,
   COMPACT_BOX,
+  DECOR_BAND,
   FULL_BOX,
   LAYOUT,
   RECIPE_SCRIM_TOP,
@@ -52,6 +54,7 @@ import {
 // Every position lives in revealLayout — the single source of truth for what is
 // inside the platform safe area. Re-exported so existing importers are unaffected.
 export { CANVAS_W, CANVAS_H, SAFE_RECT, type Rect } from './revealLayout';
+import { SAFE_RECT } from './revealLayout';
 
 /** Model dimming ahead of the scan line, so the sweep visibly lights it up.
  *  Kept shallow — the pre-scan model still has to READ at feed size. */
@@ -608,9 +611,10 @@ export function drawLoopTarget(ctx: CanvasRenderingContext2D, res: RevealResourc
     ctx.drawImage(res.heroLayer, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
   });
   drawCornerBrackets(ctx, CANVAS_W, CANVAS_H, accentFor(res.spec.skin));
+  drawDecorBand(ctx, accentFor(res.spec.skin), 0);
   const cap = captionText(res.spec, s0);
   if (cap)
-    drawText(ctx, cap, CONTENT_CX, LAYOUT.headline.y + 24, {
+    drawText(ctx, cap, FRAME_CX, LAYOUT.headline.y + 24, {
       font: res.fonts.cyber,
       size: 40,
       colour: accentFor(res.spec.skin),
@@ -621,6 +625,9 @@ export function drawLoopTarget(ctx: CanvasRenderingContext2D, res: RevealResourc
   // Same renderer as the outro cascade at full progress, so the flash and the
   // payoff can never show different recipes.
   if (s0.proofAlpha > 0) drawRecipe(ctx, 1, s0.proofAlpha, res);
+  // The seam is frame 0 vs this. The watermark now draws in every composed
+  // frame, so it has to be here too or the dissolve would blink it off.
+  drawWatermark(ctx, 1, res);
 }
 
 export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameState, res: RevealResources): void {
@@ -789,14 +796,15 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
     ctx.restore();
     const leaderStart = railX + dir * (CALLOUT_CHIP_R + 18 + labelW + 18);
 
-    // Turn the corner on the FAR side of the label, then hop to the anchor.
-    // Clamping the elbow to the model's edge alone put it between the chip and
-    // the label, so the horizontal run doubled back straight through the type.
     const modelEdge = c.side === 'left' ? r.x : r.x + r.w;
-    const elbowX =
-      c.side === 'left'
-        ? Math.min(Math.max(leaderStart, modelEdge - 26), Math.max(anchorX - 12, leaderStart))
-        : Math.max(Math.min(leaderStart, modelEdge + 26), Math.min(anchorX + 12, leaderStart));
+    const leader = calloutLeaderPath({
+      side: c.side,
+      leaderStart,
+      railY,
+      anchorX,
+      anchorY,
+      modelEdge,
+    });
 
     ctx.save();
     ctx.globalAlpha = rs.labelReveal * hud;
@@ -806,10 +814,8 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
     ctx.shadowColor = tint;
     ctx.shadowBlur = 8 + ownPulse * 18;
     ctx.beginPath();
-    ctx.moveTo(leaderStart, railY);
-    ctx.lineTo(elbowX, railY);
-    ctx.lineTo(elbowX, anchorY);
-    ctx.lineTo(anchorX, anchorY);
+    ctx.moveTo(leader[0].x, leader[0].y);
+    for (let i = 1; i < leader.length; i++) ctx.lineTo(leader[i].x, leader[i].y);
     ctx.stroke();
     // anchor dot
     ctx.fillStyle = tint;
@@ -841,13 +847,19 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
   });
 
   drawCornerBrackets(ctx, CANVAS_W, CANVAS_H, accent);
+  drawDecorBand(ctx, accent, state.progress);
 
-  // Burned-in caption.
+  // Burned-in caption. It fades out on the SAME driver that fades the recipe
+  // block in, because the outro framing lifts the model to y=190 (it has to, to
+  // keep 40% of frame height while clearing the recipe heading) and the caption
+  // would otherwise sit across the model's head. It is also redundant there:
+  // "5 COLOURS IDENTIFIED" adds nothing beside a card listing the five paints.
+  const capAlpha = hud * (1 - smoothstep(state.camera.boxLerp));
   const cap = captionText(spec, state);
-  if (cap && hud > 0) {
+  if (cap && capAlpha > 0) {
     ctx.save();
-    ctx.globalAlpha = hud;
-    drawText(ctx, cap, CONTENT_CX, LAYOUT.headline.y + 24, {
+    ctx.globalAlpha = capAlpha;
+    drawText(ctx, cap, FRAME_CX, LAYOUT.headline.y + 24, {
       font: res.fonts.cyber,
       size: 40,
       colour: accent,
@@ -868,9 +880,13 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
   if (state.recipeProgress > 0 && recipeAlpha > 0) drawRecipe(ctx, state.recipeProgress, recipeAlpha, res);
 
   // Brand plate + persistent watermark.
-  // NOT gated on hud: the HUD clearing is what makes the end card's frame clean.
+  // The watermark is drawn in EVERY frame at a constant position, size and
+  // opacity — it is the only branding that survives a re-upload, and gating it
+  // on `hud` and `phase` meant it was absent from frame 0 and absent again
+  // under the end card. A mark that flickers reads as a glitch, and a mark that
+  // is missing from the frame someone screenshots is worth nothing.
   if (state.plateAlpha > 0) drawPlate(ctx, state.plateAlpha, res);
-  if (state.phase !== 'proof' && hud > 0) drawWatermark(ctx, hud, res);
+  drawWatermark(ctx, 1, res);
 
   // Loop dissolve back to frame 1 (the hero) — a blit of the pre-baked target.
   // The HUD has already faded, so nothing ghosts through the crossfade.
@@ -906,7 +922,7 @@ function drawRecipe(ctx: CanvasRenderingContext2D, progress: number, hud: number
 
   ctx.save();
   ctx.globalAlpha = hud;
-  drawText(ctx, `${spec.brand.toUpperCase()} RECIPE`, CONTENT_CX, LAYOUT.recipeHeading.y + 26, {
+  drawText(ctx, `${spec.brand.toUpperCase()} RECIPE`, FRAME_CX, LAYOUT.recipeHeading.y + 26, {
     font: res.fonts.gothic,
     size: 44,
     colour: accent,
@@ -919,7 +935,7 @@ function drawRecipe(ctx: CanvasRenderingContext2D, progress: number, hud: number
     drawText(
       ctx,
       `DOMINANT · ${(owner.family || owner.hex).toUpperCase()}`,
-      CONTENT_CX,
+      FRAME_CX,
       LAYOUT.recipeSubheading.y + 15,
       { font: res.fonts.cyber, size: 26, colour: labelTint(owner.hex), letter: 2, maxWidth: LAYOUT.recipeSubheading.w },
     );
@@ -1011,17 +1027,66 @@ function drawWatermark(ctx: CanvasRenderingContext2D, alpha: number, res: Reveal
   ctx.restore();
 }
 
+/**
+ * The band below the safe area — 490 px, a quarter of the frame height.
+ *
+ * It carries NO information, deliberately: a platform caption bar covers all of
+ * it and the viewer must lose nothing. But it was plain black, so on a phone
+ * with no caption the clip simply ended in a void. This fills it with the same
+ * cogitator furniture used elsewhere — a data ladder that drifts continuously,
+ * so the band is never a still region even during a hold.
+ *
+ * `p` is elapsed fraction of the clip, and every term is periodic in it, so the
+ * band at p=1 is identical to p=0 and cannot break the loop seam.
+ */
+function drawDecorBand(ctx: CanvasRenderingContext2D, accent: string, p: number): void {
+  const b = DECOR_BAND;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(b.x, b.y, b.w, b.h);
+  ctx.clip();
+
+  const fade = ctx.createLinearGradient(0, b.y, 0, b.y + b.h);
+  fade.addColorStop(0, hexToRgba(accent, 0.13));
+  fade.addColorStop(1, hexToRgba(accent, 0));
+  ctx.fillStyle = fade;
+  ctx.fillRect(b.x, b.y, b.w, b.h);
+
+  // Drifting ladder. One full rung-period of travel across the clip, so the
+  // last frame lands exactly back on the first.
+  const RUNG = 46;
+  const drift = p * RUNG;
+  ctx.strokeStyle = hexToRgba(accent, 0.1);
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let y = b.y - RUNG + drift; y < b.y + b.h; y += RUNG) {
+    ctx.moveTo(b.x + 60, y);
+    ctx.lineTo(b.x + b.w - 60, y);
+  }
+  ctx.stroke();
+
+  // Two counter-drifting tick columns, aligned to the safe area's edges so the
+  // band reads as part of the same frame rather than a separate strip.
+  ctx.fillStyle = hexToRgba(accent, 0.18);
+  for (let i = 0; i < 14; i++) {
+    const t = (i / 14 + p) % 1;
+    ctx.fillRect(SAFE_RECT.x, b.y + t * b.h, 26, 3);
+    ctx.fillRect(SAFE_RECT.x + SAFE_RECT.w - 26, b.y + (1 - t) * b.h, 26, 3);
+  }
+  ctx.restore();
+}
+
 function drawPlate(ctx: CanvasRenderingContext2D, alpha: number, res: RevealResources): void {
   ctx.save();
   ctx.globalAlpha = alpha;
   const accent = accentFor(res.spec.skin);
-  drawText(ctx, 'SCHEMESTEALER', CONTENT_CX, LAYOUT.endCardTitle.y + 30, {
+  drawText(ctx, 'SCHEMESTEALER', FRAME_CX, LAYOUT.endCardTitle.y + 30, {
     font: res.fonts.gothic,
     size: 40,
     colour: accent,
     glow: 14,
   });
-  drawText(ctx, 'measured, not guessed · scan yours free', CONTENT_CX, LAYOUT.endCardSub.y + 18, {
+  drawText(ctx, 'measured, not guessed · scan yours free', FRAME_CX, LAYOUT.endCardSub.y + 18, {
     font: res.fonts.cyber,
     size: 23,
     colour: '#8a9a8a',

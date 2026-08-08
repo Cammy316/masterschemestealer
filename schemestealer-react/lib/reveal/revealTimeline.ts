@@ -92,6 +92,9 @@ export interface RevealCamera {
 
 export interface RevealFrameState {
   phase: RevealPhase;
+  /** Elapsed fraction of the clip, 0..1. Phase-independent, so anything that
+   *  must keep moving through a hold can be driven from it directly. */
+  progress: number;
   heroAlpha: number; // full-colour model on top of the greyscale base
   baseAlpha: number; // greyscale base opacity
   snapFlash: number; // 0..1 impact flash + chromatic glitch at the smash cut
@@ -373,6 +376,7 @@ export function frameState(t: number, spec: RevealSpec): RevealFrameState {
 
   return {
     phase,
+    progress: f,
     heroAlpha,
     baseAlpha,
     snapFlash,
