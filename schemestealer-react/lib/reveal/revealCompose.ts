@@ -41,6 +41,7 @@ import {
 } from './revealLayout';
 import {
   frameState,
+  nameCipherFraction,
   smoothstep,
   sortRegionsForReveal,
   MAX_CAMERA_SCALE,
@@ -864,9 +865,11 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
   const capAlpha = hud * (1 - smoothstep(state.camera.boxLerp));
   const cap = captionText(spec, state);
   if (cap && capAlpha > 0) {
+    // The readout re-scrambles whenever its text changes — the counter ticking
+    // from 3/5 to 4/5 is a machine re-reading, so it should look like one.
     ctx.save();
     ctx.globalAlpha = capAlpha;
-    drawText(ctx, cap, FRAME_CX, LAYOUT.headline.y + 24, {
+    drawText(ctx, garbleReveal(cap, state.captionResolve), FRAME_CX, LAYOUT.headline.y + 24, {
       font: res.fonts.cyber,
       size: 40,
       colour: accent,
@@ -915,6 +918,10 @@ function drawRecipe(ctx: CanvasRenderingContext2D, progress: number, hud: number
   if (steps.length === 0) return;
   const accent = accentFor(spec.skin);
   const owner = spec.recipeRegionIndex >= 0 ? spec.regions[spec.recipeRegionIndex] : undefined;
+  // What share of a row's entrance its name spends decrypting. Derived from the
+  // duration rather than hardcoded, so a non-default clip length cannot turn a
+  // 180 ms burst into a 600 ms one.
+  const nameCipher = nameCipherFraction(spec.durationMs, steps.length);
 
   // Scrim behind the block. During the proof stamp the model is punched in and
   // the heading lands ON it, so unbacked text is unreadable; in the outro the
@@ -999,7 +1006,9 @@ function drawRecipe(ctx: CanvasRenderingContext2D, progress: number, hud: number
       colour: roleAccent,
       align: 'left',
     });
-    drawText(ctx, step.name, textX, y + 56, {
+    // The name decrypts as the row lands. Same cipher as the region labels, and
+    // compressed to CIPHER_MS so it is readable well before the next row.
+    drawText(ctx, garbleReveal(step.name, Math.min(1, appear / nameCipher)), textX, y + 56, {
       font: res.fonts.tech,
       size: 30,
       colour: '#e8f0e8',
