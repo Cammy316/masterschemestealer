@@ -2,6 +2,100 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-08-08 (Pict-Cast v5.3 — corrective pass)
+
+Driven by measuring a real device export (`MobileV6.mp4`, exported 14 hours after
+v5.2 shipped, so unlike the v5.2 brief this one analysed the right code).
+
+**Three of the defects below were introduced by v5.2's own fixes.** The pattern is
+worth stating plainly: several v5.2 acceptance criteria measured a *proxy* instead
+of the property, and the cheapest way to satisfy them made the video worse. Every
+replacement gate here measures the thing itself.
+
+### Fixed
+- **The BT.709 fix from v5.2 never landed.** Root cause found in the muxer
+  (`mediabunny.cjs:27416`): the `colr` atom is written from
+  `decoderConfig.colorSpace` — the ENCODER'S output metadata — not from the input
+  `VideoSample` that v5.2 tagged. A hardware encoder reports BT.601 and the muxer
+  faithfully writes it. New `lib/reveal/mp4ColrPatch.ts` rewrites the atom in the
+  muxed bytes: encoder-independent, idempotent, and it logs what the atom said
+  before, which is the only signal we get about what a device actually reported.
+  The end-to-end ffprobe assertion is **structurally incapable** of catching this
+  — headless Chrome uses the software encoder and has emitted bt709 throughout the
+  bug's life — so the patcher has a unit test against the exact bytes a device
+  shipped (5, 6, 6). That test caught a real loop-bound bug in the patcher on its
+  first run.
+- **The audio bed sounded like tape noise.** v5.2 was asked for "≥15% of energy
+  above 1 kHz" as a stand-in for "audible on a phone speaker"; the cheapest way to
+  pass was a continuous 2–7 kHz hiss plus a free-running tick every 0.31 s, with
+  the hum cut 0.3 → 0.05. The hiss and the metronome are gone and the hum is the
+  bed again. Highs are now EVENTS: a 130→58 Hz sine sweep plus a ~40 ms noise
+  crack, fired on the storyboard beats. Loudness had to be rebuilt too — a rumble
+  bed and −14 LUFS pull in opposite directions because K-weighting discounts the
+  sub band, so a 70 Hz high-pass, a +10 dB bell at 1.4 kHz and a +6 dB shelf above
+  2.6 kHz now supply it. Measured: **−14.72 LUFS, −1.27 dBTP, 12.49 dB crest,
+  bed 90.5% below 250 Hz and ~0% above 3 kHz, 87.0% of HF energy within ±60 ms of
+  a scheduled beat** (those windows cover only 9.3% of the runtime).
+- **The layout was asymmetric.** `SAFE_RECT` spanned x 40–900 (centre 470) and
+  text centred on 505, while the corner brackets, scan sweep and model all centre
+  on the frame — every heading sat 35 px left of the furniture around it. Now
+  x 180–900: centre exactly 540, right edge exactly 900. Symmetry and clearing the
+  action rail together FORCE this; the brief's proposed x 90–990 is symmetric but
+  puts content back under the rail. 540 is asserted as a literal, because deriving
+  it from `SAFE_RECT` would agree with any future rect.
+- **The watermark flickered.** Gated on `phase !== 'proof' && hud > 0`, it was
+  absent from frame 0 and absent again under the end card — the two frames most
+  likely to be screenshotted. Now drawn every frame at constant position, size and
+  opacity.
+- **Three seconds of the clip were a still image.** Measured properly — compose at
+  30 Hz, diff consecutive frames, slide a 0.4 s window — the calmest window scored
+  a mean channel delta of **0.012** against a floor of 0.5. A hold is by definition
+  the absence of phase change, so no phase-driven animation can fix it; there is
+  now a continuous ambient layer (deterministic sensor grain + a refresh band)
+  that never asks what phase it is, both periodic in elapsed fraction so the loop
+  seam survives. After: **1.016** worst window, 1.503 overall.
+- **The ΔE badge shared the base row**, right-aligned, squeezing the paint name
+  into a 332 px box and making the one MEASUREMENT in the clip read as a suffix on
+  a product name. It now has its own bordered pill on its own line.
+- **The loop dissolve was 0.4 s**, short enough to read as a cut rather than a
+  return. Now 0.6 s.
+- **Leader lines** are extracted from between the `ctx.moveTo` calls into a pure
+  `calloutLeaderPath()`, so the two properties that matter can be asserted: the
+  path ends ON its anchor, and it is long enough to see.
+
+### Added
+- **Pixel-level anti-freeze gate.** Replaces a test that could not fail: it
+  serialised `frameState` fields and then explicitly skipped both holds, and
+  camera drift mutates `frameState` every frame anyway (~0.1 px on a 780 px model
+  during the payoff hold).
+- **The loop seam is asserted.** This has been a comment since v5 and nothing
+  compared the frames, so every layer added since could have broken the loop
+  silently.
+- **Bed-isolation audio rendering** (`scheduleRevealAudio(..., { layers: 'bed' })`)
+  and `revealAudioBeats(spec)`, so the alignment gate reads the real schedule
+  rather than a copy that could drift out of sync.
+- **The symbol cipher now runs on the caption, the colour counter and the paint
+  names**, not only region labels. Bursts are 180 ms, must be readable 80 ms
+  before the next, and never fire inside a hold. `cipherBeats()` collapses
+  colliding beats — at five regions the last counter tick and the phase change to
+  "n COLOURS IDENTIFIED" are 15 ms apart.
+- **Deterministic noise.** Both the audio bed and the video grain use mulberry32
+  instead of `Math.random()`. The visual timeline has been deterministic since v3;
+  the audio quietly was not, so loudness/peak/crest drifted every render — and the
+  crest gate sits close enough to its threshold that noise alone could flip it.
+- **The band below the safe area** (490 px, a quarter of the frame) was plain
+  black. It now carries decoration only, so a caption bar can cover all of it at
+  no cost to the viewer.
+
+### Deliberately NOT done
+- **The end card's paint count stays removed.** The brief asked to restore
+  "1,312 measured paints", reversing a decision made one commit earlier. A number
+  burned into an exported video cannot be corrected once the database changes.
+- **The payoff hold stays at 3.0 s.** The brief specified 2.8 s. The hold was
+  never too LONG, it was too STILL — trimming 200 ms would only have made the
+  defect briefer, and 3.0 s came from direct feedback that this is the frame
+  people screenshot.
+
 ## [Unreleased] - 2026-08-06 (Pict-Cast v5.2 — correctness & delivery)
 
 Driven by a measured analysis of a real device export. Every item below was
