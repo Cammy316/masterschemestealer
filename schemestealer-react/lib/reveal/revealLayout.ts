@@ -66,7 +66,9 @@ export const LAYOUT = {
   recipeHeading: { x: CENTRED_X, y: 976, w: CENTRED_W, h: 52 },
   recipeSubheading: { x: CENTRED_X, y: 1030, w: CENTRED_W, h: 30 },
   /** Four paint rows. Symmetric about 540, right edge at 900 for the rail. */
-  recipeRows: { x: CENTRED_X, y: 1055, w: CENTRED_W, h: 372 },
+  recipeRows: { x: CENTRED_X, y: 1064, w: CENTRED_W, h: 366 }, // 1064–1430
+  /** The delta-E badge, on its OWN line under the base row. */
+  deltaBadge: { x: CENTRED_X, y: 1142, w: CENTRED_W, h: 30 },
   /** End card, shown alone on a clean frame. */
   endCardTitle: { x: CENTRED_X, y: 1120, w: CENTRED_W, h: 52 },
   endCardSub: { x: CENTRED_X, y: 1184, w: CENTRED_W, h: 32 },
@@ -76,12 +78,34 @@ export const LAYOUT = {
   calloutChipRight: { x: CALLOUT_RAIL.right - CALLOUT_CHIP_R, y: SAFE_RECT.y, w: CALLOUT_CHIP_R * 2, h: 68 },
 } as const;
 
-export const CHIP_H = 84;
-export const CHIP_GAP = 12;
+/**
+ * Row metrics. 84/12 shrank to 74/10 to buy the delta-E badge its own line.
+ *
+ * The badge used to share the base row, right-aligned, which forced the paint
+ * name down to a 332 px box and made the one MEASUREMENT in the clip read as a
+ * suffix on a product name. It is the proof the whole app rests on; it gets its
+ * own line.
+ *
+ * The vertical budget is exact and there was no slack to take it from: safe area
+ * ends at 1430, the model needs 40%% of frame height, and the heading pair sits
+ * between them. 10 px off each chip is where the space came from.
+ */
+export const CHIP_H = 74;
+export const CHIP_GAP = 10;
+const BADGE_GAP = 4;
 
-/** Vertical centre of recipe row `i`. */
+/** Top of recipe row `i`. Rows 1..3 sit below the badge line, which is reserved
+ *  whether or not a badge is drawn — a layout that reflows on the presence of a
+ *  measurement would be untestable and would jump between scans. */
 export function recipeRowY(i: number): number {
-  return LAYOUT.recipeRows.y + i * (CHIP_H + CHIP_GAP);
+  const y0 = LAYOUT.recipeRows.y;
+  if (i === 0) return y0;
+  return y0 + CHIP_H + BADGE_GAP + LAYOUT.deltaBadge.h + CHIP_GAP + (i - 1) * (CHIP_H + CHIP_GAP);
+}
+
+/** Total vertical space the four rows plus the badge line actually consume. */
+export function recipeBlockHeight(): number {
+  return recipeRowY(3) + CHIP_H - LAYOUT.recipeRows.y;
 }
 
 /**
