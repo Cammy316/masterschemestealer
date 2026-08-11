@@ -75,9 +75,10 @@ const ROLE_ACCENT: Record<RevealRecipeStep['role'], string> = {
   wash: '#A78BFA',
 };
 
-function accentFor(skin: RevealSkin): string {
-  return skin === 'warp' ? '#A78BFA' : '#00FF41';
-}
+// accentFor now lives in revealTheme — re-exported here because every existing
+// importer reaches for it through this module.
+import { accentFor, themeFor } from './revealTheme';
+export { accentFor, themeFor };
 
 /** #rrggbb → rgba() so gradients can fade an arbitrary accent. */
 export function hexToRgba(hex: string, alpha: number): string {
@@ -306,7 +307,7 @@ export async function prepareResources(
   if (!heroLayer) throw new Error('Failed to build base layer');
   // Greyscale brightness adapts to the model's measured luma so a dark scheme
   // reads as a visible grey model, not a silhouette.
-  const greyLayer = buildBaseLayer(img, imgW, imgH, true, adaptiveVideoDim(measureMeanLuma(heroLayer)));
+  const greyLayer = buildBaseLayer(img, imgW, imgH, true, adaptiveVideoDim(measureMeanLuma(heroLayer)), spec.skin);
   if (!greyLayer) throw new Error('Failed to build base layer');
 
   // Full-frame cached layers are stored at PHYSICAL output size so their
@@ -1073,7 +1074,7 @@ function drawWatermark(ctx: CanvasRenderingContext2D, alpha: number, res: Reveal
     font: res.fonts.cyber,
     size: 24,
     weight: 600,
-    colour: '#c8d8cc',
+    colour: themeFor(res.spec.skin).muted,
     align: 'right',
     letter: 1,
   });

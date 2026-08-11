@@ -10,6 +10,9 @@
  * exporter fits the resulting layers into its 1080×1920 portrait composition.
  */
 
+// Type-only in the other direction, so this pair never forms a runtime cycle.
+import { themeFor } from './revealTheme';
+
 import type { MaskFrame } from '../types';
 import { maskDestRect } from '../maskGeometry';
 
@@ -136,6 +139,7 @@ export function buildBaseLayer(
   h: number,
   greyscale: boolean,
   dim: BaseDim = SCREEN_BASE_DIM,
+  skin: RevealSkin = 'imperial',
 ): HTMLCanvasElement | null {
   const layer = document.createElement('canvas');
   layer.width = w;
@@ -155,8 +159,10 @@ export function buildBaseLayer(
   ctx.globalCompositeOperation = 'source-atop'; // model pixels only
   ctx.fillStyle = greyscale ? `rgba(4, 8, 6, ${dim.veil})` : 'rgba(5, 12, 10, 0.72)';
   ctx.fillRect(0, 0, w, h);
+  // Skinned. This line was hardcoded imperial green, so a warp export drew
+  // GREEN scanlines over the model while every other element was purple.
   for (let y = 0; y < h; y += 4) {
-    ctx.fillStyle = 'rgba(0, 255, 65, 0.03)';
+    ctx.fillStyle = themeFor(skin).scanline;
     ctx.fillRect(0, y, w, 1);
   }
   return layer;
@@ -330,8 +336,7 @@ export function paintBackdrop(
   h: number,
   skin: RevealSkin = 'imperial',
 ): void {
-  const line = skin === 'warp' ? 'rgba(139, 92, 246, 0.05)' : 'rgba(0, 255, 65, 0.045)';
-  const halo = skin === 'warp' ? 'rgba(139, 92, 246, 0.08)' : 'rgba(0, 255, 65, 0.07)';
+  const { backdropLine: line, backdropHalo: halo } = themeFor(skin);
 
   // base radial: dark-gothic → void-black
   const base = ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, Math.max(w, h) * 0.7);
