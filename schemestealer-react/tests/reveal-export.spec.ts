@@ -145,6 +145,22 @@ test('pict-cast audio: rumble bed, transient highs, broadcast loudness', async (
       return (await ctx.startRendering()).getChannelData(0);
     };
 
+    /**
+     * Rendered in STEREO, for the width and mono-compatibility checks.
+     *
+     * The reverb is the only stereo source in either mix — its two channels get
+     * independent noise, which widens without any phase trickery. That
+     * distinction is the whole reason the mono check exists: width built from
+     * phase inversion sounds impressive on headphones and CANCELS on the single
+     * speaker most people actually watch on.
+     */
+    const renderStereo = async () => {
+      const ctx = new OfflineAudioContext(2, Math.ceil(sr * 11.6), sr);
+      R.scheduleRevealAudio(ctx, ctx.destination, spec, T0, {});
+      const b = await ctx.startRendering();
+      return [b.getChannelData(0), b.getChannelData(1)] as const;
+    };
+
     /** Power in three bands, via a real FFT over the whole signal. */
     const bands = (d: Float32Array) => {
       let N = 1;
@@ -234,6 +250,42 @@ test('pict-cast audio: rumble bed, transient highs, broadcast loudness', async (
         : -70;
     };
 
+
+    // ---- stereo width and mono compatibility --------------------------------
+    const [chL, chR] = await renderStereo();
+    let sumLR = 0;
+    let sumLL = 0;
+    let sumRR = 0;
+    let midPower = 0;
+    let sidePower = 0;
+    let stereoPower = 0;
+    for (let i = 0; i < chL.length; i++) {
+      sumLR += chL[i] * chR[i];
+      sumLL += chL[i] * chL[i];
+      sumRR += chR[i] * chR[i];
+      const mid = (chL[i] + chR[i]) / 2;
+      const side = (chL[i] - chR[i]) / 2;
+      midPower += mid * mid;
+      sidePower += side * side;
+      stereoPower += (chL[i] * chL[i] + chR[i] * chR[i]) / 2;
+    }
+    // Control: the SAME measurement on a phase-inverted pair, which is what
+    // width built from phase tricks looks like. It must collapse — if it does
+    // not, the metric cannot see cancellation and the gate below proves nothing.
+    let invMid = 0;
+    let invStereo = 0;
+    for (let i = 0; i < chL.length; i++) {
+      const mid = (chL[i] + -chL[i]) / 2;
+      invMid += mid * mid;
+      invStereo += chL[i] * chL[i];
+    }
+    const invertedRetention = Math.sqrt(invMid / (invStereo + 1e-30));
+
+    const correlation = sumLR / (Math.sqrt(sumLL * sumRR) + 1e-30);
+    // How much level survives a mono downmix. Below 1 means cancellation.
+    const monoRetention = Math.sqrt(midPower / (stereoPower + 1e-30));
+    const sideRatio = Math.sqrt(sidePower / (midPower + 1e-30));
+
     const full = await render('all');
     const bed = await render('bed');
 
@@ -315,6 +367,10 @@ test('pict-cast audio: rumble bed, transient highs, broadcast loudness', async (
       bed: bands(bed),
       hfOnBeat: near / total,
       hissControl: hissScore,
+      correlation,
+      monoRetention,
+      sideRatio,
+      invertedRetention,
       beatCount: beats.length,
       // What share of the clip the windows even cover - without this the
       // alignment number is unreadable: hitting 65% would be unremarkable if the
@@ -345,6 +401,20 @@ test('pict-cast audio: rumble bed, transient highs, broadcast loudness', async (
   expect(audio.lufs, 'integrated loudness').toBeLessThan(-13);
   expect(audio.peakDb, 'true-peak headroom').toBeLessThan(-1);
   expect(audio.crestDb, 'crest factor').toBeGreaterThan(12);
+
+  // Intent: the mix should occupy a stereo field rather than being dual mono.
+  // Every version before the shared engine was fully correlated — one signal
+  // copied to both channels — which on headphones reads as small and flat.
+  expect(audio.correlation, 'channels are identical: the mix is dual mono').toBeLessThan(0.995);
+  expect(audio.sideRatio, 'side energy relative to mid').toBeGreaterThan(0.02);
+
+  // Intent, and the more important half: most viewers hear this through ONE
+  // phone speaker. Width built by phase inversion sounds impressive in
+  // headphones and cancels on a mono downmix — the clip would arrive quieter and
+  // hollower than it measured. Anything above ~0.9 retention is safe; a
+  // phase-inverted mix collapses toward 0.
+  expect(audio.monoRetention, 'level lost when summed to mono').toBeGreaterThan(0.9);
+  expect(audio.invertedRetention, 'the mono metric must detect cancellation').toBeLessThan(0.05);
 });
 
 /**
