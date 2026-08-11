@@ -422,3 +422,78 @@ test('warp-cast perf gate: compose stays in budget at phone-photo resolution', a
     expect(ms, `compose phase "${phase}" took ${ms}ms (budget ${BUDGET_MS}ms)`).toBeLessThan(BUDGET_MS);
   }
 });
+
+/**
+ * The inspiration tab must not render the OTHER theme's signature colour.
+ *
+ * The miniature identity is cogitator green (#00FF41); the inspiration identity
+ * is warp purple with teal for positive states. A shipped build had every
+ * "✓ Perfect" badge, every ΔE chip and the share modal's quality banner in
+ * imperial green, because the quality ramp used a THEME colour to carry SEMANTIC
+ * meaning. A grep cannot catch the next instance of that — a computed-style
+ * sweep can.
+ *
+ * Detected-colour data is exempt: if someone scans a photo of grass, green
+ * swatches are the correct output. The allowance covers that and nothing more.
+ */
+test('inspiration tab renders no imperial green chrome', async ({ page }) => {
+  await page.route('**/api/**', (r) =>
+    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ status: 'ok', ready: true }) }),
+  );
+  await page.addInitScript(seedInspirationScan, STORAGE_KEY);
+  await page.setViewportSize({ width: 430, height: 932 });
+  await page.goto('/inspiration/results');
+  await page.waitForTimeout(2000);
+
+  const sweep = () =>
+    page.evaluate(() => {
+      // Colours are resolved through a canvas rather than parsed as text.
+      // Tailwind v4 emits `lab()` / `oklch()`, so getComputedStyle returns
+      // `lab(70.55 -66.51 45.81)` for bg-green-500 — an rgb() regex is blind to
+      // every class-based colour in the app, which is exactly how the first
+      // version of this sweep reported a clean page that was not clean.
+      const probe = document.createElement('canvas').getContext('2d')!;
+      const toRgb = (v: string): { r: number; g: number; b: number } | null => {
+        if (!v || v === 'transparent' || v === 'none') return null;
+        const alpha = /rgba?\([^)]*?,\s*([\d.]+)\s*\)$/.exec(v);
+        if (alpha && parseFloat(alpha[1]) < 0.06) return null;
+        probe.clearRect(0, 0, 1, 1);
+        probe.fillStyle = '#000000';
+        probe.fillStyle = v;
+        if (probe.fillStyle === '#000000' && !/^#0{3,6}$|black/i.test(v)) return null;
+        probe.fillRect(0, 0, 1, 1);
+        const d = probe.getImageData(0, 0, 1, 1).data;
+        if (d[3] < 16) return null;
+        return { r: d[0], g: d[1], b: d[2] };
+      };
+      // Imperial green: green dominates both other channels hard. Warp teal has
+      // substantial blue and does not match.
+      const isImperialGreen = (c: { r: number; g: number; b: number }) =>
+        c.g > 90 && c.g - c.r > 55 && c.g - c.b > 55;
+      const hits: string[] = [];
+      document.querySelectorAll('*').forEach((el) => {
+        const cs = getComputedStyle(el);
+        (['color', 'backgroundColor', 'borderTopColor', 'borderLeftColor'] as const).forEach((p) => {
+          const c = toRgb(cs[p]);
+          if (!c || !isImperialGreen(c)) return;
+          const e = el as HTMLElement;
+          // A swatch painted with a DETECTED colour is data, not chrome: scan a
+          // photo of grass and green output is correct.
+          if (p === 'backgroundColor' && e.style.backgroundColor) return;
+          if (p === 'borderTopColor' && e.style.borderColor) return;
+          hits.push(`${p}=${cs[p]} <${e.tagName.toLowerCase()}> "${(e.innerText || '').trim().slice(0, 30)}"`);
+        });
+      });
+      return Array.from(new Set(hits));
+    });
+
+  const page1 = await sweep();
+  console.log('INSPIRATION PAGE GREEN CHROME:', JSON.stringify(page1));
+  expect(page1, 'imperial green on the inspiration results page').toEqual([]);
+
+  await page.getByRole('button', { name: /share essence/i }).click();
+  await expect(page.getByRole('heading', { name: /broadcast warp-cast/i })).toBeVisible();
+  const withModal = await sweep();
+  console.log('WARP MODAL GREEN CHROME:', JSON.stringify(withModal));
+  expect(withModal, 'imperial green in the warp-cast share modal').toEqual([]);
+});

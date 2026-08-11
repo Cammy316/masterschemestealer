@@ -2,6 +2,57 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-08-11 (Inspiration tab — theme unification)
+
+The inspiration tab was rendering the OTHER theme's signature colour. Every
+"✓ Perfect" badge, every ΔE chip and the share modal's quality banner came out
+in cogitator green (`#00FF41`) inside a purple frame.
+
+### The actual cause
+A **theme colour was doing semantic work**. The ΔE ramp hard-coded the imperial
+accent for a good match, so "good" and "imperial" were the same value and could
+not be separated per tab.
+
+### Fixed
+- `qualityColour(deltaE, skin)` in `revealTheme.ts` is now the single ramp.
+  The band VOCABULARY and its thresholds are shared — the same measurement must
+  never read differently between tabs — and only the hues differ, only at the
+  positive end. Warp takes teal (`#2DD4BF` / `#14B8A6`); both skins keep amber
+  and red, because a warning that changes colour per theme stops being a
+  warning.
+- `deltaBandColour(deltaE, skin)` delegates to it, defaulting to imperial so
+  every existing call site is unchanged.
+- `PaintRecipeCard`: `deltaQuality` is skin-aware, and both `bg-green-500`
+  literals (the "✓ Perfect" badge and the owned-paint tick) are themed.
+- ShareModal: quality banner uses the mode's ramp; `Cogitator audio bed` reads
+  `Warp audio bed` on inspiration.
+
+### Also fixed, found while auditing
+The share modal claimed **"~13s recording · records in real time"**. Both parts
+were wrong: the warp-cast runs 14 s, and NEITHER clip has recorded in real time
+since the offline WebCodecs renderer landed. Now `14s · 1080×1920 · rendered
+offline` (11 s for the miniature).
+
+### The guard, and why the first version of it was worthless
+`warp-export.spec.ts` now sweeps every computed style on the inspiration results
+page and the open share modal for imperial green, with detected-colour swatches
+exempt — scan a photo of grass and green output is correct.
+
+**The first version of that sweep passed on a page that was still green.** It
+parsed `getComputedStyle` output with an `rgb()` regex, and Tailwind v4 emits
+`lab()` — `bg-green-500` computes to `lab(70.5521 -66.5147 45.8072)`, so every
+class-based colour in the app was invisible to it. It reported a clean page
+because it could not see the colours at all.
+
+Caught by deliberately reverting the badge to green and checking the guard
+failed. It did not. The sweep now resolves any CSS colour through a canvas
+rather than parsing text, and the revert test fails as it should.
+
+### Verified
+Computed-style sweep: miniature results **746** green elements (identity
+intact), inspiration results **0** green chrome. `vitest` 792 · `tsc` clean ·
+`warp-export` 6/6 · `reveal-export` 4/4.
+
 ## [Unreleased] - 2026-08-11 (Warp-Cast v3 — the Cinema Palettes format)
 
 v2 got the structure right and the format wrong. Measured against the reference

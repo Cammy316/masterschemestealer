@@ -56,6 +56,34 @@ export const REVEAL_THEME: Record<RevealSkin, RevealTheme> = {
   },
 };
 
+/**
+ * ΔE match-quality ramp, per skin.
+ *
+ * The band VOCABULARY (perfect / close / fair / distant) and its thresholds are
+ * shared — the same measurement must never read differently in two tabs. Only
+ * the hues differ, and only at the positive end.
+ *
+ * The imperial ramp used `#00FF41`, which is the cogitator ACCENT: a theme
+ * colour doing semantic work. That is why the inspiration tab was covered in
+ * imperial green badges — every good match rendered in the other theme's
+ * signature colour. Warp uses teal for the positive end instead, which belongs
+ * to its palette and still reads as "good" against the amber and red that warn.
+ */
+const QUALITY_RAMP: Record<RevealSkin, [string, string, string, string]> = {
+  //          perfect    close      fair       distant
+  imperial: ['#00FF41', '#A3E635', '#F59E0B', '#EF4444'],
+  warp: ['#2DD4BF', '#14B8A6', '#F59E0B', '#EF4444'],
+};
+
+/** Colour for a ΔE, in the given skin. Thresholds are identical across skins. */
+export function qualityColour(deltaE: number, skin: RevealSkin = 'imperial'): string {
+  const ramp = QUALITY_RAMP[skin] ?? QUALITY_RAMP.imperial;
+  if (deltaE <= 2) return ramp[0];
+  if (deltaE <= 5) return ramp[1];
+  if (deltaE <= 10) return ramp[2];
+  return ramp[3];
+}
+
 export function themeFor(skin: RevealSkin): RevealTheme {
   return REVEAL_THEME[skin] ?? REVEAL_THEME.imperial;
 }

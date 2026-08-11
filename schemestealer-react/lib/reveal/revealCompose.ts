@@ -78,7 +78,7 @@ const ROLE_ACCENT: Record<RevealRecipeStep['role'], string> = {
 
 // accentFor now lives in revealTheme — re-exported here because every existing
 // importer reaches for it through this module.
-import { accentFor, themeFor } from './revealTheme';
+import { accentFor, themeFor, qualityColour } from './revealTheme';
 export { accentFor, themeFor };
 
 /** #rrggbb → rgba() so gradients can fade an arbitrary accent. */
@@ -129,12 +129,10 @@ export function deltaBandName(deltaE: number): string {
 }
 
 /** ΔE badge colour follows the app's band vocabulary (DeltaEBadge):
- *  perfect ≤2 · close ≤5 · fair ≤10 · distant beyond. */
-export function deltaBandColour(deltaE: number): string {
-  if (deltaE <= 2) return '#00FF41';
-  if (deltaE <= 5) return '#A3E635';
-  if (deltaE <= 10) return '#F59E0B';
-  return '#EF4444';
+ *  perfect ≤2 · close ≤5 · fair ≤10 · distant beyond. Skin-aware — see
+ *  qualityColour; the thresholds are shared, only the hues differ. */
+export function deltaBandColour(deltaE: number, skin: RevealSkin = 'imperial'): string {
+  return qualityColour(deltaE, skin);
 }
 
 // ---- fonts -------------------------------------------------------------------

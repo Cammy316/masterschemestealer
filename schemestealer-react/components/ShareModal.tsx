@@ -61,6 +61,7 @@ export function ShareModal({ mode, scan, onClose }: ShareModalProps) {
   const accent = mode === 'miniature' ? 'var(--cogitator-green)' : 'var(--warp-purple)';
   const accentDim = mode === 'miniature' ? 'var(--cogitator-green-dim)' : 'var(--warp-purple-dark)';
 
+  const skin: 'imperial' | 'warp' = mode === 'miniature' ? 'imperial' : 'warp';
   const colors = scan.detectedColors;
   const hasMasks = colors.some((c) => c.mask);
   // The two modes need different things to be exportable, and gating both on
@@ -98,8 +99,10 @@ export function ShareModal({ mode, scan, onClose }: ShareModalProps) {
     const dE = brandRecipe?.base?.deltaE;
     if (typeof dE !== 'number' || !(dE > 0)) return null;
     const band = dE <= 2 ? 'perfect' : dE <= 5 ? 'close' : dE <= 10 ? 'fair' : 'distant';
-    return { dE, band, poor: dE > 5, colour: deltaBandColour(dE) };
-  }, [best]);
+    // Skin-aware: a neon cogitator-green banner on the warp modal was the
+    // other theme's signature colour doing semantic work.
+    return { dE, band, poor: dE > 5, colour: deltaBandColour(dE, skin) };
+  }, [best, skin]);
   const captions = useMemo(
     () => buildRevealCaptions({ colourCount: colors.length, topFamily: best.topFamily, brandLabel: best.label, mode }),
     [colors.length, best.topFamily, best.label, mode],
@@ -129,7 +132,7 @@ export function ShareModal({ mode, scan, onClose }: ShareModalProps) {
         brand: best.brand,
         brandLabel: best.label,
         recipeColourIndex: best.colourIndex,
-        skin: mode === 'miniature' ? 'imperial' : 'warp',
+        skin,
         captionPreset: preset,
         mode,
         audio,
@@ -289,7 +292,9 @@ export function ShareModal({ mode, scan, onClose }: ShareModalProps) {
                 </div>
 
                 <label className="flex items-center justify-between gap-3 cursor-pointer">
-                  <span className="text-sm tech-text text-white">Cogitator audio bed</span>
+                  <span className="text-sm tech-text text-white">
+                    {mode === 'miniature' ? 'Cogitator audio bed' : 'Warp audio bed'}
+                  </span>
                   <input
                     type="checkbox"
                     checked={audio}
@@ -307,7 +312,7 @@ export function ShareModal({ mode, scan, onClose }: ShareModalProps) {
                   ◇ EXPORT {castName} ◇
                 </button>
                 <p className="text-xs cyber-text text-center" style={{ color: accentDim }}>
-                  ~13s recording · 1080×1920 · records in real time
+                  {mode === 'miniature' ? '11s' : '14s'} · 1080×1920 · rendered offline
                 </p>
               </>
             )}

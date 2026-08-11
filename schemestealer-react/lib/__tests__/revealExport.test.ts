@@ -14,6 +14,7 @@ import {
   buildRevealSpec,
 } from '../reveal/revealCompose';
 import { frameState } from '../reveal/revealTimeline';
+import { qualityColour } from '../reveal/revealTheme';
 import { buildRevealCaptions } from '../reveal/revealCaptions';
 import type { Color, PaintRecipe } from '../types';
 
@@ -207,6 +208,42 @@ describe('deltaBandColour', () => {
     expect(deltaBandColour(3.4)).toBe('#A3E635'); // close
     expect(deltaBandColour(8.2)).toBe('#F59E0B'); // fair
     expect(deltaBandColour(14)).toBe('#EF4444'); // distant
+  });
+});
+
+describe('qualityColour', () => {
+  // Intent: the imperial ramp used #00FF41 — the cogitator ACCENT — as a
+  // semantic colour. That is a theme colour doing semantic work, and it is why
+  // the inspiration tab rendered every good match in the other theme's
+  // signature green. Warp gets its own positive end.
+  it('never returns imperial green for the warp skin', () => {
+    for (const dE of [0, 1, 2, 3, 5, 7, 10, 14, 30]) {
+      expect(qualityColour(dE, 'warp'), `ΔE ${dE}`).not.toBe('#00FF41');
+    }
+  });
+
+  // Intent: the same measurement must never read differently between tabs. Only
+  // the hue may change — the band a ΔE falls into may not.
+  it('keeps identical thresholds across skins', () => {
+    const band = (c: string, ramp: string[]) => ramp.indexOf(c);
+    const imperial = ['#00FF41', '#A3E635', '#F59E0B', '#EF4444'];
+    const warp = ['#2DD4BF', '#14B8A6', '#F59E0B', '#EF4444'];
+    for (const dE of [0, 2, 2.01, 5, 5.01, 10, 10.01, 40]) {
+      expect(band(qualityColour(dE, 'warp'), warp), `ΔE ${dE}`).toBe(
+        band(qualityColour(dE, 'imperial'), imperial),
+      );
+    }
+  });
+
+  it('still warns in amber and red, in both skins', () => {
+    for (const skin of ['imperial', 'warp'] as const) {
+      expect(qualityColour(7, skin)).toBe('#F59E0B');
+      expect(qualityColour(30, skin)).toBe('#EF4444');
+    }
+  });
+
+  it('defaults to imperial, so existing call sites are unchanged', () => {
+    expect(qualityColour(1.2)).toBe('#00FF41');
   });
 });
 

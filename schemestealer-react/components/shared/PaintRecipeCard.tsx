@@ -127,10 +127,19 @@ const SPINE_TOKENS: Record<UITheme, Record<StepKey, string>> = {
   },
 };
 
-/** ΔE → match-quality colour (semantic tokens) + word. */
-function deltaQuality(deltaE?: number): { color: string; label: string } {
+/**
+ * ΔE → match-quality colour (semantic tokens) + word.
+ *
+ * Skinned at the POSITIVE end only. The thresholds and the words are shared, so
+ * the same measurement never reads differently between tabs; but a good match
+ * used the shared success green in both themes, and on the inspiration tab that
+ * meant every recipe row carried a green badge in a purple frame. Warp gets
+ * teal, which belongs to its palette and still reads as good against the amber
+ * and red that warn.
+ */
+function deltaQuality(deltaE: number | undefined, warp: boolean): { color: string; label: string } {
   if (deltaE === undefined) return { color: 'var(--text-tertiary)', label: 'unknown' };
-  if (deltaE <= 5) return { color: 'var(--success)', label: 'excellent' };
+  if (deltaE <= 5) return { color: warp ? 'var(--warp-teal)' : 'var(--success)', label: 'excellent' };
   if (deltaE <= 15) return { color: 'var(--warning)', label: 'loose' };
   return { color: 'var(--error)', label: 'poor' };
 }
@@ -605,7 +614,7 @@ function RecipeStepRow({
   }
 
   const isPerfectMatch = activePaint.deltaE !== undefined && activePaint.deltaE < 3;
-  const quality = deltaQuality(activePaint.deltaE);
+  const quality = deltaQuality(activePaint.deltaE, isWarp);
   
   const hasAlt = !isOwned && activePaint.owned_alternative;
 
@@ -635,7 +644,11 @@ function RecipeStepRow({
             />
             {/* Owned tick */}
             {isOwned && (
-              <div className="absolute -top-1.5 -left-1.5 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+              <div
+                className={`absolute -top-1.5 -left-1.5 w-4 h-4 rounded-full flex items-center justify-center ${
+                  isWarp ? 'bg-warp-teal' : 'bg-green-500'
+                }`}
+              >
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </div>
             )}
@@ -656,7 +669,13 @@ function RecipeStepRow({
             <div className="flex items-center gap-2 flex-wrap">
               <RoleTag theme={theme}>{step.label}</RoleTag>
               {isPerfectMatch && (
-                <span className="text-[11px] bg-green-500 text-white px-1.5 py-0.5 rounded-full font-semibold">✓ Perfect</span>
+                <span
+                  className={`text-[11px] text-white px-1.5 py-0.5 rounded-full font-semibold ${
+                    isWarp ? 'bg-warp-teal' : 'bg-green-500'
+                  }`}
+                >
+                  ✓ Perfect
+                </span>
               )}
               {activePaint.discontinued && (
                 <Tooltip content={activePaint.alternativeName ? `Try ${activePaint.alternativeName} instead` : 'This paint may be discontinued'}>
