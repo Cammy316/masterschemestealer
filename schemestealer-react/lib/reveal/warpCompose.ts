@@ -72,7 +72,14 @@ export const WARP_MAX_COLOURS = 6;
  * height is left. Portrait photos land on reference proportions; a 16:9 photo
  * gets a mild crop and taller columns. Either way the frame is full.
  */
-const MARGIN = 26;
+/**
+ * The ONLY gaps in the composition, measured off the reference: between
+ * swatches, and between the image and the swatch row. There is no outer margin
+ * — the reference bleeds to its top, left and right edges, and adding a border
+ * of ground did two things wrong at once. It framed the poster like a slide,
+ * and it put ground either side of the end swatches, so a near-white paint at
+ * one end vanished into it.
+ */
 const GAP = 10;
 /** Off-white ground. Warmed slightly off pure white — 255 against six saturated
  *  swatches glares on an OLED phone. */
@@ -99,8 +106,7 @@ const PALETTE_MAX = 620;
  * than a palette. 4:5 puts the same photo at a 543 px row, near the reference.
  */
 const MIN_DISPLAY_ASPECT = 0.8;
-/** Reserved under the palette for the watermark, so it never sits on a swatch. */
-const FOOTER = 30;
+
 /** Ken Burns range. The image is CLIPPED to its rect, so the poster edges stay
  *  crisp while the picture inside them moves. */
 const KEN_BURNS = 0.08;
@@ -112,8 +118,8 @@ export interface PosterLayout {
 
 /** Where the poster's two pieces sit, for an image of the given dimensions. */
 export function posterLayout(imgW: number, imgH: number): PosterLayout {
-  const w = CANVAS_W - MARGIN * 2;
-  const usable = CANVAS_H - MARGIN * 2 - GAP - FOOTER;
+  const w = CANVAS_W;
+  const usable = CANVAS_H - GAP;
   const aspect = imgW / Math.max(1, imgH);
 
   // What the reference proportions would ask for.
@@ -125,8 +131,8 @@ export function posterLayout(imgW: number, imgH: number): PosterLayout {
   const paletteH = usable - imageH;
 
   return {
-    image: { x: MARGIN, y: MARGIN, w, h: imageH },
-    palette: { x: MARGIN, y: MARGIN + imageH + GAP, w, h: paletteH },
+    image: { x: 0, y: 0, w, h: imageH },
+    palette: { x: 0, y: imageH + GAP, w, h: paletteH },
   };
 }
 
@@ -542,10 +548,29 @@ function drawPalette(
   const n = rows.length;
   if (n === 0) return;
 
+  // The flash goes down FIRST, so the swatches cover it and it survives only in
+  // the gutters. See drawPulseUnder.
+  if (state.pulse) {
+    const hit = rows[state.pulse.index];
+    if (hit) {
+      drawPulseUnder(
+        ctx,
+        hit.extractedHex,
+        state.pulse.strength,
+        swatchRect(res.columns[state.pulse.index] ?? state.pulse.index, n, palette),
+        palette,
+      );
+    }
+  }
+
   rows.forEach((row, i) => {
     const band = state.bands[i];
     if (!band) return;
-    const r = swatchRect(res.columns[i] ?? i, n, palette);
+    const base = swatchRect(res.columns[i] ?? i, n, palette);
+    // The landing swatch overshoots its column and settles back. A geometric
+    // beat rather than a colour one: it cannot misrepresent the paint.
+    const kick = state.pulse && state.pulse.index === i ? state.pulse.strength * 7 : 0;
+    const r: Rect = kick ? { x: base.x - kick, y: base.y, w: base.w + kick * 2, h: base.h } : base;
 
     // Empty slot. A shade off the ground rather than a dark plate — on a white
     // card a dark plate is a hole, and the gaps between swatches have to read as
@@ -564,6 +589,15 @@ function drawPalette(
       ctx.fillRect(r.x, r.y + r.h - fh, r.w, fh);
       ctx.restore();
     }
+
+    // Hairline. Invisible against a dark swatch and load-bearing against a pale
+    // one: a near-white paint beside a near-white gutter has no edge otherwise,
+    // and the palette silently loses a colour.
+    ctx.save();
+    ctx.strokeStyle = 'rgba(0,0,0,0.10)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(r.x + 0.5, r.y + 0.5, r.w - 1, r.h - 1);
+    ctx.restore();
 
     if (band.labelAlpha <= 0) return;
     // Rotated to read bottom-to-top: a swatch is far taller than it is wide, and
@@ -620,18 +654,64 @@ function drawPaletteSheen(
 }
 
 /**
- * The only branding that survives a re-upload, so it is in every frame — but the
- * poster carries no other type at all now, and it must not compete. Dark ink in
- * the bottom margin, small, sitting on the ground rather than on any swatch.
+ * The only branding that survives a re-upload, so it is in every frame — but
+ * with the outer margin gone there is no ground left to put it on. It sits in
+ * the bottom-left of the IMAGE instead, the way a photo credit does: small, low
+ * contrast, and carrying its own shadow so it stays legible over a light or a
+ * dark photograph without knowing which it is.
  */
-function drawWarpWatermark(ctx: CanvasRenderingContext2D, res: WarpResources): void {
+/**
+ * The landing flash, drawn UNDER the swatches.
+ *
+ * Two earlier versions were wrong in instructive ways. The first washed the
+ * whole frame in the arriving colour, which tinted the PHOTOGRAPH — the one
+ * thing this product must not do, for the same reason the miniature clip refuses
+ * to hue-shift the model even for three frames. The second confined it to the
+ * palette but drew it on top, which additively blew a pale ground toward white
+ * and tinted the neighbouring swatches — and those swatches ARE paint colours we
+ * are claiming to have measured. Misrepresenting them for 300 ms is still
+ * misrepresenting them.
+ *
+ * Drawn under, the glow can only appear in the gutters and on empty slots.
+ * Nothing that carries a colour claim is touched, and the beat still reads,
+ * because a colour blooming out of the gaps around a swatch is exactly the
+ * "something landed here" signal wanted.
+ */
+function drawPulseUnder(
+  ctx: CanvasRenderingContext2D,
+  hex: string,
+  strength: number,
+  swatch: Rect,
+  palette: Rect,
+): void {
+  if (strength <= 0) return;
+  const cx = swatch.x + swatch.w / 2;
+  const cy = swatch.y + swatch.h / 2;
+  const r = swatch.w * 2.2;
   ctx.save();
-  ctx.globalAlpha = 0.4;
-  drawText(ctx, 'schemestealer.com', CANVAS_W / 2, CANVAS_H - MARGIN - FOOTER / 2, {
+  ctx.beginPath();
+  ctx.rect(palette.x, palette.y, palette.w, palette.h);
+  ctx.clip();
+  const g = ctx.createRadialGradient(cx, cy, swatch.w * 0.1, cx, cy, r);
+  g.addColorStop(0, hexToRgba(hex, 0.95 * strength));
+  g.addColorStop(0.5, hexToRgba(hex, 0.4 * strength));
+  g.addColorStop(1, hexToRgba(hex, 0));
+  ctx.fillStyle = g;
+  ctx.fillRect(cx - r, palette.y, r * 2, palette.h);
+  ctx.restore();
+}
+
+function drawWarpWatermark(ctx: CanvasRenderingContext2D, res: WarpResources, image: Rect): void {
+  ctx.save();
+  ctx.globalAlpha = 0.62;
+  ctx.shadowColor = 'rgba(0,0,0,0.85)';
+  ctx.shadowBlur = 6;
+  drawText(ctx, 'schemestealer.com', image.x + 22, image.y + image.h - 20, {
     font: res.fonts.cyber,
-    size: 16,
+    size: 17,
     weight: 600,
-    colour: GROUND_INK,
+    colour: '#ffffff',
+    align: 'left',
     letter: 2,
   });
   ctx.restore();
@@ -694,7 +774,7 @@ export function composeWarp(
   // No headline. The reference carries no type at all, and a line across the top
   // was the last thing making this read as a slide rather than a poster.
 
-  drawWarpWatermark(ctx, res);
+  drawWarpWatermark(ctx, res, frame);
   drawWarpAmbient(ctx, res, state.progress);
 
   if (state.loopCrossfade > 0) {

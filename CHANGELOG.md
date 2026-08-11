@@ -2,6 +2,52 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-08-11 (Warp-cast v5 — true full bleed, and a landing beat)
+
+### Changed
+- **The outer margin is gone.** Re-measured the reference: it bleeds to its top,
+  left and right edges, and the only gaps in the whole composition are *between*
+  swatches and between the image and the swatch row. Our border of ground did
+  two things wrong at once — it framed the poster like a slide, and it put
+  ground either side of the end swatches, so a near-white paint at one end
+  vanished into it.
+- **Hairline on every swatch** (`rgba(0,0,0,0.10)`). Invisible against a dark
+  swatch and load-bearing against a pale one: a near-white paint beside a
+  near-white gutter has no edge otherwise, and the palette silently loses a
+  colour.
+- The Playwright fixture now contains a **near-white paint** on purpose. That
+  case cannot be tested if it is not in the data.
+- Watermark moved into the bottom-left of the image, carrying its own shadow, as
+  there is no ground left to sit on.
+
+### Added — the landing beat
+Each swatch now flashes as its colour arrives, and it took three attempts to
+find a version that is not dishonest:
+
+1. **A wash across the whole frame.** Tinted the PHOTOGRAPH. That is the one
+   thing this product must not do — the miniature clip already refuses to
+   hue-shift the model even for three frames, for exactly this reason. A
+   colour-accuracy tool cannot put a yellow cast over the picture it is
+   measuring.
+2. **Confined to the palette, drawn on top.** Additively blew a pale ground
+   toward white, and tinted the neighbouring swatches — and those swatches ARE
+   paint colours we claim to have measured. Misrepresenting them for 300 ms is
+   still misrepresenting them.
+3. **Drawn underneath.** The glow survives only in the gutters and on empty
+   slots, so nothing carrying a colour claim is touched. The landing swatch also
+   overshoots its column by a few pixels and settles — a geometric beat, which
+   cannot misrepresent a paint at all.
+
+It is deliberately restrained. A louder flash is one constant away if it reads
+as too subtle on a phone.
+
+### Measured
+Anti-freeze quietest 0.4 s window **0.655** (floor 0.5).
+
+### Verification
+`vitest` 792 · `tsc` clean · `warp-export` 6/6 · `reveal-export` 4/4 ·
+`reveal-encode` 2/2, warp streams `[14, 14.016]`.
+
 ## [Unreleased] - 2026-08-11 (Warp-cast: the video was 3 seconds short of its own soundtrack)
 
 Found by measuring a real device export (`Testimages/Jaws.mp4`) rather than

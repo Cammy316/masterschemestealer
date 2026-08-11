@@ -54,6 +54,8 @@ test('warp-cast: storyboard frames render and the loop seam is exact', async ({ 
     drain: 2200,
     bloom: 3300,
     pour2: 5900,
+    // The peak of a landing flash — band 2 lands at f≈0.46 of a 14 s clip.
+    pulse: 6440,
     pour5: 8600,
     settle: 10500,
     hold: 12600,

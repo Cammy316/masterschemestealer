@@ -83,6 +83,16 @@ export interface WarpFrameState {
   bloom: number | null;
   bands: WarpBandState[];
   droplet: WarpDroplet | null;
+  /**
+   * The colour flash as a swatch lands, and which swatch it belongs to.
+   *
+   * The pour is the only moment in the clip where something ARRIVES, and on a
+   * pale ground a band quietly filling from the bottom is easy to miss. A brief
+   * wash of that colour across the whole frame makes each landing land.
+   *
+   * Confined to the pour phase, so it can never touch the loop seam.
+   */
+  pulse: { index: number; strength: number } | null;
   /** 0..1 crossfade to the pre-baked frame-0 poster. */
   loopCrossfade: number;
 }
@@ -193,7 +203,21 @@ export function warpFrameState(t: number, durationMs: number, bandCount: number)
     }
   }
 
+  // The flash peaks just after the colour commits to its column and is gone
+  // before the next droplet leaves the image, so two pulses never overlap.
+  let pulse: { index: number; strength: number } | null = null;
+  if (phase === 'pour') {
+    for (let i = 0; i < n; i++) {
+      const win = bandPourWindow(i, n);
+      if (f < win.start || f > win.end) continue;
+      const local = clamp((f - win.start) / (win.end - win.start));
+      const x = clamp((local - 0.45) / 0.42);
+      if (x > 0 && x < 1) pulse = { index: i, strength: Math.sin(x * Math.PI) };
+      break;
+    }
+  }
+
   const loopCrossfade = f <= LOOP_START ? 0 : smoothstep((f - LOOP_START) / (1 - LOOP_START));
 
-  return { phase, progress: f, camera, soften, bloom, bands, droplet, loopCrossfade };
+  return { phase, progress: f, camera, soften, bloom, bands, droplet, pulse, loopCrossfade };
 }

@@ -117,7 +117,9 @@ export const seedInspirationScan = (key: string) => {
     ['#2f9e44', 0.16, 0.52],
     ['#f59f00', 0.66, 0.5],
     ['#7048e8', 0.14, 0.82],
-    ['#0c8599', 0.64, 0.8],
+    // Deliberately near-white: a pale paint beside a pale gutter is the case
+    // that loses its edge, and it must be in the fixture or nothing tests it.
+    ['#f1efe9', 0.64, 0.8],
   ];
 
   const imageUrl = (() => {
@@ -154,14 +156,14 @@ export const seedInspirationScan = (key: string) => {
     ['Caliban Green', 3.8],
     ['Averland Sunset', 6.2],
     ['Naggaroth Night', 4.5],
-    ['Sotek Green', 11.4],
+    ['White Scar', 9.6],
   ] as const;
 
   const detectedColors = PATCHES.map(([hex], i) => ({
     hex,
     rgb: [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)],
     lab: [50, 0, 0],
-    family: ['red', 'blue', 'green', 'yellow', 'purple', 'teal'][i],
+    family: ['red', 'blue', 'green', 'yellow', 'purple', 'white'][i],
     percentage: 30 - i * 3,
     // Deliberately stacked — see the note above.
     position: { x: 0.5, y: 0.5 },
