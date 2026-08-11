@@ -2,6 +2,68 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-08-11 (Warp-Cast v4 — the poster card)
+
+Measured off the reference (`Testimages/Example.jpg`, 1064×808) rather than
+eyeballed:
+
+| | Reference | v3 |
+|---|---|---|
+| Image | 73.0% of height | 28–56%, varying |
+| Gap: image → swatches | **7 px** | **0 — they touched** |
+| Palette | 24.1% | 17% |
+| Gaps between swatches | **7 px, white** | 5 px, dark |
+| Outer margin | 7 px | none |
+
+The gaps are most of why the reference reads as designed rather than assembled,
+and we had none of them.
+
+### Changed
+- **The ground is off-white and fills the frame.** Once the gaps and the outer
+  margin are off-white there is nothing left for the blurred backdrop to be — it
+  would only ever show through the gutters, where it reads as dirt rather than
+  depth. So the backdrop is gone and the poster is a card: image and swatches on
+  a flat ground, 26 px margin, 10 px gutters everywhere.
+- **The headline is gone**, as is any other permanent type. The reference
+  carries none, and a line across the top was the last thing making this read as
+  a slide rather than a poster.
+- **Filling the frame is solved by flexing the palette, not by forcing a crop.**
+  This is a real geometric conflict, not a setting: the reference is a 4:3
+  canvas, ours is 9:16, and holding the reference's 73/24 split at 1080 wide
+  needs an image 1402 px tall — an aspect of 0.77, i.e. portrait. A landscape
+  photo cannot do that intact. So the image is cropped only as far as **4:5**,
+  in either direction, and the swatch row absorbs whatever height is left.
+  Portrait photos land on reference proportions; a 16:9 photo takes a crop to
+  4:5 and gets a 543 px row. Either way the frame is full and nothing is
+  letterboxed.
+- Watermark: small, dark ink, in a reserved 30 px footer under the palette, so
+  it can never sit on a swatch.
+- Un-poured swatches are a slot one shade off the ground, not a dark plate — on
+  a white card a dark plate is a hole, and the gutter has to read the same
+  whether the swatch above it is filled or not.
+
+### Also
+The Playwright seed image is now **16:9 instead of square**. Inspiration scans
+are overwhelmingly landscape, and landscape is the case this layout fights
+hardest. A square seed tested the easy case and hid the conflict entirely.
+
+### A miss worth recording
+The first cut of the crop limit was "keep at least 60% of the source width",
+which let a 16:9 photo push the swatch row to **895 px — 47% of the frame**.
+That is colour bars, not a palette. Expressing the same limit as a display
+aspect (4:5) puts the identical photo at 543 px. The constraint was right; the
+axis it was expressed on was wrong.
+
+### Measured
+Anti-freeze quietest 0.4 s window **0.648** (floor 0.5) — worth checking,
+because the ambient layer is additive white grain and the ground is now
+off-white; `#F2F0EA` leaves enough headroom for it to register. Audio untouched
+by a visual-only change.
+
+### Verification
+`vitest` 792 · `tsc` clean · `warp-export` 6/6 · `reveal-export` 4/4 ·
+`reveal-encode` 2/2 both `bt709,bt709,bt709`.
+
 ## [Unreleased] - 2026-08-11 (Inspiration tab — theme unification)
 
 The inspiration tab was rendering the OTHER theme's signature colour. Every

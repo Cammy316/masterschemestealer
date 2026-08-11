@@ -53,47 +53,57 @@ export const WARP_MAX_COLOURS = 6;
 /**
  * Layout — the Cinema Palettes poster, adapted to 9:16.
  *
- * The reference format is a still at FULL WIDTH with a bar of pure colour
- * directly beneath it, edge to edge, carrying no type whatsoever. Two earlier
- * attempts missed it in opposite directions: the first boxed the image at 61%
- * of frame width behind corner brackets, and the second contain-fitted it into
- * a 960x770 box, which left a landscape photo occupying 28% of the frame height
- * with 470 px of dead space below the palette.
+ * Measured off the reference (1064×808): image 73.0% of height, a 7 px gap, the
+ * swatch row 24.1%, a 7 px bottom margin, and 7 px gaps between swatches — all
+ * of them WHITE, because the reference's canvas is white. The gaps are most of
+ * why it reads as designed rather than assembled.
  *
- * So the image is full-bleed WIDTH and keeps its natural aspect, the swatches
- * sit flush underneath it, and the whole block is centred as one poster on a
- * blurred, colour-matched ground. Nothing is cropped; the frame has no holes.
+ * So the ground is off-white and fills the frame, and the image and swatches sit
+ * on it with even gaps. That replaces the blurred backdrop entirely: a blurred
+ * ground and a white gutter cannot both be the thing behind the poster, and the
+ * gutter is what the format actually needs.
  *
- * The block centre sits above the frame centre so the swatches clear the
- * caption zone. Swatches carry no permanent text, so they are ARTWORK and the
- * safe-area rule does not bind them — which is exactly why vertical columns work
- * here and did not in the previous cut, where every column had a name in it and
- * the sixth landed under the action rail.
+ * FILLING THE FRAME is a genuine conflict, not a setting. The reference is a 4:3
+ * canvas; ours is 9:16, nearly three times taller relative to width. Holding the
+ * reference's 73/24 split at 1080 wide needs an image 1402 px tall — an aspect
+ * of 0.77, i.e. portrait. A landscape photo cannot do that without being cropped
+ * to pieces. The resolution is that the PALETTE flexes: the image is cropped
+ * only as far as `MIN_WIDTH_KEPT` allows, and the swatch row absorbs whatever
+ * height is left. Portrait photos land on reference proportions; a 16:9 photo
+ * gets a mild crop and taller columns. Either way the frame is full.
  */
-const SWATCH_H = 330;
-/** Hairline of ground between swatches. The reference separates them; touching
- *  blocks read as one smeared gradient rather than a set of paints. */
-const SWATCH_GAP = 5;
+const MARGIN = 26;
+const GAP = 10;
+/** Off-white ground. Warmed slightly off pure white — 255 against six saturated
+ *  swatches glares on an OLED phone. */
+const GROUND = '#F2F0EA';
+/** Ink for anything drawn on the ground. */
+const GROUND_INK = '#1A1720';
+/** An un-poured swatch slot: a shade off the ground, never a dark hole. */
+const SLOT = '#E4E0D8';
+/** Share of the usable height the swatch row wants, from the reference. */
+const PALETTE_SHARE = 0.26;
+const PALETTE_MIN = 340;
+const PALETTE_MAX = 620;
 /**
- * Ceiling on image height.
+ * The narrowest the image may be DISPLAYED at: 4:5.
  *
- * Chosen so the WHOLE poster — image plus swatches — always fits between the
- * safe top and y1400, which guarantees a home for the watermark underneath it
- * inside the safe area. Without the cap, a square photo pushed the palette to
- * y1545 and the mark had nowhere to go but on top of the headline.
+ * This is the whole "gentle" in gentle crop, and it binds in both directions —
+ * a wide photo is cropped at the sides no further than 4:5, and a tall one is
+ * cropped top and bottom no further than 4:5. Past that the palette grows
+ * instead, which is a better trade than throwing away half of someone's
+ * photograph to satisfy a proportion.
  *
- * Only square-and-taller photos hit it; a 16:9 or 4:3 image is still full-bleed
- * width, which is the case the format is really for.
+ * A first pass capped the crop at "keep 60% of the width", which let a 16:9
+ * photo push the swatch row to 895 px — 47% of the frame, colour bars rather
+ * than a palette. 4:5 puts the same photo at a 543 px row, near the reference.
  */
-const MAX_IMAGE_H = 850;
-/** Vertical centre of the poster block. */
-const BLOCK_CY = 780;
+const MIN_DISPLAY_ASPECT = 0.8;
+/** Reserved under the palette for the watermark, so it never sits on a swatch. */
+const FOOTER = 30;
 /** Ken Burns range. The image is CLIPPED to its rect, so the poster edges stay
  *  crisp while the picture inside them moves. */
 const KEN_BURNS = 0.08;
-/** Below this, a platform caption bar can cover anything. Artwork may cross it;
- *  the watermark may not. */
-const SAFE_FLOOR = 1430;
 
 export interface PosterLayout {
   image: Rect;
@@ -102,20 +112,21 @@ export interface PosterLayout {
 
 /** Where the poster's two pieces sit, for an image of the given dimensions. */
 export function posterLayout(imgW: number, imgH: number): PosterLayout {
-  const natural = Math.round((CANVAS_W * imgH) / Math.max(1, imgW));
-  const h = Math.min(MAX_IMAGE_H, natural);
-  // Only a very tall portrait hits the ceiling; then the image narrows rather
-  // than being cropped.
-  const w = h < natural ? Math.round((h * imgW) / Math.max(1, imgH)) : CANVAS_W;
-  const blockH = h + SWATCH_H;
-  const top = Math.round(BLOCK_CY - blockH / 2);
-  const x = Math.round((CANVAS_W - w) / 2);
-  // The palette is always exactly as wide as the image. They are one poster, and
-  // a narrowed image over a full-bleed colour bar reads as two unrelated
-  // elements stacked — the reference has them flush to the same edges.
+  const w = CANVAS_W - MARGIN * 2;
+  const usable = CANVAS_H - MARGIN * 2 - GAP - FOOTER;
+  const aspect = imgW / Math.max(1, imgH);
+
+  // What the reference proportions would ask for.
+  const wanted = Math.min(PALETTE_MAX, Math.max(PALETTE_MIN, Math.round(usable * PALETTE_SHARE)));
+  // The tallest the image may be drawn before the crop passes 4:5.
+  const cropCeiling = w / MIN_DISPLAY_ASPECT;
+
+  const imageH = Math.round(Math.min(usable - wanted, cropCeiling));
+  const paletteH = usable - imageH;
+
   return {
-    image: { x, y: top, w, h },
-    palette: { x, y: top + h, w, h: SWATCH_H },
+    image: { x: MARGIN, y: MARGIN, w, h: imageH },
+    palette: { x: MARGIN, y: MARGIN + imageH + GAP, w, h: paletteH },
   };
 }
 
@@ -166,11 +177,12 @@ export function columnOrder(hexes: string[]): number[] {
   return columns;
 }
 
-/** Rect of swatch `i` of `n`. Flush to both frame edges, gaps only between. */
+/** Rect of swatch `i` of `n`. Flush to the poster's edges, gaps only between —
+ *  the same GAP used everywhere else, so the grid reads as one system. */
 export function swatchRect(i: number, n: number, palette: Rect): Rect {
   const count = Math.max(1, n);
-  const colW = (palette.w - (count - 1) * SWATCH_GAP) / count;
-  return { x: palette.x + i * (colW + SWATCH_GAP), y: palette.y, w: colW, h: palette.h };
+  const colW = (palette.w - (count - 1) * GAP) / count;
+  return { x: palette.x + i * (colW + GAP), y: palette.y, w: colW, h: palette.h };
 }
 
 export interface WarpResources {
@@ -308,52 +320,12 @@ export async function prepareWarpResources(
   soft.ctx.drawImage(img, 0, 0, imgW, imgH);
   soft.ctx.filter = 'none';
 
-  // Full-bleed blurred backdrop, built small and upscaled — a heavy blur of a
-  // full-size canvas is one of the most expensive things a browser can be asked
-  // to do, and once it is this soft the result is indistinguishable.
+  // The ground. Flat off-white, filling the frame: with white gutters between
+  // every element there is nothing for a blurred backdrop to be — it would only
+  // ever show through the gaps, where it would read as dirt rather than depth.
   const backdrop = makeLayer(CANVAS_W, CANVAS_H);
   if (!backdrop) throw new Error('2D canvas unavailable');
-  // Opaque base FIRST. A blur draw leaves sub-opaque pixels at the frame edge,
-  // and the loop dissolve blits this layer over the live frame at alpha 1 — if
-  // it is not fully opaque the blit does not replace, and the seam stops being
-  // pixel-exact. Cheap fill, load-bearing.
-  backdrop.ctx.fillStyle = '#0b0918';
-  backdrop.ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
-  const small = makeLayer(108, 192);
-  if (small) {
-    const cover = coverRect(imgW, imgH, { x: 0, y: 0, w: 108, h: 192 });
-    small.ctx.drawImage(hero.c, cover.x, cover.y, cover.w, cover.h);
-    if ('filter' in backdrop.ctx) backdrop.ctx.filter = 'blur(26px)';
-    backdrop.ctx.drawImage(small.c, 0, 0, CANVAS_W, CANVAS_H);
-    backdrop.ctx.filter = 'none';
-  } else {
-    backdrop.ctx.fillStyle = '#0f0f23';
-    backdrop.ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
-  }
-  // Darkened so the sharp image and the palette both separate from it.
-  backdrop.ctx.fillStyle = 'rgba(8, 6, 18, 0.62)';
-  backdrop.ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
-  const vig = backdrop.ctx.createRadialGradient(
-    CANVAS_W / 2,
-    CANVAS_H * 0.42,
-    Math.min(CANVAS_W, CANVAS_H) * 0.28,
-    CANVAS_W / 2,
-    CANVAS_H * 0.42,
-    Math.max(CANVAS_W, CANVAS_H) * 0.72,
-  );
-  vig.addColorStop(0, 'transparent');
-  vig.addColorStop(1, 'rgba(0,0,0,0.55)');
-  backdrop.ctx.fillStyle = vig;
-  backdrop.ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
-  // The ground above and below the poster should recede rather than compete —
-  // blurred colour blobs pull the eye off the palette, and the lower ones land
-  // under the caption bar anyway.
-  const floorFade = backdrop.ctx.createLinearGradient(0, 0, 0, CANVAS_H);
-  floorFade.addColorStop(0, 'rgba(6, 5, 14, 0.55)');
-  floorFade.addColorStop(0.4, 'rgba(6, 5, 14, 0.1)');
-  floorFade.addColorStop(0.78, 'rgba(6, 5, 14, 0.55)');
-  floorFade.addColorStop(1, 'rgba(6, 5, 14, 0.9)');
-  backdrop.ctx.fillStyle = floorFade;
+  backdrop.ctx.fillStyle = GROUND;
   backdrop.ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
 
   // Where each colour actually lives in the picture — the droplets have to come
@@ -570,17 +542,18 @@ function drawPalette(
   const n = rows.length;
   if (n === 0) return;
 
-  // Ground behind the swatches, so un-poured slots are visible empties rather
-  // than raw blurred backdrop.
-  ctx.save();
-  ctx.fillStyle = 'rgba(6, 5, 14, 0.92)';
-  ctx.fillRect(palette.x, palette.y, palette.w, palette.h);
-  ctx.restore();
-
   rows.forEach((row, i) => {
     const band = state.bands[i];
     if (!band) return;
     const r = swatchRect(res.columns[i] ?? i, n, palette);
+
+    // Empty slot. A shade off the ground rather than a dark plate — on a white
+    // card a dark plate is a hole, and the gaps between swatches have to read as
+    // the SAME gutter whether the swatch above them is filled or not.
+    ctx.save();
+    ctx.fillStyle = SLOT;
+    ctx.fillRect(r.x, r.y, r.w, r.h);
+    ctx.restore();
 
     if (band.fill > 0) {
       // Pours UPWARD from the base of its column — the droplet fell in, so the
@@ -647,29 +620,18 @@ function drawPaletteSheen(
 }
 
 /**
- * Small, tucked against the poster, and never below the safe floor.
- *
- * It is the only branding that survives a re-upload, so it is in every frame —
- * but the poster block is image-dependent, and for a square or portrait photo
- * the palette runs past y1430 into the caption zone. Sitting under it there
- * would put the one piece of branding exactly where the platform covers it, so
- * when the palette runs low the mark moves ABOVE the image instead.
+ * The only branding that survives a re-upload, so it is in every frame — but the
+ * poster carries no other type at all now, and it must not compete. Dark ink in
+ * the bottom margin, small, sitting on the ground rather than on any swatch.
  */
-function drawWarpWatermark(
-  ctx: CanvasRenderingContext2D,
-  res: WarpResources,
-  poster: PosterLayout,
-): void {
-  // The block is capped so this always lands inside the safe area; the clamp is
-  // a belt-and-braces guard rather than the mechanism.
-  const y = Math.min(poster.palette.y + poster.palette.h + 40, SAFE_FLOOR - 16);
+function drawWarpWatermark(ctx: CanvasRenderingContext2D, res: WarpResources): void {
   ctx.save();
-  ctx.globalAlpha = 0.42;
-  drawText(ctx, 'schemestealer.com', CANVAS_W / 2, y, {
+  ctx.globalAlpha = 0.4;
+  drawText(ctx, 'schemestealer.com', CANVAS_W / 2, CANVAS_H - MARGIN - FOOTER / 2, {
     font: res.fonts.cyber,
-    size: 21,
+    size: 16,
     weight: 600,
-    colour: '#ffffff',
+    colour: GROUND_INK,
     letter: 2,
   });
   ctx.restore();
@@ -729,26 +691,10 @@ export function composeWarp(
     poster.palette,
   );
 
-  // Headline. Rides with the swatch labels, so the finished poster carries no
-  // type at all — the reference format has none, and the clip only earns that
-  // look if it actually clears the frame at the end.
-  const cap = warpCaptionText(spec, state);
-  const capAlpha = state.bands.length ? Math.max(...state.bands.map((b) => b.labelAlpha)) : 0;
-  if (cap && capAlpha > 0) {
-    ctx.save();
-    ctx.globalAlpha = capAlpha * 0.9;
-    drawText(ctx, cap, CANVAS_W / 2, Math.max(96, frame.y - 62), {
-      font: res.fonts.cyber,
-      size: 32,
-      weight: 700,
-      colour: '#ffffff',
-      letter: 3,
-      maxWidth: 880,
-    });
-    ctx.restore();
-  }
+  // No headline. The reference carries no type at all, and a line across the top
+  // was the last thing making this read as a slide rather than a poster.
 
-  drawWarpWatermark(ctx, res, poster);
+  drawWarpWatermark(ctx, res);
   drawWarpAmbient(ctx, res, state.progress);
 
   if (state.loopCrossfade > 0) {

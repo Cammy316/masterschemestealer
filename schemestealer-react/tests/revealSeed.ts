@@ -121,15 +121,22 @@ export const seedInspirationScan = (key: string) => {
   ];
 
   const imageUrl = (() => {
+    // 16:9, deliberately. Inspiration scans are overwhelmingly landscape —
+    // skies, posters, landscapes — and landscape is the case the poster layout
+    // has to fight hardest, because a wide photo cannot fill a 9:16 frame
+    // without either a crop or a very tall palette. A square seed tested the
+    // easy case and hid that entirely.
+    const W = 854;
+    const H = 480;
     const c = document.createElement('canvas');
-    c.width = 480;
-    c.height = 480;
+    c.width = W;
+    c.height = H;
     const x = c.getContext('2d')!;
     x.fillStyle = '#101014';
-    x.fillRect(0, 0, 480, 480);
+    x.fillRect(0, 0, W, H);
     for (const [hex, px, py] of PATCHES) {
       x.fillStyle = hex;
-      x.fillRect(Math.round(px * 480), Math.round(py * 480), 105, 74);
+      x.fillRect(Math.round(px * W), Math.round(py * H), 150, 74);
     }
     return c.toDataURL('image/png');
   })();
