@@ -111,7 +111,11 @@ export function labelTint(hex: string, floor = 140): string {
   r = Math.round(r + (255 - r) * t);
   g = Math.round(g + (255 - g) * t);
   b = Math.round(b + (255 - b) * t);
-  return `rgb(${r}, ${g}, ${b})`;
+  // Returned as #rrggbb, not rgb(), so the result can be fed back into
+  // hexToRgba. It used to return rgb(), which parses as NaN there and silently
+  // fell back to imperial green — every warp orb rim rendered green.
+  const h2 = (v: number) => v.toString(16).padStart(2, '0');
+  return `#${h2(r)}${h2(g)}${h2(b)}`;
 }
 
 /** The app's fixed band vocabulary. A bare number means nothing to a viewer who
@@ -177,8 +181,18 @@ function lerpRect(a: Rect, b: Rect, t: number): Rect {
  * Everything anchored to the model — masks, rims, leader lines — reads this one
  * rect, so nothing can drift out of register.
  */
-export function modelRectAt(camera: RevealCamera, imgW: number, imgH: number): Rect {
-  const fitted = fitRect(imgW, imgH, lerpRect(FULL_BOX, COMPACT_BOX, camera.boxLerp));
+export function modelRectAt(
+  camera: RevealCamera,
+  imgW: number,
+  imgH: number,
+  // The framing boxes are parameters so the inspiration storyboard can share
+  // this camera — Ken Burns, region punch and the outro morph are identical
+  // there; only the boxes differ, because an inspiration photo is usually
+  // landscape or square rather than a tall figure.
+  fullBox: Rect = FULL_BOX,
+  compactBox: Rect = COMPACT_BOX,
+): Rect {
+  const fitted = fitRect(imgW, imgH, lerpRect(fullBox, compactBox, camera.boxLerp));
   const w = fitted.w * camera.scale;
   const h = fitted.h * camera.scale;
   return {
@@ -378,7 +392,7 @@ export async function prepareResources(
   return res;
 }
 
-function loadImage(url: string): Promise<HTMLImageElement> {
+export function loadImage(url: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.crossOrigin = 'anonymous';
@@ -411,7 +425,7 @@ export function garbleReveal(text: string, progress: number): string {
   return out;
 }
 
-function drawText(
+export function drawText(
   ctx: CanvasRenderingContext2D,
   text: string,
   x: number,
@@ -636,8 +650,8 @@ export function drawLoopTarget(ctx: CanvasRenderingContext2D, res: RevealResourc
   // The seam is frame 0 vs this. The watermark and the ambient layer now draw
   // in every composed frame, so they have to be here too — at p=0, which is
   // exactly what the live path produces at both ends of the loop.
-  drawWatermark(ctx, 1, res);
-  drawAmbient(ctx, res, accentFor(res.spec.skin), 0);
+  drawWatermark(ctx, 1, res.fonts, res.spec.skin);
+  drawAmbient(ctx, res.grainTiles, accentFor(res.spec.skin), 0);
 }
 
 export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameState, res: RevealResources): void {
@@ -898,11 +912,11 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
   // under the end card. A mark that flickers reads as a glitch, and a mark that
   // is missing from the frame someone screenshots is worth nothing.
   if (state.plateAlpha > 0) drawPlate(ctx, state.plateAlpha, res);
-  drawWatermark(ctx, 1, res);
+  drawWatermark(ctx, 1, res.fonts, res.spec.skin);
 
   // Continuous motion — above everything, below the loop crossfade so the
   // dissolve blends two frames that have both already been grained.
-  drawAmbient(ctx, res, accent, state.progress);
+  drawAmbient(ctx, res.grainTiles, accent, state.progress);
 
   // Loop dissolve back to frame 1 (the hero) — a blit of the pre-baked target.
   // The HUD has already faded, so nothing ghosts through the crossfade.
@@ -1068,14 +1082,19 @@ function drawRecipe(ctx: CanvasRenderingContext2D, progress: number, hud: number
  * above ~82% of the frame; the empty band below is deliberate safe margin, not
  * wasted space.
  */
-function drawWatermark(ctx: CanvasRenderingContext2D, alpha: number, res: RevealResources): void {
+export function drawWatermark(
+  ctx: CanvasRenderingContext2D,
+  alpha: number,
+  fonts: RevealFonts,
+  skin: RevealSkin,
+): void {
   ctx.save();
   ctx.globalAlpha = alpha * 0.6;
   drawText(ctx, 'schemestealer.com', LAYOUT.watermark.x + LAYOUT.watermark.w, LAYOUT.watermark.y + 22, {
-    font: res.fonts.cyber,
+    font: fonts.cyber,
     size: 24,
     weight: 600,
-    colour: themeFor(res.spec.skin).muted,
+    colour: themeFor(skin).muted,
     align: 'right',
     letter: 1,
   });
@@ -1099,7 +1118,7 @@ const GRAIN_ALPHA = 0.024;
 
 /** Deterministic sensor grain. Same mulberry32 the audio bed uses — a random
  *  grain would make the export non-reproducible and the loop seam a coin flip. */
-function buildGrainTiles(): HTMLCanvasElement[] {
+export function buildGrainTiles(): HTMLCanvasElement[] {
   const tiles: HTMLCanvasElement[] = [];
   let seed = 0x811c9dc5;
   for (let t = 0; t < GRAIN_TILES; t++) {
@@ -1148,7 +1167,12 @@ function buildGrainTiles(): HTMLCanvasElement[] {
  * Both are periodic in `p` (elapsed fraction), so the frame at p=1 is identical
  * to p=0 and the loop seam survives.
  */
-function drawAmbient(ctx: CanvasRenderingContext2D, res: RevealResources, accent: string, p: number): void {
+export function drawAmbient(
+  ctx: CanvasRenderingContext2D,
+  tiles: HTMLCanvasElement[],
+  accent: string,
+  p: number,
+): void {
   // Refresh band: one full traversal per clip, so it is exactly where it
   // started when the clip loops.
   const bandH = 460;
@@ -1164,7 +1188,6 @@ function drawAmbient(ctx: CanvasRenderingContext2D, res: RevealResources, accent
 
   // Grain, additive so it registers on the black field rather than being
   // swallowed by it (an `overlay` blend over black is a no-op).
-  const tiles = res.grainTiles;
   if (tiles.length) {
     const idx = Math.floor(p * GRAIN_STEPS) % tiles.length;
     ctx.globalAlpha = GRAIN_ALPHA;
@@ -1185,7 +1208,7 @@ function drawAmbient(ctx: CanvasRenderingContext2D, res: RevealResources, accent
  * `p` is elapsed fraction of the clip, and every term is periodic in it, so the
  * band at p=1 is identical to p=0 and cannot break the loop seam.
  */
-function drawDecorBand(ctx: CanvasRenderingContext2D, accent: string, p: number): void {
+export function drawDecorBand(ctx: CanvasRenderingContext2D, accent: string, p: number): void {
   const b = DECOR_BAND;
   ctx.save();
   ctx.beginPath();
@@ -1263,6 +1286,9 @@ if (process.env.NODE_ENV !== 'production' && typeof window !== 'undefined') {
     // The offline encoder is a dynamic chunk in production; tests pull it in on
     // demand, which registers window.__revealOfflineDebug.
     loadOffline: () => import('./renderRevealOffline'),
+    // Same reason: warpCompose is a dynamic chunk in production, so the warp
+    // suite pulls it in on demand, which registers window.__warpDebug.
+    loadWarp: () => import('./warpCompose'),
   };
 }
 

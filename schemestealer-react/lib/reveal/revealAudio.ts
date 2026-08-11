@@ -57,7 +57,12 @@ export function revealAudioBeats(spec: RevealSpec): number[] {
   for (let i = 0; i < n; i++) beats.push(at(regionRevealFraction(i, n)));
   const outroAt = at(PHASE_FRACTIONS.slamEnd);
   const recipeEndAt = at(PHASE_FRACTIONS.recipeEnd);
-  const stepCount = Math.max(1, spec.recipe.length);
+  // The outro cascade window was tuned for four recipe rows. The inspiration
+  // wall carries up to six, and six beats in the same window is a 180 ms cadence
+  // that cannot clear the cipher's 180 ms burst plus its 80 ms readable tail. So
+  // wall rows land in PAIRS — ceil(n/2) beats at ~359 ms, which does clear.
+  // Mini is unaffected: without a wall this is spec.recipe.length exactly.
+  const stepCount = spec.wall ? Math.max(1, Math.ceil(spec.wall.length / 2)) : Math.max(1, spec.recipe.length);
   for (let i = 0; i < stepCount; i++) {
     beats.push(outroAt + ((recipeEndAt - outroAt) * 0.75 * i) / stepCount);
   }

@@ -52,6 +52,19 @@ export interface RevealRecipeStep {
   deltaE?: number;
 }
 
+/** One row of the inspiration payoff wall: an extracted colour paired with the
+ *  single closest paint to it. The miniature never sets these. */
+export interface WallRow {
+  extractedHex: string;
+  family: string;
+  paintName: string;
+  paintHex: string;
+  brand: string;
+  deltaE: number;
+  /** Index into the scan's colours, so the orb and its row agree. */
+  colourIndex: number;
+}
+
 export interface RevealSpec {
   skin: RevealSkin;
   regions: RevealRegion[]; // already ordered for reveal (see sortRegionsForReveal)
@@ -63,6 +76,9 @@ export interface RevealSpec {
   /** Which entry of `regions` the recipe belongs to, so the outro can name it
    *  ("CITADEL · PINK") and pulse its callout. -1 when unknown. */
   recipeRegionIndex: number;
+  /** Inspiration mode only. Its presence is what makes the outro draw a wall
+   *  instead of the four-role recipe card. */
+  wall?: WallRow[];
 }
 
 /** Burned-in headline. `colours` is the progress counter; the rest are fixed

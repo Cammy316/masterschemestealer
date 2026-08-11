@@ -94,3 +94,88 @@ export const seedScan = (key: string) => {
   const state = { cart: [], scanHistory: [scan], currentScan: scan, preferredBrands: ['all'], preferredRegion: 'global' };
   window.localStorage.setItem(key, JSON.stringify({ state, version: 0 }));
 };
+
+/**
+ * Synthetic MASKLESS scan for the warp-cast specs — an inspiration scan.
+ *
+ * Six colour patches at known, distinct locations, full paint recipes, and
+ * deliberately NO masks: that combination is the whole reason the mask-gated
+ * miniature storyboard cannot run on inspiration results.
+ *
+ * Every `position` is set to dead centre on purpose. The backend does not send
+ * positions for inspiration scans, so if the pixel scan ever silently stopped
+ * running, every orb would stack in the middle of the frame — and the spec
+ * asserts they do not, which only means something because the seed starts them
+ * stacked.
+ */
+export const seedInspirationScan = (key: string) => {
+  window.localStorage.setItem('schemestealer-analytics-consent', 'granted');
+
+  const PATCHES: [string, number, number][] = [
+    ['#c92a2a', 0.12, 0.16],
+    ['#1971c2', 0.62, 0.14],
+    ['#2f9e44', 0.16, 0.52],
+    ['#f59f00', 0.66, 0.5],
+    ['#7048e8', 0.14, 0.82],
+    ['#0c8599', 0.64, 0.8],
+  ];
+
+  const imageUrl = (() => {
+    const c = document.createElement('canvas');
+    c.width = 480;
+    c.height = 480;
+    const x = c.getContext('2d')!;
+    x.fillStyle = '#101014';
+    x.fillRect(0, 0, 480, 480);
+    for (const [hex, px, py] of PATCHES) {
+      x.fillStyle = hex;
+      x.fillRect(Math.round(px * 480), Math.round(py * 480), 105, 74);
+    }
+    return c.toDataURL('image/png');
+  })();
+
+  const recipe = (hex: string, name: string, dE: number) => ({
+    base: { name, hex, type: 'base', deltaE: dE },
+    shade: { name: 'Nuln Oil', hex: '#141414', type: 'shade', deltaE: 0 },
+    highlight: { name: 'Wild Rider Red', hex: '#e07a7a', type: 'layer', deltaE: 3.1 },
+    wash: { name: 'Agrax Earthshade', hex: '#5a3a1a', type: 'wash', deltaE: 0 },
+  });
+
+  const NAMES = [
+    ['Mephiston Red', 1.1],
+    ['Macragge Blue', 2.4],
+    ['Caliban Green', 3.8],
+    ['Averland Sunset', 6.2],
+    ['Naggaroth Night', 4.5],
+    ['Sotek Green', 11.4],
+  ] as const;
+
+  const detectedColors = PATCHES.map(([hex], i) => ({
+    hex,
+    rgb: [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)],
+    lab: [50, 0, 0],
+    family: ['red', 'blue', 'green', 'yellow', 'purple', 'teal'][i],
+    percentage: 30 - i * 3,
+    // Deliberately stacked — see the note above.
+    position: { x: 0.5, y: 0.5 },
+    paintRecipe: {
+      citadel: recipe(hex, NAMES[i][0], NAMES[i][1]),
+      vallejo: recipe(hex, NAMES[i][0], NAMES[i][1]),
+      army_painter: recipe(hex, NAMES[i][0], NAMES[i][1]),
+    },
+  }));
+
+  const scan = {
+    id: 'warp-seed',
+    mode: 'inspiration',
+    timestamp: '2026-06-30T00:00:00.000Z',
+    analysisSource: 'backend',
+    recommendedPaints: [],
+    imageUrl,
+    // No maskFrame, no masks. This is what an inspiration scan actually is.
+    detectedColors,
+  };
+  (window as unknown as { __seedScan: unknown }).__seedScan = scan;
+  const state = { cart: [], scanHistory: [scan], currentScan: scan, preferredBrands: ['all'], preferredRegion: 'global' };
+  window.localStorage.setItem(key, JSON.stringify({ state, version: 0 }));
+};

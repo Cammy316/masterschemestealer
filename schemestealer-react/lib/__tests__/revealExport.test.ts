@@ -151,9 +151,21 @@ describe('labelTint', () => {
   it('lifts dark hexes to the readable floor', () => {
     const tinted = labelTint('#1a1a1a');
     expect(tinted).not.toBe('#1a1a1a');
-    const m = tinted.match(/rgb\((\d+), (\d+), (\d+)\)/)!;
-    const luma = 0.2126 * +m[1] + 0.7152 * +m[2] + 0.0722 * +m[3];
+    const m = tinted.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/)!;
+    const luma = 0.2126 * parseInt(m[1], 16) + 0.7152 * parseInt(m[2], 16) + 0.0722 * parseInt(m[3], 16);
     expect(luma).toBeGreaterThanOrEqual(139);
+  });
+
+  // Intent: the return value gets fed back into hexToRgba to build glows and
+  // rims. It used to come back as `rgb(...)`, which parses as NaN there and
+  // fell through to the imperial-green fallback — every warp orb rim rendered
+  // green regardless of its colour. The FORMAT is load-bearing, not cosmetic.
+  it('always returns a #rrggbb string that hexToRgba can parse', () => {
+    for (const hex of ['#1a1a1a', '#000000', '#8a3a3a', '#e8c56a']) {
+      const tinted = labelTint(hex);
+      expect(tinted, `${hex} -> ${tinted}`).toMatch(/^#[0-9a-f]{6}$/i);
+      expect(hexToRgba(tinted, 0.5)).not.toBe('rgba(0,255,65,0.5)');
+    }
   });
   it('leaves already-readable hexes exactly as they are', () => {
     expect(labelTint('#e8c56a')).toBe('#e8c56a'); // light yellow
