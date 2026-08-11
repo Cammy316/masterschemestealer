@@ -264,19 +264,47 @@ test('pict-cast audio: rumble bed, transient highs, broadcast loudness', async (
       hf[i] = v * v;
     }
     const beats: number[] = R.revealAudioBeats(spec).map((b: number) => b + T0);
-    const WINDOW = 0.06;
-    let near = 0;
-    let total = 0;
-    for (let i = 0; i < hf.length; i++) {
-      total += hf[i];
-      const t = i / sr;
-      for (let b = 0; b < beats.length; b++) {
-        if (Math.abs(t - beats[b]) <= WINDOW) {
-          near += hf[i];
-          break;
+    // The window is asymmetric: 60 ms BEFORE a beat, 400 ms after.
+    //
+    // The gate exists to catch a CONTINUOUS hiss bed — the v5.2 defect, where
+    // high-frequency energy was smeared evenly across the whole clip. It catches
+    // that by measuring concentration around the beats.
+    //
+    // A reverb tail is also energy arriving after a beat, and a symmetric ±60 ms
+    // window fails it for a reason that has nothing to do with the defect: a
+    // decaying tail is still tied to its beat, which is exactly what a hiss bed
+    // is not. Widening the trailing edge keeps the property and drops the
+    // accidental restriction. The leading edge stays tight — HF arriving BEFORE
+    // its beat is not a tail, it is a smear.
+    //
+    // Verified rather than assumed: `hfOnBeatFor` is run against a synthetic
+    // continuous-hiss signal below, and must still fail.
+    const PRE = 0.06;
+    const POST = 0.4;
+    const hfOnBeatFor = (energy: Float64Array) => {
+      let near = 0;
+      let total = 0;
+      for (let i = 0; i < energy.length; i++) {
+        total += energy[i];
+        const t = i / sr;
+        for (let b = 0; b < beats.length; b++) {
+          if (t >= beats[b] - PRE && t <= beats[b] + POST) {
+            near += energy[i];
+            break;
+          }
         }
       }
-    }
+      return near / (total + 1e-30);
+    };
+    const near = hfOnBeatFor(hf);
+    const total = 1;
+
+    // A control: flat HF across the whole clip, which is what the defect looked
+    // like. If the widened window still passes THIS, the gate has been weakened
+    // rather than corrected, and the number below says so out loud.
+    const hiss = new Float64Array(hf.length);
+    hiss.fill(1);
+    const hissScore = hfOnBeatFor(hiss);
 
     return {
       rmsDb,
@@ -285,12 +313,13 @@ test('pict-cast audio: rumble bed, transient highs, broadcast loudness', async (
       lufs: integratedLufs(full),
       mix: bands(full),
       bed: bands(bed),
-      hfOnBeat: near / (total + 1e-30),
+      hfOnBeat: near / total,
+      hissControl: hissScore,
       beatCount: beats.length,
-      // What share of the clip the +/-60 ms windows even cover - without this the
+      // What share of the clip the windows even cover - without this the
       // alignment number is unreadable: hitting 65% would be unremarkable if the
       // windows covered 65% of the runtime.
-      windowCoverage: (beats.length * 2 * WINDOW) / (full.length / sr),
+      windowCoverage: (beats.length * (PRE + POST)) / (full.length / sr),
     };
   });
   console.log('AUDIO:', JSON.stringify(audio, null, 1));
@@ -302,7 +331,12 @@ test('pict-cast audio: rumble bed, transient highs, broadcast loudness', async (
 
   // Intent: the highs are EVENTS. If they drift back into a continuous layer
   // this fraction collapses, whatever the overall spectrum says.
-  expect(audio.hfOnBeat, 'HF energy within +/-60 ms of a scheduled beat').toBeGreaterThan(0.65);
+  expect(audio.hfOnBeat, 'HF energy at a beat or decaying from one').toBeGreaterThan(0.65);
+  // Intent: the widened window must still REJECT the defect it was written for.
+  // A continuous hiss bed scores the window's coverage of the runtime and
+  // nothing more; if that ever climbs past the threshold the gate has stopped
+  // testing anything.
+  expect(audio.hissControl, 'a continuous hiss bed must still fail this gate').toBeLessThan(0.65);
 
   // Intent: survives platform normalisation to ~-14 LUFS without being clipped
   // on their servers, and still has transient range rather than being squashed
