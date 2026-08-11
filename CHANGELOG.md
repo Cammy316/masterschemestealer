@@ -2,349 +2,96 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - 2026-08-11 (Warp-cast v5 — true full bleed, and a landing beat)
+## [Unreleased] - 2026-08-11 (Warp-Cast — inspiration-tab shareable video)
 
-### Changed
-- **The outer margin is gone.** Re-measured the reference: it bleeds to its top,
-  left and right edges, and the only gaps in the whole composition are *between*
-  swatches and between the image and the swatch row. Our border of ground did
-  two things wrong at once — it framed the poster like a slide, and it put
-  ground either side of the end swatches, so a near-white paint at one end
-  vanished into it.
-- **Hairline on every swatch** (`rgba(0,0,0,0.10)`). Invisible against a dark
-  swatch and load-bearing against a pale one: a near-white paint beside a
-  near-white gutter has no edge otherwise, and the palette silently loses a
-  colour.
-- The Playwright fixture now contains a **near-white paint** on purpose. That
-  case cannot be tested if it is not in the data.
-- Watermark moved into the bottom-left of the image, carrying its own shadow, as
-  there is no ground left to sit on.
+The inspiration tab can now export a shareable clip. It could not before for a
+structural reason: inspiration scans return colours and full per-brand recipes
+but **no segmentation masks**, and the miniature storyboard is mask-gated end to
+end. Sixteen commits; five visual iterations against user feedback and a
+reference image (`Testimages/Example.jpg`).
 
-### Added — the landing beat
-Each swatch now flashes as its colour arrives, and it took three attempts to
-find a version that is not dishonest:
+### What it is
+A **Cinema Palettes poster**, 14 s, 1080×1920: the photograph full-bleed with a
+row of solid colour swatches beneath it on an off-white ground, and no permanent
+type anywhere. The clip earns that poster one colour at a time — each colour
+blooms at the place it actually occurs in the image, lifts as a droplet, falls,
+and its swatch pours in from the bottom — then holds it and loops.
 
-1. **A wash across the whole frame.** Tinted the PHOTOGRAPH. That is the one
-   thing this product must not do — the miniature clip already refuses to
-   hue-shift the model even for three frames, for exactly this reason. A
-   colour-accuracy tool cannot put a yellow cast over the picture it is
-   measuring.
-2. **Confined to the palette, drawn on top.** Additively blew a pale ground
-   toward white, and tinted the neighbouring swatches — and those swatches ARE
-   paint colours we claim to have measured. Misrepresenting them for 300 ms is
-   still misrepresenting them.
-3. **Drawn underneath.** The glow survives only in the gutters and on empty
-   slots, so nothing carrying a colour claim is touched. The landing swatch also
-   overshoots its column by a few pixels and settles — a geometric beat, which
-   cannot misrepresent a paint at all.
+### Architecture
+- **`revealStoryboard.ts`** — `RevealStoryboard { mode, buildSpec, prepare,
+  composeAt, audioSchedule? }`. Both engines take one, so the encode path (frame
+  pacing, BT.709, the `colr` byte patch, backpressure, abort) has exactly ONE
+  implementation. A second copy of the encoder would have meant a second place
+  for the colr bug to come back.
+- **`warpTimeline.ts`** — the warp-cast's own 14 s phase table. v1 reused the
+  miniature's, and that single decision is what made it "the pict-cast wearing
+  purple": proof → smash → sweep → slam is a scan narrative, and inheriting it
+  meant inheriting its beats and its cuts. The encode path needed MACHINERY from
+  the miniature; the clip took its GRAMMAR.
+- **`warpCompose.ts`** · **`warpAudio.ts`** · **`warpOrigins.ts`** ·
+  **`revealTheme.ts`**
+- `RevealSpec` gains optional `wall`; `revealLayout` gains wall-row derivations.
 
-It is deliberately restrained. A louder flash is one constant away if it reads
-as too subtle on a phone.
+### Notable decisions
+- **Origins are scanned from pixels**, using summed-area tables and plain
+  squared-RGB distance — "which part of the picture is most this colour" is not
+  a perceptual-difference question, and CIEDE2000 stays reserved for paint
+  matching. Separation between orbs is a PREFERENCE, not a constraint: when a
+  photo genuinely has one region of a colour, inventing a second location
+  elsewhere would be a lie.
+- **Swatches are ordered by tone, decoupled from pour order.** Colours pour in
+  coverage order because that drives the audio beats; position is a design
+  decision.
+- **Labels are transient.** Each paint name and ΔE appears as its colour lands,
+  stays while the palette assembles, then fades. The finished poster — the frame
+  people screenshot — carries nothing but a faint `schemestealer` mark.
+- **ΔE is a quiet figure, never a coloured alarm.** A hard-to-match photo
+  legitimately returns several values above 10; rendering that as red pills reads
+  as the product failing rather than being honest. Numbers never altered.
+- **Filling a 9:16 frame from a 4:3 reference is a real geometric conflict.**
+  Holding the reference's 73/24 split at 1080 wide needs a portrait image. So the
+  photo crops no further than **4:5** and the swatch row absorbs the remainder.
 
-### Measured
-Anti-freeze quietest 0.4 s window **0.655** (floor 0.5).
+### Defects found and fixed
+- **The video was 3 seconds shorter than its own soundtrack.** A device export
+  measured an 11.000 s video track against 14.016 s of audio: the payoff hold and
+  the entire loop dissolve were never rendered. Two sources of truth for
+  duration — the frame loop used the requested length, the audio used
+  `spec.durationMs`. The spec is now authoritative.
+- **Warp exports drew imperial-green scanlines**; `buildBaseLayer` had no skin
+  parameter.
+- **Every orb rim rendered green** — `labelTint` returned `rgb(...)`, which
+  `hexToRgba` cannot parse, silently falling back to imperial green.
+- **The inspiration tab was covered in imperial-green badges**, because the ΔE
+  ramp used a THEME colour to carry SEMANTIC meaning. `qualityColour(deltaE,
+  skin)` now separates them; thresholds stay shared so the same measurement never
+  reads differently between tabs.
+- **The loop seam was not pixel-exact** — the blurred backdrop had sub-opaque
+  edge pixels, so the loop-target blit did not fully replace the frame.
+- **Frame 0 cropped the photo**; **paint names vanished into light swatches**;
+  the watermark sat below the safe floor.
 
-### Verification
-`vitest` 792 · `tsc` clean · `warp-export` 6/6 · `reveal-export` 4/4 ·
-`reveal-encode` 2/2, warp streams `[14, 14.016]`.
+### Two things worth remembering
+**A test that supplies the value under test cannot see the bug.** The warp encode
+test passed `durationMs: 2000` to stay quick, which made the requested and chosen
+lengths agree — and that agreement was the entire defect.
 
-## [Unreleased] - 2026-08-11 (Warp-cast: the video was 3 seconds short of its own soundtrack)
+**A guard that cannot fail is worse than no guard.** The first imperial-green
+sweep passed on a page that was still green: it parsed `getComputedStyle` with an
+`rgb()` regex, and Tailwind v4 emits `lab()`, so every class-based colour was
+invisible to it. Found only by deliberately reverting the fix and checking the
+guard failed. It did not. Both guards are now verified against the defect they
+exist for.
 
-Found by measuring a real device export (`Testimages/Jaws.mp4`) rather than
-watching it. It looked fine on a phone. It was not.
+### The landing beat took three attempts to make honest
+A wash across the whole frame tinted the PHOTOGRAPH — the one thing a
+colour-accuracy tool must not do, and something the miniature clip already
+refuses. Confining it to the palette but drawing it on top tinted the
+neighbouring SWATCHES, which are paint colours we claim to have measured. It is
+now drawn underneath, surviving only in the gutters, plus a geometric overshoot
+of the landing swatch that cannot misrepresent a colour at all.
 
-```
-video stream   11.000 s   330 frames
-audio stream   14.016 s
-```
-
-The warp-cast runs 14 s. The export rendered **only its first 11 s of video**
-against a full 14 s of audio, so the payoff hold and the entire 0.6 s loop
-dissolve were never rendered — the clip stopped mid-settle with the camera
-halfway through its push, then held a dead frame for three seconds while the
-sound played on. The loop seam, which the whole storyboard is built around, did
-not exist in the file.
-
-### Cause
-Two sources of truth for duration. `renderRevealOffline` took its frame count
-from the REQUESTED length (`opts.durationMs ?? 11000`) while the audio bed
-rendered to `spec.durationMs` — and `WARP_STORYBOARD.buildSpec` deliberately
-returns a 14 s spec when handed the miniature's 11 s default. Both halves were
-behaving exactly as written.
-
-### Fixed
-The spec is authoritative for length once it is built, in both engines. A
-storyboard may run to its own duration; nothing downstream may disagree with it.
-
-### Why no test caught it
-The warp encode test passed `durationMs: 2000` explicitly to stay quick — which
-made the requested and chosen lengths agree, and that agreement is the entire
-bug. A test that supplies the value under test cannot see it.
-
-It now renders at the storyboard's own length and asserts three things: the
-render adopts the storyboard duration, the frame count is exactly 420, and — read
-back from the muxed FILE with ffprobe, not from our own report — the video and
-audio streams are within 0.2 s of each other.
-
-Verified by reverting the fix: the test fails with `Received: 11000` and 330
-frames, and passes with it restored.
-
-### On the export itself
-The poster format is working. `Jaws.mp4`: 1080×1920, BT.709, 6.34 Mbps, 11.1 MB,
-constant 30 fps — the palette grades dark navy through red and slate to near
-white, the poster is uncropped (it is portrait, so 4:5 barely bites), and the
-held frames carry no type at all.
-
-### Verification
-`vitest` 792 · `tsc` clean · `reveal-encode` 2/2 · `warp-export` 6/6 ·
-`reveal-export` 4/4.
-
-## [Unreleased] - 2026-08-11 (Warp-Cast v4 — the poster card)
-
-Measured off the reference (`Testimages/Example.jpg`, 1064×808) rather than
-eyeballed:
-
-| | Reference | v3 |
-|---|---|---|
-| Image | 73.0% of height | 28–56%, varying |
-| Gap: image → swatches | **7 px** | **0 — they touched** |
-| Palette | 24.1% | 17% |
-| Gaps between swatches | **7 px, white** | 5 px, dark |
-| Outer margin | 7 px | none |
-
-The gaps are most of why the reference reads as designed rather than assembled,
-and we had none of them.
-
-### Changed
-- **The ground is off-white and fills the frame.** Once the gaps and the outer
-  margin are off-white there is nothing left for the blurred backdrop to be — it
-  would only ever show through the gutters, where it reads as dirt rather than
-  depth. So the backdrop is gone and the poster is a card: image and swatches on
-  a flat ground, 26 px margin, 10 px gutters everywhere.
-- **The headline is gone**, as is any other permanent type. The reference
-  carries none, and a line across the top was the last thing making this read as
-  a slide rather than a poster.
-- **Filling the frame is solved by flexing the palette, not by forcing a crop.**
-  This is a real geometric conflict, not a setting: the reference is a 4:3
-  canvas, ours is 9:16, and holding the reference's 73/24 split at 1080 wide
-  needs an image 1402 px tall — an aspect of 0.77, i.e. portrait. A landscape
-  photo cannot do that intact. So the image is cropped only as far as **4:5**,
-  in either direction, and the swatch row absorbs whatever height is left.
-  Portrait photos land on reference proportions; a 16:9 photo takes a crop to
-  4:5 and gets a 543 px row. Either way the frame is full and nothing is
-  letterboxed.
-- Watermark: small, dark ink, in a reserved 30 px footer under the palette, so
-  it can never sit on a swatch.
-- Un-poured swatches are a slot one shade off the ground, not a dark plate — on
-  a white card a dark plate is a hole, and the gutter has to read the same
-  whether the swatch above it is filled or not.
-
-### Also
-The Playwright seed image is now **16:9 instead of square**. Inspiration scans
-are overwhelmingly landscape, and landscape is the case this layout fights
-hardest. A square seed tested the easy case and hid the conflict entirely.
-
-### A miss worth recording
-The first cut of the crop limit was "keep at least 60% of the source width",
-which let a 16:9 photo push the swatch row to **895 px — 47% of the frame**.
-That is colour bars, not a palette. Expressing the same limit as a display
-aspect (4:5) puts the identical photo at 543 px. The constraint was right; the
-axis it was expressed on was wrong.
-
-### Measured
-Anti-freeze quietest 0.4 s window **0.648** (floor 0.5) — worth checking,
-because the ambient layer is additive white grain and the ground is now
-off-white; `#F2F0EA` leaves enough headroom for it to register. Audio untouched
-by a visual-only change.
-
-### Verification
-`vitest` 792 · `tsc` clean · `warp-export` 6/6 · `reveal-export` 4/4 ·
-`reveal-encode` 2/2 both `bt709,bt709,bt709`.
-
-## [Unreleased] - 2026-08-11 (Inspiration tab — theme unification)
-
-The inspiration tab was rendering the OTHER theme's signature colour. Every
-"✓ Perfect" badge, every ΔE chip and the share modal's quality banner came out
-in cogitator green (`#00FF41`) inside a purple frame.
-
-### The actual cause
-A **theme colour was doing semantic work**. The ΔE ramp hard-coded the imperial
-accent for a good match, so "good" and "imperial" were the same value and could
-not be separated per tab.
-
-### Fixed
-- `qualityColour(deltaE, skin)` in `revealTheme.ts` is now the single ramp.
-  The band VOCABULARY and its thresholds are shared — the same measurement must
-  never read differently between tabs — and only the hues differ, only at the
-  positive end. Warp takes teal (`#2DD4BF` / `#14B8A6`); both skins keep amber
-  and red, because a warning that changes colour per theme stops being a
-  warning.
-- `deltaBandColour(deltaE, skin)` delegates to it, defaulting to imperial so
-  every existing call site is unchanged.
-- `PaintRecipeCard`: `deltaQuality` is skin-aware, and both `bg-green-500`
-  literals (the "✓ Perfect" badge and the owned-paint tick) are themed.
-- ShareModal: quality banner uses the mode's ramp; `Cogitator audio bed` reads
-  `Warp audio bed` on inspiration.
-
-### Also fixed, found while auditing
-The share modal claimed **"~13s recording · records in real time"**. Both parts
-were wrong: the warp-cast runs 14 s, and NEITHER clip has recorded in real time
-since the offline WebCodecs renderer landed. Now `14s · 1080×1920 · rendered
-offline` (11 s for the miniature).
-
-### The guard, and why the first version of it was worthless
-`warp-export.spec.ts` now sweeps every computed style on the inspiration results
-page and the open share modal for imperial green, with detected-colour swatches
-exempt — scan a photo of grass and green output is correct.
-
-**The first version of that sweep passed on a page that was still green.** It
-parsed `getComputedStyle` output with an `rgb()` regex, and Tailwind v4 emits
-`lab()` — `bg-green-500` computes to `lab(70.5521 -66.5147 45.8072)`, so every
-class-based colour in the app was invisible to it. It reported a clean page
-because it could not see the colours at all.
-
-Caught by deliberately reverting the badge to green and checking the guard
-failed. It did not. The sweep now resolves any CSS colour through a canvas
-rather than parsing text, and the revert test fails as it should.
-
-### Verified
-Computed-style sweep: miniature results **746** green elements (identity
-intact), inspiration results **0** green chrome. `vitest` 792 · `tsc` clean ·
-`warp-export` 6/6 · `reveal-export` 4/4.
-
-## [Unreleased] - 2026-08-11 (Warp-Cast v3 — the Cinema Palettes format)
-
-v2 got the structure right and the format wrong. Measured against the reference
-(`Testimages/Example.jpg`) and a real device export, three gaps:
-
-- **The image was contain-fitted into a 960×790 box**, so a landscape photo — a
-  sunset, the actual test case — occupied **28% of frame height** with 470 px of
-  dead ground below the palette. The reference is full-bleed WIDTH.
-- **Six permanent paint names and ΔE figures were burned into the poster.** The
-  reference carries no type at all, and that type is what stopped v2 reading as
-  a palette rather than a table.
-- **Swatch order was coverage**, which looks arbitrary. The reference is
-  unmistakably graded dark → light.
-
-### Changed
-- **Full-bleed poster.** The image keeps its natural aspect at frame width, the
-  swatches sit flush beneath it, and the two are always the SAME width — they
-  are one poster, and a narrowed image over a full-bleed bar reads as two
-  unrelated elements stacked. The block floats on the blurred, colour-matched
-  ground. Nothing is cropped.
-- **Vertical swatch columns**, edge to edge, separated by a 5 px hairline of
-  ground. Note this was impossible in v2 and is fine now for one reason: without
-  permanent names the swatches are ARTWORK, so the safe-area rule does not bind
-  them. It was the names that put a column under the action rail, not the
-  columns.
-- **Labels are transient.** Each paint name and its ΔE appears on its own swatch
-  as the colour lands, stays while the palette assembles so the whole set can be
-  read, then fades before the payoff hold. The headline rides with them. The
-  finished poster — first frames and last, which is what a viewer screenshots —
-  carries nothing but the small watermark. Rotated to read bottom-to-top, since
-  a swatch is far taller than it is wide.
-- **Swatches are ordered by tone, darkest to lightest**, decoupled from pour
-  order. Colours still pour in coverage order because that is the narrative and
-  it drives the audio beats — but position is now a design decision. It also
-  improves the pour: consecutive droplets land in scattered columns instead of
-  marching left to right.
-- Colour pours UPWARD into its column now, the way liquid would, rather than
-  wiping sideways.
-
-### Fixed
-- **The watermark landed below the safe floor** for square and portrait photos,
-  and in one arrangement collided with the headline. The poster block is now
-  capped (`MAX_IMAGE_H` 850) so the whole thing fits above y1400, which
-  guarantees the mark a home inside the safe area rather than relying on a
-  clamp. Only square-and-taller photos hit the cap; 16:9 and 4:3 are still
-  full-bleed width, which is the case the format is really for.
-
-### Measured
-Anti-freeze quietest 0.4 s window **0.592** (floor 0.5). Audio untouched by a
-visual-only change and re-verified: −14.79 LUFS, −1.30 dBTP, crest 12.52 dB,
-bed 99.9% sub-250 Hz, HF-on-beat 78.7%.
-
-### Verification
-`vitest` 788 · `tsc` clean · `warp-export` 5/5 · `reveal-export` 4/4 ·
-`reveal-encode` 2/2 both `bt709,bt709,bt709`.
-
-### Still unverified
-No v3 clip has been exported on a real device. The open questions are whether
-the pours land on recognisable parts of a real photograph, and whether a 5 px
-gap and 330 px swatch height read well at phone size.
-
-## [Unreleased] - 2026-08-11 (Warp-Cast v2 — the palette rebuild)
-
-v1 shipped and was wrong. Measured against `inspirationV1.mp4`: **no palette
-anywhere** (the payoff was a six-row data table), **25.5% of the frame dead**,
-and the image boxed at 61% of frame width behind corner brackets. It was the
-pict-cast wearing purple.
-
-The root cause is worth recording, because it was a design decision rather than
-a bug: v1 reused `revealTimeline`'s phase table. proof → smash → sweep → reveal →
-slam → recipe is a 40k scan narrative, so inheriting it meant inheriting its
-beats, its urgency and its cuts. **The encode path needed machinery from the
-miniature; the clip took its grammar.**
-
-### Added
-- **`lib/reveal/warpTimeline.ts`** — the warp-cast's own 14 s table: hold, drain,
-  bloom, six slow pours, settle, hold. No smash cut anywhere. Separate from the
-  miniature's by design — editing those shared constants to get here would have
-  silently retimed a shipped video.
-- **The pour.** Each colour blooms at its real location in the photo, lifts as a
-  droplet, falls, and its band wipes in left→right. The colour is earned rather
-  than announced.
-- **`warpAudioBeats`** — the warp bed schedules against the warp phase table.
-  Using `revealAudioBeats` here would leave the sound playing to a cut that no
-  longer exists.
-- A slow sheen travelling across the palette (see anti-freeze, below).
-
-### Changed
-- **The palette is the payoff.** Six full-width horizontal bands, edge to edge,
-  each carrying its paint name and its measurement. Vertical columns were the
-  first choice and were abandoned on geometry: six columns across 1080 px puts
-  the sixth name at x≈990, directly under the like/comment/share rail. Bands set
-  their names left, so every name is attached to its colour AND clear of the rail.
-- **Full-bleed blurred backdrop.** A heavily blurred cover-fit of the photo fills
-  all 1920 px, with the sharp image contain-fitted above the palette. No dead
-  space, a backdrop inherently colour-matched to the photo, and the sharp image
-  is never cropped.
-- **Chrome stripped**: corner brackets, scanline veils, HUD garble, greyscale,
-  `COMMUNING…`, `BINDING… k/n`, ΔE alarm pills, the end-card plate. All of it is
-  Auspex language and belongs to the miniature clip.
-- **ΔE is a quiet figure, never a red alarm.** A hard-to-match photo legitimately
-  returns several values above 10, and v1 rendered that as six red DISTANT pills
-  — which reads as the product failing rather than the product being honest. The
-  numbers are unchanged and always shown; only the presentation stopped shouting.
-- 11 s → 14 s.
-
-### Fixed
-- **Paint names vanished into light bands.** The ink choice asked whether
-  `labelTint` had changed the colour, which is a different question from "is this
-  band light" — a mid-luma yellow gets lifted, so it took LIGHT ink and
-  AVERLAND SUNSET disappeared into its own band. Now keyed on the band's actual
-  relative luminance.
-- **The loop seam was not pixel-exact.** The blurred backdrop had sub-opaque
-  pixels at the frame edge, so blitting the loop target at alpha 1 did not fully
-  replace the frame. An opaque base fill under the blur is the whole fix.
-- **The watermark sat below the safe floor** at y1468, inside the caption zone.
-
-### The anti-freeze problem, and what it cost
-A slower clip fights the pixel-level gate directly: it fails any 0.4 s window
-whose mean channel delta drops below 0.5. The 2.5 s payoff hold first measured
-**0.506** — clearing the floor by 0.006, which is a coincidence, not a pass.
-
-Two causes, both real:
-- The palette is ~22% of the frame in large flat areas of solid colour with
-  nothing happening in them. Fixed with the sheen.
-- **The grain advanced 320 steps across 420 frames**, so ~24% of consecutive
-  frame pairs got an IDENTICAL grain field and contributed nothing. 840 steps
-  advances it every frame, and is still a multiple of the tile count so p=1
-  lands on tile 0 and the seam holds.
-
-Now measures **0.692**.
-
-### Measured (warp bed, all six gates, rescheduled from scratch)
+### Measured (warp bed, all six gates)
 | gate | value | threshold |
 |---|---|---|
 | bed energy < 250 Hz | 99.9% | > 60% |
@@ -354,106 +101,21 @@ Now measures **0.692**.
 | true peak | −1.30 dBFS | < −1 |
 | crest factor | 12.52 dB | > 12 |
 
-### Verification
-`vitest` 788 · `tsc` clean · `warp-export` 5/5 · `reveal-export` 4/4 ·
-`reveal-encode` 2/2 both `bt709,bt709,bt709`.
+Anti-freeze quietest 0.4 s window **0.653** (floor 0.5). Watermark luma spread
+50 on a white photo / 102 on a dark one, at 40% opacity.
 
-Worth noting against the v1 bitrate concern: the warp encode came out **641 KB**
-for 60 frames against the miniature's 1.23 MB. Flat colour bands compress far
-better than a full-photo field, so the palette rebuild made the file smaller,
-not larger.
-
-### Still unverified
-No v2 clip has been exported on a real device.
-
-## [Unreleased] - 2026-08-11 (Warp-Cast v1 — inspiration-tab shareable video)
-
-The inspiration tab can now export a shareable clip. It could not before for a
-structural reason, not a missing feature: inspiration scans return colours and
-full per-brand recipes but **no segmentation masks**, and the miniature
-storyboard is mask-gated end to end (region layers, rim layers, leader lines
-anchored to mask bounds).
-
-### Added
-- **`lib/reveal/revealStoryboard.ts`** — `RevealStoryboard { mode, buildSpec,
-  prepare, composeAt, audioSchedule? }`. Both engines take one, defaulting to the
-  miniature bundle, so the encode path (frame pacing, BT.709 tagging, the `colr`
-  byte patch, the loudness chain, encoder backpressure, abort handling) has
-  exactly ONE implementation and cannot drift between modes. A second copy of the
-  encoder would have meant a second place for the colr bug to return.
-- **`lib/reveal/warpCompose.ts`** — the warp-cast. Proof-first, same phase table:
-  photo with its matched paints already stamped → smash to a warp-veiled
-  desaturation → commune sweep → each colour torn out as an orb *from the place
-  it actually occurs in the image* → the bind → a wall pairing every colour with
-  its closest paint. Each wall row carries its own ΔE pill — more ΔE honesty than
-  the miniature card, which shows one badge for the base step; here every row is a
-  separate claim, so every row is measured.
-- **`lib/reveal/warpOrigins.ts`** — `scanColourOrigins`, summed-area tables over a
-  200 px copy. Plain squared-RGB distance, deliberately: this is "which part of
-  the picture is most this colour", not a perceptual-difference question, and
-  CIEDE2000 stays reserved for paint matching where it is load-bearing. Separation
-  suppression is a PREFERENCE, not a constraint — when a picture genuinely has one
-  region of a colour, inventing a second location elsewhere would be a lie.
-- **`lib/reveal/warpAudio.ts`** — detuned 55 Hz drone pair with offset LFOs, airy
-  whooshes, inharmonic glass. No cogitator clacks. Passes the same six gates.
-- **`lib/reveal/revealTheme.ts`** — canvas-side single source of truth for skin
-  colours.
-- **`lib/reveal/revealLayout.ts`** — `wallRowH` / `wallRowRect` / `wallRowCount`.
-- Inspiration caption variant, `mode` on both analytics events, and
-  `tests/warp-export.spec.ts` (+ `seedInspirationScan`, + a warp encode test).
-
-### Fixed
-- **Warp exports drew IMPERIAL GREEN scanlines across the image.** The scanline in
-  `buildBaseLayer` had no skin parameter and painted `rgba(0,255,65,0.03)`
-  unconditionally. Never caught because no warp export had ever been rendered.
-- **Every warp orb rim rendered green regardless of its colour.** `labelTint`
-  returned `rgb(...)`, which `hexToRgba` cannot parse, so it fell through to the
-  imperial-green fallback. `labelTint` now returns `#rrggbb` and the format is
-  covered by a test that says why it is load-bearing. Found by looking at a
-  rendered frame, not by a test.
-- **Frame 0 cropped the photo.** The camera opens at the hero punch (~1.545×) and
-  a 1000 px box scaled past the frame edge, shearing the outer colour patches off
-  both sides. For a miniature that punch is deliberate; for an inspiration photo
-  the whole composition IS the subject, and frame 0 is also the loop target, so
-  the crop was the frame seen twice per play. Also found by eye — the loop-seam,
-  anti-freeze and safe-area gates all passed on the cropped version, because none
-  of them knows what the image is meant to show.
-- Dead `ShareButton` import on the inspiration results page.
-
-### Changed
-- Six wall rows do not fit the miniature's four fixed rows (6×74+5×10 = 494 px in
-  a 366 px block). The ROWS flex, not the image — the model/image must stay ≥40%
-  of frame height, because a shipped export once let it fall to 29.6% and the clip
-  read as an advert for us rather than the photo the poster chose.
-- Wall rows land in **pairs**. Six single beats in the outro window is a 180 ms
-  cadence that cannot clear the cipher's 180 ms burst plus its 80 ms readable
-  tail; `ceil(n/2)` gives ~359 ms, which does. Mini beats are bit-identical.
-- Export gate is mode-aware: miniature needs masks, inspiration needs a matched
-  paint to bind to.
-
-### Measured (warp bed, all six gates)
-| gate | value | threshold |
-|---|---|---|
-| bed energy < 250 Hz | 99.9% | > 60% |
-| bed energy > 3 kHz | 9.1e-9 | < 10% |
-| HF within ±60 ms of a beat | 88.5% | > 65% (windows cover 13.4% of runtime) |
-| integrated loudness | −14.52 LUFS | −14 ±1 |
-| true peak | −1.33 dBFS | < −1 |
-| crest factor | 12.32 dB | > 12 |
-
-The first warp mix measured −10.2 LUFS at 5.8 dB crest: a sine drone is
-inherently flat-crested and pins RMS up where brown noise does not. Cutting the
-sustained level and letting peaky transients carry the loudness resolved it.
+The warp encode is also **smaller** than the miniature's — flat colour bands
+compress far better than a full-photo field.
 
 ### Verification
-`vitest` 788 · `pytest` 670 passed 1 skipped · `next build` exit 0 ·
-`reveal-export` 4/4 · `warp-export` 5/5 · `reveal-encode` 2/2, both modes
-`bt709,bt709,bt709`, warp `colrPatched: 1`.
+`vitest` 792 · `tsc` clean · `pytest` 670 passed 1 skipped · `next build` exit 0 ·
+`reveal-export` 4/4 · `warp-export` 6/6 · `reveal-encode` 2/2, both modes
+`bt709,bt709,bt709`, warp streams `[14, 14.016]`.
 
 ### Still unverified
-No warp clip has been exported on a real device. Frame pacing, file size against
-a full-photo background (the miniature's black field compresses far better) and
-the 52 px wall rows at phone size all need a device export to judge.
+No device export of the current build. Open questions: whether the pours land on
+recognisable parts of a real photograph, and whether the landing flash — kept
+deliberately restrained — reads at all on a phone.
 
 ## [Unreleased] - 2026-08-08 (Pict-Cast v5.3 — corrective pass)
 
