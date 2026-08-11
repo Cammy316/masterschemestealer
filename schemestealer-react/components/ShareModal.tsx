@@ -63,7 +63,13 @@ export function ShareModal({ mode, scan, onClose }: ShareModalProps) {
 
   const colors = scan.detectedColors;
   const hasMasks = colors.some((c) => c.mask);
-  const exportable = hasMasks && !!scan.imageUrl && canExportReveal();
+  // The two modes need different things to be exportable, and gating both on
+  // masks is why the inspiration tab had no export at all: an inspiration scan
+  // never has masks. What the warp-cast needs is a matched paint to bind to.
+  const hasRecipes = colors.some((c) => c.paintRecipe);
+  const hasContent = mode === 'miniature' ? hasMasks : hasRecipes;
+  const exportable = hasContent && !!scan.imageUrl && canExportReveal();
+  const castName = mode === 'miniature' ? 'PICT-CAST' : 'WARP-CAST';
 
   const [phase, setPhase] = useState<Phase>('idle');
   const [progress, setProgress] = useState(0);
@@ -95,8 +101,8 @@ export function ShareModal({ mode, scan, onClose }: ShareModalProps) {
     return { dE, band, poor: dE > 5, colour: deltaBandColour(dE) };
   }, [best]);
   const captions = useMemo(
-    () => buildRevealCaptions({ colourCount: colors.length, topFamily: best.topFamily, brandLabel: best.label }),
-    [colors.length, best.topFamily, best.label],
+    () => buildRevealCaptions({ colourCount: colors.length, topFamily: best.topFamily, brandLabel: best.label, mode }),
+    [colors.length, best.topFamily, best.label, mode],
   );
 
   // Revoke the blob URL on replace / unmount.
@@ -125,6 +131,7 @@ export function ShareModal({ mode, scan, onClose }: ShareModalProps) {
         recipeColourIndex: best.colourIndex,
         skin: mode === 'miniature' ? 'imperial' : 'warp',
         captionPreset: preset,
+        mode,
         audio,
         onProgress: setProgress,
         signal: controller.signal,
@@ -140,6 +147,7 @@ export function ShareModal({ mode, scan, onClose }: ShareModalProps) {
       });
       setPhase('ready');
       analytics.trackRevealVideoExported(result.durationMs, result.mime, preset, {
+        mode,
         mimeSupport: result.mimeSupport,
         engine: result.engine,
         width: result.width,
@@ -173,7 +181,7 @@ export function ShareModal({ mode, scan, onClose }: ShareModalProps) {
     if (canShareFiles) {
       try {
         await navigator.share({ files: [file], text: captions.tiktok });
-        analytics.trackShareInitiated('social');
+        analytics.trackShareInitiated('social', mode);
         return;
       } catch {
         /* user cancelled or share failed — fall through to download */
@@ -188,7 +196,7 @@ export function ShareModal({ mode, scan, onClose }: ShareModalProps) {
     link.href = video.url;
     link.download = `schemestealer-reveal-${Date.now()}.${fileExt(video.mime)}`;
     link.click();
-    analytics.trackShareInitiated('download');
+    analytics.trackShareInitiated('download', mode);
   }
 
   async function copyCaption(key: keyof typeof captions) {
@@ -213,7 +221,7 @@ export function ShareModal({ mode, scan, onClose }: ShareModalProps) {
         >
           <div className="flex justify-between items-center mb-5 shrink-0">
             <DialogTitle className="text-2xl font-bold gothic-text" style={{ color: accent }}>
-              ◆ BROADCAST PICT-CAST ◆
+              ◆ BROADCAST {castName} ◆
             </DialogTitle>
             <button
               onClick={onClose}
@@ -227,9 +235,11 @@ export function ShareModal({ mode, scan, onClose }: ShareModalProps) {
           <div className="flex-1 min-h-0 overflow-y-auto space-y-5">
             {!exportable && (
               <p className="text-sm cyber-text" style={{ color: accentDim }}>
-                {hasMasks
+                {hasContent
                   ? 'This browser cannot record video. Try Chrome or Safari on a recent device.'
-                  : 'Scan a miniature to broadcast a pict-cast of the machine spirit reading your model.'}
+                  : mode === 'miniature'
+                    ? 'Scan a miniature to broadcast a pict-cast of the machine spirit reading your model.'
+                    : 'Scan an image to broadcast a warp-cast binding its colours to real paints.'}
               </p>
             )}
 
@@ -294,7 +304,7 @@ export function ShareModal({ mode, scan, onClose }: ShareModalProps) {
                   className="w-full py-4 rounded-lg font-bold text-base cyber-text touch-target"
                   style={{ background: accent, color: '#05070a', boxShadow: `0 0 24px ${accent}66` }}
                 >
-                  ◇ EXPORT PICT-CAST ◇
+                  ◇ EXPORT {castName} ◇
                 </button>
                 <p className="text-xs cyber-text text-center" style={{ color: accentDim }}>
                   ~13s recording · 1080×1920 · records in real time
@@ -344,7 +354,7 @@ export function ShareModal({ mode, scan, onClose }: ShareModalProps) {
                   playsInline
                 />
                 <p className="text-xs cyber-text text-center" style={{ color: accentDim }}>
-                  PICT-CAST READY · {ext.toUpperCase()}
+                  {castName} READY · {ext.toUpperCase()}
                   {video.width ? ` · ${video.width}×${video.height}` : ''}
                 </p>
                 {/* Honest about the degraded path: this browser has no WebCodecs,

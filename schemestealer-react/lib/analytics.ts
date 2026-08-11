@@ -252,8 +252,8 @@ class AnalyticsService {
   /**
    * Track share initiated
    */
-  trackShareInitiated(method: 'copy' | 'download' | 'social'): void {
-    this.track('share_initiated', { method });
+  trackShareInitiated(method: 'copy' | 'download' | 'social', mode?: 'miniature' | 'inspiration'): void {
+    this.track('share_initiated', { method, ...(mode ? { mode } : {}) });
   }
 
   /**
@@ -264,6 +264,9 @@ class AnalyticsService {
     format: string,
     captionPreset: string,
     detail?: {
+      /** Which storyboard produced the clip. Without this the two are
+       *  indistinguishable in the data and neither can be judged on its own. */
+      mode?: 'miniature' | 'inspiration';
       mimeSupport?: Record<string, boolean>;
       engine?: string;
       width?: number;
@@ -275,6 +278,7 @@ class AnalyticsService {
       duration_ms: durationMs,
       format,
       caption_preset: captionPreset,
+      ...(detail?.mode ? { mode: detail.mode } : {}),
       // Which pipeline ran and what it produced. 'mediarecorder' means the
       // device had no WebCodecs and got the degraded 720p real-time path.
       ...(detail?.engine ? { engine: detail.engine } : {}),

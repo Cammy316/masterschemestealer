@@ -32,6 +32,18 @@ async function seed(page: import('@playwright/test').Page) {
   });
 }
 
+test('warp-cast: export UI is wired into the inspiration Share modal', async ({ page }) => {
+  await seed(page);
+  await page.getByRole('button', { name: /share essence/i }).click();
+  await expect(page.getByRole('heading', { name: /broadcast warp-cast/i })).toBeVisible();
+  const exportBtn = page.getByRole('button', { name: /export warp-cast/i });
+  await expect(exportBtn).toBeVisible();
+  // Intent: the gate used to require masks, which an inspiration scan never
+  // has — that is precisely why this tab had no export. If the button is
+  // disabled or the fallback copy is showing, the gate has regressed.
+  await expect(page.getByText(/scan an image to broadcast/i)).toHaveCount(0);
+});
+
 test('warp-cast: storyboard frames render and the loop seam is exact', async ({ page }) => {
   await seed(page);
 

@@ -258,6 +258,50 @@ describe('buildRevealCaptions', () => {
       expect(text).not.toMatch(/\bcolor\b/i);
     }
   });
+
+  // Intent: the two clips are for different posts by different people — a
+  // painter showing off their own model, versus someone who found a scheme they
+  // want to steal. Reusing the miniature copy on an inspiration clip promises a
+  // model that is not in the video.
+  describe('inspiration variant', () => {
+    const warp = buildRevealCaptions({
+      colourCount: 6,
+      topFamily: 'Teal',
+      brandLabel: 'Citadel',
+      mode: 'inspiration',
+    });
+
+    it('is distinct from the miniature copy on every platform', () => {
+      expect(warp.tiktok).not.toBe(caps.tiktok);
+      expect(warp.reels).not.toBe(caps.reels);
+      expect(warp.shorts).not.toBe(caps.shorts);
+    });
+
+    it('is distinct per platform, as the miniature copy is', () => {
+      expect(warp.tiktok).not.toBe(warp.reels);
+      expect(warp.reels).not.toBe(warp.shorts);
+    });
+
+    it('never claims a model, a spectrophotometer, or a paint count', () => {
+      for (const text of [warp.tiktok, warp.reels, warp.shorts]) {
+        const lower = text.toLowerCase();
+        expect(lower).not.toContain('spectrophotometer');
+        expect(lower).not.toContain('my mini');
+        expect(lower).not.toContain('this model');
+        // A count of paints in the database changes; a caption outlives it.
+        expect(lower).not.toMatch(/[0-9,]+\s+(measured\s+)?paints\b/);
+      }
+    });
+
+    it('uses British spelling and routes per platform convention', () => {
+      for (const text of [warp.tiktok, warp.reels, warp.shorts]) {
+        expect(text).not.toMatch(/\bcolor\b/i);
+      }
+      expect(warp.tiktok).toContain('schemestealer.com');
+      expect(warp.shorts).toContain('schemestealer.com');
+      expect(warp.reels.toLowerCase()).toContain('bio');
+    });
+  });
 });
 
 describe('buildRevealSpec', () => {

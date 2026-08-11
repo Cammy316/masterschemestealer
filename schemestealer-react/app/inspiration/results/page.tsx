@@ -16,7 +16,6 @@ import { PaintRecipeCard } from '@/components/shared/PaintRecipeCard';
 import { PaintResults } from '@/components/shared/PaintResults';
 import { SlabButton } from '@/components/shared/SlabButton';
 import { HexChip } from '@/components/shared/HexChip';
-import { ShareButton } from '@/components/ShareButton';
 import { ShareModal } from '@/components/ShareModal';
 import { LocalAuspexBadge } from '@/components/shared/LocalAuspexBadge';
 import { SessionConflictModal } from '@/components/shared/SessionConflictModal';
