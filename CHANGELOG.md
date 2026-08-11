@@ -2,6 +2,99 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-08-11 (Warp-Cast v2 — the palette rebuild)
+
+v1 shipped and was wrong. Measured against `inspirationV1.mp4`: **no palette
+anywhere** (the payoff was a six-row data table), **25.5% of the frame dead**,
+and the image boxed at 61% of frame width behind corner brackets. It was the
+pict-cast wearing purple.
+
+The root cause is worth recording, because it was a design decision rather than
+a bug: v1 reused `revealTimeline`'s phase table. proof → smash → sweep → reveal →
+slam → recipe is a 40k scan narrative, so inheriting it meant inheriting its
+beats, its urgency and its cuts. **The encode path needed machinery from the
+miniature; the clip took its grammar.**
+
+### Added
+- **`lib/reveal/warpTimeline.ts`** — the warp-cast's own 14 s table: hold, drain,
+  bloom, six slow pours, settle, hold. No smash cut anywhere. Separate from the
+  miniature's by design — editing those shared constants to get here would have
+  silently retimed a shipped video.
+- **The pour.** Each colour blooms at its real location in the photo, lifts as a
+  droplet, falls, and its band wipes in left→right. The colour is earned rather
+  than announced.
+- **`warpAudioBeats`** — the warp bed schedules against the warp phase table.
+  Using `revealAudioBeats` here would leave the sound playing to a cut that no
+  longer exists.
+- A slow sheen travelling across the palette (see anti-freeze, below).
+
+### Changed
+- **The palette is the payoff.** Six full-width horizontal bands, edge to edge,
+  each carrying its paint name and its measurement. Vertical columns were the
+  first choice and were abandoned on geometry: six columns across 1080 px puts
+  the sixth name at x≈990, directly under the like/comment/share rail. Bands set
+  their names left, so every name is attached to its colour AND clear of the rail.
+- **Full-bleed blurred backdrop.** A heavily blurred cover-fit of the photo fills
+  all 1920 px, with the sharp image contain-fitted above the palette. No dead
+  space, a backdrop inherently colour-matched to the photo, and the sharp image
+  is never cropped.
+- **Chrome stripped**: corner brackets, scanline veils, HUD garble, greyscale,
+  `COMMUNING…`, `BINDING… k/n`, ΔE alarm pills, the end-card plate. All of it is
+  Auspex language and belongs to the miniature clip.
+- **ΔE is a quiet figure, never a red alarm.** A hard-to-match photo legitimately
+  returns several values above 10, and v1 rendered that as six red DISTANT pills
+  — which reads as the product failing rather than the product being honest. The
+  numbers are unchanged and always shown; only the presentation stopped shouting.
+- 11 s → 14 s.
+
+### Fixed
+- **Paint names vanished into light bands.** The ink choice asked whether
+  `labelTint` had changed the colour, which is a different question from "is this
+  band light" — a mid-luma yellow gets lifted, so it took LIGHT ink and
+  AVERLAND SUNSET disappeared into its own band. Now keyed on the band's actual
+  relative luminance.
+- **The loop seam was not pixel-exact.** The blurred backdrop had sub-opaque
+  pixels at the frame edge, so blitting the loop target at alpha 1 did not fully
+  replace the frame. An opaque base fill under the blur is the whole fix.
+- **The watermark sat below the safe floor** at y1468, inside the caption zone.
+
+### The anti-freeze problem, and what it cost
+A slower clip fights the pixel-level gate directly: it fails any 0.4 s window
+whose mean channel delta drops below 0.5. The 2.5 s payoff hold first measured
+**0.506** — clearing the floor by 0.006, which is a coincidence, not a pass.
+
+Two causes, both real:
+- The palette is ~22% of the frame in large flat areas of solid colour with
+  nothing happening in them. Fixed with the sheen.
+- **The grain advanced 320 steps across 420 frames**, so ~24% of consecutive
+  frame pairs got an IDENTICAL grain field and contributed nothing. 840 steps
+  advances it every frame, and is still a multiple of the tile count so p=1
+  lands on tile 0 and the seam holds.
+
+Now measures **0.692**.
+
+### Measured (warp bed, all six gates, rescheduled from scratch)
+| gate | value | threshold |
+|---|---|---|
+| bed energy < 250 Hz | 99.9% | > 60% |
+| bed energy > 3 kHz | 9.6e-9 | < 10% |
+| HF within ±60 ms of a beat | 78.7% | > 65% |
+| integrated loudness | −14.79 LUFS | −14 ±1 |
+| true peak | −1.30 dBFS | < −1 |
+| crest factor | 12.52 dB | > 12 |
+
+### Verification
+`vitest` 788 · `tsc` clean · `warp-export` 5/5 · `reveal-export` 4/4 ·
+`reveal-encode` 2/2 both `bt709,bt709,bt709`.
+
+Worth noting against the v1 bitrate concern: the warp encode came out **641 KB**
+for 60 frames against the miniature's 1.23 MB. Flat colour bands compress far
+better than a full-photo field, so the palette rebuild made the file smaller,
+not larger.
+
+### Still unverified
+No v2 clip has been exported on a real device.
+
 ## [Unreleased] - 2026-08-11 (Warp-Cast v1 — inspiration-tab shareable video)
 
 The inspiration tab can now export a shareable clip. It could not before for a

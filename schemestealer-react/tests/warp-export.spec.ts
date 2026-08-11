@@ -47,15 +47,17 @@ test('warp-cast: export UI is wired into the inspiration Share modal', async ({ 
 test('warp-cast: storyboard frames render and the loop seam is exact', async ({ page }) => {
   await seed(page);
 
+  // Sampled against the warp phase table, not the miniature's.
   const FRAMES: Record<string, number> = {
     frame0: 0,
-    proof: 350,
-    smash: 950,
-    sweep: 1700,
-    reveal: 3300,
-    bind: 4600,
-    wall: 8500,
-    loop: 11000,
+    poster: 900,
+    drain: 2200,
+    bloom: 3300,
+    pour2: 5900,
+    pour5: 8600,
+    settle: 10500,
+    hold: 12600,
+    loop: 14000,
   };
 
   const result = await page.evaluate(async (frames) => {
@@ -64,7 +66,7 @@ test('warp-cast: storyboard frames render and the loop seam is exact', async ({ 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const scan = (window as any).__seedScan;
     if (!W || !scan) return { error: `warpHook=${!!W} scan=${!!scan}` } as const;
-    const spec = W.buildWarpSpec(scan.detectedColors, 'citadel', 'Citadel', 'warp', 'colours', 11000);
+    const spec = W.buildWarpSpec(scan.detectedColors, 'citadel', 'Citadel', 'warp', 'colours', W.WARP_DURATION_MS);
     const res = await W.prepareWarpResources(scan.imageUrl, spec);
     const canvas = document.createElement('canvas');
     canvas.width = 1080;
@@ -139,7 +141,7 @@ test('warp-cast: no 0.4 s window is visually frozen', async ({ page }) => {
     const W = (window as any).__warpDebug;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const scan = (window as any).__seedScan;
-    const spec = W.buildWarpSpec(scan.detectedColors, 'citadel', 'Citadel', 'warp', 'colours', 11000);
+    const spec = W.buildWarpSpec(scan.detectedColors, 'citadel', 'Citadel', 'warp', 'colours', W.WARP_DURATION_MS);
     const res = await W.prepareWarpResources(scan.imageUrl, spec);
     // Quarter scale: the metric is a mean over all pixels, so it is unchanged by
     // resolution, and full size would take minutes.
@@ -150,7 +152,7 @@ test('warp-cast: no 0.4 s window is visually frozen', async ({ page }) => {
     canvas.height = h;
     const ctx = canvas.getContext('2d')!;
     const FPS = 30;
-    const frames = Math.round((11000 / 1000) * FPS);
+    const frames = Math.round((W.WARP_DURATION_MS / 1000) * FPS);
     let prev: Uint8ClampedArray | null = null;
     const deltas: number[] = [];
     for (let i = 0; i < frames; i++) {
@@ -205,12 +207,12 @@ test('warp-cast audio: rumble bed, transient highs, broadcast loudness', async (
     const R = (window as any).__revealDebug;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const scan = (window as any).__seedScan;
-    const spec = W.buildWarpSpec(scan.detectedColors, 'citadel', 'Citadel', 'warp', 'colours', 11000);
+    const spec = W.buildWarpSpec(scan.detectedColors, 'citadel', 'Citadel', 'warp', 'colours', W.WARP_DURATION_MS);
     const sr = 48000;
     const T0 = 0.05;
 
     const render = async (layers: 'all' | 'bed') => {
-      const ctx = new OfflineAudioContext(1, Math.ceil(sr * 11.6), sr);
+      const ctx = new OfflineAudioContext(1, Math.ceil(sr * 14.6), sr);
       W.scheduleWarpAudio(ctx, ctx.destination, spec, T0, { layers });
       return (await ctx.startRendering()).getChannelData(0);
     };
@@ -329,8 +331,10 @@ test('warp-cast audio: rumble bed, transient highs, broadcast loudness', async (
       hf[i] = v * v;
     }
     // The SAME beat table the scheduler uses, so this cannot drift into testing
-    // a stale copy of the schedule.
-    const beats: number[] = R.revealAudioBeats(spec).map((b: number) => b + T0);
+    // a stale copy of the schedule. `warpAudioBeats`, not `revealAudioBeats` —
+    // the warp-cast has its own phase table and the miniature's beats describe
+    // a cut that does not exist here.
+    const beats: number[] = W.warpAudioBeats(spec).map((b: number) => b + T0);
     const WINDOW = 0.06;
     let near = 0;
     let total = 0;
@@ -393,14 +397,14 @@ test('warp-cast perf gate: compose stays in budget at phone-photo resolution', a
     }
     const bigUrl = big.toDataURL('image/jpeg', 0.9);
 
-    const spec = W.buildWarpSpec(scan.detectedColors, 'citadel', 'Citadel', 'warp', 'colours', 11000);
+    const spec = W.buildWarpSpec(scan.detectedColors, 'citadel', 'Citadel', 'warp', 'colours', W.WARP_DURATION_MS);
     const res = await W.prepareWarpResources(bigUrl, spec);
     const canvas = document.createElement('canvas');
     canvas.width = 1080;
     canvas.height = 1920;
     const ctx = canvas.getContext('2d')!;
     const PHASES: Record<string, number> = {
-      proof: 350, smash: 950, sweep: 1700, reveal: 3300, bind: 4600, wall: 8500, loop: 11000,
+      poster: 900, drain: 2200, bloom: 3300, pour2: 5900, pour5: 8600, settle: 10500, loop: 14000,
     };
     const timings: Record<string, number> = {};
     for (const [name, t] of Object.entries(PHASES)) {
