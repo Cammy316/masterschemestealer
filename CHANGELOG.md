@@ -2,6 +2,93 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-08-11 (Audio: both soundtracks rebuilt)
+
+Both beds were flat lists of oscillators and band-passed noise wired straight to
+a limiter — dry, mono, and pitched on arbitrary Hz values (`96 + i * 5`) so
+nothing agreed with anything. Good placeholders; not good audio.
+
+### The licensing finding, which decided the approach
+The obvious fix — buy a royalty-free bed — does not survive contact with how
+this product works, because **our users redistribute the file**. A royalty-free
+licence covers the licensee, not everyone who later posts the export; the
+licence does not transfer between platforms; and a track can be royalty-free and
+still trigger Content ID, landing a claim on *the painter's* video. AI music is
+worse: paid tiers grant a commercial-use licence rather than copyright, with
+active litigation.
+
+Meanwhile the platforms now weight **original** audio above borrowed sound.
+
+So synthesis is not the cheap option here, it is the correct one: it is ours to
+grant unconditionally, and it is the algorithmically favoured category.
+
+### Added
+`revealAudioEngine.ts` — the machinery both beds lacked:
+- **Convolution reverb from a generated impulse.** No asset files,
+  deterministic. Every previous version was bone dry, which is the most reliable
+  tell of cheap synthesis: real sounds happen somewhere.
+- Separate bed / transient / harmony buses with real compression.
+- **Scheduled ducking.** WebAudio has no sidechain and does not need one — every
+  beat time is known before a sample renders, which is cheaper, exact, and
+  deterministic where a level-follower would not be.
+- Inharmonic struck-metal and bowed-glass timbres; a key per skin.
+
+### The two voices
+**Miniature — a ritual machine in D minor.** A low drone under servo whirs and
+relay clacks, resolving to a struck bell at the slam. Chords Dm → C → F across
+the three acts.
+
+**Warp — glass and breath in A major.** A detuned pad under bowed-glass tones
+climbing the scale as each colour pours. Major rather than menacing: the clip
+became a gallery poster, and a dissonant bed would fight it.
+
+### One gate corrected, with proof
+The HF-on-beat gate required 65% of energy above 3 kHz within **±60 ms** of a
+beat. It exists to catch a continuous hiss bed, and it catches that by measuring
+concentration — but a reverb tail is also energy after a beat, so the reverb
+this rebuild is built around would have failed it for a reason unrelated to the
+defect.
+
+Window is now 60 ms before a beat, 400 ms after. The leading edge stays tight:
+HF arriving *before* its beat is a smear, not a tail. Each suite now scores a
+synthetic continuous-hiss signal through the identical function and asserts it
+still fails — **0.30 and 0.31 against a 0.65 threshold**. A correction, not a
+weakening.
+
+### The crest lesson
+Reverb raises RMS between hits, so a reverberant mix sits closer to its crest
+floor than a dry one. Four passes of cutting the bed got to 11.0 dB with the bed
+nearly inaudible — and the real cause was elsewhere: **the limiter was
+saturating**, clipping every transient to one ceiling, so crest could not rise
+however quiet the bed became. Backing the drive off and setting the ceiling with
+trim freed the peaks.
+
+### Measured
+| | miniature | warp |
+|---|---|---|
+| integrated loudness | −13.90 LUFS | −13.53 LUFS |
+| true peak | −1.61 dBFS | −1.29 dBFS |
+| crest factor | 12.23 dB | 12.25 dB |
+| bed < 250 Hz | 99.7% | 99.9% |
+| HF at a beat *(hiss control)* | 0.81 *(0.30)* | 0.96 *(0.31)* |
+| stereo correlation | 0.909 | 0.820 |
+| mono retention | 0.977 | 0.954 |
+
+### Stereo, and why the mono gate matters more
+The reverb is the only stereo source — independent noise per channel, so width
+comes without phase trickery. That distinction is the point: width built from
+phase inversion sounds impressive on headphones and **cancels on the single
+phone speaker most people watch on**. Both gates carry controls — a
+phase-inverted pair must collapse below 0.05, and reports 0.
+
+### Verification
+`vitest` 808 · `tsc` clean · `next build` exit 0 · all four Playwright suites
+13/13.
+
+### Still unverified
+Nobody has heard either of these. Every number above is a measurement, and none
+of them says whether it sounds good — that needs a phone speaker.
+
 ## [Unreleased] - 2026-08-11 (Inspiration upload: camera only, on mobile)
 
 Tapping the inspiration portal on a phone opened the camera and offered nothing
