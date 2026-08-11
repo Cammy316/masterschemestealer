@@ -66,9 +66,21 @@ import type { RevealStoryboard } from './revealStoryboard';
 import type { RenderRevealOptions } from './renderRevealVideo';
 import { WALL_MAX_ROWS } from './revealLayout';
 
-/** Image box for the hero framing. Wider than the miniature's because an
- *  inspiration photo is usually landscape or square, not a tall figure. */
-const IMAGE_FULL_BOX: Rect = { x: 40, y: 210, w: 1000, h: 1120 };
+/**
+ * Image box for the hero framing.
+ *
+ * Sized so the photo survives the camera's peak hero punch (MAX_CAMERA_SCALE,
+ * ~1.545x) WITHOUT being cropped: 660 x 1.545 = 1020 px, inside the 1080 frame.
+ *
+ * The miniature deliberately punches past the frame edge — it opens tight on a
+ * tall figure and pulls back, and losing the edges of a plinth costs nothing.
+ * An inspiration photo is the opposite case: the whole composition is the
+ * subject, the caption says THE EXACT PAINTS IN THIS IMAGE, and frame 0 is also
+ * the loop target, so a crop there is the frame the viewer sees twice. The
+ * first cut used a 1000 px box and sheared the outer colour patches clean off
+ * both edges.
+ */
+const IMAGE_FULL_BOX: Rect = { x: 210, y: 250, w: 660, h: 690 };
 /** Outro framing, above the wall. */
 const IMAGE_COMPACT_BOX: Rect = { x: 150, y: 200, w: 780, h: 760 };
 
