@@ -147,11 +147,22 @@ export default function InspirationPage() {
       </motion.div>
 
       {/* Hidden file input */}
+      {/*
+        No `capture` attribute, deliberately.
+
+        `capture="environment"` does not mean "offer the camera" — it means
+        "USE the camera", and mobile browsers honour it by skipping the
+        Photo Library / Take Photo / Browse chooser entirely. On the inspiration
+        tab that made the portal a camera button and nothing else, which is
+        backwards: the whole point is stealing a scheme from an image you already
+        have — a screenshot, a saved photo, a poster someone sent you. Without
+        the attribute the OS shows its normal chooser and the camera is still one
+        tap away.
+      */}
       <input
         ref={fileInputRef}
         type="file"
         accept="image/*"
-        capture="environment"
         onChange={handleFileChange}
         className="hidden"
       />

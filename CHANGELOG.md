@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-08-11 (Inspiration upload: camera only, on mobile)
+
+Tapping the inspiration portal on a phone opened the camera and offered nothing
+else — no photo library, no file browser.
+
+### Cause
+`capture="environment"` on the file input. The attribute does not mean "offer
+the camera", it means **use** the camera: mobile browsers honour it by skipping
+the Photo Library / Take Photo / Browse chooser entirely.
+
+That made the tab's primary flow unreachable on its primary device. The
+inspiration tab exists to steal a colour scheme out of an image you already have
+— a screenshot, a saved photo, a poster someone sent you — and none of those
+were selectable.
+
+### Fixed
+Attribute removed. The OS now shows its normal chooser, with the camera still
+one tap away. `accept="image/*"` stays, so the picker is still filtered to
+images.
+
+### Test
+`tests/upload-source.spec.ts`, at a phone viewport. This defect is **invisible on
+desktop** — the chooser is a file dialog either way — so nobody developing on a
+laptop would notice it return. Verified by reintroducing the attribute: the test
+fails, and passes again once removed.
+
+### Not changed
+`app/miniature/page.tsx:148` still carries `capture="environment"`. The case for
+it is stronger there (you photograph the model in front of you), but it has the
+same consequence: a painter cannot upload an existing photo of their miniature
+from the gallery. Flagged rather than changed, since only the inspiration tab
+was reported.
+
 ## [Unreleased] - 2026-08-11 (Warp-Cast — inspiration-tab shareable video)
 
 The inspiration tab can now export a shareable clip. It could not before for a
