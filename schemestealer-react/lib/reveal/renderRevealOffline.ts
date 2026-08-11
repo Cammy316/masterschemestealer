@@ -31,18 +31,10 @@ import {
   type VideoCodec,
 } from 'mediabunny';
 
-import {
-  applyOutputScale,
-  buildRevealSpec,
-  composeReveal,
-  outputSize,
-  prepareResources,
-  recipeSteps,
-  CANVAS_W,
-  CANVAS_H,
-} from './revealCompose';
-import { frameState, DEFAULT_DURATION_MS, type RevealSpec } from './revealTimeline';
+import { applyOutputScale, outputSize, MINI_STORYBOARD, CANVAS_W, CANVAS_H } from './revealCompose';
+import { DEFAULT_DURATION_MS, type RevealSpec } from './revealTimeline';
 import { scheduleRevealAudio } from './revealAudio';
+import type { RevealStoryboard } from './revealStoryboard';
 import { patchColrToBt709, type ColrPatchResult } from './mp4ColrPatch';
 import type { RenderRevealOptions, RenderRevealResult } from './renderRevealVideo';
 
@@ -137,7 +129,10 @@ export function frameTimestamps(durationMs: number, fps: number): number[] {
 
 /** Render the synthesised bed into an AudioBuffer, reusing the same graph the
  *  live path schedules — no second source of truth for the sound. */
-async function renderAudioBuffer(spec: RevealSpec): Promise<AudioBuffer | null> {
+async function renderAudioBuffer(
+  spec: RevealSpec,
+  schedule: typeof scheduleRevealAudio,
+): Promise<AudioBuffer | null> {
   try {
     const Ctor =
       window.OfflineAudioContext ||
@@ -146,7 +141,7 @@ async function renderAudioBuffer(spec: RevealSpec): Promise<AudioBuffer | null> 
     if (!Ctor) return null;
     const sampleRate = 48000;
     const ctx = new Ctor(2, Math.ceil((spec.durationMs / 1000) * sampleRate), sampleRate);
-    scheduleRevealAudio(ctx, ctx.destination, spec, 0);
+    schedule(ctx, ctx.destination, spec, 0);
     return await ctx.startRendering();
   } catch {
     return null;
@@ -154,8 +149,16 @@ async function renderAudioBuffer(spec: RevealSpec): Promise<AudioBuffer | null> 
 }
 
 export async function renderRevealOffline(
-  opts: RenderRevealOptions & { plan: OfflinePlan; outputScale?: number },
+  opts: RenderRevealOptions & {
+    plan: OfflinePlan;
+    outputScale?: number;
+    /** Which storyboard to draw. Defaults to the miniature bundle so every
+     *  existing caller is unaffected. */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    storyboard?: RevealStoryboard<any>;
+  },
 ): Promise<RenderRevealResult> {
+  const storyboard = opts.storyboard ?? MINI_STORYBOARD;
   const durationMs = opts.durationMs ?? DEFAULT_DURATION_MS;
   const fps = opts.fps ?? 30;
   const outputScale = opts.outputScale ?? 1;
@@ -164,19 +167,8 @@ export async function renderRevealOffline(
   // Fonts must be loaded or canvas text falls back to a system face.
   await (document.fonts?.ready ?? Promise.resolve());
 
-  const steps = recipeSteps(opts.recipe, opts.brand);
-  const spec = buildRevealSpec(
-    opts.colors,
-    steps,
-    opts.brandLabel,
-    opts.skin,
-    opts.captionPreset,
-    durationMs,
-    opts.recipeColourIndex ?? -1,
-  );
-  if (spec.regions.length === 0) throw new Error('No mask regions to reveal.');
-
-  const res = await prepareResources(opts.imageUrl, opts.colors, opts.maskFrame, spec, outputScale);
+  const spec = storyboard.buildSpec(opts, durationMs);
+  const res = await storyboard.prepare(opts, spec, outputScale);
 
   const canvas = document.createElement('canvas');
   canvas.width = width;
@@ -201,7 +193,10 @@ export async function renderRevealOffline(
   });
   output.addVideoTrack(videoSource, { frameRate: fps });
 
-  const audioBuffer = opts.audio === false || !opts.plan.audio ? null : await renderAudioBuffer(spec);
+  const audioBuffer =
+    opts.audio === false || !opts.plan.audio
+      ? null
+      : await renderAudioBuffer(spec, storyboard.audioSchedule ?? scheduleRevealAudio);
   const audioSource =
     audioBuffer && opts.plan.audio
       ? new AudioBufferSource({ codec: opts.plan.audio, quality: QUALITY_HIGH })
@@ -216,7 +211,7 @@ export async function renderRevealOffline(
     for (let i = 0; i < stamps.length; i++) {
       if (opts.signal?.aborted) throw new DOMException('Export cancelled', 'AbortError');
       applyOutputScale(ctx, outputScale);
-      composeReveal(ctx, frameState(stamps[i], spec), res);
+      storyboard.composeAt(ctx, stamps[i], res);
       const sample = new VideoSample(canvas, {
         timestamp: stamps[i] / 1000,
         duration: frameDur,

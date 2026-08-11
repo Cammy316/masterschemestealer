@@ -22,6 +22,7 @@ import {
   type RevealSkin,
 } from './revealLayers';
 import { scheduleRevealAudio, revealAudioBeats } from './revealAudio';
+import type { RevealStoryboard } from './revealStoryboard';
 import {
   CANVAS_H,
   CANVAS_W,
@@ -1264,3 +1265,34 @@ if (process.env.NODE_ENV !== 'production' && typeof window !== 'undefined') {
     loadOffline: () => import('./renderRevealOffline'),
   };
 }
+
+/**
+ * The miniature storyboard as a plug-in bundle.
+ *
+ * This is exactly what both engines used to do inline; extracting it is what
+ * lets the inspiration mode reuse the entire encode path. Behaviour, error
+ * messages and debug hooks are unchanged — the mini export is byte-identical
+ * across this refactor, which the existing Playwright suites verify.
+ */
+export const MINI_STORYBOARD: RevealStoryboard<RevealResources> = {
+  mode: 'miniature',
+  buildSpec(opts, durationMs) {
+    const steps = recipeSteps(opts.recipe, opts.brand);
+    const spec = buildRevealSpec(
+      opts.colors,
+      steps,
+      opts.brandLabel,
+      opts.skin,
+      opts.captionPreset,
+      durationMs,
+      opts.recipeColourIndex ?? -1,
+    );
+    if (spec.regions.length === 0) throw new Error('No mask regions to reveal.');
+    return spec;
+  },
+  prepare(opts, spec, outputScale) {
+    return prepareResources(opts.imageUrl, opts.colors, opts.maskFrame, spec, outputScale);
+  },
+  composeAt,
+  audioSchedule: scheduleRevealAudio,
+};

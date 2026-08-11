@@ -6,15 +6,9 @@
  * synthesised audio bed. Format prefers MP4 (avc1) where supported, else WebM.
  */
 
-import {
-  applyOutputScale,
-  composeReveal,
-  prepareResources,
-  buildRevealSpec,
-  outputSize,
-  recipeSteps,
-} from './revealCompose';
-import { frameState, DEFAULT_DURATION_MS, type CaptionPreset } from './revealTimeline';
+import { applyOutputScale, outputSize, MINI_STORYBOARD } from './revealCompose';
+import { DEFAULT_DURATION_MS, type CaptionPreset } from './revealTimeline';
+import type { RevealMode, RevealStoryboard } from './revealStoryboard';
 import type { Color, MaskFrame, PaintRecipe } from '../types';
 import type { RevealSkin } from './revealLayers';
 import { createRevealAudioBed, type RevealAudioBed } from './revealAudio';
@@ -92,6 +86,9 @@ export interface RenderRevealOptions {
   recipeColourIndex?: number;
   skin: RevealSkin;
   captionPreset: CaptionPreset;
+  /** Which storyboard to render. 'miniature' is the mask-gated pict-cast;
+   *  'inspiration' is the maskless warp-cast for the inspiration tab. */
+  mode?: RevealMode;
   durationMs?: number;
   audio?: boolean;
   fps?: number;
@@ -137,19 +134,32 @@ const FALLBACK_FPS = 24;
 export async function renderRevealVideo(opts: RenderRevealOptions): Promise<RenderRevealResult> {
   // Dynamic: the muxer + encoder module only loads when someone actually taps
   // export, so it never lands in the initial bundle of a mobile-first app.
+  const storyboard = await loadStoryboard(opts.mode ?? 'miniature');
   const offline = await import('./renderRevealOffline');
   const fullSize = outputSize(1);
   const plan = await offline.planOfflineRender(fullSize.width, fullSize.height);
   if (plan) {
-    console.info('[pict-cast] offline render:', plan.container, plan.video, 'audio', plan.audio ?? 'none');
-    return offline.renderRevealOffline({ ...opts, plan });
+    console.info('[pict-cast]', storyboard.mode, 'offline render:', plan.container, plan.video, 'audio', plan.audio ?? 'none');
+    return offline.renderRevealOffline({ ...opts, plan, storyboard });
   }
   console.warn('[pict-cast] no WebCodecs encoder — falling back to real-time MediaRecorder at 720p');
-  return recordRevealRealtime(opts);
+  return recordRevealRealtime(opts, storyboard);
+}
+
+/** The warp storyboard will be a separate dynamic chunk: a painter exporting a
+ *  miniature must never download the inspiration renderer, and vice versa. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function loadStoryboard(mode: RevealMode): Promise<RevealStoryboard<any>> {
+  if (mode === 'inspiration') throw new Error('Inspiration export is not available yet.');
+  return MINI_STORYBOARD;
 }
 
 /** Legacy real-time path. Kept only for browsers without WebCodecs. */
-export async function recordRevealRealtime(opts: RenderRevealOptions): Promise<RenderRevealResult> {
+export async function recordRevealRealtime(
+  opts: RenderRevealOptions,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  storyboard: RevealStoryboard<any> = MINI_STORYBOARD,
+): Promise<RenderRevealResult> {
   const mime = pickVideoMime();
   if (!mime) throw new Error('This browser cannot record video (MediaRecorder unavailable).');
   const mimeSupport = videoMimeSupport();
@@ -164,19 +174,8 @@ export async function recordRevealRealtime(opts: RenderRevealOptions): Promise<R
   // Fonts must be loaded or canvas text falls back to a system face.
   await (document.fonts?.ready ?? Promise.resolve());
 
-  const steps = recipeSteps(opts.recipe, opts.brand);
-  const spec = buildRevealSpec(
-    opts.colors,
-    steps,
-    opts.brandLabel,
-    opts.skin,
-    opts.captionPreset,
-    durationMs,
-    opts.recipeColourIndex ?? -1,
-  );
-  if (spec.regions.length === 0) throw new Error('No mask regions to reveal.');
-
-  const res = await prepareResources(opts.imageUrl, opts.colors, opts.maskFrame, spec, outputScale);
+  const spec = storyboard.buildSpec(opts, durationMs);
+  const res = await storyboard.prepare(opts, spec, outputScale);
 
   const canvas = document.createElement('canvas');
   canvas.width = phys.width;
@@ -186,7 +185,7 @@ export async function recordRevealRealtime(opts: RenderRevealOptions): Promise<R
 
   const compose = (t: number) => {
     applyOutputScale(ctx, outputScale);
-    composeReveal(ctx, frameState(t, spec), res);
+    storyboard.composeAt(ctx, t, res);
   };
 
   // Prime frame 0 so capture never starts on a blank canvas.
