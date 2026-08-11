@@ -25,9 +25,7 @@ import { CANVAS_H, CANVAS_W, type Rect } from './revealLayout';
 import {
   buildGrainTiles,
   drawText,
-  fitRect,
   hexToRgba,
-  labelTint,
   loadImage,
   outputSize,
   resolveFonts,
@@ -53,38 +51,78 @@ import type { RenderRevealOptions } from './renderRevealVideo';
 export const WARP_MAX_COLOURS = 6;
 
 /**
- * Layout.
+ * Layout — the Cinema Palettes poster, adapted to 9:16.
  *
- * A full-bleed BLURRED copy of the photo fills all 1920 px, with the sharp image
- * centred above the palette. That solves three problems at once: the frame has
- * no dead space (v1 left 25.5% of it black), the backdrop is inherently
- * colour-matched to the photo, and the sharp image stays contain-fitted so it is
- * never cropped — v1 sheared the outer colour patches clean off both edges.
+ * The reference format is a still at FULL WIDTH with a bar of pure colour
+ * directly beneath it, edge to edge, carrying no type whatsoever. Two earlier
+ * attempts missed it in opposite directions: the first boxed the image at 61%
+ * of frame width behind corner brackets, and the second contain-fitted it into
+ * a 960x770 box, which left a landscape photo occupying 28% of the frame height
+ * with 470 px of dead space below the palette.
  *
- * The palette is six HORIZONTAL bands, full width. Vertical columns were the
- * first choice and had to be abandoned: six columns across 1080 px puts the
- * sixth name at x≈990, directly under the like/comment/share rail. Bands run
- * edge to edge with names set left, so every name is attached to its own colour
- * AND clear of the rail.
+ * So the image is full-bleed WIDTH and keeps its natural aspect, the swatches
+ * sit flush underneath it, and the whole block is centred as one poster on a
+ * blurred, colour-matched ground. Nothing is cropped; the frame has no holes.
  *
- * Everything below the palette is blurred backdrop — a caption bar can cover all
- * of it and the viewer loses nothing.
+ * The block centre sits above the frame centre so the swatches clear the
+ * caption zone. Swatches carry no permanent text, so they are ARTWORK and the
+ * safe-area rule does not bind them — which is exactly why vertical columns work
+ * here and did not in the previous cut, where every column had a name in it and
+ * the sixth landed under the action rail.
  */
-const HERO_BOX: Rect = { x: 60, y: 150, w: 960, h: 770 };
-const PALETTE_Y = 950;
-const PALETTE_H = 432;
-/** Watermark baseline. Inside the safe floor (1430) on purpose: it is the only
- *  branding that survives a re-upload, so it cannot live in the caption zone. */
-const WATERMARK_Y = 1418;
-/** Left inset for paint names, and the right edge the ΔE figure stops at — 900
- *  keeps it clear of the action rail. */
-const BAND_TEXT_X = 52;
-const BAND_DELTA_RIGHT = 900;
+const SWATCH_H = 330;
+/** Hairline of ground between swatches. The reference separates them; touching
+ *  blocks read as one smeared gradient rather than a set of paints. */
+const SWATCH_GAP = 5;
+/**
+ * Ceiling on image height.
+ *
+ * Chosen so the WHOLE poster — image plus swatches — always fits between the
+ * safe top and y1400, which guarantees a home for the watermark underneath it
+ * inside the safe area. Without the cap, a square photo pushed the palette to
+ * y1545 and the mark had nowhere to go but on top of the headline.
+ *
+ * Only square-and-taller photos hit it; a 16:9 or 4:3 image is still full-bleed
+ * width, which is the case the format is really for.
+ */
+const MAX_IMAGE_H = 850;
+/** Vertical centre of the poster block. */
+const BLOCK_CY = 780;
+/** Ken Burns range. The image is CLIPPED to its rect, so the poster edges stay
+ *  crisp while the picture inside them moves. */
+const KEN_BURNS = 0.08;
+/** Below this, a platform caption bar can cover anything. Artwork may cross it;
+ *  the watermark may not. */
+const SAFE_FLOOR = 1430;
 
-/** Relative luminance of a band, deciding whether its type is dark or light.
- *  150 sits between Citadel's mid tones in practice — verified against the
- *  yellow that failed first time round. */
-function isLightBand(hex: string): boolean {
+export interface PosterLayout {
+  image: Rect;
+  palette: Rect;
+}
+
+/** Where the poster's two pieces sit, for an image of the given dimensions. */
+export function posterLayout(imgW: number, imgH: number): PosterLayout {
+  const natural = Math.round((CANVAS_W * imgH) / Math.max(1, imgW));
+  const h = Math.min(MAX_IMAGE_H, natural);
+  // Only a very tall portrait hits the ceiling; then the image narrows rather
+  // than being cropped.
+  const w = h < natural ? Math.round((h * imgW) / Math.max(1, imgH)) : CANVAS_W;
+  const blockH = h + SWATCH_H;
+  const top = Math.round(BLOCK_CY - blockH / 2);
+  const x = Math.round((CANVAS_W - w) / 2);
+  // The palette is always exactly as wide as the image. They are one poster, and
+  // a narrowed image over a full-bleed colour bar reads as two unrelated
+  // elements stacked — the reference has them flush to the same edges.
+  return {
+    image: { x, y: top, w, h },
+    palette: { x, y: top + h, w, h: SWATCH_H },
+  };
+}
+
+/** Relative luminance of a swatch, deciding whether its transient label is dark
+ *  or light ink. 150 sits between Citadel's mid tones in practice — verified
+ *  against the yellow whose name vanished into its own band first time round. */
+function isLightSwatch(hex: string): boolean {
   const h = hex.replace('#', '');
   const full = h.length === 3 ? h.split('').map((c) => c + c).join('') : h;
   const n = parseInt(full, 16);
@@ -92,13 +130,47 @@ function isLightBand(hex: string): boolean {
   return 0.2126 * ((n >> 16) & 255) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255) > 150;
 }
 
-export function bandHeight(n: number): number {
-  return PALETTE_H / Math.max(1, n);
+/** Perceptual lightness of a hex, for ordering the palette. */
+function swatchLuma(hex: string): number {
+  const h = hex.replace('#', '');
+  const full = h.length === 3 ? h.split('').map((c) => c + c).join('') : h;
+  const n = parseInt(full, 16);
+  if (!Number.isFinite(n)) return 0;
+  return 0.2126 * ((n >> 16) & 255) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255);
 }
 
-export function bandRect(i: number, n: number): Rect {
-  const h = bandHeight(n);
-  return { x: 0, y: PALETTE_Y + i * h, w: CANVAS_W, h };
+/**
+ * Which column each colour occupies: darkest on the left, lightest on the right.
+ *
+ * This deliberately DECOUPLES position from pour order. Colours pour in coverage
+ * order — smallest first, dominant last — because that is a narrative choice and
+ * it drives the audio beats. But a palette laid out in coverage order looks
+ * arbitrary, and the reference format is unmistakably graded: dark navy through
+ * blues to light, then warm. Sorting the columns by tone is the single change
+ * that makes the finished poster read as designed rather than dumped.
+ *
+ * It also makes the pour better: consecutive droplets land in scattered columns
+ * instead of marching left to right.
+ *
+ * Returns `column[i]` for wall row `i`.
+ */
+export function columnOrder(hexes: string[]): number[] {
+  const ranked = hexes
+    .map((hex, i) => ({ i, luma: swatchLuma(hex) }))
+    // Ties broken by original index so the result is fully deterministic.
+    .sort((a, b) => a.luma - b.luma || a.i - b.i);
+  const columns = new Array<number>(hexes.length);
+  ranked.forEach((entry, col) => {
+    columns[entry.i] = col;
+  });
+  return columns;
+}
+
+/** Rect of swatch `i` of `n`. Flush to both frame edges, gaps only between. */
+export function swatchRect(i: number, n: number, palette: Rect): Rect {
+  const count = Math.max(1, n);
+  const colW = (palette.w - (count - 1) * SWATCH_GAP) / count;
+  return { x: palette.x + i * (colW + SWATCH_GAP), y: palette.y, w: colW, h: palette.h };
 }
 
 export interface WarpResources {
@@ -115,6 +187,10 @@ export interface WarpResources {
    *  the clip is about. */
   softLayer: HTMLCanvasElement;
   grainTiles: HTMLCanvasElement[];
+  /** Column each wall row occupies, by tone — see columnOrder. Computed once
+   *  rather than per frame, and it must be stable or the palette would reshuffle
+   *  mid-clip. */
+  columns: number[];
   loopTargetLayer: HTMLCanvasElement;
 }
 
@@ -213,7 +289,9 @@ export async function prepareWarpResources(
   // Layers are built at the largest size they can ever be DRAWN at, not at the
   // photo's native size — a 12 MP phone photo would otherwise be resampled in
   // full on every one of 420 frames.
-  const maxDrawW = HERO_BOX.w * 1.4;
+  // The image is drawn full-bleed and can be pushed in by the Ken Burns, so it
+  // has to exist at a little over frame width.
+  const maxDrawW = CANVAS_W * (1 + KEN_BURNS) * 1.05;
   const scale = Math.min(1, maxDrawW / img.naturalWidth);
   const imgW = Math.max(1, Math.round(img.naturalWidth * scale));
   const imgH = Math.max(1, Math.round(img.naturalHeight * scale));
@@ -267,15 +345,16 @@ export async function prepareWarpResources(
   vig.addColorStop(1, 'rgba(0,0,0,0.55)');
   backdrop.ctx.fillStyle = vig;
   backdrop.ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
-  // Everything under the palette is out of the safe area and should recede
-  // rather than compete — blurred colour blobs down there pull the eye off the
-  // poster and land under the caption bar anyway.
-  const floorFade = backdrop.ctx.createLinearGradient(0, PALETTE_Y, 0, CANVAS_H);
-  floorFade.addColorStop(0, 'rgba(6, 5, 14, 0)');
-  floorFade.addColorStop(0.45, 'rgba(6, 5, 14, 0.72)');
-  floorFade.addColorStop(1, 'rgba(6, 5, 14, 0.92)');
+  // The ground above and below the poster should recede rather than compete —
+  // blurred colour blobs pull the eye off the palette, and the lower ones land
+  // under the caption bar anyway.
+  const floorFade = backdrop.ctx.createLinearGradient(0, 0, 0, CANVAS_H);
+  floorFade.addColorStop(0, 'rgba(6, 5, 14, 0.55)');
+  floorFade.addColorStop(0.4, 'rgba(6, 5, 14, 0.1)');
+  floorFade.addColorStop(0.78, 'rgba(6, 5, 14, 0.55)');
+  floorFade.addColorStop(1, 'rgba(6, 5, 14, 0.9)');
   backdrop.ctx.fillStyle = floorFade;
-  backdrop.ctx.fillRect(0, PALETTE_Y, CANVAS_W, CANVAS_H - PALETTE_Y);
+  backdrop.ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
 
   // Where each colour actually lives in the picture — the droplets have to come
   // from somewhere real or the poster is decoration rather than a reading.
@@ -313,6 +392,7 @@ export async function prepareWarpResources(
     heroLayer: hero.c,
     softLayer: soft.c,
     grainTiles: buildGrainTiles(),
+    columns: columnOrder((spec.wall ?? []).map((w) => w.paintHex)),
     loopTargetLayer: loopTarget.c,
   };
 
@@ -322,35 +402,57 @@ export async function prepareWarpResources(
 
 // ---- geometry ----------------------------------------------------------------
 
-/** Where the sharp photo sits this frame. Contain-fit, so it is never cropped,
- *  with a slow drift that is periodic across the clip. */
-function heroRectAt(state: WarpFrameState, res: WarpResources): Rect {
-  const fitted = fitRect(res.imgW, res.imgH, HERO_BOX);
-  const w = fitted.w * state.camera.scale;
-  const h = fitted.h * state.camera.scale;
-  return {
-    x: fitted.x - (w - fitted.w) / 2 + state.camera.driftX,
-    y: fitted.y - (h - fitted.h) / 2 + state.camera.driftY,
+/**
+ * The poster's image frame — fixed, so its edges stay crisp against the
+ * swatches. The Ken Burns happens INSIDE it (see drawPosterImage), which is what
+ * lets the picture move without the poster itself wobbling.
+ */
+function posterAt(res: WarpResources): PosterLayout {
+  return posterLayout(res.imgW, res.imgH);
+}
+
+/** Draw the photo into its frame, clipped, with a slow push and drift. Sharp
+ *  and soft twins are cross-faded by `soften`. */
+function drawPosterImage(
+  ctx: CanvasRenderingContext2D,
+  state: WarpFrameState,
+  res: WarpResources,
+  frame: Rect,
+): void {
+  const push = 1 + KEN_BURNS * (0.5 - 0.5 * Math.cos(state.progress * Math.PI * 2));
+  const w = frame.w * push;
+  const h = frame.h * push;
+  const r: Rect = {
+    x: frame.x - (w - frame.w) / 2 + state.camera.driftX,
+    y: frame.y - (h - frame.h) / 2 + state.camera.driftY,
     w,
     h,
   };
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(frame.x, frame.y, frame.w, frame.h);
+  ctx.clip();
+  ctx.drawImage(res.heroLayer, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
+  if (state.soften > 0) {
+    ctx.globalAlpha = state.soften;
+    ctx.drawImage(res.softLayer, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
+  }
+  ctx.restore();
 }
 
 // ---- captions ----------------------------------------------------------------
 
 /**
- * One quiet line, and only when there is something to say.
+ * The single line of copy, shown only while the palette is assembling.
  *
- * v1 narrated every phase (`COMMUNING…`, `BINDING… 3/6 ESSENCES`). A palette
- * poster does not explain itself while you look at it, so the copy now sits on
- * the held poster and stays out of the way in between.
+ * v1 narrated every phase (`COMMUNING…`, `BINDING… 3/6 ESSENCES`) and v2 held a
+ * headline over the finished poster. Neither is the reference format, which
+ * carries no type at all. The line now rides the swatch labels: up while the
+ * colours land, gone for the poster.
  */
-export function warpCaptionText(spec: RevealSpec, state: WarpFrameState): string | null {
+export function warpCaptionText(spec: RevealSpec, _state: WarpFrameState): string | null {
   if (spec.captionPreset === 'none') return null;
-  if (state.phase === 'poster' || state.phase === 'settle' || state.phase === 'hold') {
-    return 'THE EXACT PAINTS IN THIS IMAGE';
-  }
-  return null;
+  return 'THE EXACT PAINTS IN THIS IMAGE';
 }
 
 // ---- drawing -----------------------------------------------------------------
@@ -445,130 +547,88 @@ function drawDroplet(
 }
 
 /**
- * The palette: full-width bands of solid colour, each carrying its paint name
- * and its measurement.
+ * The palette: vertical swatches of solid colour, flush edge to edge.
  *
- * The ΔE is a quiet figure, never a coloured alarm. A hard-to-match photo — neon
- * lightning, say — legitimately returns several values above 10, and v1 rendered
- * that as six red DISTANT pills, which reads as the product failing rather than
- * the product being honest. The number is unchanged and always shown; only its
- * presentation stopped shouting.
+ * No permanent type. The reference format carries none, and burning six paint
+ * names into the poster is exactly what stopped the previous cut reading like
+ * one. Each name appears on its own swatch as the colour lands, stays while the
+ * palette assembles so the whole set can be read, and fades before the payoff
+ * hold — see `labelAlpha` in warpTimeline.
+ *
+ * The ΔE rides with the name, and is a quiet figure rather than a coloured
+ * alarm. A hard-to-match photo legitimately returns several values above 10;
+ * rendering that as red pills reads as the product failing rather than as the
+ * product being honest. The numbers are never altered.
  */
-function drawPalette(ctx: CanvasRenderingContext2D, state: WarpFrameState, res: WarpResources): void {
+function drawPalette(
+  ctx: CanvasRenderingContext2D,
+  state: WarpFrameState,
+  res: WarpResources,
+  palette: Rect,
+): void {
   const rows = res.spec.wall ?? [];
   const n = rows.length;
   if (n === 0) return;
-  const h = bandHeight(n);
 
-  // Plate behind the WHOLE palette, drawn before any band. Without it the
-  // unfilled slots show raw blurred backdrop, and a half-poured palette reads
-  // as a mess rather than as bands waiting to be filled.
+  // Ground behind the swatches, so un-poured slots are visible empties rather
+  // than raw blurred backdrop.
   ctx.save();
-  ctx.fillStyle = 'rgba(6, 5, 14, 0.9)';
-  ctx.fillRect(0, PALETTE_Y, CANVAS_W, PALETTE_H);
-  // Empty slots, ruled. Before this the un-poured palette was one dark void for
-  // ~1.4 s and said nothing; six visible slots tell the viewer how many colours
-  // are coming, which is what makes the pours feel like a countdown rather than
-  // a list that happens to stop.
-  ctx.strokeStyle = 'rgba(255,255,255,0.07)';
-  ctx.lineWidth = 1;
-  for (let i = 1; i < n; i++) {
-    const y = Math.round(PALETTE_Y + i * h) + 0.5;
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(CANVAS_W, y);
-    ctx.stroke();
-  }
+  ctx.fillStyle = 'rgba(6, 5, 14, 0.92)';
+  ctx.fillRect(palette.x, palette.y, palette.w, palette.h);
   ctx.restore();
-
-  const nameSize = Math.round(h * 0.34);
-  const metaSize = Math.round(h * 0.19);
 
   rows.forEach((row, i) => {
     const band = state.bands[i];
-    if (!band || band.fill <= 0) return;
-    const r = bandRect(i, n);
+    if (!band) return;
+    const r = swatchRect(res.columns[i] ?? i, n, palette);
 
-    ctx.save();
-    // Left→right wipe. Clipping to the filled width makes the colour arrive as
-    // a stroke rather than a fade — that is what reads as the droplet spreading.
-    ctx.beginPath();
-    ctx.rect(r.x, r.y, r.w * band.fill, r.h);
-    ctx.clip();
-    ctx.fillStyle = row.paintHex;
-    ctx.fillRect(r.x, r.y, r.w, r.h);
-    // A hairline of the EXTRACTED colour along the top of each band, so the
-    // comparison the product is actually making stays visible: this is the
-    // colour in your photo, that is the paint matched to it.
-    ctx.fillStyle = row.extractedHex;
-    ctx.fillRect(r.x, r.y, r.w, 3);
-    ctx.restore();
+    if (band.fill > 0) {
+      // Pours UPWARD from the base of its column — the droplet fell in, so the
+      // colour fills the way liquid would.
+      const fh = r.h * band.fill;
+      ctx.save();
+      ctx.fillStyle = row.paintHex;
+      ctx.fillRect(r.x, r.y + r.h - fh, r.w, fh);
+      ctx.restore();
+    }
 
-    if (band.nameReveal <= 0) return;
-    // Type is drawn unclipped once the band has landed, so a name is never seen
-    // half-wiped.
-    // Ink choice is a question about the BAND, not about the tint helper. The
-    // first cut asked whether labelTint had changed the colour, which is a
-    // different question entirely — a mid-luma yellow gets lifted, so it took
-    // LIGHT ink and the name vanished into its own band.
-    const dark = isLightBand(row.paintHex);
-    const textColour = dark ? '#100c1c' : labelTint(row.paintHex, 225);
+    if (band.labelAlpha <= 0) return;
+    // Rotated to read bottom-to-top: a swatch is far taller than it is wide, and
+    // horizontal type would have to shrink past legibility to fit.
+    const light = isLightSwatch(row.paintHex);
+    const ink = light ? '#0d0a16' : '#ffffff';
     ctx.save();
-    ctx.globalAlpha = band.nameReveal;
-    drawText(ctx, row.paintName.toUpperCase(), r.x + BAND_TEXT_X, r.y + r.h * 0.4, {
+    ctx.globalAlpha = band.labelAlpha;
+    ctx.translate(r.x + r.w / 2, r.y + r.h - 26);
+    ctx.rotate(-Math.PI / 2);
+    drawText(ctx, row.paintName.toUpperCase(), 0, -11, {
       font: res.fonts.cyber,
-      size: nameSize,
+      size: 25,
       weight: 700,
-      colour: textColour,
+      colour: ink,
       align: 'left',
-      letter: 2,
-      maxWidth: 540,
-    });
-    drawText(
-      ctx,
-      `${row.family.toUpperCase()} · ${row.brand.toUpperCase()}`,
-      r.x + BAND_TEXT_X,
-      r.y + r.h * 0.72,
-      {
-        font: res.fonts.tech,
-        size: metaSize,
-        weight: 600,
-        colour: dark ? 'rgba(13,10,22,0.68)' : hexToRgba(textColour, 0.68),
-        align: 'left',
-        letter: 1,
-        maxWidth: 540,
-      },
-    );
-    ctx.restore();
-
-    if (band.deltaReveal <= 0) return;
-    ctx.save();
-    ctx.globalAlpha = band.deltaReveal;
-    drawText(ctx, `ΔE ${row.deltaE.toFixed(1)}`, BAND_DELTA_RIGHT, r.y + r.h * 0.5, {
-      font: res.fonts.cyber,
-      size: Math.round(h * 0.25),
-      weight: 600,
-      colour: dark ? 'rgba(13,10,22,0.75)' : hexToRgba(textColour, 0.75),
-      align: 'right',
       letter: 1,
+      maxWidth: r.h - 52,
+    });
+    drawText(ctx, `ΔE ${row.deltaE.toFixed(1)}`, 0, 16, {
+      font: res.fonts.cyber,
+      size: 19,
+      weight: 600,
+      colour: light ? 'rgba(13,10,22,0.72)' : 'rgba(255,255,255,0.72)',
+      align: 'left',
+      letter: 1,
+      maxWidth: r.h - 52,
     });
     ctx.restore();
   });
 }
 
-/**
- * A slow highlight travelling across the palette, once per clip.
- *
- * Aesthetic and load-bearing at the same time. The bands are large flat areas of
- * solid colour, so during the 2.5 s payoff hold roughly a quarter of the frame
- * has literally nothing happening in it — the first cut of this rebuild cleared
- * the anti-freeze floor by 0.006, which is a coincidence rather than a pass.
- * Light moving across paint is the honest fix.
- *
- * One full traversal across the clip, so its position at p=1 equals p=0 and the
- * loop seam stays pixel-exact.
- */
-function drawPaletteSheen(ctx: CanvasRenderingContext2D, p: number, filled: number): void {
+function drawPaletteSheen(
+  ctx: CanvasRenderingContext2D,
+  p: number,
+  filled: number,
+  palette: Rect,
+): void {
   if (filled <= 0) return;
   const span = CANVAS_W * 2.2;
   const cx = -span * 0.5 + p * (CANVAS_W + span);
@@ -578,20 +638,36 @@ function drawPaletteSheen(ctx: CanvasRenderingContext2D, p: number, filled: numb
   g.addColorStop(1, 'rgba(255,255,255,0)');
   ctx.save();
   ctx.beginPath();
-  ctx.rect(0, PALETTE_Y, CANVAS_W, PALETTE_H);
+  ctx.rect(palette.x, palette.y, palette.w, palette.h);
   ctx.clip();
   ctx.globalCompositeOperation = 'lighter';
   ctx.fillStyle = g;
-  ctx.fillRect(0, PALETTE_Y, CANVAS_W, PALETTE_H);
+  ctx.fillRect(palette.x, palette.y, palette.w, palette.h);
   ctx.restore();
 }
 
-function drawWarpWatermark(ctx: CanvasRenderingContext2D, res: WarpResources): void {
+/**
+ * Small, tucked against the poster, and never below the safe floor.
+ *
+ * It is the only branding that survives a re-upload, so it is in every frame —
+ * but the poster block is image-dependent, and for a square or portrait photo
+ * the palette runs past y1430 into the caption zone. Sitting under it there
+ * would put the one piece of branding exactly where the platform covers it, so
+ * when the palette runs low the mark moves ABOVE the image instead.
+ */
+function drawWarpWatermark(
+  ctx: CanvasRenderingContext2D,
+  res: WarpResources,
+  poster: PosterLayout,
+): void {
+  // The block is capped so this always lands inside the safe area; the clamp is
+  // a belt-and-braces guard rather than the mechanism.
+  const y = Math.min(poster.palette.y + poster.palette.h + 40, SAFE_FLOOR - 16);
   ctx.save();
-  ctx.globalAlpha = 0.5;
-  drawText(ctx, 'schemestealer.com', CANVAS_W / 2, WATERMARK_Y, {
+  ctx.globalAlpha = 0.42;
+  drawText(ctx, 'schemestealer.com', CANVAS_W / 2, y, {
     font: res.fonts.cyber,
-    size: 24,
+    size: 21,
     weight: 600,
     colour: '#ffffff',
     letter: 2,
@@ -608,36 +684,36 @@ export function composeWarp(
 ): void {
   const { spec } = res;
   const accent = themeFor(spec.skin).accent;
-  const r = heroRectAt(state, res);
+  const poster = posterAt(res);
+  const frame = poster.image;
 
   ctx.drawImage(res.backdropLayer, 0, 0, CANVAS_W, CANVAS_H);
+  drawPosterImage(ctx, state, res, frame);
 
-  // Sharp photo with the soft twin cross-faded over it. Never greyscale.
-  ctx.drawImage(res.heroLayer, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
-  if (state.soften > 0) {
-    ctx.save();
-    ctx.globalAlpha = state.soften;
-    ctx.drawImage(res.softLayer, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
-    ctx.restore();
-  }
+  if (state.bloom !== null) drawBloom(ctx, frame, accent, state.bloom);
 
-  if (state.bloom !== null) drawBloom(ctx, r, accent, state.bloom);
-
-  // The colour being drawn out of the picture, and its fall into the palette.
+  // The colour being drawn out of the picture, and its fall into its swatch.
   if (state.droplet) {
     const region = spec.regions[state.droplet.index];
     const row = spec.wall?.[state.droplet.index];
     if (region && row) {
-      const sx = r.x + region.position.x * r.w;
-      const sy = r.y + region.position.y * r.h;
+      const sx = frame.x + region.position.x * frame.w;
+      const sy = frame.y + region.position.y * frame.h;
       drawSourcePoint(ctx, sx, sy, row.extractedHex, state.droplet.source);
       const t = state.droplet.travel;
       if (t > 0 && t < 1) {
-        const target = bandRect(state.droplet.index, spec.wall!.length);
+        const target = swatchRect(
+          res.columns[state.droplet.index] ?? state.droplet.index,
+          spec.wall!.length,
+          poster.palette,
+        );
+        // Eases across to its column then drops in — a straight line from an
+        // arbitrary point in the photo to an arbitrary column reads as a
+        // scattering rather than a pour.
         drawDroplet(
           ctx,
-          sx + (BAND_TEXT_X + 40 - sx) * t * t,
-          sy + (target.y + target.h / 2 - sy) * t,
+          sx + (target.x + target.w / 2 - sx) * (t * t),
+          sy + (target.y + 24 - sy) * t,
           row.extractedHex,
           Math.sin(Math.min(1, t / 0.92) * Math.PI) + 0.08,
         );
@@ -645,20 +721,25 @@ export function composeWarp(
     }
   }
 
-  drawPalette(ctx, state, res);
-  drawPaletteSheen(ctx, state.progress, state.bands.reduce((a, b) => a + b.fill, 0) / Math.max(1, state.bands.length));
+  drawPalette(ctx, state, res, poster.palette);
+  drawPaletteSheen(
+    ctx,
+    state.progress,
+    state.bands.reduce((a, b) => a + b.fill, 0) / Math.max(1, state.bands.length),
+    poster.palette,
+  );
 
+  // Headline. Rides with the swatch labels, so the finished poster carries no
+  // type at all — the reference format has none, and the clip only earns that
+  // look if it actually clears the frame at the end.
   const cap = warpCaptionText(spec, state);
-  if (cap) {
-    // Fades with the poster holds rather than cutting, so the frame is never
-    // interrupted by type appearing.
-    const alpha =
-      state.phase === 'poster' || state.phase === 'hold' ? 1 : (state.bands[0]?.deltaReveal ?? 0);
+  const capAlpha = state.bands.length ? Math.max(...state.bands.map((b) => b.labelAlpha)) : 0;
+  if (cap && capAlpha > 0) {
     ctx.save();
-    ctx.globalAlpha = alpha * 0.92;
-    drawText(ctx, cap, CANVAS_W / 2, 108, {
+    ctx.globalAlpha = capAlpha * 0.9;
+    drawText(ctx, cap, CANVAS_W / 2, Math.max(96, frame.y - 62), {
       font: res.fonts.cyber,
-      size: 34,
+      size: 32,
       weight: 700,
       colour: '#ffffff',
       letter: 3,
@@ -667,7 +748,7 @@ export function composeWarp(
     ctx.restore();
   }
 
-  drawWarpWatermark(ctx, res);
+  drawWarpWatermark(ctx, res, poster);
   drawWarpAmbient(ctx, res, state.progress);
 
   if (state.loopCrossfade > 0) {
@@ -722,7 +803,8 @@ if (process.env.NODE_ENV !== 'production' && typeof window !== 'undefined') {
     warpAudioBeats,
     warpFrameState,
     bandPourWindow,
-    bandRect,
+    swatchRect,
+    posterLayout,
     outputSize,
     WARP_DURATION_MS,
   };

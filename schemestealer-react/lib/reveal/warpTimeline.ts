@@ -43,13 +43,20 @@ export const WARP_PHASES = {
 export type WarpPhase = 'poster' | 'drain' | 'bloom' | 'pour' | 'settle' | 'hold';
 
 export interface WarpBandState {
-  /** 0..1 left→right wipe of the colour band itself. */
+  /** 0..1 wipe of the swatch itself. */
   fill: number;
-  /** 0..1 paint name fading up once the band has landed. */
-  nameReveal: number;
-  /** 0..1 ΔE figure, which ticks in later than the name — the colour arrives,
-   *  then it is named, then it is measured. */
-  deltaReveal: number;
+  /**
+   * 0..1 opacity of the paint name and its ΔE on this swatch.
+   *
+   * Labels are TRANSIENT by design. The reference format — Cinema Palettes — is
+   * a still above a bar of pure colour and carries no type at all, and burning
+   * six paint names permanently into the poster is what stopped the first
+   * version reading that way. So each name appears as its colour lands, every
+   * name is legible while the palette assembles, and they all fade out again
+   * before the payoff hold. The finished poster is clean; the information was
+   * still shown, and the share caption carries it in text.
+   */
+  labelAlpha: number;
 }
 
 export interface WarpDroplet {
@@ -136,8 +143,9 @@ export function warpFrameState(t: number, durationMs: number, bandCount: number)
 
   const bands: WarpBandState[] = [];
   for (let i = 0; i < n; i++) {
-    if (phase === 'poster') {
-      bands.push({ fill: 1, nameReveal: 1, deltaReveal: 1 });
+    if (phase === 'poster' || phase === 'hold') {
+      // The poster — first frames and last — is pure colour.
+      bands.push({ fill: 1, labelAlpha: 0 });
       continue;
     }
     if (phase === 'drain') {
@@ -145,11 +153,11 @@ export function warpFrameState(t: number, durationMs: number, bandCount: number)
       // the drain reads as the pour running backwards.
       const d = smoothstep((f - POSTER_END) / (DRAIN_END - POSTER_END));
       const stagger = clamp(d * (n + 1) - (n - 1 - i));
-      bands.push({ fill: 1 - stagger, nameReveal: 1 - stagger, deltaReveal: 1 - stagger });
+      bands.push({ fill: 1 - stagger, labelAlpha: 0 });
       continue;
     }
     if (phase === 'bloom') {
-      bands.push({ fill: 0, nameReveal: 0, deltaReveal: 0 });
+      bands.push({ fill: 0, labelAlpha: 0 });
       continue;
     }
     const win = bandPourWindow(i, n);
@@ -157,13 +165,14 @@ export function warpFrameState(t: number, durationMs: number, bandCount: number)
     // droplet's fall, so the colour lands rather than simply appearing.
     const local = clamp((f - win.start) / (win.end - win.start));
     const fill = smoothstep(clamp((local - 0.45) / 0.55));
-    const nameReveal = smoothstep(clamp((local - 0.7) / 0.3));
-    // ΔE holds back until the settle: colour, then name, then measurement.
-    const deltaReveal =
-      f <= POUR_END
-        ? 0
-        : smoothstep(clamp(((f - POUR_END) / (SETTLE_END - POUR_END)) * n - i * 0.7));
-    bands.push({ fill, nameReveal, deltaReveal });
+    // The label rises as its swatch lands and STAYS up for the rest of the
+    // pour, so the viewer can read the palette accumulating rather than
+    // catching one name at a time. Everything then fades together across the
+    // settle, uncovering the clean poster.
+    const risen = smoothstep(clamp((local - 0.62) / 0.38));
+    const labelAlpha =
+      phase === 'settle' ? 1 - smoothstep(clamp(((f - POUR_END) / (SETTLE_END - POUR_END) - 0.15) / 0.6)) : risen;
+    bands.push({ fill, labelAlpha });
   }
 
   // Which droplet, if any, is in flight.

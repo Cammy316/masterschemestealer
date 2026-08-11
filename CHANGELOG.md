@@ -2,6 +2,67 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-08-11 (Warp-Cast v3 — the Cinema Palettes format)
+
+v2 got the structure right and the format wrong. Measured against the reference
+(`Testimages/Example.jpg`) and a real device export, three gaps:
+
+- **The image was contain-fitted into a 960×790 box**, so a landscape photo — a
+  sunset, the actual test case — occupied **28% of frame height** with 470 px of
+  dead ground below the palette. The reference is full-bleed WIDTH.
+- **Six permanent paint names and ΔE figures were burned into the poster.** The
+  reference carries no type at all, and that type is what stopped v2 reading as
+  a palette rather than a table.
+- **Swatch order was coverage**, which looks arbitrary. The reference is
+  unmistakably graded dark → light.
+
+### Changed
+- **Full-bleed poster.** The image keeps its natural aspect at frame width, the
+  swatches sit flush beneath it, and the two are always the SAME width — they
+  are one poster, and a narrowed image over a full-bleed bar reads as two
+  unrelated elements stacked. The block floats on the blurred, colour-matched
+  ground. Nothing is cropped.
+- **Vertical swatch columns**, edge to edge, separated by a 5 px hairline of
+  ground. Note this was impossible in v2 and is fine now for one reason: without
+  permanent names the swatches are ARTWORK, so the safe-area rule does not bind
+  them. It was the names that put a column under the action rail, not the
+  columns.
+- **Labels are transient.** Each paint name and its ΔE appears on its own swatch
+  as the colour lands, stays while the palette assembles so the whole set can be
+  read, then fades before the payoff hold. The headline rides with them. The
+  finished poster — first frames and last, which is what a viewer screenshots —
+  carries nothing but the small watermark. Rotated to read bottom-to-top, since
+  a swatch is far taller than it is wide.
+- **Swatches are ordered by tone, darkest to lightest**, decoupled from pour
+  order. Colours still pour in coverage order because that is the narrative and
+  it drives the audio beats — but position is now a design decision. It also
+  improves the pour: consecutive droplets land in scattered columns instead of
+  marching left to right.
+- Colour pours UPWARD into its column now, the way liquid would, rather than
+  wiping sideways.
+
+### Fixed
+- **The watermark landed below the safe floor** for square and portrait photos,
+  and in one arrangement collided with the headline. The poster block is now
+  capped (`MAX_IMAGE_H` 850) so the whole thing fits above y1400, which
+  guarantees the mark a home inside the safe area rather than relying on a
+  clamp. Only square-and-taller photos hit the cap; 16:9 and 4:3 are still
+  full-bleed width, which is the case the format is really for.
+
+### Measured
+Anti-freeze quietest 0.4 s window **0.592** (floor 0.5). Audio untouched by a
+visual-only change and re-verified: −14.79 LUFS, −1.30 dBTP, crest 12.52 dB,
+bed 99.9% sub-250 Hz, HF-on-beat 78.7%.
+
+### Verification
+`vitest` 788 · `tsc` clean · `warp-export` 5/5 · `reveal-export` 4/4 ·
+`reveal-encode` 2/2 both `bt709,bt709,bt709`.
+
+### Still unverified
+No v3 clip has been exported on a real device. The open questions are whether
+the pours land on recognisable parts of a real photograph, and whether a 5 px
+gap and 330 px swatch height read well at phone size.
+
 ## [Unreleased] - 2026-08-11 (Warp-Cast v2 — the palette rebuild)
 
 v1 shipped and was wrong. Measured against `inspirationV1.mp4`: **no palette
