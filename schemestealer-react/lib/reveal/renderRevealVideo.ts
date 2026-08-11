@@ -146,11 +146,11 @@ export async function renderRevealVideo(opts: RenderRevealOptions): Promise<Rend
   return recordRevealRealtime(opts, storyboard);
 }
 
-/** The warp storyboard will be a separate dynamic chunk: a painter exporting a
+/** The warp storyboard is a separate dynamic chunk: a painter exporting a
  *  miniature must never download the inspiration renderer, and vice versa. */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function loadStoryboard(mode: RevealMode): Promise<RevealStoryboard<any>> {
-  if (mode === 'inspiration') throw new Error('Inspiration export is not available yet.');
+  if (mode === 'inspiration') return (await import('./warpCompose')).WARP_STORYBOARD;
   return MINI_STORYBOARD;
 }
 

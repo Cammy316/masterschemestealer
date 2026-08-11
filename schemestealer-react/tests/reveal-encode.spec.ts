@@ -13,7 +13,7 @@ import { test, expect } from '@playwright/test';
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { seedScan } from './revealSeed';
+import { seedScan, seedInspirationScan } from './revealSeed';
 
 /** Remotion ships a static ffprobe; no system install required. */
 const FFPROBE = resolve(
@@ -120,6 +120,101 @@ test('pict-cast offline render: real encode, exact frame count', async ({ page }
       { encoding: 'utf8' },
     ).trim();
     console.log('COLOUR TAGS:', probe);
+    const [primaries, transfer, matrix] = probe.split(',').map((s) => s.trim());
+    expect(primaries, 'color_primaries').toBe('bt709');
+    expect(transfer, 'color_transfer').toBe('bt709');
+    expect(matrix, 'color_space').toBe('bt709');
+  }
+});
+
+/**
+ * The same real encode, driven through the INSPIRATION storyboard.
+ *
+ * The point is not that the warp clip encodes — it is that it goes through the
+ * SAME encoder. The storyboard refactor exists so there is one implementation of
+ * frame pacing, BT.709 tagging and the colr byte patch; this asserts the warp
+ * mode actually reaches it rather than having quietly acquired a second path.
+ */
+test('warp-cast offline render: same encoder, exact frame count, BT.709', async ({ page }) => {
+  test.setTimeout(180000);
+  page.on('pageerror', (e) => console.log('PAGEERROR:', e.message));
+  await page.route('**/api/**', (r) =>
+    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ status: 'ok', ready: true }) }),
+  );
+  await page.addInitScript(seedInspirationScan, STORAGE_KEY);
+  await page.goto('/inspiration/results');
+
+  const out = await page.evaluate(async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const R = (window as any).__revealDebug;
+    await R?.loadOffline?.();
+    await R?.loadWarp?.();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const O = (window as any).__revealOfflineDebug;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const scan = (window as any).__seedScan;
+    if (!O || !scan) return { error: `offlineHook=${!!O} scan=${!!scan}` } as const;
+    const plan = await O.planOfflineRender(1080, 1920);
+    if (!plan) return { error: 'no encodable codec in this browser' } as const;
+
+    const durationMs = 2000;
+    const fps = 30;
+    const res = await O.renderRevealOffline({
+      imageUrl: scan.imageUrl,
+      colors: scan.detectedColors,
+      brand: 'citadel',
+      brandLabel: 'Citadel',
+      skin: 'warp',
+      captionPreset: 'colours',
+      mode: 'inspiration',
+      durationMs,
+      fps,
+      plan,
+      // The warp storyboard, resolved the same way the production dispatch
+      // resolves it: a dynamic import of the warpCompose chunk.
+      storyboard: (await R.loadWarp()).WARP_STORYBOARD,
+    });
+    const buf = new Uint8Array(await res.blob.arrayBuffer());
+    let bin = '';
+    const CH = 0x8000;
+    for (let i = 0; i < buf.length; i += CH) bin += String.fromCharCode(...buf.subarray(i, i + CH));
+    return {
+      mime: res.blob.type,
+      size: res.blob.size,
+      frameCount: res.frameCount,
+      expectedFrames: Math.round((durationMs / 1000) * fps),
+      width: res.width,
+      height: res.height,
+      engine: res.engine,
+      colrPatched: res.colrPatched,
+      bytes: btoa(bin),
+    } as const;
+  });
+
+  console.log('WARP OFFLINE RENDER:', JSON.stringify({ ...out, bytes: undefined }));
+  expect('error' in out ? out.error : null).toBeNull();
+  if ('error' in out) return;
+
+  expect(out.frameCount).toBe(out.expectedFrames);
+  expect(out.engine).toBe('webcodecs');
+  expect(out.width).toBe(1080);
+  expect(out.height).toBe(1920);
+  expect(out.size).toBeGreaterThan(10_000);
+
+  mkdirSync(OUT_DIR, { recursive: true });
+  const file = resolve(OUT_DIR, `warp-offline.${out.mime.includes('mp4') ? 'mp4' : 'webm'}`);
+  writeFileSync(file, Buffer.from(out.bytes, 'base64'));
+
+  // Same permanent assertion as the miniature. If the warp path ever grew its
+  // own encoder this is where it would show up as BT.601.
+  if (out.mime.includes('mp4')) {
+    const probe = execFileSync(
+      FFPROBE,
+      ['-v', 'error', '-select_streams', 'v', '-show_entries',
+       'stream=color_primaries,color_transfer,color_space', '-of', 'csv=p=0', file],
+      { encoding: 'utf8' },
+    ).trim();
+    console.log('WARP COLOUR TAGS:', probe);
     const [primaries, transfer, matrix] = probe.split(',').map((s) => s.trim());
     expect(primaries, 'color_primaries').toBe('bt709');
     expect(transfer, 'color_transfer').toBe('bt709');
