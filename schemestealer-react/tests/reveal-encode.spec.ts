@@ -153,11 +153,17 @@ test('warp-cast offline render: same encoder, exact frame count, BT.709', async 
     const O = (window as any).__revealOfflineDebug;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const scan = (window as any).__seedScan;
-    if (!O || !scan) return { error: `offlineHook=${!!O} scan=${!!scan}` } as const;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const W = (window as any).__warpDebug;
+    if (!O || !scan || !W) return { error: `offlineHook=${!!O} scan=${!!scan} warp=${!!W}` } as const;
     const plan = await O.planOfflineRender(1080, 1920);
     if (!plan) return { error: 'no encodable codec in this browser' } as const;
 
-    const durationMs = 2000;
+    // NO durationMs on purpose. Passing one made the requested length and the
+    // storyboard's chosen length agree, which is exactly what hid a shipped bug:
+    // the warp-cast runs 14 s, the frame loop used the requested 11 s, and the
+    // export came out with an 11.000 s video track against a 14.016 s audio
+    // track -- the payoff hold and the whole loop dissolve missing.
     const fps = 30;
     const res = await O.renderRevealOffline({
       imageUrl: scan.imageUrl,
@@ -167,7 +173,6 @@ test('warp-cast offline render: same encoder, exact frame count, BT.709', async 
       skin: 'warp',
       captionPreset: 'colours',
       mode: 'inspiration',
-      durationMs,
       fps,
       plan,
       // The warp storyboard, resolved the same way the production dispatch
@@ -182,7 +187,9 @@ test('warp-cast offline render: same encoder, exact frame count, BT.709', async 
       mime: res.blob.type,
       size: res.blob.size,
       frameCount: res.frameCount,
-      expectedFrames: Math.round((durationMs / 1000) * fps),
+      durationMs: res.durationMs,
+      expectedFrames: Math.round((res.durationMs / 1000) * fps),
+      warpDurationMs: W.WARP_DURATION_MS,
       width: res.width,
       height: res.height,
       engine: res.engine,
@@ -195,7 +202,12 @@ test('warp-cast offline render: same encoder, exact frame count, BT.709', async 
   expect('error' in out ? out.error : null).toBeNull();
   if ('error' in out) return;
 
+  // Intent: the VIDEO must run to the storyboard's own length, not to the
+  // length the caller happened to ask for. A shipped warp export had an
+  // 11.000 s video track against a 14.016 s audio track.
+  expect(out.durationMs, 'render must adopt the storyboard duration').toBe(out.warpDurationMs);
   expect(out.frameCount).toBe(out.expectedFrames);
+  expect(out.frameCount, 'frames for a 14 s clip at 30 fps').toBe(420);
   expect(out.engine).toBe('webcodecs');
   expect(out.width).toBe(1080);
   expect(out.height).toBe(1920);
@@ -219,5 +231,21 @@ test('warp-cast offline render: same encoder, exact frame count, BT.709', async 
     expect(primaries, 'color_primaries').toBe('bt709');
     expect(transfer, 'color_transfer').toBe('bt709');
     expect(matrix, 'color_space').toBe('bt709');
+
+    // Intent: the muxed streams must agree with each other. Everything above is
+    // measured from the render's own report; this is measured from the FILE,
+    // which is what the shipped bug actually looked like.
+    const durs = execFileSync(
+      FFPROBE,
+      ['-v', 'error', '-show_entries', 'stream=duration', '-of', 'csv=p=0', file],
+      { encoding: 'utf8' },
+    )
+      .trim()
+      .split(/\s+/)
+      .map((d) => parseFloat(d))
+      .filter((d) => Number.isFinite(d));
+    console.log('WARP STREAM DURATIONS:', JSON.stringify(durs));
+    expect(durs.length, 'expected a video and an audio stream').toBeGreaterThanOrEqual(2);
+    expect(Math.abs(durs[0] - durs[1]), 'video and audio tracks must be the same length').toBeLessThan(0.2);
   }
 });

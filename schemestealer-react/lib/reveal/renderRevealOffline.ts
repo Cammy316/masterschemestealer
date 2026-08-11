@@ -159,7 +159,7 @@ export async function renderRevealOffline(
   },
 ): Promise<RenderRevealResult> {
   const storyboard = opts.storyboard ?? MINI_STORYBOARD;
-  const durationMs = opts.durationMs ?? DEFAULT_DURATION_MS;
+  const requestedMs = opts.durationMs ?? DEFAULT_DURATION_MS;
   const fps = opts.fps ?? 30;
   const outputScale = opts.outputScale ?? 1;
   const { width, height } = outputSize(outputScale);
@@ -167,7 +167,16 @@ export async function renderRevealOffline(
   // Fonts must be loaded or canvas text falls back to a system face.
   await (document.fonts?.ready ?? Promise.resolve());
 
-  const spec = storyboard.buildSpec(opts, durationMs);
+  const spec = storyboard.buildSpec(opts, requestedMs);
+  // The SPEC is authoritative for length from here, because a storyboard may run
+  // to its own: the warp-cast is 14 s where the miniature is 11 s.
+  //
+  // This is not defensive tidying — it is a shipped bug. The audio bed already
+  // rendered to spec.durationMs while the frame loop used the REQUESTED value,
+  // so a warp export came out with an 11.000 s video track against a 14.016 s
+  // audio track: the payoff hold and the entire loop dissolve were never
+  // rendered, and three seconds of sound played over a dead frame.
+  const durationMs = spec.durationMs;
   const res = await storyboard.prepare(opts, spec, outputScale);
 
   const canvas = document.createElement('canvas');

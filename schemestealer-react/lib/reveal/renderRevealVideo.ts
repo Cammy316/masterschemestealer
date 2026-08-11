@@ -166,7 +166,7 @@ export async function recordRevealRealtime(
   // Deliberately loud: a device export attaching this log is the diagnostic.
   console.info('[pict-cast] recording as', mime, 'support map:', mimeSupport);
 
-  const durationMs = opts.durationMs ?? DEFAULT_DURATION_MS;
+  const requestedMs = opts.durationMs ?? DEFAULT_DURATION_MS;
   const fps = opts.fps ?? FALLBACK_FPS;
   const outputScale = FALLBACK_OUTPUT_SCALE;
   const phys = outputSize(outputScale);
@@ -174,7 +174,9 @@ export async function recordRevealRealtime(
   // Fonts must be loaded or canvas text falls back to a system face.
   await (document.fonts?.ready ?? Promise.resolve());
 
-  const spec = storyboard.buildSpec(opts, durationMs);
+  const spec = storyboard.buildSpec(opts, requestedMs);
+  // Spec is authoritative for length — see the note in renderRevealOffline.
+  const durationMs = spec.durationMs;
   const res = await storyboard.prepare(opts, spec, outputScale);
 
   const canvas = document.createElement('canvas');

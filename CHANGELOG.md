@@ -2,6 +2,57 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-08-11 (Warp-cast: the video was 3 seconds short of its own soundtrack)
+
+Found by measuring a real device export (`Testimages/Jaws.mp4`) rather than
+watching it. It looked fine on a phone. It was not.
+
+```
+video stream   11.000 s   330 frames
+audio stream   14.016 s
+```
+
+The warp-cast runs 14 s. The export rendered **only its first 11 s of video**
+against a full 14 s of audio, so the payoff hold and the entire 0.6 s loop
+dissolve were never rendered — the clip stopped mid-settle with the camera
+halfway through its push, then held a dead frame for three seconds while the
+sound played on. The loop seam, which the whole storyboard is built around, did
+not exist in the file.
+
+### Cause
+Two sources of truth for duration. `renderRevealOffline` took its frame count
+from the REQUESTED length (`opts.durationMs ?? 11000`) while the audio bed
+rendered to `spec.durationMs` — and `WARP_STORYBOARD.buildSpec` deliberately
+returns a 14 s spec when handed the miniature's 11 s default. Both halves were
+behaving exactly as written.
+
+### Fixed
+The spec is authoritative for length once it is built, in both engines. A
+storyboard may run to its own duration; nothing downstream may disagree with it.
+
+### Why no test caught it
+The warp encode test passed `durationMs: 2000` explicitly to stay quick — which
+made the requested and chosen lengths agree, and that agreement is the entire
+bug. A test that supplies the value under test cannot see it.
+
+It now renders at the storyboard's own length and asserts three things: the
+render adopts the storyboard duration, the frame count is exactly 420, and — read
+back from the muxed FILE with ffprobe, not from our own report — the video and
+audio streams are within 0.2 s of each other.
+
+Verified by reverting the fix: the test fails with `Received: 11000` and 330
+frames, and passes with it restored.
+
+### On the export itself
+The poster format is working. `Jaws.mp4`: 1080×1920, BT.709, 6.34 Mbps, 11.1 MB,
+constant 30 fps — the palette grades dark navy through red and slate to near
+white, the poster is uncropped (it is portrait, so 4:5 barely bites), and the
+held frames carry no type at all.
+
+### Verification
+`vitest` 792 · `tsc` clean · `reveal-encode` 2/2 · `warp-export` 6/6 ·
+`reveal-export` 4/4.
+
 ## [Unreleased] - 2026-08-11 (Warp-Cast v4 — the poster card)
 
 Measured off the reference (`Testimages/Example.jpg`, 1064×808) rather than
