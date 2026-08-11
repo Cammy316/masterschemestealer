@@ -2,6 +2,95 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-08-11 (Warp-Cast v1 — inspiration-tab shareable video)
+
+The inspiration tab can now export a shareable clip. It could not before for a
+structural reason, not a missing feature: inspiration scans return colours and
+full per-brand recipes but **no segmentation masks**, and the miniature
+storyboard is mask-gated end to end (region layers, rim layers, leader lines
+anchored to mask bounds).
+
+### Added
+- **`lib/reveal/revealStoryboard.ts`** — `RevealStoryboard { mode, buildSpec,
+  prepare, composeAt, audioSchedule? }`. Both engines take one, defaulting to the
+  miniature bundle, so the encode path (frame pacing, BT.709 tagging, the `colr`
+  byte patch, the loudness chain, encoder backpressure, abort handling) has
+  exactly ONE implementation and cannot drift between modes. A second copy of the
+  encoder would have meant a second place for the colr bug to return.
+- **`lib/reveal/warpCompose.ts`** — the warp-cast. Proof-first, same phase table:
+  photo with its matched paints already stamped → smash to a warp-veiled
+  desaturation → commune sweep → each colour torn out as an orb *from the place
+  it actually occurs in the image* → the bind → a wall pairing every colour with
+  its closest paint. Each wall row carries its own ΔE pill — more ΔE honesty than
+  the miniature card, which shows one badge for the base step; here every row is a
+  separate claim, so every row is measured.
+- **`lib/reveal/warpOrigins.ts`** — `scanColourOrigins`, summed-area tables over a
+  200 px copy. Plain squared-RGB distance, deliberately: this is "which part of
+  the picture is most this colour", not a perceptual-difference question, and
+  CIEDE2000 stays reserved for paint matching where it is load-bearing. Separation
+  suppression is a PREFERENCE, not a constraint — when a picture genuinely has one
+  region of a colour, inventing a second location elsewhere would be a lie.
+- **`lib/reveal/warpAudio.ts`** — detuned 55 Hz drone pair with offset LFOs, airy
+  whooshes, inharmonic glass. No cogitator clacks. Passes the same six gates.
+- **`lib/reveal/revealTheme.ts`** — canvas-side single source of truth for skin
+  colours.
+- **`lib/reveal/revealLayout.ts`** — `wallRowH` / `wallRowRect` / `wallRowCount`.
+- Inspiration caption variant, `mode` on both analytics events, and
+  `tests/warp-export.spec.ts` (+ `seedInspirationScan`, + a warp encode test).
+
+### Fixed
+- **Warp exports drew IMPERIAL GREEN scanlines across the image.** The scanline in
+  `buildBaseLayer` had no skin parameter and painted `rgba(0,255,65,0.03)`
+  unconditionally. Never caught because no warp export had ever been rendered.
+- **Every warp orb rim rendered green regardless of its colour.** `labelTint`
+  returned `rgb(...)`, which `hexToRgba` cannot parse, so it fell through to the
+  imperial-green fallback. `labelTint` now returns `#rrggbb` and the format is
+  covered by a test that says why it is load-bearing. Found by looking at a
+  rendered frame, not by a test.
+- **Frame 0 cropped the photo.** The camera opens at the hero punch (~1.545×) and
+  a 1000 px box scaled past the frame edge, shearing the outer colour patches off
+  both sides. For a miniature that punch is deliberate; for an inspiration photo
+  the whole composition IS the subject, and frame 0 is also the loop target, so
+  the crop was the frame seen twice per play. Also found by eye — the loop-seam,
+  anti-freeze and safe-area gates all passed on the cropped version, because none
+  of them knows what the image is meant to show.
+- Dead `ShareButton` import on the inspiration results page.
+
+### Changed
+- Six wall rows do not fit the miniature's four fixed rows (6×74+5×10 = 494 px in
+  a 366 px block). The ROWS flex, not the image — the model/image must stay ≥40%
+  of frame height, because a shipped export once let it fall to 29.6% and the clip
+  read as an advert for us rather than the photo the poster chose.
+- Wall rows land in **pairs**. Six single beats in the outro window is a 180 ms
+  cadence that cannot clear the cipher's 180 ms burst plus its 80 ms readable
+  tail; `ceil(n/2)` gives ~359 ms, which does. Mini beats are bit-identical.
+- Export gate is mode-aware: miniature needs masks, inspiration needs a matched
+  paint to bind to.
+
+### Measured (warp bed, all six gates)
+| gate | value | threshold |
+|---|---|---|
+| bed energy < 250 Hz | 99.9% | > 60% |
+| bed energy > 3 kHz | 9.1e-9 | < 10% |
+| HF within ±60 ms of a beat | 88.5% | > 65% (windows cover 13.4% of runtime) |
+| integrated loudness | −14.52 LUFS | −14 ±1 |
+| true peak | −1.33 dBFS | < −1 |
+| crest factor | 12.32 dB | > 12 |
+
+The first warp mix measured −10.2 LUFS at 5.8 dB crest: a sine drone is
+inherently flat-crested and pins RMS up where brown noise does not. Cutting the
+sustained level and letting peaky transients carry the loudness resolved it.
+
+### Verification
+`vitest` 788 · `pytest` 670 passed 1 skipped · `next build` exit 0 ·
+`reveal-export` 4/4 · `warp-export` 5/5 · `reveal-encode` 2/2, both modes
+`bt709,bt709,bt709`, warp `colrPatched: 1`.
+
+### Still unverified
+No warp clip has been exported on a real device. Frame pacing, file size against
+a full-photo background (the miniature's black field compresses far better) and
+the 52 px wall rows at phone size all need a device export to judge.
+
 ## [Unreleased] - 2026-08-08 (Pict-Cast v5.3 — corrective pass)
 
 Driven by measuring a real device export (`MobileV6.mp4`, exported 14 hours after
