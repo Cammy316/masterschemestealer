@@ -417,16 +417,16 @@ export function createMaster(
   presence.type = 'peaking';
   presence.frequency.value = 1400;
   presence.Q.value = 0.9;
-  presence.gain.value = 8;
+  presence.gain.value = 9.5;
 
   const airShelf = ctx.createBiquadFilter();
   airShelf.type = 'highshelf';
   airShelf.frequency.value = 2600;
-  airShelf.gain.value = 5;
+  airShelf.gain.value = 5.5;
 
   const glue = ctx.createDynamicsCompressor();
-  glue.threshold.value = -18;
-  glue.ratio.value = 2.4;
+  glue.threshold.value = -11;
+  glue.ratio.value = 1.9;
   glue.attack.value = 0.012;
   glue.release.value = 0.22;
   glue.knee.value = 8;

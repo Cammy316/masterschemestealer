@@ -1,19 +1,32 @@
 /**
- * Synthesised audio bed for the Engine A export.
+ * The miniature export's soundtrack — a ritual machine.
  *
- * captureStream() is video-only, so we render a cogitator soundscape via
- * WebAudio into a MediaStreamAudioDestinationNode and hand its track to the
- * MediaRecorder alongside the canvas track. Synthesised = tiny, royalty-free by
- * construction, and scheduled to the SAME beats as the visuals.
+ * Synthesised, never sampled or licensed. That is deliberate: our users
+ * redistribute the exported file, and a licensed track covers US rather than the
+ * painter who posts it, whose video can still take a Content ID claim. Audio we
+ * generate is ours to grant unconditionally — and the platforms now weight
+ * original audio above borrowed sound anyway.
  *
- * Level: the first cut measured −40 dBFS RMS, which is inaudible once a platform
- * normalises toward ~−14 LUFS — and a silent clip is demoted outright. The mix
- * now sits loud enough to read on a phone speaker and runs through a soft limiter
- * so the transients can't clip, while still being a BED that a voiceover can sit
- * on top of in-platform.
+ * Voicing lives here; the machinery (reverb, buses, ducking, struck-metal
+ * timbres, the key) lives in revealAudioEngine and is shared with the warp-cast.
  */
 
 import { PHASE_FRACTIONS, regionRevealFraction, type RevealSpec } from './revealTimeline';
+import {
+  SCALES,
+  air,
+  createBus,
+  createMaster,
+  createReverb,
+  duckAt,
+  mulberry32,
+  noiseBuffer,
+  noteHz,
+  pad,
+  scaleHz,
+  struck,
+  sub,
+} from './revealAudioEngine';
 
 export interface RevealAudioBed {
   stream: MediaStream;
@@ -76,6 +89,21 @@ export function revealAudioBeats(spec: RevealSpec): number[] {
  * in an OfflineAudioContext and its loudness measured — the first cut shipped at
  * −40 dBFS RMS precisely because nothing ever checked.
  */
+/**
+ * The miniature soundtrack: a ritual machine.
+ *
+ * A low choral drone under servo whirs and relay clacks, resolving to a struck
+ * bell at the slam. The previous version was a flat list of sine pings and
+ * band-passed noise wired straight to a limiter — dry, mono, and pitched on
+ * arbitrary Hz values, so nothing agreed with anything. Everything here is in D
+ * minor and everything sits in a room.
+ *
+ * `bedOnly` renders ONLY the always-on layers, so a test can measure the
+ * sustained bed's spectrum on its own. The chord pad is deliberately NOT part of
+ * it: it fades in and out at phase boundaries, so it is scheduled material, and
+ * counting it as bed would both misdescribe it and drag mid-band energy into a
+ * gate that exists to prove the sustained layer is a low rumble.
+ */
 export function scheduleRevealAudio(
   ctx: BaseAudioContext,
   output: AudioNode,
@@ -84,312 +112,212 @@ export function scheduleRevealAudio(
   opts: RevealAudioOptions = {},
 ): void {
   const bedOnly = opts.layers === 'bed';
-  const master = ctx.createGain();
-  master.gain.value = 2.55;
-
-  // Soft-knee limiter: tanh curve keeps the snap hit and chimes from clipping
-  // now that the bed runs hot.
-  const limiter = ctx.createWaveShaper();
-  const curve = new Float32Array(1024);
-  for (let i = 0; i < curve.length; i++) {
-    const x = (i / (curve.length - 1)) * 2 - 1;
-    curve[i] = Math.tanh(x * 1.6) / Math.tanh(1.6);
-  }
-  limiter.curve = curve;
-  limiter.oversample = '4x';
-  // Post-limiter trim. Platforms normalise to about −14 LUFS, so they ADD gain;
-  // shipping at −0.5 dBFS peak meant they clipped it on their own servers.
-  // This guarantees true-peak headroom no matter how hard the limiter is driven.
-  const trim = ctx.createGain();
-  // 0.72 -> 0.745 after SLAM_END moved for the cipher cadence (C6): shifting the
-  // outro beats moved integrated loudness to -15.01, a hair outside the window.
-  // Trim is the right lever — it raises loudness and peak together and leaves
-  // crest factor untouched, and crest is the tightest of the three gates.
-  trim.gain.value = 0.745;
-
-  // Master EQ, and the reason it exists: a rumble bed and a −14 LUFS target pull
-  // in opposite directions. BS.1770 K-weighting discounts the sub band hard, so
-  // the rebuilt mix measured −17.2 LUFS while ALREADY peaking at −1.9 dBFS —
-  // there was no gain left to give it. Loudness has to come from the band the
-  // meter (and a phone speaker) actually weight, not from more rumble.
-  //
-  // The high-pass removes sub-50 Hz nothing reproduces; it was consuming
-  // headroom and returning neither loudness nor audible bass. The presence bell
-  // adds energy where K-weighting counts it in full. Both sit BEFORE the limiter
-  // so the limiter acts on the final balance rather than fighting it.
-  const hp = ctx.createBiquadFilter();
-  hp.type = 'highpass';
-  hp.frequency.value = 70;
-  hp.Q.value = 0.7;
-  const presence = ctx.createBiquadFilter();
-  presence.type = 'peaking';
-  presence.frequency.value = 1400;
-  presence.Q.value = 0.9;
-  presence.gain.value = 10;
-  // High shelf on top of the bell. K-weighting applies a +4 dB shelf above
-  // ~1.5 kHz, so this is the most loudness-per-dB-of-peak band available — and
-  // the only continuous layer is a 220 Hz-lowpassed hum, so it lifts transients
-  // and nothing else.
-  const airShelf = ctx.createBiquadFilter();
-  airShelf.type = 'highshelf';
-  airShelf.frequency.value = 2600;
-  airShelf.gain.value = 6;
-  master.connect(hp).connect(presence).connect(airShelf).connect(limiter).connect(trim).connect(output);
-
   const durSec = spec.durationMs / 1000;
-
-  /**
-   * Noise source counter. Every buffer gets its own deterministic stream, so two
-   * layers never correlate into an audible comb, and the SAME export always
-   * produces the same file.
-   */
-  let noiseSeed = 0x9e3779b9;
-
-  function noiseBuffer(seconds: number, brown: boolean): AudioBuffer {
-    const len = Math.max(1, Math.floor(ctx.sampleRate * seconds));
-    const buf = ctx.createBuffer(1, len, ctx.sampleRate);
-    const data = buf.getChannelData(0);
-    // mulberry32, not Math.random(). The visual timeline has been deterministic
-    // from the start; the audio quietly was not, so the measured loudness, peak
-    // and crest factor drifted a little on every render — and the crest gate
-    // sits close enough to its threshold that random noise alone could flip it.
-    // A gate that fails at random teaches the team to re-run tests until green,
-    // which is worse than having no gate.
-    let s = (noiseSeed = (noiseSeed + 0x6d2b79f5) | 0);
-    const rnd = () => {
-      s = (s + 0x6d2b79f5) | 0;
-      let t = Math.imul(s ^ (s >>> 15), 1 | s);
-      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
-    let last = 0;
-    for (let i = 0; i < len; i++) {
-      const white = rnd() * 2 - 1;
-      if (brown) {
-        last = (last + 0.02 * white) / 1.02;
-        data[i] = last * 3.5;
-      } else {
-        data[i] = white;
-      }
-    }
-    return buf;
-  }
-
-  /** Pitched hit with a fast attack and exponential tail. */
-  function ping(freq: number, at: number, dur: number, peak: number, type: OscillatorType = 'sine'): void {
-    if (bedOnly) return;
-    const o = ctx.createOscillator();
-    o.type = type;
-    o.frequency.value = freq;
-    const g = ctx.createGain();
-    g.gain.setValueAtTime(0.0001, at);
-    g.gain.linearRampToValueAtTime(peak, at + 0.012);
-    g.gain.exponentialRampToValueAtTime(0.0001, at + dur);
-    o.connect(g).connect(master);
-    o.start(at);
-    o.stop(at + dur + 0.05);
-  }
-
-  /** Filtered noise burst — the percussive half of a transient. */
-  function burst(at: number, dur: number, peak: number, freq: number, q = 1): void {
-    if (bedOnly) return;
-    const src = ctx.createBufferSource();
-    src.buffer = noiseBuffer(dur + 0.1, false);
-    const bp = ctx.createBiquadFilter();
-    bp.type = 'bandpass';
-    bp.frequency.value = freq;
-    bp.Q.value = q;
-    const g = ctx.createGain();
-    g.gain.setValueAtTime(0.0001, at);
-    g.gain.linearRampToValueAtTime(peak, at + 0.008);
-    g.gain.exponentialRampToValueAtTime(0.0001, at + dur);
-    src.connect(bp).connect(g).connect(master);
-    src.start(at);
-    src.stop(at + dur + 0.05);
-  }
-
   const at = (fraction: number) => t0 + fraction * durSec;
+  const rnd = mulberry32(0x9e3779b9);
+  const scale = SCALES.imperial;
 
-  /**
-   * The weighted hit: a downward sine sweep plus a short filtered-noise crack.
-   *
-   * This is the shape that replaced the continuous hiss. The sweep from 120 Hz
-   * to 45 Hz gives a hit physical WEIGHT (the ear reads a falling pitch as mass
-   * landing), and the ~40 ms noise crack gives it the high-frequency edge that a
-   * phone speaker can actually reproduce. Highs therefore arrive AT the beat and
-   * nowhere else, instead of being smeared across the whole clip by a hiss bed.
-   */
-  function impact(at: number, weight: number, crackHz = 3200): void {
-    if (bedOnly) return;
-    const o = ctx.createOscillator();
-    o.type = 'sine';
-    o.frequency.setValueAtTime(130, at);
-    o.frequency.exponentialRampToValueAtTime(58, at + 0.18);
-    const g = ctx.createGain();
-    g.gain.setValueAtTime(0.0001, at);
-    g.gain.linearRampToValueAtTime(weight, at + 0.008);
-    g.gain.exponentialRampToValueAtTime(0.0001, at + 0.32);
-    o.connect(g).connect(master);
-    o.start(at);
-    o.stop(at + 0.4);
-    burst(at, 0.04, weight * 0.85, crackHz, 1.4);
-  }
+  const master = createMaster(ctx, output, { gain: 1.33, trim: 0.83 });
 
-  // Cogitator hum: brown noise → lowpass drone, slowly breathing via an LFO.
-  //
-  // Back up to a real level. v5.2 cut this to 0.05 and added a continuous
-  // 2–7 kHz hiss on top, chasing a "≥15% of energy above 1 kHz" gate — the gate
-  // measured a PROXY (spectral balance) instead of the property it wanted
-  // (audible on a phone), and the cheapest way to satisfy it was to make the
-  // clip sound like tape noise. The hum is the bed again; the highs now come
-  // from `impact`, on the beat.
-  const noise = ctx.createBufferSource();
-  noise.buffer = noiseBuffer(Math.max(2, durSec), true);
-  noise.loop = true;
-  const lp = ctx.createBiquadFilter();
-  lp.type = 'lowpass';
-  lp.frequency.value = 220;
-  const humGain = ctx.createGain();
-  humGain.gain.value = 0.095;
-  noise.connect(lp).connect(humGain).connect(master);
-  const lfo = ctx.createOscillator();
-  lfo.frequency.value = 0.15;
-  const lfoGain = ctx.createGain();
-  lfoGain.gain.value = 0.1;
-  lfo.connect(lfoGain).connect(humGain.gain);
-  noise.start(t0);
-  lfo.start(t0);
-  noise.stop(t0 + durSec + 0.3);
-  lfo.stop(t0 + durSec + 0.3);
-
-  // Frame 0 needs a transient or the clip opens on silence — a low thud under
-  // the proof stamp, then a charge rising into the smash cut.
-  impact(t0, 0.34);
-  ping(58, t0, 0.9, 0.5);
-  const snapAt = at(PHASE_FRACTIONS.proofEnd);
-  if (!bedOnly) {
-    const charge = ctx.createOscillator();
-    charge.type = 'sawtooth';
-    charge.frequency.setValueAtTime(70, t0);
-    charge.frequency.exponentialRampToValueAtTime(520, snapAt);
-    const chargeGain = ctx.createGain();
-    chargeGain.gain.setValueAtTime(0.0001, t0);
-    chargeGain.gain.exponentialRampToValueAtTime(0.16, snapAt);
-    chargeGain.gain.exponentialRampToValueAtTime(0.0001, snapAt + 0.12);
-    const chargeLp = ctx.createBiquadFilter();
-    chargeLp.type = 'lowpass';
-    chargeLp.frequency.value = 900;
-    charge.connect(chargeLp).connect(chargeGain).connect(master);
-    charge.start(t0);
-    charge.stop(snapAt + 0.2);
-  }
-
-  // The snap to greyscale — the moment the scroll stops. Hit it hard.
-  impact(snapAt, 0.62, 4200);
-  burst(snapAt, 0.28, 0.4, 1800, 0.7);
-  ping(92, snapAt, 0.55, 0.5);
-
-  // Sweep whine tracking the scan pass.
-  const sweepStart = at(PHASE_FRACTIONS.smashEnd);
-  const sweepEnd = at(PHASE_FRACTIONS.sweepEnd);
-  if (!bedOnly) {
-    const whine = ctx.createOscillator();
-    whine.type = 'sine';
-    whine.frequency.setValueAtTime(420, sweepStart);
-    whine.frequency.linearRampToValueAtTime(1300, sweepEnd);
-    const wg = ctx.createGain();
-    wg.gain.setValueAtTime(0.0001, sweepStart);
-    wg.gain.linearRampToValueAtTime(0.26, sweepStart + 0.15);
-    wg.gain.exponentialRampToValueAtTime(0.0001, sweepEnd);
-    whine.connect(wg).connect(master);
-    whine.start(sweepStart);
-    whine.stop(sweepEnd + 0.1);
-  }
-
-  // Per-region reveal chimes (pentatonic so any count sounds musical), on the
-  // same accelerating schedule the blooms use. The LAST region is the dominant
-  // colour igniting — it lands as a chord with a low thump, not another tick.
-  // Per-region hits, on the same accelerating schedule the blooms use. These are
-  // MECHANICAL CLACKS, not chimes: a cogitator tearing data off a model should
-  // sound industrial, and clean sine pips read as generic UI. Each strike is a
-  // tight noise crack plus a low body, with only a trace of pitch so successive
-  // hits still climb. They sit BELOW the cascade — the payoff is the loudest
-  // passage and the mid-reveal used to peak over it.
-  const n = spec.regions.length;
-  const pent = [523.25, 587.33, 659.25, 783.99, 880.0];
-  spec.regions.forEach((_, i) => {
-    const hit = at(regionRevealFraction(i, n));
-    impact(hit, 0.3, 3600); // weight + the HF crack that carries on a phone
-    burst(hit, 0.05, 0.3, 1150, 2.2); // the clack itself
-    burst(hit + 0.012, 0.04, 0.16, 3200, 1.6); // bright edge, a hair late
-    ping(96 + i * 5, hit, 0.14, 0.3); // solid low body
-    ping(pent[i % pent.length], hit, 0.1, 0.07); // trace of pitch, climbing
-    if (i === n - 1 && n > 1) {
-      ping(65.4, hit, 0.7, 0.4); // low thump — the finale beat
-    }
+  // A dark hall. `tone` is low on purpose: a bright tail on a cogitator reads as
+  // a cathedral rather than a machine room, and bright sustained content is also
+  // what the HF-on-beat gate is watching for.
+  const hall = createReverb(ctx, master.input, {
+    seconds: 2.0,
+    decay: 4.6,
+    tone: 0.1,
+    preDelay: 0.022,
+    seed: 0x11c0,
   });
 
-  // The SLAM: the model resolving to full colour is the biggest visual beat in
-  // the clip and it had nothing under it — a measured −25 dBFS hole sat exactly
-  // there, right before the payoff.
-  const slamAt = at(PHASE_FRACTIONS.revealEnd);
-  impact(slamAt, 0.7, 5200); // the heaviest hit in the clip
-  ping(49, slamAt, 1.2, 0.6); // sub impact
-  burst(slamAt, 0.5, 0.34, 420, 0.5); // body
-  burst(slamAt + 0.02, 0.35, 0.2, 5200, 0.8); // air
+  const bedBus = createBus(ctx, master.input, { gain: 1, send: { to: hall.input, amount: 0.07 } });
+  const hitBus = createBus(ctx, master.input, {
+    gain: 1,
+    compress: { threshold: -20, ratio: 3.2, attack: 0.004, release: 0.18 },
+    send: { to: hall.input, amount: 0.26 },
+  });
+  const padBus = createBus(ctx, master.input, { gain: 1, send: { to: hall.input, amount: 0.22 } });
 
-  // The recipe cascade is the money shot, so it gets the biggest stamp and a
-  // rising bed underneath it. The previous mix troughed at −24.6 dBFS exactly
-  // here while peaking mid-reveal — the emotional peak was the quietest moment.
-  const outroAt = at(PHASE_FRACTIONS.slamEnd);
-  const recipeEndAt = at(PHASE_FRACTIONS.recipeEnd);
-  impact(outroAt, 0.6, 4600);
-  ping(196, outroAt, 1.1, 0.55);
-  ping(392, outroAt + 0.05, 0.9, 0.3);
-  ping(659.25, outroAt + 0.1, 0.8, 0.22);
+  // ---- the sustained bed -----------------------------------------------------
+  // Brown noise under a hard lowpass, plus a dark drone on the tonic. Both stay
+  // below 250 Hz so the bed remains a rumble by measurement, not just by intent.
+  const floor = ctx.createBufferSource();
+  floor.buffer = noiseBuffer(ctx, Math.max(2, durSec), 'brown', rnd);
+  floor.loop = true;
+  const floorLp = ctx.createBiquadFilter();
+  floorLp.type = 'lowpass';
+  floorLp.frequency.value = 200;
+  const floorGain = ctx.createGain();
+  floorGain.gain.value = 0.020;
+  floor.connect(floorLp).connect(floorGain).connect(bedBus.input);
+  floor.start(t0);
+  floor.stop(t0 + durSec + 0.3);
 
-  if (!bedOnly) {
-    const bed = ctx.createBufferSource();
-    bed.buffer = noiseBuffer(Math.max(0.5, recipeEndAt - outroAt) + 0.4, true);
-    const bedFilter = ctx.createBiquadFilter();
-    bedFilter.type = 'lowpass';
-    bedFilter.frequency.setValueAtTime(180, outroAt);
-    bedFilter.frequency.linearRampToValueAtTime(900, recipeEndAt);
-    const bedGain = ctx.createGain();
-    bedGain.gain.setValueAtTime(0.0001, outroAt);
-    bedGain.gain.linearRampToValueAtTime(0.42, recipeEndAt);
-    bedGain.gain.linearRampToValueAtTime(0.0001, recipeEndAt + 0.35);
-    bed.connect(bedFilter).connect(bedGain).connect(master);
-    bed.start(outroAt);
-    bed.stop(recipeEndAt + 0.5);
+  for (const cents of [-9, 9]) {
+    const o = ctx.createOscillator();
+    o.type = 'triangle';
+    o.frequency.value = scale.root;
+    o.detune.value = cents;
+    const g = ctx.createGain();
+    g.gain.value = 0.0118;
+    const lp = ctx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 240;
+    // Slow, offset breathing, so the two never pulse in lockstep.
+    const lfo = ctx.createOscillator();
+    lfo.frequency.value = cents < 0 ? 0.13 : 0.19;
+    const lfoGain = ctx.createGain();
+    lfoGain.gain.value = 0.02;
+    lfo.connect(lfoGain).connect(g.gain);
+    o.connect(lp).connect(g).connect(bedBus.input);
+    o.start(t0);
+    lfo.start(t0);
+    o.stop(t0 + durSec + 0.3);
+    lfo.stop(t0 + durSec + 0.3);
   }
 
-  // One stamp per chip as it lands, so the cascade is felt as well as read.
+  // The bed dips under every hit so the transients cut without the mix getting
+  // louder. Scheduled, not sidechained — every beat is known in advance.
+  if (!bedOnly) {
+    duckAt(
+      bedBus.gain.gain,
+      revealAudioBeats(spec).map((b) => t0 + b),
+      1,
+      { depth: 0.4, release: 0.3 },
+    );
+  }
+
+  if (bedOnly) return;
+
+  // ---- harmony ---------------------------------------------------------------
+  // Three chords across the three acts: Dm while the machine reads, C as it
+  // resolves, F under the payoff. Low and filtered — this is a bed to sit under
+  // the hits, not a melody competing with them.
+  const chordAt = [t0, at(PHASE_FRACTIONS.revealEnd), at(PHASE_FRACTIONS.slamEnd)];
+  const chordEnd = [at(PHASE_FRACTIONS.revealEnd) + 0.6, at(PHASE_FRACTIONS.slamEnd) + 0.6, t0 + durSec + 0.4];
+  scale.progression.forEach((semi, i) => {
+    const root = noteHz(scale.root, semi);
+    pad(ctx, padBus.input, {
+      freqs: [root, noteHz(root, 7), noteHz(root, 12)],
+      at: chordAt[i],
+      dur: Math.max(0.8, chordEnd[i] - chordAt[i]),
+      gain: 0.0108,
+      detune: 8,
+      cutoff: 900,
+      type: 'sawtooth',
+      fade: 0.7,
+    });
+  });
+
+  // ---- scheduled material ----------------------------------------------------
+  // The clip opens on the finished proof, so it opens on a bell rather than an
+  // impact: something already awake.
+  struck(ctx, hitBus.input, { freq: scaleHz(scale, 0, 1), at: t0, gain: 0.4, decay: 2.2 });
+  sub(ctx, hitBus.input, { at: t0, gain: 0.46, fromHz: 130, toHz: 58, dur: 0.5 });
+
+  // Charge into the smash: a rising servo whine that stops dead.
+  const snapAt = at(PHASE_FRACTIONS.proofEnd);
+  const charge = ctx.createOscillator();
+  charge.type = 'sawtooth';
+  charge.frequency.setValueAtTime(70, t0);
+  charge.frequency.exponentialRampToValueAtTime(430, snapAt);
+  const chargeGain = ctx.createGain();
+  chargeGain.gain.setValueAtTime(0.0001, t0);
+  chargeGain.gain.exponentialRampToValueAtTime(0.1, snapAt);
+  chargeGain.gain.exponentialRampToValueAtTime(0.0001, snapAt + 0.1);
+  const chargeLp = ctx.createBiquadFilter();
+  chargeLp.type = 'lowpass';
+  chargeLp.frequency.value = 800;
+  charge.connect(chargeLp).connect(chargeGain).connect(hitBus.input);
+  charge.start(t0);
+  charge.stop(snapAt + 0.2);
+
+  // The smash: metal on metal. Short decay and a tight partial set — a clank,
+  // not a bell.
+  struck(ctx, hitBus.input, {
+    freq: scaleHz(scale, 2, 2),
+    at: snapAt,
+    gain: 0.46,
+    decay: 0.5,
+    partials: [1, 1.41, 2.13, 3.17, 4.51],
+    spread: 12,
+  });
+  sub(ctx, hitBus.input, { at: snapAt, gain: 0.8, fromHz: 150, toHz: 48, dur: 0.55 });
+  air(ctx, hitBus.input, { at: snapAt, dur: 0.3, gain: 0.42, fromHz: 5200, toHz: 900, rnd });
+
+  // Servo sweep across the scan pass.
+  const sweepStart = at(PHASE_FRACTIONS.smashEnd);
+  const sweepEnd = at(PHASE_FRACTIONS.sweepEnd);
+  const servo = ctx.createOscillator();
+  servo.type = 'sawtooth';
+  servo.frequency.setValueAtTime(scaleHz(scale, 0, 2), sweepStart);
+  servo.frequency.linearRampToValueAtTime(scaleHz(scale, 4, 2), sweepEnd);
+  const servoLp = ctx.createBiquadFilter();
+  servoLp.type = 'lowpass';
+  servoLp.frequency.value = 1500;
+  servoLp.Q.value = 6;
+  const servoGain = ctx.createGain();
+  servoGain.gain.setValueAtTime(0.0001, sweepStart);
+  servoGain.gain.linearRampToValueAtTime(0.075, sweepStart + 0.18);
+  servoGain.gain.exponentialRampToValueAtTime(0.0001, sweepEnd);
+  servo.connect(servoLp).connect(servoGain).connect(hitBus.input);
+  servo.start(sweepStart);
+  servo.stop(sweepEnd + 0.1);
+
+  // Each colour identified: a relay clack and a small bell, climbing the scale.
+  const n = spec.regions.length;
+  spec.regions.forEach((_, i) => {
+    const hit = at(regionRevealFraction(i, n));
+    air(ctx, hitBus.input, { at: hit, dur: 0.045, gain: 0.42, fromHz: 3400, toHz: 1500, q: 2.4, rnd });
+    struck(ctx, hitBus.input, {
+      freq: scaleHz(scale, i + 2, 2),
+      at: hit,
+      gain: 0.28,
+      decay: 0.85,
+      spread: 6,
+    });
+    sub(ctx, hitBus.input, { at: hit, gain: 0.3, fromHz: 120, toHz: 62, dur: 0.24 });
+  });
+
+  // The slam: the big bell. This one strike is most of the "sacred tech"
+  // character, so it gets the longest tail in the clip.
+  const slamAt = at(PHASE_FRACTIONS.revealEnd);
+  struck(ctx, hitBus.input, { freq: scaleHz(scale, 0, 1), at: slamAt, gain: 0.62, decay: 3.2 });
+  sub(ctx, hitBus.input, { at: slamAt, gain: 0.88, fromHz: 140, toHz: 44, dur: 0.9 });
+  air(ctx, hitBus.input, { at: slamAt, dur: 0.34, gain: 0.36, fromHz: 6000, toHz: 1100, rnd });
+
+  // Recipe cascade: one metallic tick per chip.
+  const outroAt = at(PHASE_FRACTIONS.slamEnd);
+  const recipeEndAt = at(PHASE_FRACTIONS.recipeEnd);
+  struck(ctx, hitBus.input, { freq: scaleHz(scale, 4, 1), at: outroAt, gain: 0.42, decay: 1.8 });
   const stepCount = Math.max(1, spec.recipe.length);
   for (let i = 0; i < stepCount; i++) {
     const chipAt = outroAt + ((recipeEndAt - outroAt) * 0.75 * i) / stepCount;
-    ping(147 * (1 + i * 0.18), chipAt, 0.45, 0.3);
-    burst(chipAt, 0.07, 0.12, 1400, 1.1);
-    burst(chipAt, 0.045, 0.16, 3800, 1.3); // HF edge, on the beat
+    struck(ctx, hitBus.input, {
+      freq: scaleHz(scale, i + 4, 2),
+      at: chipAt,
+      gain: 0.15,
+      decay: 0.5,
+      partials: [1, 2.04, 3.31],
+    });
+    air(ctx, hitBus.input, { at: chipAt, dur: 0.05, gain: 0.13, fromHz: 3000, toHz: 1600, q: 2, rnd });
   }
 
-  // Rising swell into the loop point, so the restart feels intended.
+  // Into the loop: a dark swell, so the restart feels intended rather than cut.
   const loopAt = at(PHASE_FRACTIONS.loopStart);
-  if (!bedOnly) {
-    const swell = ctx.createBufferSource();
-    swell.buffer = noiseBuffer(Math.max(0.6, durSec - (loopAt - t0)) + 0.4, false);
-    const swellFilter = ctx.createBiquadFilter();
-    swellFilter.type = 'lowpass';
-    swellFilter.frequency.setValueAtTime(300, loopAt - 0.6);
-    swellFilter.frequency.exponentialRampToValueAtTime(1600, t0 + durSec);
-    const swellGain = ctx.createGain();
-    swellGain.gain.setValueAtTime(0.0001, loopAt - 0.6);
-    swellGain.gain.linearRampToValueAtTime(0.3, t0 + durSec);
-    swellGain.gain.linearRampToValueAtTime(0.0001, t0 + durSec + 0.12);
-    swell.connect(swellFilter).connect(swellGain).connect(master);
-    swell.start(loopAt - 0.6);
-    swell.stop(t0 + durSec + 0.2);
-  }
+  const swell = ctx.createBufferSource();
+  swell.buffer = noiseBuffer(ctx, Math.max(0.8, durSec - (loopAt - t0)) + 0.4, 'white', rnd);
+  const swellLp = ctx.createBiquadFilter();
+  swellLp.type = 'lowpass';
+  swellLp.frequency.setValueAtTime(320, loopAt - 0.7);
+  swellLp.frequency.exponentialRampToValueAtTime(1500, t0 + durSec);
+  const swellGain = ctx.createGain();
+  swellGain.gain.setValueAtTime(0.0001, loopAt - 0.7);
+  swellGain.gain.linearRampToValueAtTime(0.2, t0 + durSec);
+  swellGain.gain.linearRampToValueAtTime(0.0001, t0 + durSec + 0.12);
+  swell.connect(swellLp).connect(swellGain).connect(hitBus.input);
+  swell.start(loopAt - 0.7);
+  swell.stop(t0 + durSec + 0.2);
 }
 
 export function createRevealAudioBed(spec: RevealSpec): RevealAudioBed {
