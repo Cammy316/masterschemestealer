@@ -108,6 +108,43 @@ export function recipeBlockHeight(): number {
   return recipeRowY(3) + CHIP_H - LAYOUT.recipeRows.y;
 }
 
+// ---- inspiration wall --------------------------------------------------------
+/**
+ * The warp-cast payoff is a WALL: up to six extracted colours, each paired with
+ * its single closest paint. The miniature's four fixed rows do not fit — six at
+ * `CHIP_H` plus gaps is 494 px into a 366 px block.
+ *
+ * Rather than shrink the image (it must stay ≥40% of frame height — that rule
+ * exists because a shipped export let it fall to 29.6% and the clip read as an
+ * advert for us rather than a photo the poster chose), the ROWS flex. Every row
+ * internal — swatch size, type size, pill height — derives from `wallRowH`, so
+ * there is one number to change if six rows prove too tight on a device.
+ */
+export const WALL_MAX_ROWS = 6;
+/** Below this a paint name is not readable at phone size; the wall caps its row
+ *  count instead of shrinking further. Asserted in the layout tests. */
+export const WALL_MIN_ROW_H = 48;
+
+/** Row height for an `n`-row wall, filling the recipe block exactly. */
+export function wallRowH(n: number): number {
+  const rows = Math.max(1, n);
+  return Math.min(CHIP_H, Math.floor((LAYOUT.recipeRows.h - (rows - 1) * CHIP_GAP) / rows));
+}
+
+/** How many rows a wall of `n` colours may actually draw. */
+export function wallRowCount(n: number): number {
+  let rows = Math.min(WALL_MAX_ROWS, Math.max(1, n));
+  while (rows > 1 && wallRowH(rows) < WALL_MIN_ROW_H) rows--;
+  return rows;
+}
+
+/** Rect of wall row `i` of `n`. Shares the recipe block's x and width, so it
+ *  inherits the symmetry and action-rail guarantees for free. */
+export function wallRowRect(i: number, n: number): Rect {
+  const h = wallRowH(n);
+  return { x: LAYOUT.recipeRows.x, y: LAYOUT.recipeRows.y + i * (h + CHIP_GAP), w: LAYOUT.recipeRows.w, h };
+}
+
 /**
  * Model artwork boxes. These deliberately EXCEED `SAFE_RECT` — the miniature is
  * the reason anyone posts the clip, so it gets the room, and the recipe scrim

@@ -11,6 +11,11 @@ import {
   modelHeightFraction,
   recipeRowY,
   recipeBlockHeight,
+  wallRowH,
+  wallRowRect,
+  wallRowCount,
+  WALL_MAX_ROWS,
+  WALL_MIN_ROW_H,
 } from '../reveal/revealLayout';
 
 describe('revealLayout — platform safe area', () => {
@@ -85,5 +90,55 @@ describe('revealLayout — platform safe area', () => {
   it('leaves no dead vertical band between the model and the recipe block', () => {
     const gap = LAYOUT.recipeHeading.y - (COMPACT_BOX.y + COMPACT_BOX.h);
     expect(gap, `dead band of ${gap}px above the recipe`).toBeLessThanOrEqual(120);
+  });
+});
+
+describe('revealLayout — inspiration wall', () => {
+  // Intent: the wall is the warp-cast's payoff, and it reuses the recipe block's
+  // x/width precisely so it inherits the symmetry and action-rail guarantees.
+  // If a future change gives it its own geometry, this catches the drift.
+  it('every wall row sits inside the safe area, for every row count', () => {
+    for (let n = 1; n <= WALL_MAX_ROWS; n++) {
+      for (let i = 0; i < n; i++) {
+        const r = wallRowRect(i, n);
+        expect(insideSafeArea(r), `row ${i}/${n} ${JSON.stringify(r)} escapes SAFE_RECT`).toBe(true);
+      }
+    }
+  });
+
+  // Intent: v5.3 made the whole layout symmetric about the frame centre after a
+  // shipped export sat 35 px off-axis. A new element that is not centred would
+  // reintroduce exactly that.
+  it('every wall row is centred on the frame axis', () => {
+    for (let n = 1; n <= WALL_MAX_ROWS; n++) {
+      const r = wallRowRect(0, n);
+      expect(r.x + r.w / 2, `row block off-axis at n=${n}`).toBe(540);
+    }
+  });
+
+  // Intent: rows must fill the block they are given without overflowing it —
+  // the last row landing past 1430 would put the final paint under the caption
+  // bar, which is the defect the safe area exists to prevent.
+  it('all rows fit the declared block with no overflow', () => {
+    const block = LAYOUT.recipeRows;
+    for (let n = 1; n <= WALL_MAX_ROWS; n++) {
+      const last = wallRowRect(n - 1, n);
+      expect(last.y + last.h, `n=${n} overflows the block`).toBeLessThanOrEqual(block.y + block.h);
+      expect(wallRowRect(0, n).y).toBe(block.y);
+    }
+  });
+
+  // Intent: the trade this whole derivation exists to make. Six rows must still
+  // be legible; if the arithmetic ever produces a row below the floor, the wall
+  // is required to drop a row rather than shrink the image below 40%.
+  it('six rows stay above the legibility floor', () => {
+    expect(wallRowH(WALL_MAX_ROWS)).toBeGreaterThanOrEqual(WALL_MIN_ROW_H);
+    expect(wallRowCount(6)).toBe(6);
+  });
+
+  it('never exceeds the miniature chip height, and caps at six rows', () => {
+    for (let n = 1; n <= WALL_MAX_ROWS; n++) expect(wallRowH(n)).toBeLessThanOrEqual(CHIP_H);
+    expect(wallRowCount(8)).toBe(WALL_MAX_ROWS);
+    expect(wallRowCount(0)).toBe(1);
   });
 });
