@@ -28,12 +28,15 @@ desktop** — the chooser is a file dialog either way — so nobody developing o
 laptop would notice it return. Verified by reintroducing the attribute: the test
 fails, and passes again once removed.
 
-### Not changed
-`app/miniature/page.tsx:148` still carries `capture="environment"`. The case for
-it is stronger there (you photograph the model in front of you), but it has the
-same consequence: a painter cannot upload an existing photo of their miniature
-from the gallery. Flagged rather than changed, since only the inspiration tab
-was reported.
+### Not changed, and correctly so
+`app/miniature/page.tsx:148` keeps `capture="environment"`, and that is right:
+the miniature tab has TWO inputs — a dedicated camera button (`cameraInputRef`,
+where forcing the camera is the point) and a separate file input in
+`CogitatorUpload` with no `capture`. Nothing is blocked there.
+
+The inspiration tab has one control, so that control has to offer both. The bug
+was never the attribute in isolation — it was one entry point wearing an
+attribute that only makes sense when there are two.
 
 ## [Unreleased] - 2026-08-11 (Warp-Cast — inspiration-tab shareable video)
 
