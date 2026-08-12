@@ -23,8 +23,10 @@ test.describe('Forge Mix - Custom Alchemy Flow', () => {
     await page.waitForTimeout(500);
     await page.getByRole('button', { name: 'ADD +' }).first().click();
 
-    // Close the modal
-    await page.getByRole('button', { name: '✕' }).click();
+    // Close the modal. The accessible name is "Close", not the ✕ glyph — 86746b5
+    // added aria-label="Close", which is correct for screen readers and
+    // overrides the text content for getByRole.
+    await page.getByRole('button', { name: 'Close' }).click();
 
     // Switch to FORGE MIX tab
     await page.getByRole('button', { name: 'FORGE MIX' }).click();

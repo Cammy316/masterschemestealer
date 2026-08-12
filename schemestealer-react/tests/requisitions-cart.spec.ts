@@ -22,8 +22,9 @@ test.describe('Requisitions Cart Flow', () => {
     await page.waitForTimeout(500);
     await page.getByRole('button', { name: 'ADD +' }).first().click();
 
-    // Close the modal
-    await page.getByRole('button', { name: '✕' }).click();
+    // Close the modal. See the note in forge-mix.spec.ts — aria-label="Close"
+    // is the accessible name, so the ✕ glyph no longer matches.
+    await page.getByRole('button', { name: 'Close' }).click();
 
     // Switch to FORGE MIX tab
     await page.getByRole('button', { name: 'FORGE MIX' }).click();
@@ -45,19 +46,17 @@ test.describe('Requisitions Cart Flow', () => {
     // Verify item is in cart (should not be empty)
     await expect(page.getByText('1 ITEM TOTAL')).toBeVisible();
 
-    // Find the increment button (+)
-    // It's the button containing a '+' span
-    const incrementBtn = page.getByRole('button', { name: '+' });
-    await incrementBtn.click();
+    // The +/- controls carry aria-labels, so the glyphs are not their
+    // accessible names. Assert against the quantity readout rather than the
+    // "N ITEMS TOTAL" header: the header counts distinct lines, not units, so
+    // bumping one paint to 2 correctly leaves it reading "1 ITEM TOTAL".
+    const quantity = page.locator('span.font-mono').filter({ hasText: /^\d+$/ }).first();
 
-    // Verify quantity updated
-    await expect(page.getByText('2 ITEMS TOTAL')).toBeVisible();
+    await page.getByRole('button', { name: 'Increase quantity' }).click();
+    await expect(quantity).toHaveText('2');
 
-    // Find the decrement button (-)
-    const decrementBtn = page.getByRole('button', { name: '−' }); // Note: Using minus sign from ShoppingCart.tsx
-    await decrementBtn.click();
-
-    // Verify quantity updated back
+    await page.getByRole('button', { name: 'Decrease quantity' }).click();
+    await expect(quantity).toHaveText('1');
     await expect(page.getByText('1 ITEM TOTAL')).toBeVisible();
 
     // Clear the cart
