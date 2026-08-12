@@ -378,7 +378,10 @@ export function buildShareText(opts: {
   const { hits, cost } = totalScore(opts.results);
   const streak = opts.streak > 1 ? `  🔥${opts.streak}` : '';
   return (
-    `Matchle #${opts.dayNumber}  ${hits}/${ROUNDS_PER_GAME}  ΔE ${cost.toFixed(1)}${streak}\n\n` +
+    // "cost" earns its word: a bare "ΔE 32.8" next to "1/5" reads like a score,
+    // and a reader who does not already know the game would take the big number
+    // for a good one. Lower is better, and the label is what says so.
+    `Matchle #${opts.dayNumber}  ${hits}/${ROUNDS_PER_GAME}  ΔE cost ${cost.toFixed(1)}${streak}\n\n` +
     `${generateShareGrid(opts.rounds, opts.results)}\n` +
     `https://schemestealer.com/daily`
   );

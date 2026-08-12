@@ -344,7 +344,12 @@ function RoundCard({
       <div className="rounded-sm border border-[var(--cogitator-green)]/30 bg-black/40 overflow-hidden mb-5">
         <div className="h-28 w-full" style={{ backgroundColor: round.target.hex }} />
         <div className="px-3 py-2 text-center">
-          <p className="text-white font-bold tech-text text-lg leading-tight">{round.target.name}</p>
+          <p
+            data-testid="matchle-target-name"
+            className="text-white font-bold tech-text text-lg leading-tight"
+          >
+            {round.target.name}
+          </p>
           <p className="text-[11px] text-gray-400 uppercase tracking-widest tech-text">
             {round.target.brand}
           </p>
