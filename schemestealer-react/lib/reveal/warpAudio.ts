@@ -98,7 +98,7 @@ export function scheduleWarpAudio(
   const scale = SCALES.warp;
   const n = Math.max(1, spec.wall?.length ?? spec.regions.length);
 
-  const master = createMaster(ctx, output, { gain: 1.2, trim: 0.86 });
+  const master = createMaster(ctx, output, { gain: 1.2, trim: 0.608 });
 
   // A larger, slightly brighter space than the miniature's — this one is a
   // gallery, not a machine room. Still nowhere near open: a bright tail is

@@ -288,38 +288,61 @@ test('warp-cast audio: rumble bed, transient highs, broadcast loudness', async (
       return { subFraction: sub / total, midFraction: mid / total, highFraction: hi / total };
     };
 
-    const integratedLufs = (d: Float32Array) => {
-      const kw = new Float64Array(d.length);
-      let x1 = 0, x2 = 0, y1 = 0, y2 = 0;
-      for (let i = 0; i < d.length; i++) {
-        const x = d[i];
-        const y = 1.53512485958 * x - 2.69169618940 * x1 + 1.19839281085 * x2
-          + 1.69065929318 * y1 - 0.73248077421 * y2;
-        x2 = x1; x1 = x; y2 = y1; y1 = y;
-        kw[i] = y;
-      }
-      let z1 = 0, z2 = 0, w1 = 0, w2 = 0;
-      for (let i = 0; i < kw.length; i++) {
-        const x = kw[i];
-        const y = 1.0 * x - 2.0 * z1 + 1.0 * z2 + 1.99004745483 * w1 - 0.99007225036 * w2;
-        z2 = z1; z1 = x; w2 = w1; w1 = y;
-        kw[i] = y;
-      }
+    /**
+     * Integrated loudness, K-weighted per BS.1770-4, gated.
+     *
+     * Takes ALL channels and SUMS their energies:
+     * `-0.691 + 10*log10(G_L*z_L + G_R*z_R)` with `G_L = G_R = 1.0`.
+     *
+     * This used to take one Float32Array from an `OfflineAudioContext(1, ...)`
+     * render. WebAudio downmixes stereo to mono as `(L+R)/2`, so for correlated
+     * channels the result sat exactly `10*log10(2)` = 3.01 dB below the real
+     * figure. That is why both beds shipped around -10.7 and -11.2 LUFS while
+     * this gate reported -13.9 and -14.8 and called them in range. Measured on
+     * the muxed files 2026-08-12; see video-qa/.
+     */
+    const integratedLufs = (chs: Float32Array[]) => {
+      const kws = chs.map((d) => {
+        const kw = new Float64Array(d.length);
+        let x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+        for (let i = 0; i < d.length; i++) {
+          const x = d[i];
+          const y = 1.53512485958 * x - 2.69169618940 * x1 + 1.19839281085 * x2
+            + 1.69065929318 * y1 - 0.73248077421 * y2;
+          x2 = x1; x1 = x; y2 = y1; y1 = y;
+          kw[i] = y;
+        }
+        let z1 = 0, z2 = 0, w1 = 0, w2 = 0;
+        for (let i = 0; i < kw.length; i++) {
+          const x = kw[i];
+          const y = 1.0 * x - 2.0 * z1 + 1.0 * z2 + 1.99004745483 * w1 - 0.99007225036 * w2;
+          z2 = z1; z1 = x; w2 = w1; w1 = y;
+          kw[i] = y;
+        }
+        return kw;
+      });
+
       const block = Math.floor(sr * 0.4);
-      const loud: number[] = [];
-      for (let s = 0; s + block <= kw.length; s += Math.floor(block * 0.25)) {
-        let ss = 0;
-        for (let i = s; i < s + block; i++) ss += kw[i] * kw[i];
-        loud.push(-0.691 + 10 * Math.log10(ss / block + 1e-12));
+      const step = Math.floor(block * 0.25);
+      const len = Math.min(...kws.map((k) => k.length));
+      // z per block, summed across channels before anything is turned into dB.
+      const z: number[] = [];
+      for (let s = 0; s + block <= len; s += step) {
+        let total = 0;
+        for (const kw of kws) {
+          let ss = 0;
+          for (let i = s; i < s + block; i++) ss += kw[i] * kw[i];
+          total += ss / block;
+        }
+        z.push(total);
       }
-      const gated = loud.filter((l) => l > -70);
-      const rel = gated.length
-        ? -0.691 + 10 * Math.log10(gated.reduce((a, l) => a + 10 ** ((l + 0.691) / 10), 0) / gated.length) - 10
-        : -70;
-      const kept = gated.filter((l) => l > rel);
-      return kept.length
-        ? -0.691 + 10 * Math.log10(kept.reduce((a, l) => a + 10 ** ((l + 0.691) / 10), 0) / kept.length)
-        : -70;
+      const dbOf = (zz: number) => -0.691 + 10 * Math.log10(zz + 1e-12);
+      const absKept = z.filter((zz) => dbOf(zz) > -70);
+      if (!absKept.length) return -70;
+      const rel = dbOf(absKept.reduce((a, b) => a + b, 0) / absKept.length) - 10;
+      const kept = absKept.filter((zz) => dbOf(zz) > rel);
+      if (!kept.length) return -70;
+      return dbOf(kept.reduce((a, b) => a + b, 0) / kept.length);
     };
 
 
@@ -435,7 +458,7 @@ test('warp-cast audio: rumble bed, transient highs, broadcast loudness', async (
       rmsDb,
       peakDb,
       crestDb: peakDb - rmsDb,
-      lufs: integratedLufs(full),
+      lufs: integratedLufs([chL, chR]),
       mix: bands(full),
       bed: bands(bed),
       hfOnBeat: near / total,

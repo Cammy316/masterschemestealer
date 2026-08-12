@@ -117,7 +117,11 @@ export function scheduleRevealAudio(
   const rnd = mulberry32(0x9e3779b9);
   const scale = SCALES.imperial;
 
-  const master = createMaster(ctx, output, { gain: 1.33, trim: 0.83 });
+  // trim is POST-limiter, so this sets the ceiling without touching how hard
+  // the limiter is driven — crest ratio and transient shape are unchanged.
+  // Was 0.83, which measured -10.72 LUFS on the shipped file once the gate
+  // stopped averaging the channels. 0.83 * 10^(-3.01/20) lands on -14.
+  const master = createMaster(ctx, output, { gain: 1.33, trim: 0.587 });
 
   // A dark hall. `tone` is low on purpose: a bright tail on a cogitator reads as
   // a cathedral rather than a machine room, and bright sustained content is also
