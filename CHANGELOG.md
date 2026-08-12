@@ -2,6 +2,110 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-08-12 (Swatchle replaced by Matchle)
+
+Swatchle was well-built and landed for expert painters, but it was a **recall
+quiz wearing a deduction puzzle's clothes**. The target swatch was on screen, so
+the warmer/darker/ΔE clues only quantified what the eye had already reported.
+The hard part was remembering which of 1,312 pot names maps to a colour — and no
+clue narrowed the *name* space, so there was no convergence and a loss read as
+arbitrary. With answers drawn from all six brands, a Citadel-only painter had no
+path on an AK day, which broke the streak, which was the only retention
+mechanic.
+
+`/daily` is now **Matchle**: five rounds of "which of these four paints is the
+closest match?", one tap each. It demonstrates the product instead of testing
+trivia, a wrong answer still teaches a number, and it produces the argument
+("ΔE 2.8 — close enough or heresy?") that actually spreads.
+
+### The bug this deletes rather than fixes
+All 400 future answers shipped in the client bundle, readable in thirty seconds.
+Matchle **cannot be spoiled**: all four candidate hexes are on screen and
+ΔE2000 is public maths, so the answer is computable from what the player can
+already see — that is the whole game. Rounds are therefore generated
+client-side from the date (`hash(dateISO + salt)`), which also removes the
+"runs out after 400 days and silently repeats the last puzzle forever" bug, and
+adds no bundle weight since `PAINT_DATABASE` and `deltaE2000` were already
+client-side.
+
+### Fairness, enforced at generation rather than hoped for
+Wordle's fairness comes from answers being narrow while guesses stay wide.
+Matchle's equivalent is a set of hard constraints, with the seed bumped and the
+round regenerated until all hold: target from the 379-paint curated pool; true
+best ΔE ≤ 6; winner beats the runner-up by ≥ 1.5 ΔE; all candidates from other
+brands and mutually distinct; no metallics.
+
+**Every candidate is within ΔE 14 of the target.** This was the change that
+turned it into a game. Drawing distractors uniformly gave rounds like
+*Averland Sunset → 0.8 / 25.9 / 26.9 / 35.4*, which is not a question. It was
+caught by printing real rounds, not by a test — the tests were all passing.
+The same constraint fixed a variety problem: a global runner-up margin had
+rejected 76% of the pool, leaving ~82 usable targets.
+
+A property test generates 365 consecutive days and asserts every constraint on
+every round. That is the test that would have caught Swatchle's actual problem.
+
+### Added
+- `lib/matchle.ts` — seeded generator, scoring, share grid. No React or DOM, so
+  the year-long fairness test runs in milliseconds.
+- `lib/matchleState.ts` — persistence split out of the component so rollover and
+  streak rules are testable. `loadState` tolerates junk **and** leftover
+  Swatchle state; `/daily` is a TikTok landing target and must never render a
+  crash.
+- `lib/data/matchle_pool.json` + `scripts/generateMatchlePool.js`, copied from
+  the existing `curated_pool.json` so curation stays single-sourced.
+- `tests/matchle.spec.ts` — a full daily at 390×844, the clipboard payload, and
+  a device still holding Swatchle's state.
+- Analytics `daily_started`, fired on first tap.
+
+### Changed
+- **No losing condition.** The streak advances on completion regardless of
+  score. Finishing is the habit worth rewarding; hits and ΔE cost express skill.
+  Breaking a streak on a 3/5 would reintroduce the anxiety that made Swatchle's
+  wide answer pool feel unfair. NYT's newest hit ships the same way.
+- **Share grid has colour in it.** The old grid was arrows with variation
+  selectors that misaligned across clients and contained no colour at all — for
+  a colour game. It is now two rows: the five target colours as emoji squares,
+  then 🟩/🟨/🟥 for how it went. Someone scrolling past sees a colour puzzle
+  without reading a word. The header reads "ΔE cost 32.8", not "ΔE 32.8";
+  printing a real payload showed the bare number next to "1/5" reads like a
+  score when lower is better.
+- How To Play now states the pool size. Knowing the answer list is narrow is
+  what makes a streak feel worth keeping; Swatchle never said so.
+- Stats distribution is hits-per-game (0–5) plus best ΔE cost. The old one
+  measured turns, and there are none now.
+- `/daily` metadata is plain English. The old line —"Identify the daily target
+  cogno-meme paint in 6 guesses or fewer" — was on every share and link preview
+  and let flavour obscure meaning.
+- New localStorage key `schemestealer-matchle`. `schemestealer-daily-augury` is
+  a declared frozen key holding an incompatible shape; reusing it would hide the
+  change rather than record it. Invariant 6 updated in the same commit. Existing
+  Swatchle streaks end — they measure a game that no longer exists.
+- Phase 4 monetisation gate corrected to count `daily_started`. `daily_played`
+  only ever fired on completion, so the gate was counting finishers, not
+  players.
+
+### Removed
+`DailyGameUI.tsx`, `InlineGuessInput.tsx`, `colourClues.ts` and their tests.
+This also deletes, rather than fixes, the hue "warm pole" ambiguity at 55°, the
+unreachable `|ΔL| < 1.0` lightness threshold, and the in-place
+`guessDistribution[...] += 1` mutation.
+
+`lib/data/daily_puzzles.json` **stays on disk** — `video-factory` reads it at
+render time; only the app-side import is gone.
+
+### Also fixed (unrelated, found by the pre-ship sweep)
+`forge-mix` and `requisitions-cart` had been failing to a 120s timeout since
+86746b5 added `aria-label` to the modal close and cart quantity buttons, which
+replaced each glyph as the button's accessible name. The app was never broken;
+the selectors were.
+
+### Known gap
+Ten of the 25 launch clips render from `daily_puzzles.json` via
+`video-factory/src/templates/Swatchle/`. They still render and their `/daily`
+CTA still resolves, but they advertise a game that no longer exists. **Must be
+addressed before the launch bank is finalised.**
+
 ## [Unreleased] - 2026-08-11 (Audio: both soundtracks rebuilt)
 
 Both beds were flat lists of oscillators and band-passed noise wired straight to
