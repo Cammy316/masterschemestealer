@@ -1,0 +1,24 @@
+{
+  "mini": {
+    "sps_hex": "67640028acb402201e3cbcd41818141b4284d4",
+    "triple": [
+      6,
+      6,
+      5
+    ],
+    "bit_offset": 94,
+    "len": 19,
+    "count": 1
+  },
+  "warp": {
+    "sps_hex": "67640028acb402201e3cbcd41818141b4284d4",
+    "triple": [
+      6,
+      6,
+      5
+    ],
+    "bit_offset": 94,
+    "len": 19,
+    "count": 1
+  }
+}

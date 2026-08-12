@@ -110,6 +110,10 @@ export interface RenderRevealResult {
    *  the only signal we get about what a device's encoder actually reported. */
   colrPatched?: number;
   colrPrevious?: { primaries: number; transfer: number; matrix: number }[];
+  /** Same, for the H.264 SPS VUI — the layer ffprobe and every platform
+   *  transcoder actually read when the two disagree. */
+  spsPatched?: number;
+  spsPrevious?: { primaries: number; transfer: number; matrix: number }[];
   /** isTypeSupported result per candidate — export telemetry (see videoMimeSupport). */
   mimeSupport?: Record<string, boolean>;
 }

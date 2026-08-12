@@ -36,6 +36,7 @@ import { DEFAULT_DURATION_MS, type RevealSpec } from './revealTimeline';
 import { scheduleRevealAudio } from './revealAudio';
 import type { RevealStoryboard } from './revealStoryboard';
 import { patchColrToBt709, type ColrPatchResult } from './mp4ColrPatch';
+import { patchSpsVuiToBt709, type SpsPatchResult } from './spsVuiPatch';
 import type { RenderRevealOptions, RenderRevealResult } from './renderRevealVideo';
 
 /**
@@ -257,19 +258,42 @@ export async function renderRevealOffline(
   // which shipped on every device export. `previous` is logged because it tells
   // us what the device's encoder actually claimed, which nothing else does.
   let colr: ColrPatchResult | null = null;
+  let sps: SpsPatchResult | null = null;
+  let outBuffer: ArrayBuffer = buffer;
   if (opts.plan.container === 'mp4') {
     colr = patchColrToBt709(buffer);
     console.info('[pict-cast] colr atoms patched:', colr.patched, 'was:', JSON.stringify(colr.previous));
+
+    // The atom above is the layer that LOSES. Measured on both 2026-08-12
+    // device exports: colr said 1/1/1 while the SPS VUI said 6/6/5, and
+    // ffprobe — therefore every platform transcoder — believed the SPS. Both
+    // patches ship; they fail independently on different devices.
+    try {
+      const patched = patchSpsVuiToBt709(outBuffer);
+      outBuffer = patched.buffer;
+      sps = patched.result;
+      console.info(
+        '[pict-cast] SPS VUI patched:', sps.patched,
+        'was:', JSON.stringify(sps.previous),
+        'skippedAbsent:', sps.skippedAbsent
+      );
+    } catch (e) {
+      // Never fail the export over this: a file with the wrong colour tag is
+      // still a file the user can post, whereas no file is nothing.
+      console.error('[pict-cast] SPS VUI patch failed, shipping unpatched:', e);
+    }
   }
 
   opts.onProgress?.(1);
 
   return {
-    blob: new Blob([buffer], { type: opts.plan.mimeType }),
+    blob: new Blob([outBuffer], { type: opts.plan.mimeType }),
     mime: opts.plan.mimeType,
     durationMs,
     engine: 'webcodecs',
     colrPatched: colr?.patched ?? 0,
+    spsPatched: sps?.patched ?? 0,
+    spsPrevious: sps?.previous ?? [],
     colrPrevious: colr?.previous ?? [],
     width,
     height,
