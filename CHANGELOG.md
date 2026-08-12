@@ -2,6 +2,100 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-08-12 (video-qa: a harness that measures the artefact)
+
+Phase 0 of the v6 corrective pack. Nothing user-facing changes; this exists so
+that everything after it can be honestly verified.
+
+### The defect class this closes
+
+Every video and audio gate in the repo runs **before** muxing — on `frameState`,
+on an `OfflineAudioContext`, or on a canvas. Two device exports downloaded from
+the live site fail six gates the pre-encode suite reports as passing:
+
+> The gate measures the render. The user receives the artefact. Nobody measured
+> the artefact.
+
+This is the sibling of findings register #35 ("a gate that cannot fail is worse
+than no gate"): **a gate that measures the wrong object.**
+
+### Added
+
+`video-qa/` at repo root, mirroring `video-factory/`'s separation. Python, run
+on `python-api/venv`, exposed as `npm run qa:video` so it joins the commit gate.
+Non-zero exit on failure; JSON per file plus a table naming the measured value,
+the threshold, and the timestamp of the worst window. Per ground rule 8 every
+gate carries a one-sentence "fails when" string, printed on failure.
+
+Uses the `ffmpeg`/`ffprobe` already vendored with Remotion — no new dependency.
+
+### Measured, against the two shipped exports
+
+Reproduces the forensic analysis independently. Failing:
+
+| Gate | Mini | Inspiration | Threshold |
+|---|---|---|---|
+| SPS VUI colour | 6/6/5 | 6/6/5 | 1/1/1 |
+| Integrated loudness | -10.72 LUFS | -11.20 LUFS | -14 +/-1 |
+| True peak | -1.26 | **-0.84 dBTP** | <= -1 |
+| Crest, min windowed | **8.97 dB** | 9.92 dB | >= 12 |
+| Anti-freeze, quietest 0.4 s | 0.583 | **0.493** | >= 0.5 |
+| Sharpness dip | 0.23 s | **1.87 s at 47%** | <= 0.35 s |
+
+Still passing, and asserted so miscalibration is visible: frame counts 330/420,
+PTS median 33.333 ms (std 0.0005) = exactly 30 fps, loop seam 1.43/1.13, stereo
+correlation 0.906/0.823, mono retention 0.976/0.955, frame luma 23.0/131.9.
+
+### Two findings that only appear when you measure bytes
+
+**The `colr` atom and the H.264 SPS VUI disagree, and ffprobe believes the SPS.**
+`mp4ColrPatch.ts` is working — the atom reads 1/1/1 on both files. The SPS VUI
+reads 6/6/5, and that is the layer every platform transcoder reads. The harness
+parses both independently rather than trusting ffprobe's single collapsed value,
+because that collapse is exactly what hid this. Phase 1's fix; the SPS bit
+offset (94 on both files) is already reported to make the patch straightforward.
+
+**Anti-freeze must be measured on the coded Y plane.** Decoding to RGB first
+lets 4:2:0 chroma upsampling invent inter-frame difference the encoder never
+coded. The warp-cast reads 0.587 that way and 0.493 on the Y plane — the
+difference between passing and failing the 0.5 floor.
+
+### Corrections to the corrective pack
+
+The pack was written without repo access. Verified against source:
+
+- **Its Phase 2 diagnosis is wrong about the mechanism.** It says the loudness
+  gate averages channel energies and the fix is one line inside the loudness
+  function. `integratedLufs` (`tests/reveal-export.spec.ts:219`) takes a single
+  array and aggregates nothing. The real defect is the call site: `render()`
+  builds `new OfflineAudioContext(1, ...)`, a **mono** render, and measures
+  that. WebAudio downmixes stereo to `(L+R)/2`, landing 3.01 dB below the
+  BS.1770 sum. Same magnitude, different location — and `peakDb`/`crestDb` are
+  measured on the same mono downmix, so those move too, which the pack does not
+  anticipate.
+- `GRAIN_ALPHA` does not exist; grain is pre-baked tiles (`GRAIN_TILES = 4`,
+  `revealCompose.ts:1102`).
+- Phase 5's blur is `warpCompose.ts:325`, not a `warpTimeline.ts` constant.
+
+### Still unverified
+
+- **Safe-area occupancy below y=1430 reads 29.7% on the warp-cast where the
+  pack measured 15.3%.** Both fail the gate and the qualitative finding is
+  unchanged (warp violates heavily, mini is clean at 1.0%), but the absolute
+  figure is sensitive to the detail-classification kernel and the two do not
+  agree. Right-of-x=900 does agree (10.8% vs 9.8%, and mini 1.8% vs 1.7%).
+- Onset detection finds 21/22 onsets where the pack lists 10/5. The onsets the
+  pack names are all present within ~20 ms; this detector is simply more
+  sensitive. It feeds only the reported HF-on-beat figure, no gate.
+- The harness has never run on a freshly exported device file — only on the two
+  captured 2026-08-12. Definition of done requires a new capture from a real
+  phone after the Phase 1-2 fixes land.
+- Synthetic *video* controls inject frame sequences rather than building MP4s:
+  the vendored ffmpeg is a decode-only build with no `rawvideo` muxer or
+  demuxer and no `lavfi` source filters. The end-to-end path is covered only by
+  the two device exports.
+
+
 ## [Unreleased] - 2026-08-12 (Swatchle replaced by Matchle)
 
 Swatchle was well-built and landed for expert painters, but it was a **recall

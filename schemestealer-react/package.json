@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
+    "qa:video": "node scripts/qaVideo.js",
     "postinstall": "node scripts/patch-tailwind-postcss.js"
   },
   "dependencies": {
