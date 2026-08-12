@@ -22,6 +22,7 @@ export type AnalyticsEventName =
   | 'feedback_submitted'
   | 'pro_upgrade_clicked'
   | 'ko_fi_clicked'
+  | 'daily_started'
   | 'daily_played'
   | 'daily_won'
   | 'daily_shared'
@@ -315,13 +316,29 @@ class AnalyticsService {
   }
 
   // ============================================================================
-  // Daily Augury Tracking
+  // Matchle (daily game) Tracking
   // ============================================================================
+
+  /**
+   * Fired on the player's FIRST tap of the day.
+   *
+   * `daily_played` only ever fired on completion, so it counts finishers rather
+   * than players — somebody who plays two rounds and leaves was never counted
+   * at all. The Phase 4 monetisation gate ("100 daily players") reads
+   * `daily_played`, so it has been under-counting itself; that gate should be
+   * re-pointed at this event.
+   */
+  trackDailyStarted(): void {
+    this.track('daily_started', {});
+  }
 
   trackDailyPlayed(): void {
     this.track('daily_played', {});
   }
 
+  /** Rounds answered correctly, out of five. Kept under the original event name
+   *  so existing dashboards keep resolving; the payload is now a hit count, not
+   *  a guess count. */
   trackDailyWon(guessCount: number): void {
     this.track('daily_won', { guess_count: guessCount });
   }

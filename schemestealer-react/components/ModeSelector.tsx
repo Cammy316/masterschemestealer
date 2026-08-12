@@ -4,19 +4,17 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
 import { useEffect, useState } from 'react';
-import { hasPlayedToday } from '@/lib/dailyStatus';
+import { hasPlayedToday, MATCHLE_STORAGE_KEY } from '@/lib/matchleState';
 import { RecipeProofStrip } from '@/components/shared/RecipeProofStrip';
 
 export function ModeSelector() {
   const router = useRouter();
   const setMode = useAppStore((state) => state.setMode);
   
-  const [swatchlePlayed, setSwatchlePlayed] = useState(true); // Default true to prevent flash
+  const [matchlePlayed, setMatchlePlayed] = useState(true); // Default true to prevent flash
 
   useEffect(() => {
-    const raw = localStorage.getItem('schemestealer-daily-augury');
-    const today = new Date().toLocaleDateString('en-CA');
-    setSwatchlePlayed(hasPlayedToday(raw, today));
+    setMatchlePlayed(hasPlayedToday(localStorage.getItem(MATCHLE_STORAGE_KEY)));
   }, []);
 
   return (
@@ -116,7 +114,7 @@ export function ModeSelector() {
             <span className="relative z-10 text-[11px] text-[var(--imperial-gold)]/70 uppercase tracking-widest mt-1">Immaterium Conduit</span>
           </motion.button>
 
-          {/* Swatchle */}
+          {/* Matchle */}
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => router.push('/daily')}
@@ -124,7 +122,7 @@ export function ModeSelector() {
           >
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(255,184,0,0.1)_0%,transparent_60%)] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
             
-            {swatchlePlayed ? (
+            {matchlePlayed ? (
               <div className="absolute top-3 right-3 flex items-center gap-1.5 px-2 py-0.5 bg-green-500/10 border border-green-500/30 rounded">
                 <span className="text-[11px] font-bold text-green-500 uppercase tracking-widest">SOLVED ✓</span>
               </div>
@@ -136,12 +134,12 @@ export function ModeSelector() {
             )}
 
             <div className="relative z-10 flex flex-col items-center justify-center mb-4 gap-1.5 opacity-80 group-hover:opacity-100 transition-opacity drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]">
-               <div className="flex gap-1.5 text-sm">➡️ 🔼 🧊</div>
-               <div className="flex gap-1.5 text-sm">🟩 🟩 🎯</div>
+               <div className="flex gap-1.5 text-sm">🟥 🟦 🟩 🟨 🟫</div>
+               <div className="flex gap-1.5 text-sm">🟩 🟩 🟨 🟩 🟥</div>
             </div>
-            <span className="relative z-10 text-white font-bold tracking-widest text-sm uppercase drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">Swatchle</span>
+            <span className="relative z-10 text-white font-bold tracking-widest text-sm uppercase drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">Matchle</span>
             <span className="relative z-10 text-[11px] text-[var(--imperial-gold)] uppercase tracking-widest mt-1 font-bold">
-              {swatchlePlayed ? "View Your Result" : "Play Today's Puzzle"}
+              {matchlePlayed ? 'View Your Result' : "Play Today's Puzzle"}
             </span>
           </motion.button>
 

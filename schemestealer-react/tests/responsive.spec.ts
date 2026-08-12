@@ -48,22 +48,24 @@ const ROUTES: Array<{ path: string; name: string; setup?: (page: Page) => Promis
     name: 'daily-complete',
     setup: async (page) => {
       await page.evaluate(() => {
-        // MUST match the real GameState shape (DailyGameUI) + Guess shape
-        // (lib/colourClues.ts) — guesses reference paints by paint_id, and the
-        // stats fields must exist or the card renders "undefined-day streak".
-        window.localStorage.setItem('schemestealer-daily-augury', JSON.stringify({
+        // MUST match the real MatchleState shape (lib/matchleState.ts). The
+        // stats fields have to exist or the card renders "undefined-day streak".
+        window.localStorage.setItem('schemestealer-matchle', JSON.stringify({
           lastPlayedDate: new Date().toLocaleDateString('en-CA'),
-          status: 'won',
-          guesses: [
-            { paint_id: 'citadel-evil-sunz-scarlet', familyMatch: 'exact', hueDirection: 'match', lightnessDirection: 'darker', deltaE: 8.5 },
-            { paint_id: 'citadel-khorne-red', familyMatch: 'exact', hueDirection: 'warmer', lightnessDirection: 'lighter', deltaE: 12.1 },
-            { paint_id: 'citadel-mephiston-red', familyMatch: 'exact', hueDirection: 'match', lightnessDirection: 'match', deltaE: 0 },
+          status: 'complete',
+          results: [
+            { pickedIndex: 0, correct: true, cost: 0 },
+            { pickedIndex: 2, correct: false, cost: 3.4 },
+            { pickedIndex: 1, correct: true, cost: 0 },
+            { pickedIndex: 0, correct: true, cost: 0 },
+            { pickedIndex: 3, correct: false, cost: 1.1 },
           ],
           streak: 3,
           maxStreak: 5,
           played: 10,
-          won: 8,
-          guessDistribution: [0, 1, 4, 2, 1, 0],
+          perfect: 4,
+          hitDistribution: [0, 1, 2, 3, 3, 1],
+          bestCost: 0.4,
         }));
       });
       // reload to pick up the new local storage state
@@ -140,7 +142,7 @@ test.describe('responsive layout', () => {
           // Consent decided so the banner doesn't cover every screenshot.
           window.localStorage.setItem('schemestealer-analytics-consent', 'denied');
           // Suppress HowToPlay auto-open for standard runs
-          window.localStorage.setItem('schemestealer-swatchle-help-seen', 'true');
+          window.localStorage.setItem('schemestealer-matchle-help-seen', 'true');
         }, SEEDED_STATE);
 
         await page.goto(route.path, { waitUntil: 'networkidle' });
@@ -166,26 +168,50 @@ test.describe('responsive layout', () => {
   }
 });
 
-test('daily-typing @ 360x740', async ({ page }) => {
+/**
+ * Intent, inherited from the Swatchle version of this test: on the shortest
+ * phone we support, the control the player has to reach must not sit under the
+ * 64px bottom nav. It used to be the autocomplete dropdown; Matchle has no
+ * typing, so it is now the last candidate and the advance button — the two
+ * things a round cannot be completed without.
+ */
+test('daily controls clear the bottom nav @ 360x740', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 740 });
+  await page.addInitScript(() => {
+    window.localStorage.setItem('schemestealer-analytics-consent', 'denied');
+    window.localStorage.setItem('schemestealer-matchle-help-seen', 'true');
+  });
   await page.goto('/daily', { waitUntil: 'networkidle' });
   await page.waitForTimeout(600);
-  
-  const input = page.getByRole('combobox');
-  await input.focus();
-  await page.keyboard.type('meph');
-  await page.waitForTimeout(400);
-  
-  const option = page.locator('[role="option"]').first();
-  await expect(option).toBeVisible();
-  
-  const box = await option.boundingBox();
-  expect(box).toBeTruthy();
-  if (box) {
-    const bottom = box.y + box.height;
-    const innerHeight = await page.evaluate(() => window.innerHeight);
-    expect(bottom).toBeLessThanOrEqual(innerHeight - 64);
-  }
+
+  const innerHeight = await page.evaluate(() => window.innerHeight);
+  const navSafeBottom = innerHeight - 64;
+
+  // Needing a scroll is fine — these are in normal document flow. What is not
+  // fine is the control being unreachable *after* scrolling, which is what
+  // happens when a page ends flush under a fixed nav with no bottom padding.
+  const clearsNavAfterScrolling = async (testid: string, label: string) => {
+    const el = page.locator(`[data-testid="${testid}"]`).last();
+    await expect(el).toBeVisible();
+    // scrollIntoViewIfNeeded is a no-op on a partially-visible element, which
+    // is exactly the case we care about — scroll the page to the end instead.
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await page.waitForTimeout(200);
+    const box = await el.boundingBox();
+    expect(box, `${label} has no box`).toBeTruthy();
+    if (box) {
+      expect(box.y + box.height, `${label} stays under the bottom nav`).toBeLessThanOrEqual(
+        navSafeBottom
+      );
+    }
+  };
+
+  await clearsNavAfterScrolling('matchle-candidate', 'last candidate');
+
+  // Picking reveals the ΔEs and swaps in the advance button, which grows the
+  // card stack — the taller state is the one that can end up pinned under it.
+  await page.locator('[data-testid="matchle-candidate"]').first().click();
+  await clearsNavAfterScrolling('matchle-advance', 'advance button');
 });
 
 test('home first-viewport @ 360x740', async ({ page }) => {
@@ -193,8 +219,8 @@ test('home first-viewport @ 360x740', async ({ page }) => {
   await page.goto('/', { waitUntil: 'networkidle' });
   await page.waitForTimeout(600);
   
-  const swatchleCard = page.locator('text=Swatchle').first();
-  const box = await swatchleCard.boundingBox();
+  const matchleCard = page.locator('text=Matchle').first();
+  const box = await matchleCard.boundingBox();
   expect(box).toBeTruthy();
   if (box) {
     expect(box.y).toBeLessThan(740);

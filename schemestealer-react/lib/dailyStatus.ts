@@ -14,13 +14,3 @@ export function formatTimeToMidnight(now: Date): string {
   ].join(':');
 }
 
-export function hasPlayedToday(raw: string | null, todayStr: string): boolean {
-  if (!raw) return false;
-  try {
-    const parsed = JSON.parse(raw);
-    return parsed.lastPlayedDate === todayStr && parsed.status !== 'playing';
-  } catch (e) {
-    return false;
-  }
-}
-
