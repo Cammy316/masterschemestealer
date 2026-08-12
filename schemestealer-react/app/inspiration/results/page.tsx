@@ -278,9 +278,15 @@ export default function InspirationResultsPage() {
               <div className="p-2 mb-4">
                 {/* Color Header */}
                 <div className="flex items-center gap-4">
-                  {/* Floating orb for individual color header */}
+                  {/* Floating orb for individual color header.
+                      `relative` is load-bearing: the specular highlight inside is
+                      absolute, and without a positioned parent it resolves against a
+                      page-level ancestor — rendering as a giant white ellipse over the
+                      header instead of a 56px orb. It only escaped intermittently
+                      because the whileInView transform creates a containing block of
+                      its own while it is animating. */}
                   <motion.div
-                    className="w-14 h-14 rounded-full flex-shrink-0 shadow-[inset_0_0_10px_rgba(0,0,0,0.5)] border border-white/20"
+                    className="relative w-14 h-14 rounded-full flex-shrink-0 shadow-[inset_0_0_10px_rgba(0,0,0,0.5)] border border-white/20"
                     style={{
                       background: `radial-gradient(circle at 30% 30%, ${color.hex}, #000000)`,
                       boxShadow: `0 0 20px ${color.hex}60`,
