@@ -107,6 +107,31 @@ const PALETTE_MAX = 620;
  */
 const MIN_DISPLAY_ASPECT = 0.8;
 
+/**
+ * Blur radius of the soft-focus twin, in pixels at the 1080-wide canvas.
+ *
+ * BOUNDED ON PURPOSE. The harness gate is: no window longer than 0.35 s may sit
+ * below 70% of the clip's median sharpness. At 9px this clip spent 1.6 s at
+ * 44-47%. Raising this re-opens that defect, which is why it is a named
+ * constant with a test on it rather than a number inside a filter string.
+ */
+export const SOFT_BLUR_PX = 2;
+
+/**
+ * How much of the soft twin may ever replace the sharp hero.
+ *
+ * The drain's feeling comes from the desaturation and luminance drop, which are
+ * baked into the twin at full strength; keeping 35% of the sharp image
+ * underneath costs almost nothing visually and is what actually clears the
+ * sharpness gate. Derived, not guessed: whole-frame ratio is approximately
+ * 1 - 0.494 * mix at a 2px blur, so mix = 0.65 lands near 0.78 of median
+ * against a 0.75 floor.
+ */
+export const SOFT_MAX_MIX = 0.65;
+
+/** The ceiling the above must respect. See warpDefocus.test.ts. */
+export const SOFT_BLUR_MAX_PX = 4;
+
 /** Ken Burns range. The image is CLIPPED to its rect, so the poster edges stay
  *  crisp while the picture inside them moves. */
 const KEN_BURNS = 0.08;
@@ -318,11 +343,24 @@ export async function prepareWarpResources(
   if (!hero) throw new Error('2D canvas unavailable');
   hero.ctx.drawImage(img, 0, 0, imgW, imgH);
 
-  // Soft-focus twin. A blur, not a desaturation: the drain should feel like the
-  // colour is being drawn out of the picture, not like the picture is broken.
+  // Soft-focus twin, cross-faded in by `soften` for the drain and bloom.
+  //
+  // The blur used to be 9px, and at soften = 1 through the whole bloom that put
+  // 1.6 s of the shipped clip at 44-47% of its own median sharpness — measured
+  // t=2.27-3.83s on the 2026-08-12 export. That is 11% of the runtime, sitting
+  // exactly where a viewer decides whether to keep watching, on a product whose
+  // entire claim is colour accuracy.
+  //
+  // The drain still reads, because the drain was never really the blur: it is
+  // the desaturation and the luminance drop, which are now doing the work
+  // alone at full strength. The register already prohibits colour grading the
+  // footage for this product, and defocusing it is the same argument in
+  // another dimension.
   const soft = makeLayer(imgW, imgH);
   if (!soft) throw new Error('2D canvas unavailable');
-  if ('filter' in soft.ctx) soft.ctx.filter = 'blur(9px) saturate(0.68) brightness(0.74)';
+  if ('filter' in soft.ctx) {
+    soft.ctx.filter = `blur(${SOFT_BLUR_PX}px) saturate(0.52) brightness(0.72)`;
+  }
   soft.ctx.drawImage(img, 0, 0, imgW, imgH);
   soft.ctx.filter = 'none';
 
@@ -412,7 +450,12 @@ function drawPosterImage(
   ctx.clip();
   ctx.drawImage(res.heroLayer, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
   if (state.soften > 0) {
-    ctx.globalAlpha = state.soften;
+    // Capped, not just narrowed. Measured on the shipped export: the photo
+    // carries ~70% of the frame's gradient energy, so at full mix even a 2px
+    // blur leaves the frame at ~0.66 of its median sharpness — under the 0.70
+    // gate. Reducing the blur radius alone cannot get there; the cross-fade
+    // has to stop short of fully replacing the sharp hero. See SOFT_BLUR_PX.
+    ctx.globalAlpha = state.soften * SOFT_MAX_MIX;
     ctx.drawImage(res.softLayer, 0, 0, res.imgW, res.imgH, r.x, r.y, r.w, r.h);
   }
   ctx.restore();

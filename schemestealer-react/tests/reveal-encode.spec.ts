@@ -14,6 +14,7 @@ import { execFileSync } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { seedScan, seedInspirationScan } from './revealSeed';
+const ENCODE_OUT_DIR = 'test-results/encode';
 
 /** Remotion ships a static ffprobe; no system install required. */
 const FFPROBE = resolve(
@@ -197,6 +198,15 @@ test('warp-cast offline render: same encoder, exact frame count, BT.709', async 
       bytes: btoa(bin),
     } as const;
   });
+
+  // Write the muxed file out so video-qa can measure the artefact. Headless
+  // Chrome's software encoder differs from a device's on colour and grain, but
+  // SHARPNESS is a property of the composed frames rather than the encoder, so
+  // the defocus gate is measurable here without a phone.
+  if (!('error' in out) && out.bytes) {
+    mkdirSync(ENCODE_OUT_DIR, { recursive: true });
+    writeFileSync(resolve(ENCODE_OUT_DIR, 'warp-offline.mp4'), Buffer.from(out.bytes, 'base64'));
+  }
 
   console.log('WARP OFFLINE RENDER:', JSON.stringify({ ...out, bytes: undefined }));
   expect('error' in out ? out.error : null).toBeNull();
