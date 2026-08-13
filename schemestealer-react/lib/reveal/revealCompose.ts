@@ -97,6 +97,129 @@ export function hexToRgba(hex: string, alpha: number): string {
  * leader lines and anchor dots stay true-hex so the colour story is honest —
  * only the TYPE gets lifted.
  */
+/** sRGB relative luminance, 0..1 — the quantity WCAG contrast is defined on.
+ *  Not the 0.2126R+0.7152G+0.0722B byte average used elsewhere in this file:
+ *  that one skips the gamma step, which is worth ~2x on dark colours and is the
+ *  difference between a label that passes 4.5:1 and one that does not. */
+export function relLuma(r: number, g: number, b: number): number {
+  const f = (v: number) => {
+    const c = v / 255;
+    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  };
+  return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+}
+
+export function contrastRatio(l1: number, l2: number): number {
+  const hi = Math.max(l1, l2);
+  const lo = Math.min(l1, l2);
+  return (hi + 0.05) / (lo + 0.05);
+}
+
+/**
+ * Push `hex` toward white or black until it clears `minRatio` against a
+ * background of relative luminance `bg`, keeping its hue.
+ *
+ * labelTint lifts dark families toward a fixed luma floor, but that floor is
+ * computed against THE VOID — and these callouts land on the MODEL. Measured on
+ * the shipped pict-cast: DARK GREY and BLACK rendered as dark glyphs over red
+ * armour, and RED rendered red-on-red. The floor was right about the backdrop
+ * and wrong about what was actually behind the type.
+ */
+export function contrastTint(hex: string, bg: number, minRatio = 4.5): string {
+  const h = hex.replace('#', '');
+  const full = h.length === 3 ? h.split('').map((c) => c + c).join('') : h;
+  const n = parseInt(full, 16);
+  if (!Number.isFinite(n)) return hex;
+  const r0 = (n >> 16) & 255;
+  const g0 = (n >> 8) & 255;
+  const b0 = n & 255;
+  if (contrastRatio(relLuma(r0, g0, b0), bg) >= minRatio) return hex;
+
+  // Whichever direction has the headroom. A mid-grey background may have
+  // neither, in which case we take the better of the two extremes rather than
+  // returning something that fails silently.
+  const toward = (target: number) => {
+    let lo = 0;
+    let hi = 1;
+    let best = target === 255 ? '#ffffff' : '#000000';
+    for (let i = 0; i < 12; i++) {
+      const t = (lo + hi) / 2;
+      const r = Math.round(r0 + (target - r0) * t);
+      const g = Math.round(g0 + (target - g0) * t);
+      const b = Math.round(b0 + (target - b0) * t);
+      const ratio = contrastRatio(relLuma(r, g, b), bg);
+      const hx = (v: number) => v.toString(16).padStart(2, '0');
+      if (ratio >= minRatio) {
+        best = `#${hx(r)}${hx(g)}${hx(b)}`;
+        hi = t;
+      } else {
+        lo = t;
+      }
+    }
+    return best;
+  };
+  const up = contrastRatio(relLuma(255, 255, 255), bg) >= minRatio;
+  const down = contrastRatio(relLuma(0, 0, 0), bg) >= minRatio;
+  if (up && !down) return toward(255);
+  if (down && !up) return toward(0);
+  // Both work: go away from the background, which keeps more of the hue.
+  return bg > 0.18 ? toward(0) : toward(255);
+}
+
+/** Mean relative luminance of a small patch of what is ALREADY on the canvas.
+ *  Sampled coarsely on purpose — this decides an ink colour, not a rendering,
+ *  and it runs once per callout per frame. */
+export function sampleBackdropLuma(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+): number {
+  const x0 = Math.max(0, Math.floor(x));
+  const y0 = Math.max(0, Math.floor(y));
+  const w0 = Math.max(1, Math.min(Math.floor(w), ctx.canvas.width - x0));
+  const h0 = Math.max(1, Math.min(Math.floor(h), ctx.canvas.height - y0));
+  let d: Uint8ClampedArray;
+  try {
+    d = ctx.getImageData(x0, y0, w0, h0).data;
+  } catch {
+    return 0; // tainted canvas — treat as the void, which is the old behaviour
+  }
+  let sum = 0;
+  let count = 0;
+  // MUST be a multiple of 4, or the loop walks off the RGBA phase and reads
+  // green/blue/alpha as red/green/blue.
+  const step = 4 * Math.max(1, Math.floor((w0 * h0) / 400));
+  for (let i = 0; i + 2 < d.length; i += step) {
+    sum += relLuma(d[i], d[i + 1], d[i + 2]);
+    count++;
+  }
+  return count ? sum / count : 0;
+}
+
+/**
+ * Where a callout's label text lands, for a given model rect.
+ *
+ * Exported so the contrast gate can measure the exact pixels the type occupies
+ * rather than guessing a box around the rail. Kept next to the drawing code so
+ * the two cannot drift.
+ */
+export function calloutLabelBox(
+  side: 'left' | 'right',
+  railY: number,
+  labelW: number,
+): { x: number; y: number; w: number; h: number } {
+  const railX = side === 'left' ? CALLOUT_RAIL.left : CALLOUT_RAIL.right;
+  const labelX = side === 'left' ? railX + CALLOUT_CHIP_R + 18 : railX - CALLOUT_CHIP_R - 18;
+  return {
+    x: side === 'left' ? labelX : labelX - labelW,
+    y: railY - LABEL_SIZE * 0.7,
+    w: labelW,
+    h: LABEL_SIZE * 1.4,
+  };
+}
+
 export function labelTint(hex: string, floor = 140): string {
   const h = hex.replace('#', '');
   const full = h.length === 3 ? h.split('').map((c) => c + c).join('') : h;
@@ -857,10 +980,23 @@ export function composeReveal(ctx: CanvasRenderingContext2D, state: RevealFrameS
     ctx.globalAlpha = rs.labelReveal * hud;
     drawText(ctx, String(c.index + 1), railX, railY, { font: res.fonts.cyber, size: 32, colour: tint });
     const labelX = c.side === 'left' ? railX + CALLOUT_CHIP_R + 18 : railX - CALLOUT_CHIP_R - 18;
+    /**
+     * Ink solved against what is ACTUALLY behind this label, sampled from the
+     * canvas as composed so far, this frame.
+     *
+     * labelTint lifts dark families toward a luma floor computed against the
+     * void — but a callout sits over the MODEL. Measured on the shipped clip:
+     * DARK GREY and BLACK rendered as dark glyphs over red armour and RED
+     * rendered red-on-red. The floor was right about the backdrop and wrong
+     * about the thing in front of it.
+     */
+    const box = calloutLabelBox(c.side, railY, labelW);
+    const bgLuma = sampleBackdropLuma(ctx, box.x, box.y, box.w, box.h);
+    const inkColour = contrastTint(tint, bgLuma, 4.5);
     drawText(ctx, label, labelX, railY, {
       font: res.fonts.cyber,
       size: LABEL_SIZE,
-      colour: tint,
+      colour: inkColour,
       align: c.side === 'left' ? 'left' : 'right',
       glow: 12,
       maxWidth: LABEL_MAX_W,
@@ -1277,6 +1413,11 @@ if (process.env.NODE_ENV !== 'production' && typeof window !== 'undefined') {
     prepareResources,
     recipeSteps,
     composeAt,
+    // Exposed for the callout contrast gate, which has to measure the exact
+    // pixels the type occupies and the frame state that decides its opacity.
+    calloutLabelBox,
+    frameState,
+    modelRectAt,
     applyOutputScale,
     outputSize,
     scheduleRevealAudio,

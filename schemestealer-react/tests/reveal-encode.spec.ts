@@ -89,6 +89,13 @@ test('pict-cast offline render: real encode, exact frame count', async ({ page }
     } as const;
   });
 
+  // Written out so video-qa can measure the artefact — frame luma for D2 in
+  // particular, which is reported rather than gated.
+  if (!('error' in out) && out.bytes) {
+    mkdirSync(ENCODE_OUT_DIR, { recursive: true });
+    writeFileSync(resolve(ENCODE_OUT_DIR, 'mini-offline.mp4'), Buffer.from(out.bytes, 'base64'));
+  }
+
   console.log('OFFLINE RENDER:', JSON.stringify({ ...out, bytes: undefined }));
   expect('error' in out ? out.error : null).toBeNull();
   if ('error' in out) return;

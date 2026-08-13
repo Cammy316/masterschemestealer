@@ -338,10 +338,19 @@ export function paintBackdrop(
 ): void {
   const { backdropLine: line, backdropHalo: halo } = themeFor(skin);
 
-  // base radial: dark-gothic → void-black
+  /**
+   * Base radial: dark-gothic → void-black, LIFTED.
+   *
+   * Decision D2. Measured across all 11 s of the shipped pict-cast, mean frame
+   * luma was 23/255 — 9% — against the warp-cast's 131 (51%). The model itself
+   * is lit correctly; it is the FRAME that was a near-black rectangle,
+   * competing at thumbnail size in a bright feed. Raised to land in the 45-60
+   * band, which keeps the Imperial darkness while giving the thumbnail
+   * something to be.
+   */
   const base = ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, Math.max(w, h) * 0.7);
-  base.addColorStop(0, '#0d0b14');
-  base.addColorStop(0.88, '#05070a');
+  base.addColorStop(0, '#5d5379');
+  base.addColorStop(0.88, '#3a4152');
   ctx.fillStyle = base;
   ctx.fillRect(0, 0, w, h);
 
