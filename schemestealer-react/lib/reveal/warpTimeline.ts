@@ -95,6 +95,23 @@ export interface WarpFrameState {
   pulse: { index: number; strength: number } | null;
   /** 0..1 crossfade to the pre-baked frame-0 poster. */
   loopCrossfade: number;
+  /**
+   * Which paint the horizontal label strip names, and how solid it is.
+   *
+   * The strip exists because the swatch labels were INFORMATION sitting in the
+   * platform caption zone. Measured on the shipped export, 15.3% of all detail
+   * pixels sat below y=1430 and 9.8% right of x=900, with the paint names and
+   * ΔE rendering around y≈1600-1750 — behind TikTok's caption and username, and
+   * the rightmost swatch's label behind the action rail. The register's rule
+   * already covered it: artwork may leave the safe area, information may not.
+   * The swatch colour FIELDS still bleed to the frame bottom; they are artwork.
+   *
+   * Non-null during poster and hold as well as the pour, because the finished
+   * poster is the frame people screenshot and repost, and it carried no paint
+   * name, no ΔE and no reason to visit. Poster and hold name the same row so
+   * frame 0 and the loop target stay pixel-identical.
+   */
+  strip: { index: number; alpha: number } | null;
 }
 
 function phaseAt(f: number): WarpPhase {
@@ -217,7 +234,35 @@ export function warpFrameState(t: number, durationMs: number, bandCount: number)
     }
   }
 
+  /**
+   * The label strip's subject.
+   *
+   * Poster and hold both name the LAST row, at full opacity: that is the frame
+   * people screenshot, and it must carry attribution. They must also agree
+   * exactly, or the loop seam stops being pixel-identical.
+   *
+   * Through the pour the strip follows whichever colour has most recently
+   * landed, so one name is large and readable at a time instead of six columns
+   * of rotated type competing at 9pt.
+   */
+  let strip: { index: number; alpha: number } | null = null;
+  if (phase === 'poster' || phase === 'hold') {
+    strip = { index: n - 1, alpha: 1 };
+  } else if (phase === 'settle') {
+    strip = { index: n - 1, alpha: 1 };
+  } else if (phase === 'pour') {
+    let landed = -1;
+    for (let i = 0; i < n; i++) {
+      if (f >= bandPourWindow(i, n).start) landed = i;
+    }
+    if (landed >= 0) {
+      const win = bandPourWindow(landed, n);
+      const local = clamp((f - win.start) / (win.end - win.start));
+      strip = { index: landed, alpha: smoothstep(clamp(local / 0.35)) };
+    }
+  }
+
   const loopCrossfade = f <= LOOP_START ? 0 : smoothstep((f - LOOP_START) / (1 - LOOP_START));
 
-  return { phase, progress: f, camera, soften, bloom, bands, droplet, pulse, loopCrossfade };
+  return { phase, progress: f, camera, soften, bloom, bands, droplet, pulse, loopCrossfade, strip };
 }

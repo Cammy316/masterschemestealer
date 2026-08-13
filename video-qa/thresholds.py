@@ -24,9 +24,17 @@ class Gate:
 SAFE_AREA_ARTWORK = {
     "pict": [],
     "warp": [
-        # D1(a): the swatch colour fields keep bleeding to the frame bottom.
-        # Their LABELS move above y=1428 in Phase 4 and are NOT allowlisted.
+        # D1(a): the swatch colour fields and their edges keep bleeding to the
+        # frame bottom — they are the artwork. The paint names and ΔE moved OUT
+        # of them to a strip at y≈1360-1400, above this rect, so allowlisting
+        # the swatch area cannot conceal a label. Guarded separately by
+        # warpLabelStrip.test.ts, which asserts the strip's own geometry.
         ("swatch-colour-fields", 0, 1430, 1080, 1920),
+        # The photograph is full-bleed BY DESIGN — that is the Cinema
+        # Palettes format, and cropping it to the safe area was rejected
+        # as option (b). It is the artwork; what must stay inside the
+        # safe area is the type laid over the ground.
+        ("hero-photo", 0, 0, 1080, 1360),
     ],
 }
 

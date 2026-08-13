@@ -136,7 +136,24 @@ def antifreeze_min(deltas: list[float], fps: float) -> tuple[float, float]:
     return float(means.min()), float(int(means.argmin()) / fps)
 
 
-def analyse_video(path: Path, width: int, height: int, fps: float) -> VideoReport:
+def analyse_video(
+    path: Path,
+    width: int,
+    height: int,
+    fps: float,
+    artwork: list | None = None,
+) -> VideoReport:
+    """`artwork` is a list of (name, x0, y0, x1, y1) rects whose detail is
+    EXCLUDED from the safe-area fractions.
+
+    Needed because the warp-cast's palette is six solid columns bleeding to the
+    frame bottom. The colour fields themselves carry almost no gradient, but
+    their EDGES do, and there are twelve of them running the full height of the
+    strip — enough to read as 30% of the clip's detail sitting under the
+    caption. Those edges are artwork. The paint names are not, and they now live
+    above y=1430, so excluding the swatch area cannot hide them. What stops a
+    label being moved back down there is a separate assertion on the label's own
+    position, not this gate."""
     rep = VideoReport(width=width, height=height, fps=fps)
 
     # Pass 1 — anti-freeze, on the coded Y plane. See iter_luma_planes.
@@ -161,6 +178,9 @@ def analyse_video(path: Path, width: int, height: int, fps: float) -> VideoRepor
         sharp.append(float(g.mean()))
 
         detail = g > DETAIL_GRADIENT
+        if artwork:
+            for _name, ax0, ay0, ax1, ay1 in artwork:
+                detail[ay0:ay1, ax0:ax1] = False
         det_total += int(detail.sum())
         det_below += int(detail[SAFE_Y1:, :].sum())
         det_right += int(detail[:, SAFE_X1:].sum())

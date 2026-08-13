@@ -69,7 +69,8 @@ def run_one(path: Path, mode: str | None, out_dir: Path | None) -> Results:
             round(c.pts_gap_std_ms, 5), "<= 1.0 ms std")
 
     # ---- video ----------------------------------------------------------
-    v = analyse_video(path, c.width, c.height, c.fps or 30.0)
+    allow = SAFE_AREA_ARTWORK.get(mode, [])
+    v = analyse_video(path, c.width, c.height, c.fps or 30.0, allow)
     res.add("antifreeze", v.antifreeze_min >= THRESHOLDS["antifreeze"]["floor"],
             round(v.antifreeze_min, 3), ">= 0.5", f"t={v.antifreeze_min_at_s:.2f}s")
     res.add("sharpness", v.sharpness_dip_s <= THRESHOLDS["sharpness"]["max_dip_s"],
@@ -78,14 +79,9 @@ def run_one(path: Path, mode: str | None, out_dir: Path | None) -> Results:
             "no window > 0.35 s below 70% of median",
             f"t={v.sharpness_dip_at_s:.2f}s")
 
-    # No region short-circuit here, deliberately. Allowlisting the bottom band
-    # as artwork would also allowlist the paint names sitting inside it, which
-    # is the exact regression this gate exists to catch. It is unnecessary
-    # anyway: a flat swatch colour field has almost no local gradient, so it
-    # contributes virtually nothing to a DETAIL measure and self-excludes.
-    # After Phase 4 lifts the labels above y=1428, only swatch edges remain
-    # below the line and this should fall near zero on its own.
-    allow = SAFE_AREA_ARTWORK.get(mode, [])
+    # Detail inside an allowlisted artwork rect is excluded upstream, in
+    # analyse_video. What remains below the line is INFORMATION, which is the
+    # thing the platform caption would cover.
     res.add("safe_area_right",
             v.detail_right_safe <= THRESHOLDS["safe_area_right"]["max_fraction"],
             round(v.detail_right_safe, 4), "<= 0.02")

@@ -21,7 +21,7 @@
  */
 
 import type { Color } from '../types';
-import { CANVAS_H, CANVAS_W, type Rect } from './revealLayout';
+import { CANVAS_H, CANVAS_W, SAFE_RECT, type Rect } from './revealLayout';
 import {
   buildGrainTiles,
   drawText,
@@ -132,6 +132,21 @@ export const SOFT_MAX_MIX = 0.65;
 /** The ceiling the above must respect. See warpDefocus.test.ts. */
 export const SOFT_BLUR_MAX_PX = 4;
 
+/**
+ * Height reserved at the TOP of the palette region for the horizontal label
+ * strip, so names and ΔE sit above y=1430 — the platform caption line.
+ *
+ * Measured on the shipped export: 15.3% of detail pixels were below 1430 and
+ * 9.8% right of x=900, with the names rendering at y≈1600-1750, behind TikTok's
+ * caption and the action rail. Swatch colour FIELDS still bleed to the frame
+ * bottom because they are artwork; type is information and may not.
+ *
+ * 70 is not arbitrary: for the reference layout the palette starts at y=1360,
+ * so the strip ends exactly on y=1430 — the caption line. Everything above
+ * that line is type, everything below it is artwork, with no sliver between.
+ */
+export const LABEL_STRIP_H = 70;
+
 /** Ken Burns range. The image is CLIPPED to its rect, so the poster edges stay
  *  crisp while the picture inside them moves. */
 const KEN_BURNS = 0.08;
@@ -213,7 +228,15 @@ export function columnOrder(hexes: string[]): number[] {
 export function swatchRect(i: number, n: number, palette: Rect): Rect {
   const count = Math.max(1, n);
   const colW = (palette.w - (count - 1) * GAP) / count;
-  return { x: palette.x + i * (colW + GAP), y: palette.y, w: colW, h: palette.h };
+  // The strip owns the top of the palette region. The offset lives HERE rather
+  // than at the call sites so the swatches, the landing flash and the droplet's
+  // target can never disagree about where a column actually is.
+  return {
+    x: palette.x + i * (colW + GAP),
+    y: palette.y + LABEL_STRIP_H,
+    w: colW,
+    h: palette.h - LABEL_STRIP_H,
+  };
 }
 
 export interface WarpResources {
@@ -591,6 +614,7 @@ function drawPalette(
   const n = rows.length;
   if (n === 0) return;
 
+
   // The flash goes down FIRST, so the swatches cover it and it survives only in
   // the gutters. See drawPulseUnder.
   if (state.pulse) {
@@ -642,35 +666,73 @@ function drawPalette(
     ctx.strokeRect(r.x + 0.5, r.y + 0.5, r.w - 1, r.h - 1);
     ctx.restore();
 
-    if (band.labelAlpha <= 0) return;
-    // Rotated to read bottom-to-top: a swatch is far taller than it is wide, and
-    // horizontal type would have to shrink past legibility to fit.
-    const light = isLightSwatch(row.paintHex);
-    const ink = light ? '#0d0a16' : '#ffffff';
-    ctx.save();
-    ctx.globalAlpha = band.labelAlpha;
-    ctx.translate(r.x + r.w / 2, r.y + r.h - 26);
-    ctx.rotate(-Math.PI / 2);
-    drawText(ctx, row.paintName.toUpperCase(), 0, -11, {
-      font: res.fonts.cyber,
-      size: 25,
-      weight: 700,
-      colour: ink,
-      align: 'left',
-      letter: 1,
-      maxWidth: r.h - 52,
-    });
-    drawText(ctx, `ΔE ${row.deltaE.toFixed(1)}`, 0, 16, {
-      font: res.fonts.cyber,
-      size: 19,
-      weight: 600,
-      colour: light ? 'rgba(13,10,22,0.72)' : 'rgba(255,255,255,0.72)',
-      align: 'left',
-      letter: 1,
-      maxWidth: r.h - 52,
-    });
-    ctx.restore();
   });
+
+  drawLabelStrip(ctx, state, res, palette);
+}
+
+/**
+ * Paint name and ΔE, horizontal, in the strip above the caption line.
+ *
+ * Replaces six rotated labels of ~24px cap height — roughly 9pt on a phone,
+ * with the ΔE at ~14px (~5pt), which is not readable at arm's length at all.
+ * Contrast was never the problem (6.75:1 and 6.84:1 measured); size and
+ * orientation were. One name at a time can be twice the size and still fit.
+ */
+function drawLabelStrip(
+  ctx: CanvasRenderingContext2D,
+  state: WarpFrameState,
+  res: WarpResources,
+  palette: Rect,
+): void {
+  const strip = state.strip;
+  if (!strip || strip.alpha <= 0) return;
+  const rows = res.spec.wall ?? [];
+  const row = rows[strip.index];
+  if (!row) return;
+
+
+  const cy = palette.y + LABEL_STRIP_H / 2;
+
+  ctx.save();
+  ctx.globalAlpha = strip.alpha;
+
+  // A chip of the paint itself, so the name is anchored to a colour rather than
+  // floating over the gutter.
+  const chipR = 13;
+  ctx.beginPath();
+  ctx.arc(palette.x + 26, cy - 6, chipR, 0, Math.PI * 2);
+  ctx.fillStyle = row.paintHex;
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(0,0,0,0.14)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  drawText(ctx, row.paintName.toUpperCase(), palette.x + 52, cy - 14, {
+    font: res.fonts.cyber,
+    size: 38,
+    weight: 700,
+    colour: GROUND_INK,
+    align: 'left',
+    letter: 1.5,
+    maxWidth: SAFE_RECT.x + SAFE_RECT.w - 250,
+  });
+
+  // Right-aligned to the SAFE edge, not the frame edge. Measured on the first
+  // cut of this strip: at the frame edge the ΔE landed at x≈1054, i.e. under
+  // the platform action rail, which is the same defect the strip exists to fix
+  // — moved from the bottom of the frame to the side of it.
+  drawText(ctx, `ΔE ${row.deltaE.toFixed(1)}`, SAFE_RECT.x + SAFE_RECT.w - 20, cy - 10, {
+    font: res.fonts.cyber,
+    size: 26,
+    weight: 600,
+    colour: 'rgba(26,23,32,0.78)',
+    align: 'right',
+    letter: 1,
+    maxWidth: 180,
+  });
+
+  ctx.restore();
 }
 
 function drawPaletteSheen(
