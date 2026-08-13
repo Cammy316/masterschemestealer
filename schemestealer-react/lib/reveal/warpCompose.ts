@@ -43,6 +43,7 @@ import {
 import { WARP_DURATION_MS, bandPourWindow, warpFrameState, type WarpFrameState } from './warpTimeline';
 import { scanColourOrigins, fallbackOrigins } from './warpOrigins';
 import { scheduleWarpAudio, warpAudioBeats } from './warpAudio';
+import { poured } from './revealAudioEngine';
 import type { RevealStoryboard } from './revealStoryboard';
 import type { RenderRevealOptions } from './renderRevealVideo';
 
@@ -955,6 +956,10 @@ if (process.env.NODE_ENV !== 'production' && typeof window !== 'undefined') {
     warpCaptionText,
     scheduleWarpAudio,
     warpAudioBeats,
+    // Exposed so the pour-voice gates can render ONE tone in isolation.
+    // Measuring the property inside the full mix is not possible: the pad,
+    // the air layer and the sub all overlap every pour.
+    poured,
     warpFrameState,
     bandPourWindow,
     swatchRect,

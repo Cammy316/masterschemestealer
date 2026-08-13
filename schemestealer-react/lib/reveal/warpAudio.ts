@@ -27,7 +27,6 @@ import type { RevealSpec } from './revealTimeline';
 import type { RevealAudioOptions } from './revealAudio';
 import { WARP_PHASES, bandPourWindow } from './warpTimeline';
 import {
-  GLASS_PARTIALS,
   SCALES,
   air,
   createBus,
@@ -37,7 +36,9 @@ import {
   mulberry32,
   noiseBuffer,
   noteHz,
+  GLASS_PARTIALS,
   pad,
+  poured,
   scaleHz,
   struck,
   sub,
@@ -84,6 +85,17 @@ export function warpAudioBeats(spec: RevealSpec): number[] {
  * at −14 LUFS with real dynamic range. So anything sustained lives low, and
  * anything bright is short and lands on a beat.
  */
+/** FNV-1a over the paint's identity. Deterministic, stable across renders, and
+ *  cheap — the point is a per-paint voice, not cryptography. */
+function fnv1a(str: string): number {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return h >>> 0;
+}
+
 export function scheduleWarpAudio(
   ctx: BaseAudioContext,
   output: AudioNode,
@@ -227,14 +239,23 @@ export function scheduleWarpAudio(
   for (let i = 0; i < n; i++) {
     const w = bandPourWindow(i, n);
     const landAt = at(w.start + (w.end - w.start) * 0.45);
-    struck(ctx, hitBus.input, {
+    // Seeded from the PAINT, so the colour decides the voice: same paint, same
+    // sound, every render, and no two paints share a spectral template. The
+    // shipped bed reused one template transposed — two pairs of pours agreed on
+    // their partial ratios to within 0.15% and 0.3%.
+    const row = spec.wall?.[i];
+    const voiceSeed = fnv1a(`${row?.paintName ?? 'paint'}|${row?.paintHex ?? i}`);
+    poured(ctx, hitBus.input, {
       freq: scaleHz(scale, i, 1),
       at: landAt,
       gain: 0.3,
       decay: 1.5,
-      partials: GLASS_PARTIALS,
       attack: 0.05,
-      spread: 9,
+      seed: voiceSeed,
+      // A vessel filling raises in pitch as the air column shortens. The swatch
+      // fills over roughly the same window, so the sound now does what the
+      // picture does.
+      glideSemitones: 3.5,
     });
     air(ctx, hitBus.input, { at: landAt, dur: 0.26, gain: 0.26, fromHz: 4200, toHz: 900, q: 1.2, rnd });
     sub(ctx, hitBus.input, { at: landAt, gain: 0.24, fromHz: 118, toHz: 62, dur: 0.34 });

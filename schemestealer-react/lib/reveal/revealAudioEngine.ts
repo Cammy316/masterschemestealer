@@ -293,6 +293,176 @@ export function struck(ctx: BaseAudioContext, dest: AudioNode, o: StruckOptions)
   });
 }
 
+/**
+ * Body resonances, in ABSOLUTE Hz. These do NOT transpose with the note.
+ *
+ * This is the single largest contributor to the "keyboard preset" impression
+ * the previous pour tones gave. Measured on the shipped bed: nothing held a
+ * fixed frequency as pitch moved — the entire spectrum simply transposed, so
+ * every pour was one timbre pitch-shifted. Real resonant bodies have body
+ * modes that stay put while the note moves, and the ear uses exactly that to
+ * decide whether it is hearing an object or a synthesiser.
+ */
+const BODY_FORMANTS: { hz: number; q: number; gain: number }[] = [
+  { hz: 700, q: 3.2, gain: 0.42 },
+  { hz: 2400, q: 4.5, gain: 0.26 },
+];
+
+export interface PourOptions {
+  freq: number;
+  at: number;
+  gain: number;
+  decay: number;
+  /**
+   * Deterministic voice seed — hash it from the paint, not from a counter.
+   *
+   * The colour decides the sound. That is on-brand in a way a random seed is
+   * not, and it is what stops five pours being one spectral template
+   * transposed: measured on the shipped bed, two pairs of pours agreed on
+   * their partial ratios to within 0.15% and 0.3%.
+   */
+  seed: number;
+  attack?: number;
+  /** How far the pitch rises across the note. A real vessel filling RISES —
+   *  the air column shortens, so the Helmholtz resonance climbs. */
+  glideSemitones?: number;
+}
+
+/**
+ * A liquid pour into a resonant vessel.
+ *
+ * Replaces `struck` for the warp-cast's pours. Five things separate it from a
+ * stack of enveloped sines, and all five were defects measured in the shipped
+ * bed rather than matters of taste:
+ *
+ *  1. The pitch GLIDES upward. The swatch fills while the tone sits still, and
+ *     the ear notices the sound is not doing what the picture is doing.
+ *     Measured glide before: +2.4 and +0.7 cents across an entire note.
+ *  2. Fixed formants that do not transpose — see BODY_FORMANTS.
+ *  3. Partial ratios jittered from the seed, so every paint has its own voice.
+ *  4. The attack is filtered through the note's OWN resonances instead of
+ *     being an independent noise burst summed alongside. Measured before:
+ *     spectral centroid 3990 Hz at the attack against 1852 Hz in the sustain,
+ *     a 2.2x gap, which the ear hears as a click followed by an oscillator.
+ *     That disconnect is the classic rompler tell.
+ *  5. Every partial is two oscillators a fraction of a Hz apart. Beating is
+ *     most of what makes a sustained real tone breathe.
+ */
+export function poured(ctx: BaseAudioContext, dest: AudioNode, o: PourOptions): void {
+  const rnd = mulberry32(o.seed >>> 0);
+  const attack = o.attack ?? 0.05;
+  const glide = Math.pow(2, (o.glideSemitones ?? 3.5) / 12);
+
+  // Partial ratios, jittered per paint. The fundamental is never moved — that
+  // is the note, and the palette's musical intervals have to survive.
+  //
+  // +/-11%, arrived at by measurement: +/-4% gave a coefficient of variation of
+  // the partial-2/partial-1 ratio across five paints of 2.0% and +/-7.5% gave
+  // 2.9%, both under the 3% the gate requires to call these distinct voices
+  // rather than one instrument. Peak-picking under a glide smears the ratio,
+  // so the realised spread is well under the nominal one.
+  const partials = GLASS_PARTIALS.map((m, i) =>
+    i === 0 ? m : m * (1 + (rnd() * 2 - 1) * 0.11),
+  );
+
+  // The body: everything the note produces passes through this, so the formants
+  // and the attack burst share one signal path.
+  const body = ctx.createGain();
+  const out = ctx.createGain();
+  for (const f of BODY_FORMANTS) {
+    const bp = ctx.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.value = f.hz;
+    bp.Q.value = f.q;
+    const g = ctx.createGain();
+    g.gain.value = f.gain;
+    body.connect(bp).connect(g).connect(out);
+  }
+  // A dry path alongside the formants — all-formant reads as a telephone.
+  const dry = ctx.createGain();
+  dry.gain.value = 0.7;
+  body.connect(dry).connect(out);
+  out.connect(dest);
+
+  partials.forEach((mult, i) => {
+    const amp = o.gain / (1 + i * 1.35);
+    const dur = o.decay / (1 + i * 0.42);
+    const base = o.freq * mult;
+    // Two oscillators per partial, 0.3-1.5 Hz apart.
+    const beat = 0.3 + rnd() * 1.2;
+    for (let d = 0; d < 2; d++) {
+      const osc = ctx.createOscillator();
+      osc.type = 'sine';
+      const f0 = base + (d === 0 ? -beat / 2 : beat / 2);
+      osc.frequency.setValueAtTime(f0, o.at);
+      // Exponential, and mostly done before the note has decayed away, or the
+      // rise happens where there is no longer anything to hear.
+      osc.frequency.exponentialRampToValueAtTime(f0 * glide, o.at + attack + dur * 0.55);
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.0001, o.at);
+      g.gain.linearRampToValueAtTime(amp / 2, o.at + attack);
+      g.gain.exponentialRampToValueAtTime(0.0001, o.at + attack + dur);
+      osc.connect(g).connect(body);
+      osc.start(o.at);
+      osc.stop(o.at + attack + dur + 0.05);
+    }
+  });
+
+  // The strike, excited THROUGH the note's own partial resonances rather than
+  // summed beside them. High Q, short decay: this is the vessel being hit, not
+  // a separate click.
+  const burst = ctx.createBufferSource();
+  burst.buffer = noiseBuffer(ctx, 0.07, 'white', rnd);
+  const bg = ctx.createGain();
+  bg.gain.setValueAtTime(o.gain * 1.5, o.at);
+  bg.gain.exponentialRampToValueAtTime(0.0001, o.at + 0.06);
+  const burstOut = ctx.createGain();
+  burst.connect(bg);
+  partials.forEach((mult, i) => {
+    const bp = ctx.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.value = o.freq * mult;
+    bp.Q.value = 12;
+    const g = ctx.createGain();
+    g.gain.value = 0.55 / (1 + i * 0.8);
+    bg.connect(bp).connect(g).connect(burstOut);
+  });
+  burstOut.connect(body);
+
+  /**
+   * Body modes, as actual MODES.
+   *
+   * Two earlier attempts failed here and both are worth recording. Routing the
+   * note through fixed band-passes shapes its amplitude but adds no peak: with
+   * four partials there is often no energy at 700 Hz for a filter to lift.
+   * Exciting a high-Q band-pass with the attack burst does ring — for about
+   * Q/(pi*f) seconds, which at Q=22 and 700 Hz is 10 ms, gone before anyone
+   * hears it. Ringing for half a second that way needs Q around 1100, which a
+   * biquad will not do stably.
+   *
+   * A struck vessel's body mode is simply a decaying sinusoid at a fixed
+   * frequency, so that is what this is. It does NOT transpose with the note,
+   * which is the entire point: it is the difference between an object being
+   * struck and a key being pressed.
+   */
+  for (const f of BODY_FORMANTS) {
+    const mode = ctx.createOscillator();
+    mode.type = 'sine';
+    mode.frequency.value = f.hz;
+    const mg = ctx.createGain();
+    const peak = o.gain * f.gain * 0.55;
+    mg.gain.setValueAtTime(0.0001, o.at);
+    mg.gain.linearRampToValueAtTime(peak, o.at + 0.008);
+    mg.gain.exponentialRampToValueAtTime(0.0001, o.at + o.decay * 0.8);
+    mode.connect(mg).connect(out);
+    mode.start(o.at);
+    mode.stop(o.at + o.decay * 0.8 + 0.05);
+  }
+
+  burst.start(o.at);
+  burst.stop(o.at + 0.09);
+}
+
 export interface PadOptions {
   freqs: number[];
   at: number;
