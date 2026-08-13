@@ -129,8 +129,8 @@ export function warpFrameState(t: number, durationMs: number, bandCount: number)
   const breath = Math.sin(f * Math.PI * 2);
   const camera = {
     scale: 1.045 + 0.035 * (0.5 - 0.5 * Math.cos(f * Math.PI * 2)),
-    driftX: breath * 10,
-    driftY: Math.sin(f * Math.PI * 2 + 1.1) * 8,
+    driftX: breath * 44,
+    driftY: Math.sin(f * Math.PI * 2 + 1.1) * 34,
   };
 
   // Soften: clean at the open, soft through the middle, clean again by the
