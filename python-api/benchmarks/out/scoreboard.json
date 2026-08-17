@@ -1,0 +1,671 @@
+{
+  "generated_at": "2026-08-17T19:36Z",
+  "elapsed_s": 30.4,
+  "match": {
+    "primer": {
+      "paint_id": "citadel-wraithbone",
+      "name": "Wraithbone",
+      "lab": [
+        77.91,
+        1.52,
+        9.59
+      ]
+    },
+    "n_scored": 1312,
+    "top1_self_pct": 65.46,
+    "top3_self_pct": 71.96,
+    "opaque_matte_top1_self_pct": 99.85,
+    "opaque_matte_n": 649,
+    "median_de": 0.0,
+    "p90_de": 7.08,
+    "cross_brand_median_de": 5.088,
+    "cross_brand_p90_de": 9.584,
+    "by_brand": {
+      "Pro Acryl": {
+        "n": 123,
+        "self_hit_pct": 75.61,
+        "median_de": 0.0,
+        "p90_de": 6.087
+      },
+      "Two Thin Coats": {
+        "n": 196,
+        "self_hit_pct": 68.37,
+        "median_de": 0.0,
+        "p90_de": 6.235
+      },
+      "Army Painter": {
+        "n": 249,
+        "self_hit_pct": 58.63,
+        "median_de": 0.0,
+        "p90_de": 5.627
+      },
+      "AK": {
+        "n": 235,
+        "self_hit_pct": 60.43,
+        "median_de": 0.0,
+        "p90_de": 7.45
+      },
+      "Citadel": {
+        "n": 171,
+        "self_hit_pct": 32.16,
+        "median_de": 3.035,
+        "p90_de": 10.732
+      },
+      "Vallejo": {
+        "n": 338,
+        "self_hit_pct": 66.86,
+        "median_de": 0.0,
+        "p90_de": 5.616
+      }
+    },
+    "by_family": {
+      "bone": {
+        "n": 151,
+        "self_hit_pct": 24.5,
+        "median_de": 4.291,
+        "p90_de": 7.252
+      },
+      "white": {
+        "n": 215,
+        "self_hit_pct": 15.35,
+        "median_de": 3.128,
+        "p90_de": 5.676
+      },
+      "yellow": {
+        "n": 41,
+        "self_hit_pct": 80.49,
+        "median_de": 0.0,
+        "p90_de": 5.242
+      },
+      "orange": {
+        "n": 41,
+        "self_hit_pct": 95.12,
+        "median_de": 0.0,
+        "p90_de": 0.0
+      },
+      "pink": {
+        "n": 107,
+        "self_hit_pct": 23.36,
+        "median_de": 5.522,
+        "p90_de": 11.173
+      },
+      "red": {
+        "n": 31,
+        "self_hit_pct": 93.55,
+        "median_de": 0.0,
+        "p90_de": 0.0
+      },
+      "brown": {
+        "n": 113,
+        "self_hit_pct": 95.58,
+        "median_de": 0.0,
+        "p90_de": 0.0
+      },
+      "black": {
+        "n": 47,
+        "self_hit_pct": 97.87,
+        "median_de": 0.0,
+        "p90_de": 0.0
+      },
+      "magenta": {
+        "n": 26,
+        "self_hit_pct": 100.0,
+        "median_de": 0.0,
+        "p90_de": 0.0
+      },
+      "grey": {
+        "n": 155,
+        "self_hit_pct": 76.77,
+        "median_de": 0.0,
+        "p90_de": 8.171
+      },
+      "purple": {
+        "n": 33,
+        "self_hit_pct": 90.91,
+        "median_de": 0.0,
+        "p90_de": 5.973
+      },
+      "blue": {
+        "n": 82,
+        "self_hit_pct": 85.37,
+        "median_de": 0.0,
+        "p90_de": 5.063
+      },
+      "cyan": {
+        "n": 72,
+        "self_hit_pct": 93.06,
+        "median_de": 0.0,
+        "p90_de": 5.507
+      },
+      "green": {
+        "n": 70,
+        "self_hit_pct": 92.86,
+        "median_de": 0.0,
+        "p90_de": 0.534
+      },
+      "silver": {
+        "n": 69,
+        "self_hit_pct": 46.38,
+        "median_de": 2.863,
+        "p90_de": 7.304
+      },
+      "bronze": {
+        "n": 41,
+        "self_hit_pct": 58.54,
+        "median_de": 0.0,
+        "p90_de": 11.492
+      },
+      "gold": {
+        "n": 18,
+        "self_hit_pct": 72.22,
+        "median_de": 0.0,
+        "p90_de": 9.29
+      }
+    },
+    "family_confusion": {
+      "bone": {
+        "white": 14,
+        "bone": 130,
+        "yellow": 4,
+        "brown": 2,
+        "grey": 1
+      },
+      "white": {
+        "white": 168,
+        "bone": 41,
+        "grey": 6
+      },
+      "yellow": {
+        "bone": 5,
+        "yellow": 35,
+        "green": 1
+      },
+      "orange": {
+        "orange": 40,
+        "red": 1
+      },
+      "pink": {
+        "red": 6,
+        "pink": 94,
+        "purple": 6,
+        "magenta": 1
+      },
+      "red": {
+        "pink": 1,
+        "red": 30
+      },
+      "brown": {
+        "brown": 108,
+        "bone": 4,
+        "orange": 1
+      },
+      "black": {
+        "black": 47
+      },
+      "magenta": {
+        "magenta": 26
+      },
+      "grey": {
+        "white": 4,
+        "grey": 151
+      },
+      "purple": {
+        "purple": 30,
+        "magenta": 2,
+        "blue": 1
+      },
+      "blue": {
+        "blue": 81,
+        "purple": 1
+      },
+      "cyan": {
+        "cyan": 70,
+        "blue": 2
+      },
+      "green": {
+        "green": 67,
+        "yellow": 3
+      },
+      "silver": {
+        "silver": 59,
+        "grey": 7,
+        "white": 2,
+        "bronze": 1
+      },
+      "bronze": {
+        "silver": 4,
+        "bronze": 33,
+        "gold": 4
+      },
+      "gold": {
+        "gold": 12,
+        "silver": 2,
+        "bronze": 3,
+        "yellow": 1
+      }
+    },
+    "silver_vs_grey": {
+      "n": 54,
+      "self": 0,
+      "grey_win": 47
+    },
+    "grey_as_metallic": {
+      "n": 153,
+      "silver_win": 29
+    },
+    "contrast_vs_base": {
+      "n": 236,
+      "winner_is_base": 206,
+      "winner_is_translucent": 30
+    },
+    "honest_empty": 0
+  },
+  "synthetic": {
+    "scenes": [
+      {
+        "name": "flat_two_paints",
+        "planted_families": [
+          "blue",
+          "red"
+        ],
+        "recovered": [
+          {
+            "family": "blue",
+            "coverage": 50.00000000000001,
+            "lab": [
+              20.390255084615788,
+              12.626788246712762,
+              -35.00057967362806
+            ]
+          },
+          {
+            "family": "red",
+            "coverage": 43.78,
+            "lab": [
+              33.527640253112864,
+              44.64795130095523,
+              28.682095504827455
+            ]
+          },
+          {
+            "family": "black",
+            "coverage": 6.220000000000001,
+            "lab": [
+              12.250030101522825,
+              -0.0005978626594904668,
+              0.0011332697213539689
+            ]
+          }
+        ],
+        "family_hit": {
+          "blue": true,
+          "red": true
+        },
+        "same_family_card_count": {
+          "blue": 1,
+          "red": 1
+        },
+        "split_same_family": false
+      },
+      {
+        "name": "blue_ramp_4to1",
+        "planted_families": [
+          "blue"
+        ],
+        "recovered": [
+          {
+            "family": "blue",
+            "coverage": 72.51908396946565,
+            "lab": [
+              16.564936432218765,
+              11.468302070671843,
+              -31.438610306813118
+            ]
+          },
+          {
+            "family": "black",
+            "coverage": 27.48091603053435,
+            "lab": [
+              9.77117960053344,
+              9.053619436505276,
+              -24.966035397502335
+            ]
+          }
+        ],
+        "family_hit": {
+          "blue": true
+        },
+        "same_family_card_count": {
+          "blue": 1
+        },
+        "split_same_family": false
+      },
+      {
+        "name": "gold_and_bone",
+        "planted_families": [
+          "bone"
+        ],
+        "recovered": [
+          {
+            "family": "bone",
+            "coverage": 93.33333333333333,
+            "lab": [
+              70.15545596269118,
+              3.404282581296325,
+              24.12043920276976
+            ]
+          },
+          {
+            "family": "black",
+            "coverage": 6.666666666666667,
+            "lab": [
+              12.250030101522825,
+              -0.0005978626594904668,
+              0.0011332697213539689
+            ]
+          }
+        ],
+        "family_hit": {
+          "bone": true
+        },
+        "same_family_card_count": {
+          "bone": 1
+        },
+        "split_same_family": false
+      }
+    ]
+  },
+  "stability": {
+    "images": [
+      {
+        "image": "complex.PNG",
+        "base_n": 8,
+        "base_families": [
+          "black",
+          "bone",
+          "brown",
+          "brown",
+          "grey",
+          "pink",
+          "white",
+          "yellow"
+        ],
+        "variants": {
+          "lsb_plus1": {
+            "n": 9,
+            "families": [
+              "black",
+              "bone",
+              "brown",
+              "brown",
+              "grey",
+              "light grey",
+              "pink",
+              "white",
+              "yellow"
+            ],
+            "card_count_changed": true,
+            "family_set_changed": true
+          },
+          "jpeg85": {
+            "n": 9,
+            "families": [
+              "black",
+              "bone",
+              "brown",
+              "grey",
+              "light grey",
+              "pink",
+              "red",
+              "white",
+              "yellow"
+            ],
+            "card_count_changed": true,
+            "family_set_changed": true
+          },
+          "ev_minus_0_3": {
+            "n": 8,
+            "families": [
+              "black",
+              "bone",
+              "brown",
+              "brown",
+              "grey",
+              "light grey",
+              "red",
+              "white"
+            ],
+            "card_count_changed": false,
+            "family_set_changed": true
+          }
+        }
+      },
+      {
+        "image": "ultra.jpg",
+        "base_n": 6,
+        "base_families": [
+          "blue",
+          "bone",
+          "brown",
+          "dark grey",
+          "grey",
+          "white"
+        ],
+        "variants": {
+          "lsb_plus1": {
+            "n": 8,
+            "families": [
+              "blue",
+              "blue",
+              "bone",
+              "brown",
+              "dark grey",
+              "grey",
+              "light grey",
+              "white"
+            ],
+            "card_count_changed": true,
+            "family_set_changed": true
+          },
+          "jpeg85": {
+            "n": 7,
+            "families": [
+              "blue",
+              "blue",
+              "bone",
+              "brown",
+              "dark grey",
+              "grey",
+              "light grey"
+            ],
+            "card_count_changed": true,
+            "family_set_changed": true
+          },
+          "ev_minus_0_3": {
+            "n": 6,
+            "families": [
+              "black",
+              "blue",
+              "bone",
+              "brown",
+              "dark grey",
+              "grey"
+            ],
+            "card_count_changed": false,
+            "family_set_changed": true
+          }
+        }
+      },
+      {
+        "image": "pinkhorror2.webp",
+        "base_n": 8,
+        "base_families": [
+          "cyan",
+          "dark grey",
+          "green",
+          "grey",
+          "magenta",
+          "pink",
+          "white",
+          "yellow"
+        ],
+        "variants": {
+          "lsb_plus1": {
+            "n": 7,
+            "families": [
+              "cyan",
+              "dark grey",
+              "grey",
+              "magenta",
+              "pink",
+              "white",
+              "yellow"
+            ],
+            "card_count_changed": true,
+            "family_set_changed": true
+          },
+          "jpeg85": {
+            "n": 7,
+            "families": [
+              "cyan",
+              "dark grey",
+              "grey",
+              "magenta",
+              "pink",
+              "white",
+              "yellow"
+            ],
+            "card_count_changed": true,
+            "family_set_changed": true
+          },
+          "ev_minus_0_3": {
+            "n": 6,
+            "families": [
+              "cyan",
+              "dark grey",
+              "green",
+              "grey",
+              "magenta",
+              "pink"
+            ],
+            "card_count_changed": true,
+            "family_set_changed": true
+          }
+        }
+      },
+      {
+        "image": "capturepink.PNG",
+        "base_n": 8,
+        "base_families": [
+          "cyan",
+          "dark grey",
+          "green",
+          "grey",
+          "magenta",
+          "pink",
+          "white",
+          "yellow"
+        ],
+        "variants": {
+          "lsb_plus1": {
+            "n": 7,
+            "families": [
+              "cyan",
+              "dark grey",
+              "grey",
+              "magenta",
+              "pink",
+              "white",
+              "yellow"
+            ],
+            "card_count_changed": true,
+            "family_set_changed": true
+          },
+          "jpeg85": {
+            "n": 7,
+            "families": [
+              "cyan",
+              "dark grey",
+              "grey",
+              "magenta",
+              "pink",
+              "white",
+              "yellow"
+            ],
+            "card_count_changed": true,
+            "family_set_changed": true
+          },
+          "ev_minus_0_3": {
+            "n": 7,
+            "families": [
+              "cyan",
+              "dark grey",
+              "green",
+              "grey",
+              "magenta",
+              "pink",
+              "yellow"
+            ],
+            "card_count_changed": true,
+            "family_set_changed": true
+          }
+        }
+      },
+      {
+        "image": "Example.jpg",
+        "base_n": 6,
+        "base_families": [
+          "blue",
+          "blue",
+          "brown",
+          "grey",
+          "light grey",
+          "magenta"
+        ],
+        "variants": {
+          "lsb_plus1": {
+            "n": 5,
+            "families": [
+              "blue",
+              "blue",
+              "grey",
+              "light grey",
+              "magenta"
+            ],
+            "card_count_changed": true,
+            "family_set_changed": true
+          },
+          "jpeg85": {
+            "n": 7,
+            "families": [
+              "blue",
+              "blue",
+              "brown",
+              "dark grey",
+              "grey",
+              "light grey",
+              "magenta"
+            ],
+            "card_count_changed": true,
+            "family_set_changed": true
+          },
+          "ev_minus_0_3": {
+            "n": 6,
+            "families": [
+              "blue",
+              "dark grey",
+              "grey",
+              "light grey",
+              "magenta",
+              "purple"
+            ],
+            "card_count_changed": false,
+            "family_set_changed": true
+          }
+        }
+      }
+    ],
+    "n": 5,
+    "n_unstable": 5
+  }
+}
