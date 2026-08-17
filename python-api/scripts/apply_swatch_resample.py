@@ -2,7 +2,7 @@
 Apply the reviewed swatch re-sample to paints_groundtruth.json.
 
 Runs AFTER human review of swatch_resample_report.md (the sign-off step).
-For every matched paint the region-median lab/hex from the REDACTED PDF
+For every matched paint the region-median lab/hex from the swatch-source PDF
 replaces the old centre-point value (uniform provenance), `swatch_spread`
 records the swatch's internal Lab spread (reliability / metallic signature),
 and `color_source` records provenance: 'swatch-median' vs 'assumed' (washes

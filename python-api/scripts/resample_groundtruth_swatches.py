@@ -1,5 +1,5 @@
 """
-Re-sample every paint swatch in the REDACTED 7-in-1 comparison PDF.
+Re-sample every paint swatch in the swatch-source comparison PDF.
 
 The ground-truth labs in paints_groundtruth.json were originally extracted
 from a SINGLE CENTRE POINT of each photographed swatch. A point sample is
@@ -19,6 +19,7 @@ Outputs:
 """
 
 import difflib
+import glob
 import json
 import os
 import re
@@ -34,7 +35,14 @@ from skimage import color as skcolor
 
 from core.colour_maths import ciede2000_single
 
-PDF_PATH = r"E:\Git\masterschemestealer\Skills&rules\_source\REDACTED_SWATCH_SOURCE.pdf"
+# The swatch source is local-only and must never be named in the repo (core
+# invariant 7). Resolve it from $SWATCH_SOURCE_PDF, else take the single PDF
+# in Skills&rules/_source/ — which is git-ignored, so neither the file nor its
+# name is ever committed.
+_SOURCE_DIR = os.path.join(os.path.dirname(__file__), "..", "..",
+                           "Skills&rules", "_source")
+PDF_PATH = os.environ.get("SWATCH_SOURCE_PDF") or next(
+    iter(sorted(glob.glob(os.path.join(_SOURCE_DIR, "*.pdf")))), "")
 DB_PATH = os.path.join(os.path.dirname(__file__), "..", "paints_groundtruth.json")
 OUT_JSON = os.path.join(os.path.dirname(__file__), "..", "swatch_resample.json")
 OUT_MD = os.path.join(os.path.dirname(__file__), "..", "swatch_resample_report.md")
@@ -58,6 +66,10 @@ def _norm(s: str) -> str:
 
 
 def collect_swatches():
+    if not PDF_PATH or not os.path.isfile(PDF_PATH):
+        raise SystemExit(
+            "Swatch-source PDF not found. Set $SWATCH_SOURCE_PDF, or place it "
+            "in Skills&rules/_source/ (git-ignored, local-only).")
     doc = fitz.open(PDF_PATH)
     swatches = []
     pix_cache = {}

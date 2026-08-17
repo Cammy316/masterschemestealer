@@ -53,6 +53,13 @@ python-api/data/
 # whole folder is kept on disk for local context but never committed.
 Skills&rules/
 
+# Colour-science audit working files. Local-only for the same reason as
+# Skills&rules/: the research notes discuss the swatch source by name, and
+# invariant 7 forbids that reaching any published output. Nothing under docs/
+# has ever been committed, so no history rewrite is needed — but this folder is
+# NOT backed up by the repo. Keep an off-repo copy.
+docs/
+
 # Local-only large/offline assets & superseded business-doc duplicates. Kept on
 # disk, never committed (also purged from history). The canonical roadmap lives
 # in Skills&rules/context/.
