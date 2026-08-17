@@ -549,7 +549,12 @@ class SmartColorExtractor:
         cluster_lab = cluster['median_lab']
         
         for other in all_clusters:
-            if other == cluster:
+            # Identity, not equality: these dicts hold NumPy arrays, so `==`
+            # reaches `bool(array == array)` and raises whenever two DIFFERENT
+            # merged clusters compare equal up to their first array-valued key
+            # (merged clusters lead with `coverage`, so an exact coverage
+            # collision is enough). Audit O-C14b.
+            if other is cluster:
                 continue
             
             other_lab = other['median_lab']
