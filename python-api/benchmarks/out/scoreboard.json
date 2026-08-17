@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-17T19:36Z",
-  "elapsed_s": 30.4,
+  "generated_at": "2026-08-17T20:13Z",
+  "elapsed_s": 30.3,
   "match": {
     "primer": {
       "paint_id": "citadel-wraithbone",
@@ -271,29 +271,29 @@
         "recovered": [
           {
             "family": "blue",
-            "coverage": 50.00000000000001,
+            "coverage": 50.0,
             "lab": [
-              20.390255084615788,
-              12.626788246712762,
-              -35.00057967362806
+              20.390255,
+              12.626788,
+              -35.00058
             ]
           },
           {
             "family": "red",
             "coverage": 43.78,
             "lab": [
-              33.527640253112864,
-              44.64795130095523,
-              28.682095504827455
+              33.52764,
+              44.647951,
+              28.682096
             ]
           },
           {
             "family": "black",
-            "coverage": 6.220000000000001,
+            "coverage": 6.22,
             "lab": [
-              12.250030101522825,
-              -0.0005978626594904668,
-              0.0011332697213539689
+              12.25003,
+              -0.000598,
+              0.001133
             ]
           }
         ],
@@ -305,7 +305,9 @@
           "blue": 1,
           "red": 1
         },
-        "split_same_family": false
+        "split_same_family": false,
+        "n_cards": 3,
+        "largest_non_planted_card_pct": 6.22
       },
       {
         "name": "blue_ramp_4to1",
@@ -315,20 +317,20 @@
         "recovered": [
           {
             "family": "blue",
-            "coverage": 72.51908396946565,
+            "coverage": 72.519084,
             "lab": [
-              16.564936432218765,
-              11.468302070671843,
-              -31.438610306813118
+              16.564936,
+              11.468302,
+              -31.43861
             ]
           },
           {
             "family": "black",
-            "coverage": 27.48091603053435,
+            "coverage": 27.480916,
             "lab": [
-              9.77117960053344,
-              9.053619436505276,
-              -24.966035397502335
+              9.77118,
+              9.053619,
+              -24.966035
             ]
           }
         ],
@@ -338,7 +340,9 @@
         "same_family_card_count": {
           "blue": 1
         },
-        "split_same_family": false
+        "split_same_family": false,
+        "n_cards": 2,
+        "largest_non_planted_card_pct": 27.481
       },
       {
         "name": "gold_and_bone",
@@ -348,20 +352,20 @@
         "recovered": [
           {
             "family": "bone",
-            "coverage": 93.33333333333333,
+            "coverage": 93.333333,
             "lab": [
-              70.15545596269118,
-              3.404282581296325,
-              24.12043920276976
+              70.155456,
+              3.404283,
+              24.120439
             ]
           },
           {
             "family": "black",
-            "coverage": 6.666666666666667,
+            "coverage": 6.666667,
             "lab": [
-              12.250030101522825,
-              -0.0005978626594904668,
-              0.0011332697213539689
+              12.25003,
+              -0.000598,
+              0.001133
             ]
           }
         ],
@@ -371,9 +375,39 @@
         "same_family_card_count": {
           "bone": 1
         },
-        "split_same_family": false
+        "split_same_family": false,
+        "n_cards": 2,
+        "largest_non_planted_card_pct": 6.667
       }
     ]
+  },
+  "recipes": {
+    "warm_min_chroma_ok": 0.02,
+    "n_keys": 2551,
+    "keys_by_rel": {
+      "highlight": 1188,
+      "shade": 1177,
+      "wash": 186
+    },
+    "candidates_per_key": {
+      "1": 280,
+      "2": 2271
+    },
+    "edge_sources": {
+      "algorithmic": 4615,
+      "citadel_official": 30,
+      "manual": 177
+    },
+    "n_edges": 4822,
+    "warm_bases_with_highlight": 747,
+    "warm_cooler_highlight": 161,
+    "warm_cooler_highlight_pct": 21.55,
+    "both_candidates_cooler": 59,
+    "both_candidates_cooler_pct": 7.9,
+    "chroma_loss_gt50": 75,
+    "chroma_loss_gt50_pct": 10.04,
+    "monotonic_guarded_keys": 2365,
+    "monotonic_inversions": 2
   },
   "stability": {
     "images": [
@@ -405,7 +439,10 @@
               "yellow"
             ],
             "card_count_changed": true,
-            "family_set_changed": true
+            "family_set_changed": true,
+            "family_jaccard": 0.111111,
+            "coverage_l1_pp": 74.3025,
+            "instability": 0.482623
           },
           "jpeg85": {
             "n": 9,
@@ -421,7 +458,10 @@
               "yellow"
             ],
             "card_count_changed": true,
-            "family_set_changed": true
+            "family_set_changed": true,
+            "family_jaccard": 0.3,
+            "coverage_l1_pp": 62.6899,
+            "instability": 0.61345
           },
           "ev_minus_0_3": {
             "n": 8,
@@ -436,9 +476,17 @@
               "white"
             ],
             "card_count_changed": false,
-            "family_set_changed": true
+            "family_set_changed": true,
+            "family_jaccard": 0.4,
+            "coverage_l1_pp": 63.7827,
+            "instability": 0.718914
           }
-        }
+        },
+        "instability": 1.814987,
+        "base_coverage_total": 100.0,
+        "analysed_px": 42444,
+        "alpha_px": 61184,
+        "retention_pct": 69.371
       },
       {
         "image": "ultra.jpg",
@@ -465,7 +513,10 @@
               "white"
             ],
             "card_count_changed": true,
-            "family_set_changed": true
+            "family_set_changed": true,
+            "family_jaccard": 0.25,
+            "coverage_l1_pp": 72.5698,
+            "instability": 0.612849
           },
           "jpeg85": {
             "n": 7,
@@ -479,7 +530,10 @@
               "light grey"
             ],
             "card_count_changed": true,
-            "family_set_changed": true
+            "family_set_changed": true,
+            "family_jaccard": 0.375,
+            "coverage_l1_pp": 76.9971,
+            "instability": 0.759985
           },
           "ev_minus_0_3": {
             "n": 6,
@@ -492,9 +546,17 @@
               "grey"
             ],
             "card_count_changed": false,
-            "family_set_changed": true
+            "family_set_changed": true,
+            "family_jaccard": 0.285714,
+            "coverage_l1_pp": 28.0986,
+            "instability": 0.426207
           }
-        }
+        },
+        "instability": 1.799041,
+        "base_coverage_total": 100.0,
+        "analysed_px": 65470,
+        "alpha_px": 90000,
+        "retention_pct": 72.744
       },
       {
         "image": "pinkhorror2.webp",
@@ -522,7 +584,10 @@
               "yellow"
             ],
             "card_count_changed": true,
-            "family_set_changed": true
+            "family_set_changed": true,
+            "family_jaccard": 0.125,
+            "coverage_l1_pp": 8.7096,
+            "instability": 0.168548
           },
           "jpeg85": {
             "n": 7,
@@ -536,7 +601,10 @@
               "yellow"
             ],
             "card_count_changed": true,
-            "family_set_changed": true
+            "family_set_changed": true,
+            "family_jaccard": 0.125,
+            "coverage_l1_pp": 26.9591,
+            "instability": 0.259795
           },
           "ev_minus_0_3": {
             "n": 6,
@@ -549,9 +617,17 @@
               "pink"
             ],
             "card_count_changed": true,
-            "family_set_changed": true
+            "family_set_changed": true,
+            "family_jaccard": 0.25,
+            "coverage_l1_pp": 68.6522,
+            "instability": 0.593261
           }
-        }
+        },
+        "instability": 1.021604,
+        "base_coverage_total": 100.0,
+        "analysed_px": 84505,
+        "alpha_px": 112500,
+        "retention_pct": 75.116
       },
       {
         "image": "capturepink.PNG",
@@ -579,7 +655,10 @@
               "yellow"
             ],
             "card_count_changed": true,
-            "family_set_changed": true
+            "family_set_changed": true,
+            "family_jaccard": 0.125,
+            "coverage_l1_pp": 29.1402,
+            "instability": 0.270701
           },
           "jpeg85": {
             "n": 7,
@@ -593,7 +672,10 @@
               "yellow"
             ],
             "card_count_changed": true,
-            "family_set_changed": true
+            "family_set_changed": true,
+            "family_jaccard": 0.125,
+            "coverage_l1_pp": 9.3221,
+            "instability": 0.17161
           },
           "ev_minus_0_3": {
             "n": 7,
@@ -607,9 +689,17 @@
               "yellow"
             ],
             "card_count_changed": true,
-            "family_set_changed": true
+            "family_set_changed": true,
+            "family_jaccard": 0.125,
+            "coverage_l1_pp": 64.8112,
+            "instability": 0.449056
           }
-        }
+        },
+        "instability": 0.891367,
+        "base_coverage_total": 100.0,
+        "analysed_px": 84807,
+        "alpha_px": 112200,
+        "retention_pct": 75.586
       },
       {
         "image": "Example.jpg",
@@ -633,7 +723,10 @@
               "magenta"
             ],
             "card_count_changed": true,
-            "family_set_changed": true
+            "family_set_changed": true,
+            "family_jaccard": 0.166667,
+            "coverage_l1_pp": 24.8245,
+            "instability": 0.290789
           },
           "jpeg85": {
             "n": 7,
@@ -647,7 +740,10 @@
               "magenta"
             ],
             "card_count_changed": true,
-            "family_set_changed": true
+            "family_set_changed": true,
+            "family_jaccard": 0.142857,
+            "coverage_l1_pp": 10.799,
+            "instability": 0.196852
           },
           "ev_minus_0_3": {
             "n": 6,
@@ -660,12 +756,23 @@
               "purple"
             ],
             "card_count_changed": false,
-            "family_set_changed": true
+            "family_set_changed": true,
+            "family_jaccard": 0.5,
+            "coverage_l1_pp": 44.9258,
+            "instability": 0.724629
           }
-        }
+        },
+        "instability": 1.21227,
+        "base_coverage_total": 100.0,
+        "analysed_px": 48178,
+        "alpha_px": 68100,
+        "retention_pct": 70.746
       }
     ],
     "n": 5,
-    "n_unstable": 5
+    "n_unstable": 5,
+    "instability_total": 6.739269,
+    "retention_min_pct": 69.371,
+    "retention_max_pct": 75.586
   }
 }

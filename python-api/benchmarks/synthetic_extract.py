@@ -127,12 +127,23 @@ def _score_scene(name: str, clusters: list[dict], planted: dict) -> dict[str, An
         fam = (c.get("family") or classify_family(lab)).lower() if lab is not None else "?"
         recovered.append({
             "family": fam,
-            "coverage": float(c.get("percentage") or c.get("coverage") or 0.0),
-            "lab": [float(x) for x in lab] if lab is not None else None,
+            # Rounded to make the scoreboard byte-diffable between runs. Two
+            # runs of `gold_and_bone` returned coverage 93.33333333333331 and
+            # 93.33333333333334 — a 3e-14 float-reduction-order difference, not
+            # a behaviour change, but enough to defeat "diff scoreboard.json
+            # against the parent". 6 dp is ~1e-6 % of a 300 px scene, three
+            # orders below a single pixel, so nothing measurable is discarded.
+            "coverage": round(float(c.get("percentage") or c.get("coverage") or 0.0), 6),
+            "lab": [round(float(x), 6) for x in lab] if lab is not None else None,
         })
     families = [r["family"] for r in recovered]
     splits = {fam: families.count(fam) for fam in planted}
     hits = {fam: splits.get(fam, 0) >= 1 for fam in planted}
+    # C1.1: `split_same_family` counts cards WITHIN a planted family, so it is
+    # structurally blind to the O-C5 failure — the 4:1 blue ramp emits a Black
+    # card, which is cross-family, and the flag stays False. These two numbers
+    # see it. `largest_non_planted_card_pct` is the C4.4 gate (< 10).
+    non_planted = [r["coverage"] for r in recovered if r["family"] not in planted]
     return {
         "name": name,
         "planted_families": list(planted),
@@ -140,4 +151,6 @@ def _score_scene(name: str, clusters: list[dict], planted: dict) -> dict[str, An
         "family_hit": hits,
         "same_family_card_count": splits,
         "split_same_family": any(n > 1 for n in splits.values()),
+        "n_cards": len(recovered),
+        "largest_non_planted_card_pct": round(max(non_planted), 3) if non_planted else 0.0,
     }
