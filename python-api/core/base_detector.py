@@ -23,9 +23,6 @@ class BaseDetector:
     v2.0: Prevents leg clipping with conservative detection
     """
     
-    def __init__(self):
-        self.base_colors = BaseDetection.BASE_COLORS
-    
     def detect_base_region(self, img_rgba: np.ndarray, 
                           alpha_threshold: int = None) -> np.ndarray:
         """
@@ -54,14 +51,10 @@ class BaseDetector:
         base_platform = self._find_base_platform_v2(mini_mask, height, width, img_rgba)
         logger.debug(f"Base platform: {np.sum(base_platform)} pixels detected")
         
-        # Step 3: Detect base material colors
-        base_colors = self._detect_base_colors(img_rgba, base_platform)
-        logger.debug(f"Base colors: {np.sum(base_colors)} pixels matched")
+        # Step 3: Combine exclusions
+        final_mini_mask = mini_mask & ~base_platform
         
-        # Step 4: Combine exclusions
-        final_mini_mask = mini_mask & ~base_platform & ~base_colors
-        
-        # Step 5: Morphological cleanup
+        # Step 4: Morphological cleanup
         kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
         final_mini_mask = cv2.morphologyEx(
             final_mini_mask.astype(np.uint8),
@@ -208,43 +201,3 @@ class BaseDetector:
             expanded = expanded_new
         
         return expanded
-    
-    def _detect_base_colors(self, img_rgba: np.ndarray, 
-                           suspected_base: np.ndarray) -> np.ndarray:
-        """
-        Detect pixels matching common base material colors
-        (stone grey, dirt brown, grass green, etc.)
-        
-        UNCHANGED from original - this logic is still good
-        """
-        img_rgb = img_rgba[:, :, :3]
-        
-        # Convert to HSV for color filtering
-        img_hsv = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2HSV).astype(float)
-        img_hsv[:, :, 0] /= 180.0  # Normalize hue to 0-1
-        img_hsv[:, :, 1] /= 255.0  # Normalize saturation
-        img_hsv[:, :, 2] /= 255.0  # Normalize value
-        
-        base_color_mask = np.zeros(img_rgb.shape[:2], dtype=bool)
-        
-        # Check each base color range
-        for color_name, (hsv_min, hsv_max) in self.base_colors.items():
-            in_range = np.all([
-                (img_hsv[:, :, 0] >= hsv_min[0]) & (img_hsv[:, :, 0] <= hsv_max[0]),
-                (img_hsv[:, :, 1] >= hsv_min[1]) & (img_hsv[:, :, 1] <= hsv_max[1]),
-                (img_hsv[:, :, 2] >= hsv_min[2]) & (img_hsv[:, :, 2] <= hsv_max[2])
-            ], axis=0)
-            
-            colour_pixels = np.sum(in_range)
-            if colour_pixels > 0:
-                logger.debug(f"Found {colour_pixels} {color_name} pixels")
-            
-            base_color_mask |= in_range
-        
-        # Only consider base colors in bottom portion of image
-        # (Don't remove grey armor just because it looks like stone!)
-        height = img_rgb.shape[0]
-        exclusion_top = int(height * BaseDetection.EXCLUSION_ZONE_TOP)
-        base_color_mask[:exclusion_top, :] = False
-        
-        return base_color_mask

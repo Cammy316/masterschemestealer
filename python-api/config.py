@@ -69,16 +69,6 @@ class BaseDetection:
     ALPHA_THRESHOLD = 50            # Background removal threshold
     MIN_REGULARITY = 0.3            # Geometric regularity of base shape
     BASE_EXPANSION = 20             # Pixels to expand base detection upward
-    EXCLUSION_ZONE_TOP = 0.6        # Don't consider base colors above 60%
-    
-    # Base material color ranges (HSV)
-    BASE_COLORS = {
-        'stone_grey': [(0.0, 0.0, 0.3), (1.0, 0.3, 0.6)],
-        'dirt_brown': [(0.05, 0.3, 0.2), (0.12, 0.7, 0.5)],
-        'grass_green': [(0.25, 0.4, 0.2), (0.35, 0.9, 0.5)],
-        'sand_tan': [(0.10, 0.2, 0.5), (0.15, 0.5, 0.8)],
-        'black_base': [(0.0, 0.0, 0.0), (1.0, 0.3, 0.15)]
-    }
 
 
 # ============================================================================

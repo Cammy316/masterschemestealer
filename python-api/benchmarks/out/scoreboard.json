@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-17T20:13Z",
-  "elapsed_s": 30.3,
+  "generated_at": "2026-08-18T15:27Z",
+  "elapsed_s": 30.9,
   "match": {
     "primer": {
       "paint_id": "citadel-wraithbone",
@@ -413,36 +413,34 @@
     "images": [
       {
         "image": "complex.PNG",
-        "base_n": 8,
+        "base_n": 7,
         "base_families": [
           "black",
           "bone",
           "brown",
-          "brown",
           "grey",
-          "pink",
+          "red",
           "white",
           "yellow"
         ],
         "variants": {
           "lsb_plus1": {
-            "n": 9,
+            "n": 8,
             "families": [
               "black",
               "bone",
               "brown",
-              "brown",
               "grey",
               "light grey",
               "pink",
-              "white",
-              "yellow"
+              "red",
+              "white"
             ],
             "card_count_changed": true,
             "family_set_changed": true,
-            "family_jaccard": 0.111111,
-            "coverage_l1_pp": 74.3025,
-            "instability": 0.482623
+            "family_jaccard": 0.333333,
+            "coverage_l1_pp": 53.1309,
+            "instability": 0.598988
           },
           "jpeg85": {
             "n": 9,
@@ -459,16 +457,15 @@
             ],
             "card_count_changed": true,
             "family_set_changed": true,
-            "family_jaccard": 0.3,
-            "coverage_l1_pp": 62.6899,
-            "instability": 0.61345
+            "family_jaccard": 0.222222,
+            "coverage_l1_pp": 34.0714,
+            "instability": 0.392579
           },
           "ev_minus_0_3": {
-            "n": 8,
+            "n": 7,
             "families": [
               "black",
               "bone",
-              "brown",
               "brown",
               "grey",
               "light grey",
@@ -477,16 +474,16 @@
             ],
             "card_count_changed": false,
             "family_set_changed": true,
-            "family_jaccard": 0.4,
-            "coverage_l1_pp": 63.7827,
-            "instability": 0.718914
+            "family_jaccard": 0.25,
+            "coverage_l1_pp": 48.0673,
+            "instability": 0.490336
           }
         },
-        "instability": 1.814987,
+        "instability": 1.481903,
         "base_coverage_total": 100.0,
-        "analysed_px": 42444,
+        "analysed_px": 43048,
         "alpha_px": 61184,
-        "retention_pct": 69.371
+        "retention_pct": 70.358
       },
       {
         "image": "ultra.jpg",
@@ -501,9 +498,8 @@
         ],
         "variants": {
           "lsb_plus1": {
-            "n": 8,
+            "n": 7,
             "families": [
-              "blue",
               "blue",
               "bone",
               "brown",
@@ -514,26 +510,24 @@
             ],
             "card_count_changed": true,
             "family_set_changed": true,
-            "family_jaccard": 0.25,
-            "coverage_l1_pp": 72.5698,
-            "instability": 0.612849
+            "family_jaccard": 0.142857,
+            "coverage_l1_pp": 85.1211,
+            "instability": 0.568463
           },
           "jpeg85": {
-            "n": 7,
+            "n": 5,
             "families": [
-              "blue",
               "blue",
               "bone",
               "brown",
               "dark grey",
-              "grey",
-              "light grey"
+              "grey"
             ],
             "card_count_changed": true,
             "family_set_changed": true,
-            "family_jaccard": 0.375,
-            "coverage_l1_pp": 76.9971,
-            "instability": 0.759985
+            "family_jaccard": 0.166667,
+            "coverage_l1_pp": 11.3968,
+            "instability": 0.223651
           },
           "ev_minus_0_3": {
             "n": 6,
@@ -548,23 +542,22 @@
             "card_count_changed": false,
             "family_set_changed": true,
             "family_jaccard": 0.285714,
-            "coverage_l1_pp": 28.0986,
-            "instability": 0.426207
+            "coverage_l1_pp": 12.9332,
+            "instability": 0.35038
           }
         },
-        "instability": 1.799041,
+        "instability": 1.142494,
         "base_coverage_total": 100.0,
-        "analysed_px": 65470,
+        "analysed_px": 72000,
         "alpha_px": 90000,
-        "retention_pct": 72.744
+        "retention_pct": 80.0
       },
       {
         "image": "pinkhorror2.webp",
-        "base_n": 8,
+        "base_n": 7,
         "base_families": [
           "cyan",
           "dark grey",
-          "green",
           "grey",
           "magenta",
           "pink",
@@ -573,10 +566,11 @@
         ],
         "variants": {
           "lsb_plus1": {
-            "n": 7,
+            "n": 8,
             "families": [
               "cyan",
               "dark grey",
+              "green",
               "grey",
               "magenta",
               "pink",
@@ -586,14 +580,15 @@
             "card_count_changed": true,
             "family_set_changed": true,
             "family_jaccard": 0.125,
-            "coverage_l1_pp": 8.7096,
-            "instability": 0.168548
+            "coverage_l1_pp": 24.1686,
+            "instability": 0.245843
           },
           "jpeg85": {
-            "n": 7,
+            "n": 8,
             "families": [
               "cyan",
               "dark grey",
+              "green",
               "grey",
               "magenta",
               "pink",
@@ -603,39 +598,38 @@
             "card_count_changed": true,
             "family_set_changed": true,
             "family_jaccard": 0.125,
-            "coverage_l1_pp": 26.9591,
-            "instability": 0.259795
+            "coverage_l1_pp": 19.3636,
+            "instability": 0.221818
           },
           "ev_minus_0_3": {
             "n": 6,
             "families": [
               "cyan",
               "dark grey",
-              "green",
               "grey",
               "magenta",
-              "pink"
+              "pink",
+              "yellow"
             ],
             "card_count_changed": true,
             "family_set_changed": true,
-            "family_jaccard": 0.25,
-            "coverage_l1_pp": 68.6522,
-            "instability": 0.593261
+            "family_jaccard": 0.142857,
+            "coverage_l1_pp": 63.5414,
+            "instability": 0.460564
           }
         },
-        "instability": 1.021604,
+        "instability": 0.928225,
         "base_coverage_total": 100.0,
-        "analysed_px": 84505,
+        "analysed_px": 90900,
         "alpha_px": 112500,
-        "retention_pct": 75.116
+        "retention_pct": 80.8
       },
       {
         "image": "capturepink.PNG",
-        "base_n": 8,
+        "base_n": 7,
         "base_families": [
           "cyan",
           "dark grey",
-          "green",
           "grey",
           "magenta",
           "pink",
@@ -654,11 +648,11 @@
               "white",
               "yellow"
             ],
-            "card_count_changed": true,
-            "family_set_changed": true,
-            "family_jaccard": 0.125,
-            "coverage_l1_pp": 29.1402,
-            "instability": 0.270701
+            "card_count_changed": false,
+            "family_set_changed": false,
+            "family_jaccard": 0.0,
+            "coverage_l1_pp": 20.196,
+            "instability": 0.10098
           },
           "jpeg85": {
             "n": 7,
@@ -671,11 +665,11 @@
               "white",
               "yellow"
             ],
-            "card_count_changed": true,
-            "family_set_changed": true,
-            "family_jaccard": 0.125,
-            "coverage_l1_pp": 9.3221,
-            "instability": 0.17161
+            "card_count_changed": false,
+            "family_set_changed": false,
+            "family_jaccard": 0.0,
+            "coverage_l1_pp": 13.3965,
+            "instability": 0.066982
           },
           "ev_minus_0_3": {
             "n": 7,
@@ -688,18 +682,18 @@
               "pink",
               "yellow"
             ],
-            "card_count_changed": true,
+            "card_count_changed": false,
             "family_set_changed": true,
-            "family_jaccard": 0.125,
-            "coverage_l1_pp": 64.8112,
-            "instability": 0.449056
+            "family_jaccard": 0.25,
+            "coverage_l1_pp": 60.129,
+            "instability": 0.550645
           }
         },
-        "instability": 0.891367,
+        "instability": 0.718607,
         "base_coverage_total": 100.0,
-        "analysed_px": 84807,
+        "analysed_px": 90600,
         "alpha_px": 112200,
-        "retention_pct": 75.586
+        "retention_pct": 80.749
       },
       {
         "image": "Example.jpg",
@@ -707,13 +701,29 @@
         "base_families": [
           "blue",
           "blue",
-          "brown",
+          "dark grey",
           "grey",
           "light grey",
           "magenta"
         ],
         "variants": {
           "lsb_plus1": {
+            "n": 6,
+            "families": [
+              "blue",
+              "blue",
+              "grey",
+              "light grey",
+              "magenta",
+              "purple"
+            ],
+            "card_count_changed": false,
+            "family_set_changed": true,
+            "family_jaccard": 0.285714,
+            "coverage_l1_pp": 37.0061,
+            "instability": 0.470745
+          },
+          "jpeg85": {
             "n": 5,
             "families": [
               "blue",
@@ -725,54 +735,38 @@
             "card_count_changed": true,
             "family_set_changed": true,
             "family_jaccard": 0.166667,
-            "coverage_l1_pp": 24.8245,
-            "instability": 0.290789
+            "coverage_l1_pp": 27.9771,
+            "instability": 0.306552
           },
-          "jpeg85": {
+          "ev_minus_0_3": {
             "n": 7,
             "families": [
-              "blue",
+              "black",
               "blue",
               "brown",
               "dark grey",
               "grey",
-              "light grey",
-              "magenta"
-            ],
-            "card_count_changed": true,
-            "family_set_changed": true,
-            "family_jaccard": 0.142857,
-            "coverage_l1_pp": 10.799,
-            "instability": 0.196852
-          },
-          "ev_minus_0_3": {
-            "n": 6,
-            "families": [
-              "blue",
-              "dark grey",
-              "grey",
-              "light grey",
               "magenta",
               "purple"
             ],
-            "card_count_changed": false,
+            "card_count_changed": true,
             "family_set_changed": true,
-            "family_jaccard": 0.5,
-            "coverage_l1_pp": 44.9258,
-            "instability": 0.724629
+            "family_jaccard": 0.555556,
+            "coverage_l1_pp": 104.7391,
+            "instability": 1.079251
           }
         },
-        "instability": 1.21227,
+        "instability": 1.856548,
         "base_coverage_total": 100.0,
-        "analysed_px": 48178,
+        "analysed_px": 53100,
         "alpha_px": 68100,
-        "retention_pct": 70.746
+        "retention_pct": 77.974
       }
     ],
     "n": 5,
     "n_unstable": 5,
-    "instability_total": 6.739269,
-    "retention_min_pct": 69.371,
-    "retention_max_pct": 75.586
+    "instability_total": 6.127777,
+    "retention_min_pct": 70.358,
+    "retention_max_pct": 80.8
   }
 }

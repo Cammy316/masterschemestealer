@@ -1,4 +1,4 @@
-# Colour-accuracy scoreboard — 2026-08-17T20:13Z
+# Colour-accuracy scoreboard — 2026-08-18T15:27Z
 
 There is no labelled photograph set. Matcher numbers are identity /
 cross-brand recovery on stored (or primer-composited) LABs. Real
@@ -57,11 +57,11 @@ Images scored: 5. Unstable under LSB/JPEG/−0.3 EV: 5.
 
 | Image | Base cards | LSB +1 | JPEG 85 | EV −0.3 |
 |---|---:|---|---|---|
-| complex.PNG | 8 | 9 (changed) | 9 (changed) | 8 (changed) |
-| ultra.jpg | 6 | 8 (changed) | 7 (changed) | 6 (changed) |
-| pinkhorror2.webp | 8 | 7 (changed) | 7 (changed) | 6 (changed) |
-| capturepink.PNG | 8 | 7 (changed) | 7 (changed) | 7 (changed) |
-| Example.jpg | 6 | 5 (changed) | 7 (changed) | 6 (changed) |
+| complex.PNG | 7 | 8 (changed) | 9 (changed) | 7 (changed) |
+| ultra.jpg | 6 | 7 (changed) | 5 (changed) | 6 (changed) |
+| pinkhorror2.webp | 7 | 8 (changed) | 8 (changed) | 6 (changed) |
+| capturepink.PNG | 7 | 7 (same) | 7 (same) | 7 (changed) |
+| Example.jpg | 6 | 6 (changed) | 5 (changed) | 7 (changed) |
 
 ### Graded instability
 
@@ -71,15 +71,15 @@ These are. Per cell: `J` = Jaccard distance of the card-family multiset,
 
 | Image | Retention % | LSB +1 J / L1 | JPEG 85 J / L1 | EV −0.3 J / L1 | Image score |
 |---|---:|---|---|---|---:|
-| complex.PNG | 69.37 | 0.1111 / 74.30 | 0.3000 / 62.69 | 0.4000 / 63.78 | 1.8150 |
-| ultra.jpg | 72.74 | 0.2500 / 72.57 | 0.3750 / 77.00 | 0.2857 / 28.10 | 1.7990 |
-| pinkhorror2.webp | 75.12 | 0.1250 / 8.71 | 0.1250 / 26.96 | 0.2500 / 68.65 | 1.0216 |
-| capturepink.PNG | 75.59 | 0.1250 / 29.14 | 0.1250 / 9.32 | 0.1250 / 64.81 | 0.8914 |
-| Example.jpg | 70.75 | 0.1667 / 24.82 | 0.1429 / 10.80 | 0.5000 / 44.93 | 1.2123 |
+| complex.PNG | 70.36 | 0.3333 / 53.13 | 0.2222 / 34.07 | 0.2500 / 48.07 | 1.4819 |
+| ultra.jpg | 80.00 | 0.1429 / 85.12 | 0.1667 / 11.40 | 0.2857 / 12.93 | 1.1425 |
+| pinkhorror2.webp | 80.80 | 0.1250 / 24.17 | 0.1250 / 19.36 | 0.1429 / 63.54 | 0.9282 |
+| capturepink.PNG | 80.75 | 0.0000 / 20.20 | 0.0000 / 13.40 | 0.2500 / 60.13 | 0.7186 |
+| Example.jpg | 77.97 | 0.2857 / 37.01 | 0.1667 / 27.98 | 0.5556 / 104.74 | 1.8565 |
 
-**Instability total: 6.739269** (sum over 5 images × 3 perturbations; 0 = every variant identical).
+**Instability total: 6.127777** (sum over 5 images × 3 perturbations; 0 = every variant identical).
 
-Silhouette retention (analysed px ÷ alpha px — the direct O-C8 number): 69.371–75.586%.
+Silhouette retention (analysed px ÷ alpha px — the direct O-C8 number): 70.358–80.8%.
 
 ## Recipes (edge table × paint DB — detection not involved)
 
