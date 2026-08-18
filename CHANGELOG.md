@@ -307,6 +307,80 @@ caveat below about what those pixels actually are.
   and value. The family classifier remains free of it, which is what the invariant
   actually requires.
 
+## [Unreleased] - 2026-08-18 (colour accuracy: phase 4, the first three of the surviving "next" tier)
+
+Three commits: the recipe graph's edge selection, the offline matcher's metallic leak,
+and the paint database's provenance. The remaining four of Phase 4 are **blocked** on
+photographs — see Known / pending.
+
+### The pattern worth keeping from this batch
+
+**Check whether the data is wrong before deciding to rebuild it.** The recipe fix looked
+like it might need the 4,822-edge graph regenerating. It did not: the generator writes
+the top two candidates per relationship, ranked by the geometry scorer, and all 2,344
+algorithmic-only keys still hold exactly that pair with the scorer's winner still ranked
+first. The runtime was simply discarding the ranking the file was built with and
+re-picking on lightness alone. A one-line consumer fix, not a data migration — and the
+difference was one measurement away.
+
+**A commit can make a neighbouring comment dangerous.** The provenance fix left a
+dataclass comment asserting that a paint's colour source selects its matching target.
+That was already false, but after the fix no paint carries the value the comment names,
+so anyone trusting it would conclude the measured colours had stopped being used
+entirely. Corrected in the same commit, with a test pinning the real coupling.
+
+### Changed
+
+- **Recipe edges are chosen by the geometry that generated them.** The graph's final
+  tie-break was the lightness error against a fixed ideal step — no hue, no chroma — so a
+  warm base could be handed a highlight that went cooler and washed its colour out. It
+  now uses the same scorer that wrote the edges, for highlight and shade only. Curated
+  chains are untouched: every one is the only edge on its relationship, so the tie-break
+  never runs on one.
+- **The offline matcher no longer serves metallic paints for matte targets.** The backend
+  has always excluded them — a metal's single flat colour reading is not comparable with
+  a matte surface's, which is why the online path drops them outright — and the offline
+  fallback did not. A mid grey previously came back with two different metals in one
+  recipe. Metals remain reachable by name search and on explicit request.
+- **Paints keep the provenance the database records.** Every paint was being relabelled
+  "measured" at load, including the 96 washes and inks whose colour was never measured at
+  all. No badge, no ΔE and no match changes — the field is not read yet, which is exactly
+  why it was safe to fix now.
+
+### Measured
+
+- Highlights losing more than half their colour intensity: **75 → 48** across the graph,
+  and **12 → 5** of the highlight slots actually served on the five test photographs.
+- Highlights going the wrong way round the colour wheel: **161 → 134** across the graph
+  (21.55% → 17.94%), net of 58 fixes against 31 regressions. **On served slots this did
+  not move** — 19 before, 19 after. The colour-intensity half is the real user-facing
+  effect and the other half must not be quoted as one.
+- Lightness-inversion guard unchanged at 2 of 2,365; extraction, stability and matcher
+  scores byte-identical.
+- Backend tests 717 → 720, frontend 888 → 893.
+
+### Known / pending
+
+- **The remaining four Phase-4 commits are blocked on photographs.** All of them calibrate
+  thresholds against real-photo numbers, and the bench's photographs are still largely
+  unmatted (recorded last batch). Nothing further can be tuned honestly until the set is
+  replaced, and one of the four additionally needs a photograph containing a known
+  metallic region. This is a hard stop, not a scheduling preference.
+- **The recipe finding is not closed.** 59 warm bases have every stored candidate on the
+  wrong side of the wheel and no re-ordering can help them; the finding's own headline
+  example is one of them. The lever that would move it is the generator's cap of two
+  candidates per relationship — 45 of the 59 have a better option just outside it —
+  which means regenerating the edge file, deliberately out of scope here.
+- **Two divergences from the backend in the offline recipe path**, recorded rather than
+  smoothed over: the metallic filter also strips metals from the offline shade slot,
+  where the backend allows them; and the offline generator can hand back the same paint
+  for both the base and its highlight, because it has no "must differ from the base"
+  rule. The second is pre-existing and was only exposed by the filter.
+- **The lightness step drifted and nothing gates it.** Dropping the lightness tie-break
+  moved the median highlight step from 1.4 to 2.1 lightness units. Defensible — the
+  replacement models a highlight better — but unmeasured by any gate, and the inversion
+  guard is now the only lightness check on that path.
+
 ## [Unreleased] - 2026-08-12 (video-qa: a harness that measures the artefact)
 
 Phase 0 of the v6 corrective pack. Nothing user-facing changes; this exists so
