@@ -2,6 +2,138 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-08-17 (colour accuracy: the first three items of the revised plan)
+
+The 2026-08 colour-science audit produced seven P1s and a tiered plan. A first
+implementation plan was drafted against the "next" tier only; it was then reviewed
+adversarially and largely re-specified. Implementation has now started against the
+revised plan, `docs/audit/COLOUR_PLAN_REVISED_2026-08.md` (local-only — see below).
+
+### The defect class the review closed
+
+Four of the five commits in the original plan sat behind gates that **could not fail**:
+`n_unstable` was already saturated at 5/5, the ramp scene's `split_same_family` metric
+structurally cannot see a cross-family card, the only "metallic" bench scene is a flat
+block with zero texture, and the recipe commit's scoreboard has no recipe rows at all.
+
+> Findings register #35 again, one level up: *a gate that cannot fail is worse than no
+> gate.* The plan forbade the pattern in its own process rules and then shipped five
+> instances of it.
+
+Two of its commits were also measurably mis-specified. The ramp-merge fix gated on
+`min(chroma) < 0.09`, which excludes **81.7% of chromatic paints' 4:1 ramps** — including
+Macragge Blue, the paint in its own fixture. The white-balance fix required a threshold
+band that is **empty**: keeping the existing AWB tests green needs a neutral admitted at
+C\* 15.44, while excluding the pastel/bone cloud needs a floor below 12.
+
+### Added — the bench can now fail (C1.1)
+
+The Phase-3 harness had never been committed, so the verification model *"diff
+`scoreboard.md` against the parent commit"* had **no parent**. It is now banked verbatim
+(`d16b689`) and instrumented as a separate commit (`e8ca68e`) so the first instrumented
+diff means something. No engine behaviour changed: nothing under `core/`, `services/`,
+`utils/` or `schemestealer-react/` was touched.
+
+Four metrics replace four gates that could not move. Each is recorded with what would
+shift it and in which direction — a number nobody can move is decoration, not a gate:
+
+| New metric | Today | Moved by |
+|---|---|---|
+| Silhouette retention (analysed px ÷ alpha px) — the direct O-C8 number | 69.37 / 72.74 / 75.12 / 75.59 / 70.75 % | C3.1 → **up** |
+| Graded `instability` (family-multiset Jaccard + coverage L1) | **6.739269** | C4.4 → down · C4.6 → up |
+| `largest_non_planted_card_pct`, `blue_ramp_4to1` | **27.481 %** | C4.4 → **down**; gate is < 10 |
+| Warm bases w/ highlight key → chosen highlight cooler | **747 → 161 (21.55 %)** | C4.1 → down, ~13.8 % predicted |
+| …**all** candidates cooler (the unfixable floor) | **59 (7.90 %)** | nothing in this plan |
+| …highlight loses > 50 % OKLab chroma | **75 (10.04 %)** | C4.1 → down |
+| `_monotonic_ok` inversions | **2 of 2,365** | C4.1 must **not** raise it |
+
+Retention is measured by wrapping the engine's own `BaseDetector` and observing the
+production call, **not** by replicating the crop/resize steps — a replica would silently
+diverge the moment an EXIF transpose is inserted ahead of it. The graded scalar is not
+`n_unstable` in disguise: `pinkhorror2` scores 0.1250/8.71 under +1 LSB and 0.2500/68.65
+under −0.3 EV, which `n_unstable` records identically as "changed". Hue, chroma and the
+warm/cool basin all come from the live `recipe_geometry`; the monotonicity guard is the
+engine's own. Zero new colour maths.
+
+**A constant the plan never pinned.** Its recipe baselines reproduce only under a
+warm-base OKLab chroma floor of **0.02** — swept, 0.000 gives 809/188/73/85 and 0.040
+gives 637/121/44/52, while 0.020 lands all four exactly. It is now a named constant
+carrying that sensitivity table, because the population is otherwise unreproducible.
+
+**Two defects the instrumentation exposed.** `benchmarks/stability.py` read card coverage
+from `percentage`/`coverage`; served recipe dicts carry it as **`dominance`**
+(`schemestealer_engine.py:485`), so every card had read `0.0` since the harness was
+written. Nothing consumed it, so it stayed invisible — until the new L1 term returned
+**0.00 in all fifteen cells**, i.e. the new gate could not fail either. Fixed, with a
+guard that prints a warning into the scoreboard if the key moves again; no pre-existing
+number changed, because `n_unstable` never read coverage. Separately, `gold_and_bone`'s
+recovered coverage was not byte-stable across runs (`93.33333333333331` vs `…34`, a 3e-14
+float reduction-order difference) and is now rounded to 6 dp — three orders below one
+pixel of a 300 px scene — so the payload can actually be diffed.
+
+### Changed
+
+- **`_is_likely_shadow` self-skip is now an identity test** (`smart_color_system.py:552`,
+  audit O-C14b). It compared cluster dicts with `==`; both hold NumPy arrays, so two
+  *merged* clusters (nine keys led by `coverage`) with byte-identical coverage fell
+  through to `median_rgb` and raised `ValueError`, aborting the scan. Un-merged clusters
+  lead with an `id` int and short-circuit first, which is why it never fired in
+  production. Measured latent rate: 1 collision in 2,109 merged pairs (0.047%).
+
+- **Swatch-source attribution removed from tracked code** (core invariant 7). Three
+  references in two committed scripts, one of them a hardcoded path whose *filename*
+  carried the name. The path now resolves from `$SWATCH_SOURCE_PDF`, else a glob over the
+  git-ignored `Skills&rules/_source/`, with a clear `SystemExit` when absent.
+  `git grep` for the name now returns zero hits in tracked files.
+
+- **`docs/` is git-ignored.** The audit's research notes discuss the swatch source.
+  Nothing under `docs/` had ever been committed, so no history rewrite was needed for it.
+  Consequence: `docs/` is local-only and unbacked by the repo, as `Skills&rules/` already
+  is.
+
+### Added
+
+`python-api/tests/test_shadow_detection.py` — three fixtures, each stating the input that
+would make it fail. The first fails on the parent commit with the exact `ValueError`.
+The merged nine-key dict shape is load-bearing: built on the un-merged shape the fixture
+passes vacuously.
+
+### Measured
+
+| Gate | Result |
+|---|---|
+| Backend suite | 673 passed / 1 skipped (670 + 3 new) |
+| Frontend suite | 854 passed, 27 files |
+| `npm run build` | clean |
+| `benchmarks.run` (O-C14b) | byte-identical to parent apart from timestamp |
+| `benchmarks.run` (C1.1 determinism) | run twice: `scoreboard.md` byte-identical; every `scoreboard.json` field identical apart from `generated_at` **and `elapsed_s`** — a second varying field the plan did not name, now commented in `run.py` as the only two a diff may ignore |
+
+Side measurement, folded back into the plan: `_is_likely_shadow`'s full condition fires on
+only **79 of 79,971 real DB pairs (0.099%)**, so audit finding O-C16 is **narrower than
+filed** — the V-gap requirement is far more restrictive than its ΔE 15 threshold implies.
+Its sharpest real case is Dragon Blood → Basilisk Red at 14.90 ΔE00, two genuinely
+different paints, one deleted as the other's shadow.
+
+### Known / pending
+
+- **The swatch-source name survives in committed history** (`d3bb52b`, `c1b2e00`) on the
+  GitHub remote. Clearing it needs `filter-repo`/BFG plus a force-push — an open decision.
+- **The `gold_and_bone` bench scene plants one paint, not two.**
+  `benchmarks/synthetic_extract.py:110-116` builds `planted` as a dict keyed by family and
+  `classify_family(gold.lab, is_metallic=False)` returns *bone*, so the gold entry is
+  overwritten. Gold's block therefore counts as non-planted and reports 6.667 % for a
+  reason unrelated to that metric's purpose. Left alone deliberately — fixing it moves
+  `planted_families` and `family_hit`, and the instrumentation commit's job was a clean
+  first diff. It belongs with the metallic commit, which already needs a real positive
+  control.
+- **No skeptic pass on the instrumentation.** Optional per the contract, and its C1.1
+  brief is satisfied and evidenced above, but everything from the extraction commit onward
+  is judged against these numbers.
+- 14 of 17 planned commits outstanding, plus six decisions, two deferrals and three
+  research spikes. One is blocked on a photograph of a known metallic region; the audit
+  still has **no labelled photograph set**, so top-1 accuracy on real minis cannot be
+  claimed.
+
 ## [Unreleased] - 2026-08-12 (video-qa: a harness that measures the artefact)
 
 Phase 0 of the v6 corrective pack. Nothing user-facing changes; this exists so
