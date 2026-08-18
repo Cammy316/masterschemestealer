@@ -79,9 +79,11 @@ class Paint:
     citadel_equiv: Optional[str] = None
     hex_source: str = 'unknown'
 
-    # Measured-swatch integration (Prompt 6). When color_source == 'measured',
-    # measured_lab is the applied-colour LAB and becomes the primary CIEDE2000
-    # target; the chart hex is still used for the display swatch.
+    # Measured-swatch integration (Prompt 6). `measured_lab`, when present, IS the
+    # applied-colour LAB and becomes the primary CIEDE2000 target; the chart hex is
+    # still used for the display swatch. `color_source` does NOT gate that choice
+    # — compute_properties() branches on `measured_lab is not None` — it records
+    # the DB's own provenance ('swatch-median' | 'assumed'), which O-E1 restored.
     measured_lab: Optional[list] = None
     measured_hex: str = ''
     color_source: str = 'chart'

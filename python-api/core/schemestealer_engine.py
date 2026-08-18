@@ -133,9 +133,13 @@ class SchemeStealerEngine:
             # paint_id is always present in the ground-truth DB; derive from
             # name as a defensive fallback.
             paint_id = p.get('paint_id') or _slugify(p.get('brand', ''), p.get('name', ''))
-            # Every paint in the new DB is deterministically measured, so its
-            # stored `lab` IS the applied-colour LAB → it becomes the CIEDE2000
-            # matching target (measured_lab) and color_source is always 'measured'.
+            # The stored `lab` IS the applied-colour LAB, so it becomes the
+            # CIEDE2000 matching target (measured_lab) for every record.
+            # PROVENANCE IS NOT THE SAME QUESTION and is preserved, not asserted:
+            # 1,216 records are 'swatch-median' and 96 washes/inks are 'assumed'
+            # — their LAB was never measured at all (O-E1). A record with no
+            # color_source falls to the WEAKEST claim, never the strongest;
+            # unreachable on the current DB, where all 1,312 carry one.
             paint = Paint(
                 name=p['name'],
                 brand=p['brand'],
@@ -154,7 +158,7 @@ class SchemeStealerEngine:
                 range=p.get('range', ''),
                 aliases=list(p.get('aliases', []) or []),
                 measured_lab=p.get('lab'),
-                color_source='measured',
+                color_source=p.get('color_source') or 'assumed',
                 opacity=p.get('opacity_rating'),
                 vibrancy=p.get('vibrancy'),
             )
