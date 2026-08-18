@@ -12,6 +12,18 @@ Either raw photos on their studio backgrounds (a foreground mask is derived
 from the border colour) or background-removed RGBA exports work.
 
 Requires real OpenCV: run with USE_REAL_CV2=1 (the canonical suite command).
+
+A NOTE ON THE MASK, AND ON HOW MUCH THESE TESTS ACTUALLY GUARD.
+`_load_rgba` derives its foreground with `cv2.grabCut`, which is seeded from
+OpenCV's global RNG. Until this was pinned the mask was redrawn on every call
+and the assertions below moved with it. Pinning makes the suite reproducible,
+but it does not make the underlying properties robust: measured across five
+different draws on unmodified `main`, `test_ultramarine_is_one_blue_card`
+holds on only TWO of them -- on the other three the armour already returns
+two Blue cards. That is O-C5 (the pre-merge threshold cannot span a real
+shading ramp), the known P1 that C4.4 addresses; this file simply happened to
+be written against a draw where it did not bite. Treat a green run here as
+"no worse than the pinned draw", not as "the property holds".
 """
 
 import os
@@ -62,6 +74,14 @@ def _load_rgba(path: Path) -> np.ndarray:
     gc_mask = np.zeros((h, w), np.uint8)
     rect = (int(w * 0.04), int(h * 0.04), int(w * 0.92), int(h * 0.92))
     bgd, fgd = np.zeros((1, 65), np.float64), np.zeros((1, 65), np.float64)
+    # grabCut seeds its GMM from OpenCV's GLOBAL RNG, so an unseeded call
+    # redraws the mask on every invocation -- measured drift between two
+    # consecutive calls in one process is 40,819 px on `ultra` and 19,571 px
+    # on `capturepink`. The card list moves with the mask, so every assertion
+    # in this file was a coin toss and a green run proved nothing. Pin it, so
+    # these tests measure the engine rather than the matte. The draw itself is
+    # arbitrary -- see the module docstring.
+    cv2.setRNGSeed(0)
     cv2.grabCut(cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR), gc_mask, rect,
                 bgd, fgd, 5, cv2.GC_INIT_WITH_RECT)
     fg = np.where((gc_mask == cv2.GC_FGD) | (gc_mask == cv2.GC_PR_FGD),
