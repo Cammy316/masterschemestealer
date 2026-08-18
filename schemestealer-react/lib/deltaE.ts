@@ -31,6 +31,56 @@ function asLab65(lab: LAB) {
 }
 
 /**
+ * The project's fixed match-quality vocabulary. Hard invariant 10: the bands are
+ * `perfect <2 · close <5 · fair <10 · distant ≤30`, and a ΔE is never altered or
+ * hidden. `none` is the honest fifth state — beyond the matcher's ΔE 30 ceiling
+ * there is no match to describe.
+ */
+export type DeltaBand = 'perfect' | 'close' | 'fair' | 'distant' | 'none';
+
+/** One word per band. The single place the vocabulary is spelled. */
+export const DELTA_BAND_WORD: Record<DeltaBand, string> = {
+  perfect: 'perfect',
+  close: 'close',
+  fair: 'fair',
+  distant: 'distant',
+  none: 'no match',
+};
+
+/**
+ * ΔE → band. A faithful mirror of `python-api/scripts/build_conversions.py:17-26`,
+ * which generated every `band` already shipped in `lib/data/conversions.json`;
+ * matching it is what lets a computed band and a pre-computed one sit side by
+ * side on a page. The bounds are strict `<`, so ΔE exactly 2.0 is `close`.
+ *
+ * This is arithmetic over an already-computed ΔE, not a colour-space conversion
+ * — invariant 9 is untouched.
+ */
+export function deltaBand(deltaE: number): DeltaBand {
+  if (deltaE < 2) return 'perfect';
+  if (deltaE < 5) return 'close';
+  if (deltaE < 10) return 'fair';
+  if (deltaE <= 30) return 'distant';
+  return 'none';
+}
+
+/**
+ * Whether a recipe slot may show a ΔE badge. **Base only, deliberately.**
+ *
+ * Every slot carries a `deltaE` computed against the cluster's own colour, but
+ * `derive_partner` ranks shade and highlight against a *different* target
+ * (`recipe_geometry.py:314`), so outside the base slot the number measures the
+ * span of the ramp, not the distance to a match. Over 1,644 real slots the
+ * medians are base 5.60, shade 13.45, highlight 12.85, wash 26.25 — badging them
+ * would report 35% of correctly-derived shades and 81% of correctly-derived
+ * washes as failures. That is a worse breach of invariant 10 than showing
+ * nothing, which is why the gate is a feature and not an oversight (O-F4).
+ */
+export function shouldShowDeltaBadge(stepKey: string, deltaE: number | undefined): boolean {
+  return deltaE !== undefined && stepKey === 'base';
+}
+
+/**
  * Delta-E 76 (CIE76) — Euclidean distance in LAB. Fast screening metric.
  */
 export function deltaE76(lab1: LAB, lab2: LAB): number {

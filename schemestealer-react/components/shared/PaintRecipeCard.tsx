@@ -17,6 +17,7 @@ import type { PaintRecipe, BrandRecipe, PaintMatch } from '@/lib/types';
 import { useAppStore } from '@/lib/store';
 import { useOwnedPaints } from '@/hooks/useLocalStorage';
 import { copyRecipe } from '@/lib/clipboard';
+import { deltaBand, DELTA_BAND_WORD, shouldShowDeltaBadge } from '@/lib/deltaE';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { GhostButton } from '@/components/shared/GhostButton';
 import { RoleTag } from '@/components/shared/RoleTag';
@@ -130,18 +131,33 @@ const SPINE_TOKENS: Record<UITheme, Record<StepKey, string>> = {
 /**
  * ΔE → match-quality colour (semantic tokens) + word.
  *
+ * The word comes from `deltaBand` — the project's fixed vocabulary, shared with
+ * the SEO badge and with the Python that generated `conversions.json`. This
+ * card used to carry its own scale (`≤5 excellent · ≤15 loose · >15 poor`),
+ * which shared no word with the spec at any ΔE in 0–30 (ledger L6, O-F2).
+ *
  * Skinned at the POSITIVE end only. The thresholds and the words are shared, so
  * the same measurement never reads differently between tabs; but a good match
  * used the shared success green in both themes, and on the inspiration tab that
  * meant every recipe row carried a green badge in a purple frame. Warp gets
  * teal, which belongs to its palette and still reads as good against the amber
  * and red that warn.
+ *
+ * Five bands over three colours: `perfect` and `close` are both "good" and share
+ * the skinned tone — the palette has no fourth semantic token, and the word on
+ * the badge's aria-label carries the finer distinction.
  */
 function deltaQuality(deltaE: number | undefined, warp: boolean): { color: string; label: string } {
   if (deltaE === undefined) return { color: 'var(--text-tertiary)', label: 'unknown' };
-  if (deltaE <= 5) return { color: warp ? 'var(--warp-teal)' : 'var(--success)', label: 'excellent' };
-  if (deltaE <= 15) return { color: 'var(--warning)', label: 'loose' };
-  return { color: 'var(--error)', label: 'poor' };
+  const band = deltaBand(deltaE);
+  const good = warp ? 'var(--warp-teal)' : 'var(--success)';
+  const color =
+    band === 'perfect' || band === 'close'
+      ? good
+      : band === 'fair'
+        ? 'var(--warning)'
+        : 'var(--error)';
+  return { color, label: DELTA_BAND_WORD[band] };
 }
 
 /**
@@ -652,8 +668,9 @@ function RecipeStepRow({
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </div>
             )}
-            {/* ΔE badge, colour-coded by match quality (ONLY FOR BASE MATCH) */}
-            {activePaint.deltaE !== undefined && step.key === 'base' && (
+            {/* ΔE badge, colour-coded by match quality. BASE ONLY, and that is
+                deliberate — see shouldShowDeltaBadge for the measurement. */}
+            {shouldShowDeltaBadge(step.key, activePaint.deltaE) && activePaint.deltaE !== undefined && (
               <div
                 className="absolute -bottom-1.5 -right-1.5 min-w-[26px] h-5 px-1 rounded-full flex items-center justify-center text-[11px] font-bold leading-none"
                 style={{ background: 'var(--void-black)', border: `1px solid ${quality.color}`, color: quality.color }}
