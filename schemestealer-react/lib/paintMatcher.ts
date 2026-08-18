@@ -27,10 +27,12 @@ const _TRANSPARENCY_PENALTY = 8.0;
 /**
  * Get top N paint matches for a color from each brand.
  * Uses dominant role: Base/Layer/Air only, with transparency penalty on contrast paints.
+ * Metallics are excluded unless `allowMetallic` — see findTopMatches.
  */
 export function getMultiBrandMatches(
   colorLab: [number, number, number],
-  matchesPerBrand: number = 3
+  matchesPerBrand: number = 3,
+  allowMetallic: boolean = false
 ): MultiBrandMatches {
   const paintDatabase = getPaintDatabase();
 
@@ -46,9 +48,9 @@ export function getMultiBrandMatches(
   );
 
   // Find top matches for each brand with transparency penalty
-  const citadelMatches = findTopMatches(colorLab, citadelPaints, matchesPerBrand, true);
-  const vallejoMatches = findTopMatches(colorLab, vallejoPaints, matchesPerBrand, true);
-  const armyPainterMatches = findTopMatches(colorLab, armyPainterPaints, matchesPerBrand, true);
+  const citadelMatches = findTopMatches(colorLab, citadelPaints, matchesPerBrand, true, allowMetallic);
+  const vallejoMatches = findTopMatches(colorLab, vallejoPaints, matchesPerBrand, true, allowMetallic);
+  const armyPainterMatches = findTopMatches(colorLab, armyPainterPaints, matchesPerBrand, true, allowMetallic);
 
   return {
     citadel: citadelMatches,
@@ -62,15 +64,21 @@ export function getMultiBrandMatches(
  * applyTransparencyPenalty adds transparency * PENALTY to deltaE before sorting,
  * so highly transparent paints (contrast/inks) are deprioritised unless the colour
  * advantage is large enough to overcome the penalty.
+ * Metallics are excluded from the pool unless allowMetallic — mirrors the backend
+ * (python-api/core/color_engine.py:542): a matte surface can never want a metallic
+ * paint, and a metal's single diffuse LAB is not commensurable with a matte target's.
  */
 function findTopMatches(
   colorLab: [number, number, number],
   paints: PaintData[],
   limit: number,
-  applyTransparencyPenalty: boolean = false
+  applyTransparencyPenalty: boolean = false,
+  allowMetallic: boolean = false
 ): Paint[] {
+  const pool = allowMetallic ? paints : paints.filter((p) => p.metallic !== true);
+
   // Calculate Delta-E (+ optional transparency penalty) for each paint
-  const matches = paints.map((paint) => {
+  const matches = pool.map((paint) => {
     const rawDeltaE = deltaE2000(
       { l: colorLab[0], a: colorLab[1], b: colorLab[2] },
       paint.lab
@@ -129,7 +137,8 @@ function washForFamily(
 export function getRecipeForColor(
   colorLab: [number, number, number],
   colorFamily: string,
-  brand: 'citadel' | 'vallejo' | 'army-painter'
+  brand: 'citadel' | 'vallejo' | 'army-painter',
+  allowMetallic: boolean = false
 ): BrandRecipe {
   const paintDatabase = getPaintDatabase();
   const brandName = brand.replace('-', ' ');
@@ -145,7 +154,7 @@ export function getRecipeForColor(
   );
 
   // Find best base match
-  const baseMatch = findClosestPaint(colorLab, basePaints);
+  const baseMatch = findClosestPaint(colorLab, basePaints, undefined, allowMetallic);
 
   // NOTE: the backend recipe graph (curated official chains + LAB-geometry
   // fallback) is authoritative for recipes. This client-side generator is a
@@ -157,10 +166,14 @@ export function getRecipeForColor(
   // wrong-direction match.
   const baseL = colorLab[0];
   const highlightLab = adjustLightness(colorLab, 12);
-  const highlightMatch = findClosestPaint(highlightLab, basePaints, (p) => p.lab.l > baseL);
+  const highlightMatch = findClosestPaint(highlightLab, basePaints, (p) => p.lab.l > baseL, allowMetallic);
 
   const shadeLab = adjustLightness(colorLab, -12);
-  const shadeMatch = findClosestPaint(shadeLab, basePaints, (p) => p.lab.l < baseL);
+  // NOTE: `basePaints` is one pool for base, highlight AND shade, while the backend
+  // excludes metallics only for roles not in ('shade','wash'). The filter therefore
+  // also removes metals from the offline shade slot — a deliberate divergence, not
+  // parity.
+  const shadeMatch = findClosestPaint(shadeLab, basePaints, (p) => p.lab.l < baseL, allowMetallic);
 
   // Wash from the backend-derived map (single source of truth).
   const washMatch = washForFamily(colorFamily, brand);
@@ -174,14 +187,17 @@ export function getRecipeForColor(
 }
 
 /**
- * Find closest paint match from a list
+ * Find closest paint match from a list.
+ * Metallics are excluded unless allowMetallic — see findTopMatches.
  */
 function findClosestPaint(
   colorLab: [number, number, number],
   paints: PaintData[],
-  filter?: (p: PaintData) => boolean
+  filter?: (p: PaintData) => boolean,
+  allowMetallic: boolean = false
 ): PaintMatch | null {
-  const pool = filter ? paints.filter(filter) : paints;
+  const matte = allowMetallic ? paints : paints.filter((p) => p.metallic !== true);
+  const pool = filter ? matte.filter(filter) : matte;
   if (pool.length === 0) return null;
 
   let bestMatch: PaintData | null = null;
