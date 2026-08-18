@@ -34,6 +34,14 @@ import {
   buildRegionLayer as buildRegionLayerShared,
   decodeMask,
 } from '@/lib/reveal/revealLayers';
+import { contrastTint } from '@/lib/reveal/revealCompose';
+import { readableInkOn } from '@/lib/colorConversion';
+
+/** The focused callout's type sits on a `bg-black/90` scrim. Solved against
+ *  black: that is the 90% the scrim contributes, and the residual backdrop is
+ *  not samplable from the DOM. The pict-cast, which CAN sample its own canvas,
+ *  reaches the same answer for the same callouts (O-F3). */
+const CALLOUT_SCRIM_LUMA = 0;
 
 function DecryptionText({ text, delay = 0, className = '' }: { text: string; delay?: number; className?: string }) {
   const [displayText, setDisplayText] = useState(text.replace(/[a-zA-Z]/g, '0'));
@@ -724,7 +732,10 @@ export function AuspexReveal({
                                   right: c.side === 'right' ? `calc(max(${RAIL_INSET_PCT}%, 26px) + 30px)` : undefined,
                                   top: `${c.railY * 100}%`,
                                   y: '-50%',
-                                  color: color.hex,
+                                  // Lifted only if the measured colour cannot be
+                                  // read on the scrim; hue is preserved, so a
+                                  // legible family still renders in its own hex.
+                                  color: contrastTint(color.hex, CALLOUT_SCRIM_LUMA),
                                 }}
                                 initial={{ opacity: 0, x: c.side === 'left' ? -10 : 10 }}
                                 animate={{ opacity: 1, x: 0 }}
@@ -757,8 +768,16 @@ export function AuspexReveal({
                               x: c.side === 'left' ? '-50%' : '50%',
                               y: '-50%',
                               background: isFocused ? color.hex : 'rgba(0, 0, 0, 0.9)',
+                              // Border and glow stay TRUE hex: the colour story
+                              // is honest, only the type is made readable.
                               border: `2px solid ${color.hex}`,
-                              color: isFocused ? '#000' : color.hex,
+                              // Focused, the digit sits on the measured colour
+                              // itself, so the ink is solved against it. Black
+                              // was hard-coded here and fails on every dark
+                              // swatch.
+                              color: isFocused
+                                ? readableInkOn(color.hex)
+                                : contrastTint(color.hex, CALLOUT_SCRIM_LUMA),
                               boxShadow: isFocused ? `0 0 20px ${color.hex}` : `0 0 8px ${color.hex}66`,
                             }}
                             initial={{ scale: 0, opacity: 0 }}
@@ -772,7 +791,10 @@ export function AuspexReveal({
                             whileHover={{ scale: 1.15, transition: { duration: 0.1 } }}
                             whileTap={{ scale: 0.9, transition: { duration: 0.1 } }}
                           >
-                            <span className={isFocused ? 'text-black' : 'text-cogitator-green'}>{c.index + 1}</span>
+                            {/* Focused: inherit the solved ink from the button.
+                                Unfocused: the digit sits on the near-black chip
+                                and stays Mechanicus green, which already reads. */}
+                            <span className={isFocused ? '' : 'text-cogitator-green'}>{c.index + 1}</span>
                           </motion.button>
                         </React.Fragment>
                       );

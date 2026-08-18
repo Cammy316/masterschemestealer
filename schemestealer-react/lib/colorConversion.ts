@@ -237,3 +237,32 @@ export function getContrastRatio(rgb1: RGB, rgb2: RGB): number {
 
   return (lighter + 0.05) / (darker + 0.05);
 }
+
+const INK_BLACK = '#000000';
+const INK_WHITE = '#ffffff';
+
+/**
+ * Black or white — whichever is more readable ON a dynamic background.
+ *
+ * For type sitting directly on a detected swatch, where the background is a
+ * measured colour and cannot be designed around. Hard-coding either extreme
+ * fails at one end of the range: black type is invisible on Abaddon Black and
+ * white type is invisible on White Scar, and the audit found the single worst
+ * case was a 79.9%-coverage White card — the most prominent swatch on the scan
+ * (O-F3).
+ *
+ * The choice is COMPUTED from relative luminance rather than picked, because the
+ * background is only known at runtime. One of the two extremes always clears
+ * 4.5:1 on its own: the worst case is a mid-grey background, where black and
+ * white both land at 5.28:1 against L*≈53.
+ *
+ * Arithmetic over a shipped hex, not a colour-space conversion — invariant 9 is
+ * untouched. For type that must KEEP its hue, use `contrastTint` in
+ * lib/reveal/revealCompose instead; this one is for a binary ink decision.
+ */
+export function readableInkOn(backgroundHex: string): string {
+  const bg = hexToRgb(backgroundHex);
+  const onBlack = getContrastRatio(bg, { r: 0, g: 0, b: 0 });
+  const onWhite = getContrastRatio(bg, { r: 255, g: 255, b: 255 });
+  return onBlack >= onWhite ? INK_BLACK : INK_WHITE;
+}
