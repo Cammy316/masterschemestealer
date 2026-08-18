@@ -57,7 +57,7 @@ class PhotoProcessor:
         # 2. Glare detection & correction
         if self._has_glare(img):
             score -= PhotoQuality.GLARE_PENALTY
-            warnings.append("✨ Glare detected - reducing brightness peaks")
+            warnings.append("✨ Glare detected - shade the lamp and re-scan for a truer match")
             enhanced = self._reduce_glare(enhanced)
             logger.info("Glare detected and corrected")
         
@@ -66,13 +66,13 @@ class PhotoProcessor:
         
         if exposure_status == 'underexposed':
             score -= PhotoQuality.EXPOSURE_PENALTY
-            warnings.append("💡 Image is dark - brightening automatically")
+            warnings.append("💡 Low light detected - re-shoot brighter for a truer match")
             enhanced = self._enhance_exposure(enhanced)
             logger.info("Underexposure corrected")
         
         elif exposure_status == 'overexposed':
             score -= PhotoQuality.EXPOSURE_PENALTY
-            warnings.append("☀️ Image is too bright - reducing exposure")
+            warnings.append("☀️ Highlights are blown - re-shoot darker for a truer match")
             enhanced = self._reduce_exposure(enhanced)
             logger.info("Overexposure corrected")
         
