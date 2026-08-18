@@ -29,7 +29,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
-from PIL import Image, UnidentifiedImageError
+from PIL import Image, ImageOps, UnidentifiedImageError
 Image.MAX_IMAGE_PIXELS = 25_000_000  # Prevent Decompression Bomb OOM crashes (max ~25 megapixels)
 import numpy as np
 from typing import Optional
@@ -233,6 +233,13 @@ async def scan_miniature(request: Request, file: UploadFile = File(...), invento
 
         try:
             image = Image.open(io.BytesIO(contents))
+            # Phones write a landscape sensor array plus an EXIF rotation and
+            # leave the turn to the viewer. Apply it before anything measures
+            # the array: the analysis width is fixed, so a sideways frame
+            # changes the pixel budget and with it superpixel granularity
+            # (O-A2). in_place avoids copying the full frame in the common
+            # case where there is nothing to correct.
+            ImageOps.exif_transpose(image, in_place=True)
             # The engine requires a client-removed background (alpha channel). A
             # plain RGB image would crash downstream, so reject it cleanly (C-3).
             if image.mode != 'RGBA':
@@ -293,6 +300,9 @@ async def scan_inspiration(request: Request, file: UploadFile = File(...), inven
 
         try:
             image = Image.open(io.BytesIO(contents))
+            # Apply the camera's EXIF rotation before the resize reads the
+            # shape (O-A2) -- see the miniature endpoint above.
+            ImageOps.exif_transpose(image, in_place=True)
             if image.mode != 'RGB':
                 image = image.convert('RGB')
             image.thumbnail((1024, 1024))  # optimise memory/CPU early
