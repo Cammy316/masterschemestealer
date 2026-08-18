@@ -342,10 +342,6 @@ class ShadeTypeAnalyser:
             "Iron" in family or "Rust" in family):
             return 'wash'
         
-        # HIGH TEXTURE = WASH
-        if brightness_std > 30:
-            return 'wash'
-        
         # KEYWORD CHECK
         family_lower = family.lower()
         for keyword in ShadeRules.WASH_KEYWORDS:

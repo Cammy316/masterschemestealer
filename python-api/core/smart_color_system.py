@@ -231,17 +231,6 @@ class SmartColorExtractor:
                         conflicting_major['pixel_indices'], cluster['pixel_indices']
                     ])
                     conflicting_major['coverage'] += cluster['coverage']
-            elif coverage >= 0.5 and cluster_chroma > 50:
-                logger.info(f"Preserving micro-detail: {cluster['family']} ({coverage:.1f}%)")
-                cluster['is_detail'] = True
-                is_unique, conflicting_major = self._is_unique_from_majors(cluster, major_colors)
-                if is_unique:
-                    detail_colors.append(cluster)
-                elif conflicting_major is not None:
-                    conflicting_major['pixel_indices'] = np.concatenate([
-                        conflicting_major['pixel_indices'], cluster['pixel_indices']
-                    ])
-                    conflicting_major['coverage'] += cluster['coverage']
         
         logger.info(f"Final: {len(major_colors)} major + {len(detail_colors)} details")
         for c in major_colors + detail_colors:

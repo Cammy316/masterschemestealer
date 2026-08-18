@@ -5,8 +5,10 @@ Seeds each chromatic family from the ground-truth DB paints labelled that family
 (k-medoids of their measured LAB), plus the metallic families from metallic
 paints, plus a handful of CURATED exemplars for the edge classes we've fought
 (olive→green, mauve→pink, leather→brown, teal→cyan …). The achromatic families
-(grey/white/black) are NOT anchors — they're handled by the explicit gate in
-color_engine.classify_family — so they never swallow a pale-but-chromatic colour.
+(grey/white/black) are anchors like any other family — see NEUTRALS below.
+`classify_family` has NO achromatic gate: low-chroma greys and faint-hue pales
+overlap, so nearest-exemplar separates them far better than any chroma cut-off,
+and the only hard threshold in the classifier is the black floor (D1).
 
 Output (python-api/color_anchors.json) is consumed by the backend directly and
 compiled into schemestealer-react/lib/colorAnchors.ts for the frontend, so both

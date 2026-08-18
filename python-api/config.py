@@ -134,7 +134,6 @@ class Display:
 
 class ShadeRules:
     """Rules for wash vs paint shade selection"""
-    HIGH_TEXTURE_THRESHOLD = 45     # Brightness std for texture detection
     DARK_VALUE_THRESHOLD = 0.2      # Very dark colors get washes
     
     # Keywords that trigger wash usage
