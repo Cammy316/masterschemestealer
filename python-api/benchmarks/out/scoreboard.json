@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-18T15:27Z",
-  "elapsed_s": 30.9,
+  "generated_at": "2026-08-18T19:33Z",
+  "elapsed_s": 32.5,
   "match": {
     "primer": {
       "paint_id": "citadel-wraithbone",
@@ -400,12 +400,12 @@
     },
     "n_edges": 4822,
     "warm_bases_with_highlight": 747,
-    "warm_cooler_highlight": 161,
-    "warm_cooler_highlight_pct": 21.55,
+    "warm_cooler_highlight": 134,
+    "warm_cooler_highlight_pct": 17.94,
     "both_candidates_cooler": 59,
     "both_candidates_cooler_pct": 7.9,
-    "chroma_loss_gt50": 75,
-    "chroma_loss_gt50_pct": 10.04,
+    "chroma_loss_gt50": 48,
+    "chroma_loss_gt50_pct": 6.43,
     "monotonic_guarded_keys": 2365,
     "monotonic_inversions": 2
   },

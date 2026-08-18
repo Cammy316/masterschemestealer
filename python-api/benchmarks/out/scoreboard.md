@@ -1,4 +1,4 @@
-# Colour-accuracy scoreboard — 2026-08-18T15:27Z
+# Colour-accuracy scoreboard — 2026-08-18T19:33Z
 
 There is no labelled photograph set. Matcher numbers are identity /
 cross-brand recovery on stored (or primer-composited) LABs. Real
@@ -94,7 +94,7 @@ served-slot population MERGED reports at 44.44%.
 | Candidate edges per key | {'1': 280, '2': 2271} |
 | Edge sources | {'algorithmic': 4615, 'citadel_official': 30, 'manual': 177} |
 | Warm bases with a highlight key | 747 |
-| …chosen highlight is cooler | 161 (21.55%) |
+| …chosen highlight is cooler | 134 (17.94%) |
 | …**all** candidates cooler (unfixable floor) | 59 (7.9%) |
-| …chosen highlight loses >50% OKLab chroma | 75 (10.04%) |
+| …chosen highlight loses >50% OKLab chroma | 48 (6.43%) |
 | `_monotonic_ok` inversions | 2 of 2365 guarded keys |
