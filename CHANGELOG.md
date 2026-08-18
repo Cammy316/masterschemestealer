@@ -134,6 +134,96 @@ different paints, one deleted as the other's shadow.
   still has **no labelled photograph set**, so top-1 accuracy on real minis cannot be
   claimed.
 
+## [Unreleased] - 2026-08-18 (colour accuracy: phase 2, the mechanical tier)
+
+Five commits, one finding each, none of which moves a bench number. Phase 2 is complete;
+8 of 17 planned commits have landed. All local — nothing pushed.
+
+### The pattern worth keeping from this batch
+
+**Three of the five specifications were wrong about the code, and each was caught by
+opening the file rather than trusting the finding.** The audit's own most valuable output
+was that every one of its seven refutations turned on *measuring a population the pipeline
+never produces*; that failure mode reappeared inside its remediation plan.
+
+- **C2.3's premise about the user is false.** Its finding says the UI tells the user the
+  image is being brightened. It does not: `quality_report` is bound and then **discarded**
+  in both scanners (`miniature_scanner.py:105,118`, `inspiration_scanner.py:77`),
+  `_format_results(recipes, mode)` takes no quality argument, and the API response carries
+  no quality field at all. The strings reach nobody. The reword still stands — it is the
+  description the next reader trusts — but the honest claim is "dead copy asserting a
+  correction that never happens".
+- **C2.6's named hooks already pass.** It says to compute the ink in the shared card and
+  `SwatchCompare`. Both put their labels on an opaque scrim, not on the swatch. The
+  component that actually inks with a measured colour is `AuspexReveal`. Implementing it as
+  written would have hardened two components that were never broken.
+- **C2.2's audit wording would have deleted a live class.** `VisualizationEngine` is
+  instantiated at `schemestealer_engine.py:188` and called at `:470`; only four of its
+  methods were dead.
+
+### Changed
+
+- **The ΔE badge and the recipe card now share one vocabulary** (`0b2db3f`). The card had
+  its own scale — `≤5 excellent · ≤15 loose · >15 poor` — against the fixed
+  `perfect <2 · close <5 · fair <10 · distant ≤30`. **0 of 300,001 grid points across
+  ΔE 0–30 shared a word.** `lib/deltaE.ts` now exports the vocabulary, a `deltaBand()`
+  mirroring `build_conversions.py:17-26`, and the base-only badge gate as a named
+  predicate. The SEO badge gained an explicit `none` case: its `default` branch used to
+  render an unrecognised band as "DISTANT MATCH", asserting the paint is inside the ΔE 30
+  ceiling — the one thing `none` means it is not.
+- **Quality warnings state the fault and the remedy, not a fix** (`71bdfbc`). "Image is
+  dark — brightening automatically" became "Low light detected — re-shoot brighter for a
+  truer match". All three described an effect on `enhanced_image`, which has no reader.
+- **Swatch ink is solved against the swatch** (`6f3a512`). 6 of 60 real cluster swatches
+  failed WCAG 4.5:1, worst 2.85:1, with 2 below even the 3:1 large-text floor. The focused
+  reveal chip hard-coded black type on the measured colour, which fails on **688 of the
+  1,312** shipped paints. Now computed, by reusing the pict-cast's own hue-preserving
+  `contrastTint` plus a new `readableInkOn` — which gives `getContrastRatio` and
+  `getRelativeLuminance` their **first callers** after shipping with none. No new maths, no
+  dependency. Only illegible ink moves; borders and glows stay true hex.
+
+### Removed
+
+- **The dead server-side overlay path** (`6b3bd7e`) — `create_color_overlay`, `_clean_mask`,
+  `_draw_minimal_reticle`, `draw_enhanced_reticle`. Zero callers, including tests; the last
+  three reachable only from the first. This is the code the Bug C diagnosis kept landing
+  on: `_clean_mask`'s 5 px floor is its *documented* mechanism, and it has been unreachable
+  for as long as the alpha-PNG client-side composite has shipped. Two stale references were
+  swept with it, one of them in a **tracked, agent-loaded** skill file that still taught the
+  dead mechanism as the confirmed cause.
+- **Two unreachable branches and a stale docstring** (`afe50e7`). `smart_color_system.py`'s
+  micro-detail branch sat behind a strictly weaker coverage test; `determine_shade_type`'s
+  `> 30` branch sat behind a surface classifier that already returns 'wash' above 20. Three
+  numbers existed for one decision — dead 45, unreachable 30, live 20 — with the live one
+  on the next config line, which is exactly why the dead one read as live. The branch was
+  **not** reordered to make it live: that adds cards, and it is an open decision.
+  `build_color_anchors.py`'s docstring claimed neutrals are not anchors and are handled by
+  a gate the classifier does not have; the code 30 lines below builds them as anchors. Last
+  open ledger row.
+
+### Measured
+
+- Backend **673 → 711** tests, frontend **854 → 888**. `npm run build` and `tsc --noEmit`
+  clean throughout.
+- **Every commit's bench run was identical to `e8ca68e` apart from `generated_at` and
+  `elapsed_s`**, the only two fields a diff may ignore. For the deletion commit that is not
+  a formality but the gate itself: a behaviour-neutral change that moved a number would be
+  wrong by definition. The artefacts are therefore left pinned at `e8ca68e` rather than
+  re-committed with a fresh timestamp each time.
+
+### Known / pending
+
+- **A third ΔE vocabulary exists and the audit never found it.** `lib/colorMath.ts:183-189`
+  `getDeltaEBand` returns `Identical <1 · Excellent ≤2 · Good ≤3 · Acceptable ≤5 · Poor >5`
+  in The Forge. Same defect as the card's, but user-facing copy in a surface the plan does
+  not name and whose semantics differ (mix accuracy, not match distance) — so it was flagged
+  rather than folded into a commit scoped to one finding.
+- `lib/reveal/revealCompose.ts`'s `deltaBandName` has the right words with `≤` bounds, so it
+  disagrees with the canonical `<` at exactly 2.0 / 5.0 / 10.0. `lib/reveal/` is an explicit
+  non-goal of the audit and was left alone.
+- The rest of `.agents/skills/schemestealer-colour-science/SKILL.md` is a stale mirror of the
+  corrected local skill set. Only its references to deleted symbols were fixed.
+
 ## [Unreleased] - 2026-08-12 (video-qa: a harness that measures the artefact)
 
 Phase 0 of the v6 corrective pack. Nothing user-facing changes; this exists so
