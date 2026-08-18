@@ -46,9 +46,10 @@ export function ReticleReveal({
     });
   };
 
-  // Client-side reticle fallback: only used when the backend did NOT return a
-  // highlight composite (the preferred path is the backend single-colour
-  // highlight — rest of the mini dimmed — see create_color_overlay).
+  // Client-side reticle fallback for legacy scans that carry no masks. The live
+  // path is AuspexReveal: the backend sends alpha-PNG masks plus mask_frame crop
+  // geometry and the browser composites the single-colour highlight itself. The
+  // server-side highlight composite this once fell back FROM no longer exists.
   React.useEffect(() => {
     if (!isRevealed || !imageLoaded || !reticlePositions || !canvasRef.current || !imageRef.current) return;
 

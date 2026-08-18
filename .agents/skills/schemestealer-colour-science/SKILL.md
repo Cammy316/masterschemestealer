@@ -32,7 +32,8 @@ scan(image)
          • match base                                  color_engine.py:382 match_color() (family gate + ΔE≤30)
          • highlight/shade partner                     recipe_graph OR recipe_geometry.derive_partner
          • wash                                        services/recipe_builder.py:98 get_wash_for_family
-         • reticle overlay                             color_engine.py:549 create_color_overlay
+         • spatial mask → alpha PNG                    services/miniature_scanner.py _encode_mask
+           (composited client-side; there is no server-side overlay composite)
 ```
 
 ## The classifier — current, verified design
@@ -75,15 +76,18 @@ resurrect them.
 - Fix direction: keep ONE classifier, but in the low-chroma region either (i) compare in
   LCh with a reduced ΔL weight, or (ii) densify pale-tint exemplars. Lock with fixtures.
 
-### Bug C — magenta/gold trim detected but location overlay blank (MED, UX not colour)
-- ✅ Actual: mask cleaning kills small regions. `_clean_mask` drops components `<5 px`
-  (color_engine.py:601-623); rim contour floor `min_area = max(25, 0.0005·h·w)` (:588).
-  Magenta/gold are typically tiny trims → mask cleaned to empty → overlay renders flat.
-  The colour still appears in the recipe list (classification/matching are fine).
+### Bug C — magenta/gold trim detected but location overlay blank (MED, MECHANISM DEAD)
+- ⚠️ **The documented mechanism no longer exists.** It was `_clean_mask`'s 5 px component
+  floor and the `min_area = max(25, 0.0005·h·w)` contour floor, both inside
+  `VisualizationEngine.create_color_overlay` — a server-side composite that had zero
+  callers and was **deleted** (O-G4). Do not re-diagnose Bug C against it.
+- The live path emits the raw boolean `spatial_mask` as an alpha PNG with **no cleaning at
+  all** (`miniature_scanner._encode_mask`), composited client-side via `mask_frame`
+  geometry in `lib/maskGeometry.ts` and `AuspexReveal.tsx`.
 - Not the cause: family-name gating (none exists), capitalisation (correct).
-- Fix direction: scale `min_area` down for low-coverage details, or fall back to the raw
-  pre-clean mask when cleaning empties it. Verify the contour-draw path on an all-zero
-  mask (previously unverified).
+- Fix direction: if the symptom still occurs it has a **different** cause — re-diagnose
+  against the live path (mask emptiness upstream in extraction, or the client composite)
+  before touching anything.
 
 ## Other verified findings
 
@@ -153,8 +157,8 @@ and there is no backend mix endpoint.
 - **Stage 0** — lock Bugs A/B/C as failing fixtures (no behaviour change). Highest leverage.
 - **Stage 1** — Bug A + B via anchors/decision only (LCh weighting or exemplar curation).
   Lowest-risk high-impact; no code-path changes.
-- **Stage 2** — Bug C overlay (`_clean_mask` min-area / raw-mask fallback). Pure
-  visualisation; cannot affect classification.
+- **Stage 2** — Bug C overlay. **NEEDS RE-DIAGNOSIS** — the documented cause was deleted
+  with the server-side composite (O-G4). Pure visualisation; cannot affect classification.
 - **Stage 3** — metric/target consistency (CIEDE2000 in `derive_partner`; `median_lab`
   into matcher; document/remove `achromatic_c`).
 - **Stage 4** — white balance (linearise + Bradford) + saturation-aware specular reject.

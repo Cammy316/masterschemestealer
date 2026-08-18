@@ -658,146 +658,17 @@ class PaintMatcher:
 
 
 # ============================================================================
-# VISUALIZATION ENGINE (UNCHANGED FROM ORIGINAL)
+# VISUALIZATION ENGINE
 # ============================================================================
 
 class VisualizationEngine:
-    """Create tactical reticle overlays"""
-    
-    @staticmethod
-    def create_color_overlay(img: np.ndarray, color_mask: np.ndarray,
-                            color_rgb: np.ndarray, reticle_pos: Tuple[int, int],
-                            rim_rgb: Tuple[int, int, int] = (0, 255, 100)) -> np.ndarray:
-        """Single-colour highlight composite.
+    """Reticle placement for the served colours.
 
-        Dims + desaturates the WHOLE image except this colour's mask, where the
-        ORIGINAL full-colour pixels are revealed — so you can see exactly *where*
-        the colour appears on the mini. The mask is first cleaned (speckle removed,
-        tiny components dropped) and the rim is drawn ONLY on the OUTER contours of
-        the surviving regions — never internal Canny edges, which previously lit up
-        the whole figure's edge web. `rim_rgb` is the per-mode accent (green
-        Imperial by default; pass purple for Warp).
-        """
-        h, w = color_mask.shape[:2]
-        gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-        gray_rgb = cv2.cvtColor(gray, cv2.COLOR_GRAY2RGB)
-
-        # Dim, desaturated backdrop for everything outside the mask.
-        overlay = gray_rgb.astype(float) * 0.32
-
-        # Clean the mask so scattered noise doesn't read as highlight.
-        clean = VisualizationEngine._clean_mask(color_mask)
-
-        if np.any(clean):
-            mask_float = clean.astype(float)
-
-            # Feather the mask so the reveal blends rather than aliases.
-            soft = np.clip(cv2.GaussianBlur(mask_float, (9, 9), 0), 0.0, 1.0)
-            soft3 = soft[:, :, None]
-
-            # Reveal the original full-colour pixels inside the mask.
-            img_f = img.astype(float)
-            overlay = overlay * (1.0 - soft3) + img_f * soft3
-
-            # Thin rim on the OUTER contours of the cleaned regions only.
-            overlay = np.clip(overlay, 0, 255).astype(np.uint8)
-            contours, _ = cv2.findContours(
-                (mask_float * 255).astype(np.uint8),
-                cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-            min_area = max(25.0, 0.0005 * h * w)
-            keep = [c for c in contours if cv2.contourArea(c) >= min_area]
-            cv2.drawContours(overlay, keep, -1,
-                             tuple(int(x) for x in rim_rgb), 2, lineType=cv2.LINE_AA)
-        else:
-            overlay = np.clip(overlay, 0, 255).astype(np.uint8)
-
-        # Single, light centre reticle (no heavy HUD text/brackets).
-        return VisualizationEngine._draw_minimal_reticle(
-            overlay, reticle_pos[0], reticle_pos[1], rim_rgb
-        )
-
-    @staticmethod
-    def _clean_mask(mask: np.ndarray) -> np.ndarray:
-        """Keep connected components above a tiny area threshold (5 px) to drop 
-        pure camera noise, but preserve thin edge highlights, chains, and text.
-        No destructive morphological open is used."""
-        m = (np.asarray(mask).astype(np.uint8) > 0).astype(np.uint8)
-        if not m.any():
-            return m.astype(bool)
-            
-        n, labels, stats, _ = cv2.connectedComponentsWithStats(m, connectivity=8)
-        if n <= 1:
-            return m.astype(bool)
-            
-        min_area = 5
-        out = np.zeros_like(m)
-        for i in range(1, n):
-            if stats[i, cv2.CC_STAT_AREA] >= min_area:
-                out[labels == i] = 1
-                
-        if not out.any():
-            largest = 1 + int(np.argmax(stats[1:, cv2.CC_STAT_AREA]))
-            out[labels == largest] = 1
-            
-        return out.astype(bool)
-
-    @staticmethod
-    def _draw_minimal_reticle(img: np.ndarray, x: int, y: int,
-                              color: Tuple[int, int, int]) -> np.ndarray:
-        """A restrained reticle: a thin ring, four outward ticks, a white pip."""
-        result = img.copy()
-        c = (int(color[0]), int(color[1]), int(color[2]))
-        r = 22
-        cv2.circle(result, (x, y), r, c, 2, lineType=cv2.LINE_AA)
-        for ex, ey in ((0, -1), (0, 1), (-1, 0), (1, 0)):
-            p1 = (x + ex * (r + 3), y + ey * (r + 3))
-            p2 = (x + ex * (r + 10), y + ey * (r + 10))
-            cv2.line(result, p1, p2, c, 1, lineType=cv2.LINE_AA)
-        cv2.circle(result, (x, y), 2, (255, 255, 255), -1, lineType=cv2.LINE_AA)
-        return result
-
-    @staticmethod
-    def draw_enhanced_reticle(img: np.ndarray, x: int, y: int,
-                             target_color_rgb: np.ndarray = None) -> np.ndarray:
-        """Draw sci-fi / Warhammer auspex style reticle"""
-        
-        if target_color_rgb is not None:
-             hud_color = (0, 255, 100)
-        else:
-             hud_color = (0, 255, 100)
-             
-        result = img.copy()
-        
-        radius = 25
-        cv2.ellipse(result, (x, y), (radius, radius), 0, 0, 70, hud_color, 2)
-        cv2.ellipse(result, (x, y), (radius, radius), 0, 90, 160, hud_color, 2)
-        cv2.ellipse(result, (x, y), (radius, radius), 0, 180, 250, hud_color, 2)
-        cv2.ellipse(result, (x, y), (radius, radius), 0, 270, 340, hud_color, 2)
-        
-        cv2.circle(result, (x, y), 2, (255, 255, 255), -1)
-        
-        bracket_dist = 40
-        bracket_len = 10
-        
-        cv2.line(result, (x - bracket_dist, y - bracket_dist), (x - bracket_dist + bracket_len, y - bracket_dist), hud_color, 1)
-        cv2.line(result, (x - bracket_dist, y - bracket_dist), (x - bracket_dist, y - bracket_dist + bracket_len), hud_color, 1)
-        
-        cv2.line(result, (x + bracket_dist, y - bracket_dist), (x + bracket_dist - bracket_len, y - bracket_dist), hud_color, 1)
-        cv2.line(result, (x + bracket_dist, y - bracket_dist), (x + bracket_dist, y - bracket_dist + bracket_len), hud_color, 1)
-
-        cv2.line(result, (x - bracket_dist, y + bracket_dist), (x - bracket_dist + bracket_len, y + bracket_dist), hud_color, 1)
-        cv2.line(result, (x - bracket_dist, y + bracket_dist), (x - bracket_dist, y + bracket_dist - bracket_len), hud_color, 1)
-        
-        cv2.line(result, (x + bracket_dist, y + bracket_dist), (x + bracket_dist - bracket_len, y + bracket_dist), hud_color, 1)
-        cv2.line(result, (x + bracket_dist, y + bracket_dist), (x + bracket_dist, y + bracket_dist - bracket_len), hud_color, 1)
-        
-        cv2.line(result, (x - radius, y), (x - radius - 10, y), hud_color, 1)
-        cv2.line(result, (x + radius, y), (x + radius + 10, y), hud_color, 1)
-        
-        cv2.putText(result, "TRGT_LOCK", (x + bracket_dist - 40, y + bracket_dist + 15), 
-                   cv2.FONT_HERSHEY_PLAIN, 0.8, hud_color, 1)
-        
-        return result
+    The server-side overlay composite (`create_color_overlay` and its helpers)
+    was deleted with O-G4 — it had no callers. The overlay the user sees is
+    composited in the browser from the alpha-PNG masks emitted by
+    `miniature_scanner._encode_mask`; only the reticle POSITION is computed here.
+    """
     
     @staticmethod
     def find_optimal_reticle_position(color_mask: np.ndarray, 
