@@ -20,16 +20,43 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
           
+      # requirements.txt pins opencv-python (not -headless), which links against
+      # libGL and libgthread. The runner image carries neither, and until now it
+      # did not matter: without USE_REAL_CV2 conftest.py substitutes a MagicMock
+      # for cv2 and real OpenCV is never imported. The step below sets that flag,
+      # so these become hard import requirements. Installed here rather than by
+      # swapping the dependency to opencv-python-headless, because that would
+      # change what Render deploys in order to fix a CI-only problem.
+      - name: Install OpenCV system libraries
+        run: sudo apt-get update && sudo apt-get install -y libgl1 libglib2.0-0
+
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
           pip install pytest httpx
-          
+
+      # Fail here, with a legible message, rather than 12 tests down.
+      - name: Verify real OpenCV imports
+        run: python -c "import cv2; print('OpenCV', cv2.__version__)"
+
       - name: Run backend tests
         env:
           SUPABASE_URL: "https://test.supabase.co"
           SUPABASE_SERVICE_KEY: "test-key"
           ANALYTICS_ADMIN_KEY: "test-admin-key"
+          # Without this, conftest.py stubs cv2 and seven test modules skip
+          # themselves at import. Measured 2026-08-19: 724 collected / 8 skipped
+          # under CI conditions against 736 collected / 3 skipped locally — CI
+          # was not running 12 tests, including the whole real-photograph scan
+          # suite, the EXIF-orientation pair and the plinth detector's colour
+          # test. Two of those guards are LOAD-BEARING and must stay: under the
+          # stub, test_plinth_detection's colour test reports 0 differing pixels
+          # against the pre-C3.1 detector (cvtColor ignores COLOR_RGB2HSV), so it
+          # passes on the exact code it was written to catch; and the stub's
+          # resize is a passthrough, so test_exif_orientation's mask and image
+          # shapes diverge and one of its tests errors outright. This flag is how
+          # those tests run for real instead of how the guards get deleted.
+          USE_REAL_CV2: "1"
         run: python -m pytest tests/ -v
 
   frontend-tests:
