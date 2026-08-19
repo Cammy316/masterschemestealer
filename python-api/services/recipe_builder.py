@@ -35,8 +35,16 @@ def hex_to_rgb(hex_color: str) -> List[int]:
     return [int(hex_color[i:i + 2], 16) for i in (0, 2, 4)]
 
 
-def format_paint_match(match: Optional[Dict], color_lab: List[float] = None) -> Optional[Dict]:
-    """Format a single paint match dict for the API, carrying through `source`."""
+def format_paint_match(match: Optional[Dict], color_lab: List[float] = None,
+                       is_wash: bool = False) -> Optional[Dict]:
+    """Format a single paint match dict for the API, carrying through `source`.
+
+    `is_wash` suppresses the `deltaE` field. A wash is chosen by family
+    archetype, not by colour (DEC-8) — see `_wash_result`. This function serves
+    the wash slot as well as base/highlight/shade (`build_paint_recipe` below
+    routes graph-resolved washes through it), so the suppression has to live
+    here too and not only in `_wash_result`.
+    """
     if not match:
         return None
 
@@ -49,7 +57,7 @@ def format_paint_match(match: Optional[Dict], color_lab: List[float] = None) -> 
     if match.get('source'):
         result['source'] = match['source']
 
-    if color_lab and match.get('hex'):
+    if color_lab and match.get('hex') and not is_wash:
         try:
             delta_e = ciede2000_single(rgb_to_lab(hex_to_rgb(match['hex'])), color_lab)
             result['deltaE'] = round(float(delta_e), 1)
@@ -79,20 +87,25 @@ def _find_wash_paint(wash_db: List[Dict], brand: str, name: str) -> Optional[Dic
 
 
 def _wash_result(paint: Dict, color_lab: List[float], source: str) -> Dict:
-    """Assemble the API wash dict, tagging provenance ('official' | 'cross-brand')."""
-    result = {
+    """Assemble the API wash dict, tagging provenance ('official' | 'cross-brand').
+
+    NO `deltaE` — deliberately (DEC-8 / O-F4). The wash is selected by family
+    archetype (`WashMapping`, e.g. white -> 'dark'), never by colour, because a
+    wash is a glaze that goes OVER the base and pools in recesses rather than
+    matching the surface. Scoring the wash paint's own hex against the CARD
+    colour and publishing it under the same field name the base slot uses for a
+    real CIEDE2000 match distance was a category error: over 198 served wash
+    slots the median read 27.1 and 44.9% exceeded the matcher's own ceiling of
+    30 — a white card returned Nuln Oil at 90.1. `color_lab` is kept in the
+    signature because callers pass it positionally and it documents what the
+    slot is being derived for.
+    """
+    return {
         'name': paint.get('name'),
         'hex': paint.get('hex', '#000000'),
         'type': 'wash',
         'source': source,
     }
-    if color_lab and paint.get('hex'):
-        try:
-            delta_e = ciede2000_single(rgb_to_lab(hex_to_rgb(paint['hex'])), color_lab)
-            result['deltaE'] = round(float(delta_e), 1)
-        except Exception:
-            result['deltaE'] = 0
-    return result
 
 
 def get_wash_for_family(family: str, brand: str, color_lab: List[float],
@@ -154,7 +167,7 @@ def build_paint_recipe(recipe: Dict, family: str, color_lab: List[float],
 
         graph_wash = recipe.get('wash', {}).get(brand)
         if graph_wash:
-            wash_match = format_paint_match(graph_wash, color_lab)
+            wash_match = format_paint_match(graph_wash, color_lab, is_wash=True)
         else:
             wash_match = get_wash_for_family(family, brand, color_lab, wash_db)
 
