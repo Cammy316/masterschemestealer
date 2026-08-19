@@ -45,6 +45,11 @@ export interface PaintMatch {
   // Relationship provenance for highlight/shade/wash slots from the backend
   // recipe graph: 'official' (curated chain) or 'computed' (algorithmic).
   source?: 'official' | 'computed';
+  // Provenance of the paint's own LAB (DEC-2). 'swatch-median' = a region median
+  // of a photographed swatch (1,216 paints); 'assumed' = never measured (96
+  // washes/shades/inks). Absent on the offline path, which ships no provenance
+  // — see the note in PaintRecipeCard where the marker is rendered.
+  color_source?: 'swatch-median' | 'assumed';
   owned_alternative?: PaintMatch;
 }
 

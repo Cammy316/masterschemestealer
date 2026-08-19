@@ -18,6 +18,11 @@ import { useAppStore } from '@/lib/store';
 import { useOwnedPaints } from '@/hooks/useLocalStorage';
 import { copyRecipe } from '@/lib/clipboard';
 import { deltaBand, DELTA_BAND_WORD, shouldShowDeltaBadge } from '@/lib/deltaE';
+import {
+  shouldShowEstimatedColour,
+  ESTIMATED_COLOUR_LABEL,
+  ESTIMATED_COLOUR_TOOLTIP,
+} from '@/lib/paintProvenance';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { GhostButton } from '@/components/shared/GhostButton';
 import { RoleTag } from '@/components/shared/RoleTag';
@@ -697,6 +702,30 @@ function RecipeStepRow({
               {activePaint.discontinued && (
                 <Tooltip content={activePaint.alternativeName ? `Try ${activePaint.alternativeName} instead` : 'This paint may be discontinued'}>
                   <span className="text-[11px] bg-red-500/20 text-red-400 px-1.5 py-0.5 rounded cursor-help">Discontinued</span>
+                </Tooltip>
+              )}
+              {/* DEC-2 — 96 of 1,312 paints have no measured colour; their LAB
+                  is inferred, and 71% of those share a hex with another assumed
+                  record. Say so rather than presenting an estimate with the same
+                  confidence as a photographed swatch. This QUALIFIES a number,
+                  it does not hide one (invariant 10).
+
+                  Keyed on `color_source`, deliberately NOT on the step being the
+                  wash. Every assumed record is a wash/shade/ink today, so the
+                  two rules agree — but they stop agreeing the moment a wash is
+                  measured, and measuring them is the point of the accuracy
+                  roadmap. `test_served_provenance.py` pins that equivalence as a
+                  coincidence so it is never relied on.
+
+                  Absent on the offline path: `lib/paintDatabase.ts` ships no
+                  provenance field, so an offline recipe simply renders no
+                  marker. Recorded rather than faked — inferring it from the slot
+                  would be the category-keyed rule this comment rejects. */}
+              {shouldShowEstimatedColour(activePaint.color_source) && (
+                <Tooltip content={ESTIMATED_COLOUR_TOOLTIP}>
+                  <span className="text-[11px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded cursor-help">
+                    {ESTIMATED_COLOUR_LABEL}
+                  </span>
                 </Tooltip>
               )}
             </div>

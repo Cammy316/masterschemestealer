@@ -581,6 +581,12 @@ class SchemeStealerEngine:
             'type': 'wash' if is_wash else paint.type,
             'color_family': paint.color_family,
             'metallic': bool(paint.metallic),
+            # Provenance of the paint's LAB (DEC-2): 'swatch-median' for the
+            # 1,216 photographed swatches, 'assumed' for the 96 washes/inks
+            # whose colour was never measured. C4.7 made this honest at load;
+            # without this line it stopped at the engine and appeared 0 times in
+            # a scan response, so the card had no way to qualify an estimate.
+            'color_source': paint.color_source,
         }
         if source:
             out['source'] = source   # 'official' | 'computed'

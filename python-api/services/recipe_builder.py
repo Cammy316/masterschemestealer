@@ -57,6 +57,12 @@ def format_paint_match(match: Optional[Dict], color_lab: List[float] = None,
     if match.get('source'):
         result['source'] = match['source']
 
+    # Colour provenance: 'swatch-median' | 'assumed' (DEC-2). Carried through
+    # from the engine's dict — this function rebuilds the payload from scratch,
+    # so anything not copied here never reaches the API.
+    if match.get('color_source'):
+        result['color_source'] = match['color_source']
+
     if color_lab and match.get('hex') and not is_wash:
         try:
             delta_e = ciede2000_single(rgb_to_lab(hex_to_rgb(match['hex'])), color_lab)
@@ -100,12 +106,19 @@ def _wash_result(paint: Dict, color_lab: List[float], source: str) -> Dict:
     signature because callers pass it positionally and it documents what the
     slot is being derived for.
     """
-    return {
+    result = {
         'name': paint.get('name'),
         'hex': paint.get('hex', '#000000'),
         'type': 'wash',
         'source': source,
     }
+    # Colour provenance (DEC-2). `paint` here is a raw record from
+    # paints_groundtruth.json, so it carries the field directly. This is the
+    # majority wash path — 164 of 198 served wash slots — so omitting it would
+    # leave the marker rendering on a sixth of wash rows and absent on the rest.
+    if paint.get('color_source'):
+        result['color_source'] = paint['color_source']
+    return result
 
 
 def get_wash_for_family(family: str, brand: str, color_lab: List[float],
