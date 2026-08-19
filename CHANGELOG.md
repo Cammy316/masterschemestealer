@@ -381,6 +381,132 @@ entirely. Corrected in the same commit, with a test pinning the real coupling.
   replacement models a highlight better — but unmeasured by any gate, and the inversion
   guard is now the only lightness check on that path.
 
+## [Unreleased] - 2026-08-19 (colour accuracy: the twelve decisions, answered)
+
+Not a tier of the plan. Twelve open judgement calls — the plan's `DEC-1…DEC-5` plus seven
+raised while implementing — were all decided, and these seven commits execute them. One
+decision per commit, in risk-ascending order: documentation, then small code, then product
+surface, then infrastructure.
+
+### Changed — the wash slot stops publishing a meaningless number (DEC-8)
+
+A wash is chosen by **family archetype**, never by colour: white maps to "dark", so a white
+card is correctly washed with Nuln Oil. The code then scored the wash paint's own colour
+against the *card* and published it under the same field name the base slot uses for a real
+match distance. Measured across 198 served wash slots: median 27.1, max 76.6, and **44.9%
+beyond the matcher's own ceiling of 30** — which is the proof it was never a match distance.
+
+This does not hide a ΔE. It removes a number that was never a ΔE against the thing its name
+claimed. Highlight and shade are untouched; whether they keep a renamed score is a separate,
+unmade call.
+
+**Two corrections to the brief, both load-bearing.** The wash slot has *two* builders, not
+one — 34 of 198 served slots come from the recipe graph and 164 from the archetype fallback,
+so fixing one would have left a sixth of wash rows still publishing a score. And "not
+user-visible" was false: the copy-recipe export prints the number for every slot that
+carries one, and the card's "✓ Perfect" chip is **not** gated to the base row the way the ΔE
+badge is. Offline that chip fired on *every* wash row on *every* scan, driven by a hardcoded
+zero that was a placeholder, not a measurement.
+
+### Added — paints with no measured colour now say so (DEC-2)
+
+96 of 1,312 paints have no measured colour; their value is inferred. They are not even 96
+independent estimates — **12 colours are each shared by two or more of them, covering 71% of
+the 96**, one shared by seventeen paints across four brands. The card now marks these
+"Estimated colour" with a tooltip explaining the difference.
+
+This **qualifies** a number rather than hiding one: no ΔE is altered, suppressed or
+re-banded, and no recipe changes. Read together with the wash change above, the wash row
+loses a number that meant nothing and gains a qualifier that means something.
+
+Keyed on provenance, deliberately **not** on the row being the wash. Every unmeasured paint
+today happens to be a wash, so the two rules agree on the whole database — right by accident,
+and wrong the moment a wash is measured, which is exactly what the accuracy roadmap intends
+to do.
+
+**Found by measuring the wrong thing first.** An earlier draft asserted against the engine's
+internal dict, passed, and would have shipped a field the API still dropped — the response is
+rebuilt field by field one layer further out. The audit's own recurring failure class,
+caught inside the commit that committed it.
+
+### Fixed — three recommendations that could not be acted on
+
+- **A partner slot can no longer be the base paint again** (DEC-11, offline). The backend has
+  always forbidden this; the offline fallback did not, because its lightness test compared
+  against the *target* colour rather than the *chosen* paint. Measured along the neutral
+  axis: 5 of 228 highlights and 4 of 228 shades came back as the base paint — recipes
+  instructing the painter to do nothing. The brief named the highlight case only; the shade
+  case was found by measuring.
+- **A matte colour is no longer offered a metallic substitute** (DEC-5). Metallics change
+  appearance with viewing angle, so recommending one for a flat surface is a category error
+  the main matcher already refuses to make; the "you already own this" lookup bypassed it.
+  43 of 1,077 matte paints could be substituted this way — an off-white armour's nearest
+  candidate of *any* kind was a silver.
+- **The plan's stated reason for where to put that filter was wrong**, and the conclusion
+  survived anyway: the code it said to protect does not use this lookup at all. The code that
+  genuinely needed protecting is the one generating 1,326 cross-brand conversion pages, where
+  someone searching for a metallic equivalent *should* be shown metals.
+
+### Documented — three decisions the code could not explain (DEC-3 / DEC-7 / DEC-1)
+
+No behaviour change; the benchmark returning byte-identical output **is** the gate.
+
+- The matcher's "no match found" path for base colours is unreachable and is **kept anyway**,
+  now with the measurement beside it: every one of the 204 gated pools is non-empty and the
+  worst distance achievable anywhere is well inside the ceiling. It stays because it bounds
+  what the matcher may return if the database ever thins out, and lowering it to make it bite
+  would be a contract change.
+- The Forge keeps its own quality wording, because it measures **mix accuracy** and the rest
+  of the app measures **match distance**. Forcing one vocabulary onto both would make the
+  numbers agree and the meaning wrong.
+- The extraction bias toward darker pixels is **renamed, not changed**. It was called a
+  "base-coat bias"; on a miniature the tonal range runs shade → base → highlight, so what it
+  actually lands on is the **shade**. Its cost is now recorded next to it: it fires on 21% of
+  merged colours and changes the recommended paint in 37% of cases.
+
+### Fixed — CI was not running twelve of its own tests (DEC-9)
+
+The test suite substitutes a fake image library unless told otherwise, so CI could run
+without OpenCV installed. It never was told otherwise. **719 tests ran in CI against 736
+locally** — the missing twelve include the entire real-photograph scan suite.
+
+Two of the guards that skip those tests are **load-bearing and must stay**: under the fake
+library one of them passes on the exact code it was written to catch, and another errors
+outright. The fix is to give CI the real library, not to delete the guards. The runner also
+needed two system packages the image never carried, added CI-side so the deployed
+dependency set is untouched.
+
+### Removed — three test harnesses that could not fail (DEC-10)
+
+Archived, not deleted, along with their runner and its `-Harness` switch:
+
+- one grades the colour classifier against a **design that was deleted twice** and is
+  explicitly forbidden; its headline "9.4% miss rate" is a disagreement rate with that dead
+  design, and most of the disagreements are the current code being right;
+- one has **no assertions at all** and always reports success;
+- one is compared against a frozen baseline that scores the **wrong answer** — the engine
+  improved and the number went down.
+
+They are archived rather than deleted because their numbers are still quoted elsewhere, and
+someone who finds the 9.4% needs to be able to reach an explanation. The likely response to a
+missing explanation is to "fix" the harness, which would reintroduce the forbidden design
+through the back door. A README beside them says exactly that.
+
+A stale manual for these three was also sitting in the directory of *live* scripts, teaching
+several things that stopped being true some time ago; it moves to the archive under a
+warning banner.
+
+### Known and deliberately not actioned
+
+- **Raising the recipe generator's candidate cap was investigated and refuted.** Storing more
+  candidates per colour moves a diagnostic number and changes **nothing a user receives** —
+  see `docs/audit/STATUS.md`.
+- The frozen harness baseline is still tracked and now has **zero consumers**. Retiring it is
+  a separate decision.
+- The offline path ships no provenance, so the "Estimated colour" marker is online-only.
+  Recorded rather than faked — inferring it from the row would be the accidental rule the
+  commit explicitly rejects.
+
 ## [Unreleased] - 2026-08-12 (video-qa: a harness that measures the artefact)
 
 Phase 0 of the v6 corrective pack. Nothing user-facing changes; this exists so
