@@ -162,7 +162,24 @@ export function getRecipeForColor(
   );
 
   // Find best base match
-  const baseMatch = findClosestPaint(colorLab, basePaints, undefined, allowMetallic);
+  const baseHit = findClosestPaintData(colorLab, basePaints, undefined, allowMetallic);
+  const baseMatch = baseHit ? toPaintMatch(baseHit) : null;
+
+  // DEC-11: a partner slot must never be the base paint again. The backend has
+  // this rule — `recipe_geometry.is_eligible` rejects a candidate whose
+  // `to_node.paint_id` equals the base's — and the offline path did not, so a
+  // recipe could tell the painter to highlight a paint with itself. It happened:
+  // Citadel LAB [50,0,0] returned "Administra- tum Grey" for base AND highlight,
+  // and [30,2,0] returned "Skavenblight Dinge" for base AND shade. Measured over
+  // the neutral axis (three brands, L*15-90) that was 5/228 highlights and
+  // 4/228 shades. `baseL` below is the TARGET's lightness, not the chosen
+  // paint's, which is why the lightness predicates alone never excluded it.
+  //
+  // This is a FILTER, not an honest-empty: the next-best eligible paint takes
+  // the slot. Pre-existing — C4.2 exposed it (before the metallic filter the
+  // Citadel pair returned two different metals) rather than causing it.
+  const notTheBasePaint = (p: PaintData) =>
+    baseHit === null || p.paint_id !== baseHit.paint.paint_id;
 
   // NOTE: the backend recipe graph (curated official chains + LAB-geometry
   // fallback) is authoritative for recipes. This client-side generator is a
@@ -174,14 +191,16 @@ export function getRecipeForColor(
   // wrong-direction match.
   const baseL = colorLab[0];
   const highlightLab = adjustLightness(colorLab, 12);
-  const highlightMatch = findClosestPaint(highlightLab, basePaints, (p) => p.lab.l > baseL, allowMetallic);
+  const highlightMatch = findClosestPaint(
+    highlightLab, basePaints, (p) => p.lab.l > baseL && notTheBasePaint(p), allowMetallic);
 
   const shadeLab = adjustLightness(colorLab, -12);
   // NOTE: `basePaints` is one pool for base, highlight AND shade, while the backend
   // excludes metallics only for roles not in ('shade','wash'). The filter therefore
   // also removes metals from the offline shade slot — a deliberate divergence, not
   // parity.
-  const shadeMatch = findClosestPaint(shadeLab, basePaints, (p) => p.lab.l < baseL, allowMetallic);
+  const shadeMatch = findClosestPaint(
+    shadeLab, basePaints, (p) => p.lab.l < baseL && notTheBasePaint(p), allowMetallic);
 
   // Wash from the backend-derived map (single source of truth).
   const washMatch = washForFamily(colorFamily, brand);
@@ -195,15 +214,19 @@ export function getRecipeForColor(
 }
 
 /**
- * Find closest paint match from a list.
+ * Find the closest paint in a list, keeping the record itself.
  * Metallics are excluded unless allowMetallic — see findTopMatches.
+ *
+ * Split out of findClosestPaint so getRecipeForColor can read the chosen base's
+ * `paint_id` and exclude it from the partner pools (DEC-11) without searching
+ * the pool twice.
  */
-function findClosestPaint(
+function findClosestPaintData(
   colorLab: [number, number, number],
   paints: PaintData[],
   filter?: (p: PaintData) => boolean,
   allowMetallic: boolean = false
-): PaintMatch | null {
+): { paint: PaintData; deltaE: number } | null {
   const matte = allowMetallic ? paints : paints.filter((p) => p.metallic !== true);
   const pool = filter ? matte.filter(filter) : matte;
   if (pool.length === 0) return null;
@@ -221,13 +244,31 @@ function findClosestPaint(
   }
 
   if (!bestMatch) return null;
+  return { paint: bestMatch, deltaE: bestDeltaE };
+}
 
+/** The API-shaped match. */
+function toPaintMatch(hit: { paint: PaintData; deltaE: number }): PaintMatch {
   return {
-    name: bestMatch.name,
-    hex: bestMatch.hex,
-    type: bestMatch.type || 'paint',
-    deltaE: Math.round(bestDeltaE * 10) / 10,
+    name: hit.paint.name,
+    hex: hit.paint.hex,
+    type: hit.paint.type || 'paint',
+    deltaE: Math.round(hit.deltaE * 10) / 10,
   };
+}
+
+/**
+ * Find closest paint match from a list.
+ * Metallics are excluded unless allowMetallic — see findTopMatches.
+ */
+function findClosestPaint(
+  colorLab: [number, number, number],
+  paints: PaintData[],
+  filter?: (p: PaintData) => boolean,
+  allowMetallic: boolean = false
+): PaintMatch | null {
+  const hit = findClosestPaintData(colorLab, paints, filter, allowMetallic);
+  return hit ? toPaintMatch(hit) : null;
 }
 
 /**
