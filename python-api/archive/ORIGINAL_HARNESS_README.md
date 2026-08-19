@@ -1,3 +1,16 @@
+> **SUPERSEDED AND INACCURATE — kept as the historical record only.**
+>
+> This described the three harnesses now archived beside it. Read `README.md` in
+> this folder for why none of them can gate anything. Beyond that, this document
+> also teaches several things that are no longer true: `paints.json` /
+> `paints_rebuilt.json` do not exist (the DB is `paints_groundtruth.json`), there
+> is no second classifier to disagree with `classify_family()`, there are no hue
+> ranges or HSV boundaries to tune, and the `core/core/` duplication is gone.
+> **Do not act on anything below.** The live scoreboard is
+> `python-api/benchmarks/`.
+
+---
+
 # SchemeStealer Colour Engine Test Harness
 
 A fully-automated test harness for the colour-detection engine. **No hand-labelled

@@ -3,15 +3,16 @@
 # Re-run after ANY large change:
 #
 #   .\run_all_tests.ps1            backend (pytest) + frontend (vitest)
-#   .\run_all_tests.ps1 -Harness   also run the colour-engine accuracy harness
-#                                  (slower; compare against python-api/baseline_harness.json)
 #
 # Backend needs USE_REAL_CV2=1 (the e2e pipeline and engine-colorimetry tests
 # use real OpenCV; conftest.py stubs cv2 otherwise).
-
-param(
-    [switch]$Harness
-)
+#
+# The -Harness switch is gone (DEC-10). It ran python-api/run_all.py, whose three
+# modules are now in python-api/archive/ because none of them can gate anything:
+# one grades the classifier against a superseded HSV oracle, one has no
+# assertions and always exits 0, and one is compared against a baseline that
+# scores the wrong answer. See python-api/archive/README.md. The colour gate is
+# `python -m benchmarks.run` from python-api/.
 
 $root = $PSScriptRoot
 $failures = @()
@@ -28,16 +29,6 @@ Push-Location (Join-Path $root "schemestealer-react")
 npm test
 if ($LASTEXITCODE -ne 0) { $failures += "frontend vitest" }
 Pop-Location
-
-if ($Harness) {
-    Write-Host "=== Harness: colour-engine accuracy (run_all.py) ===" -ForegroundColor Cyan
-    Push-Location (Join-Path $root "python-api")
-    $env:SS_ENGINE_ROOT = "."
-    & ".\venv\Scripts\python.exe" run_all.py
-    if ($LASTEXITCODE -ne 0) { $failures += "harness" }
-    Pop-Location
-    Write-Host "Compare harness_report.json against baseline_harness.json — accuracy must not regress."
-}
 
 Write-Host ""
 if ($failures.Count -gt 0) {
