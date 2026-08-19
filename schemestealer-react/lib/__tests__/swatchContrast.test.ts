@@ -30,6 +30,9 @@
  * after shipping with none.
  */
 
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
 import { describe, expect, it } from 'vitest';
 
 import { getContrastRatio, hexToRgb, readableInkOn } from '../colorConversion';
@@ -140,11 +143,7 @@ describe('contrastTint — type that keeps its hue over the callout scrim', () =
 
 describe('the components consume the helpers', () => {
   const read = (rel: string) =>
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    require('node:fs').readFileSync(
-      require('node:path').join(__dirname, '..', '..', rel),
-      'utf8',
-    ) as string;
+    readFileSync(join(__dirname, '..', '..', rel), 'utf8');
 
   it('AuspexReveal no longer inks with a raw hex or a hard-coded black', () => {
     const source = read('components/miniscan/AuspexReveal.tsx');

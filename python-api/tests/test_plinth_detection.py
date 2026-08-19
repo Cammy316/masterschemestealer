@@ -38,8 +38,17 @@ from pathlib import Path
 import numpy as np
 import pytest
 
+# THE GUARD IS LOAD-BEARING, NOT BOILERPLATE -- do not remove it to widen CI
+# coverage. Measured: run `test_base_detection_ignores_colour_entirely` against
+# the PRE-C3.1 detector with conftest's cv2 stub in place and it reports
+# **0 differing pixels** -- it passes on the exact code it was written to catch.
+# The stub's `cvtColor` ignores `COLOR_RGB2HSV` and hands back the array
+# unchanged, so the deleted HSV bands match nothing and the colour mask is
+# empty. Under the stub this file is vacuous; skipping is the honest outcome.
+# Contrast `test_paint_provenance.py`, which needs no guard and says why.
 if not os.environ.get("USE_REAL_CV2"):
-    pytest.skip("requires real OpenCV -- run the suite with USE_REAL_CV2=1",
+    pytest.skip("requires real OpenCV -- the cv2 stub makes these vacuous "
+                "(see the note above); run the suite with USE_REAL_CV2=1",
                 allow_module_level=True)
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))

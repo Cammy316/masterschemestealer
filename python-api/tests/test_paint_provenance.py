@@ -23,17 +23,18 @@ CIEDE2000 target on `measured_lab is not None`, NOT on `color_source`, so nothin
 downstream reads the field yet. Surfacing the distinction in the UI is DEC-2.
 """
 
-import os
 import sys
 from collections import Counter
 from pathlib import Path
 
 import pytest
 
-if not os.environ.get("USE_REAL_CV2"):
-    pytest.skip("requires real OpenCV — run the suite with USE_REAL_CV2=1",
-                allow_module_level=True)
-
+# NO `USE_REAL_CV2` GUARD, DELIBERATELY. These three assertions touch no image
+# data at all -- they read `engine.paint_db` after the DB load -- so they are
+# meaningful under `conftest.py`'s cv2 stub, and CI runs pytest WITHOUT that
+# variable set. Verified by mutation under the stub: restoring
+# `color_source='measured'` turns two of the three red. Contrast
+# `test_plinth_detection.py`, which must keep its guard.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from core.schemestealer_engine import SchemeStealerEngine  # noqa: E402
