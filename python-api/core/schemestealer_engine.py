@@ -375,7 +375,7 @@ class SchemeStealerEngine:
                                                       target_family=target_family,
                                                       target_lab=median_lab)
                                                       
-                base_alt = self._find_owned_alt(base_paint, b, 'dominant', target_family, inventory)
+                base_alt = self._find_owned_alt(base_paint, b, 'dominant', target_family, inventory, context)
                 base_matches[b] = self._format_paint(base_paint, owned_alt=base_alt)
                 
                 if base_paint is not None:
@@ -383,9 +383,9 @@ class SchemeStealerEngine:
                     sp, ss = self._recipe_partner(base_paint, 'shade', b)
                     wp, ws = self._recipe_wash(base_paint)
                     
-                    hp_alt = self._find_owned_alt(hp, b, 'highlight', target_family, inventory)
-                    sp_alt = self._find_owned_alt(sp, b, 'shade', target_family, inventory)
-                    wp_alt = self._find_owned_alt(wp, b, 'wash', target_family, inventory)
+                    hp_alt = self._find_owned_alt(hp, b, 'highlight', target_family, inventory, context)
+                    sp_alt = self._find_owned_alt(sp, b, 'shade', target_family, inventory, context)
+                    wp_alt = self._find_owned_alt(wp, b, 'wash', target_family, inventory, context)
                     
                     highlight_matches[b] = self._format_paint(hp, hs, owned_alt=hp_alt)
                     shade_matches[b] = self._format_paint(sp, ss, owned_alt=sp_alt)
@@ -528,13 +528,38 @@ class SchemeStealerEngine:
         _dedupe_neutral_display_labels(recipes)
         return recipes
 
-    def _find_owned_alt(self, paint: 'Paint', brand: str, role: str, target_family: str, inventory: set) -> Optional[dict]:
+    def _find_owned_alt(self, paint: 'Paint', brand: str, role: str, target_family: str,
+                        inventory: set, context: dict = None) -> Optional[dict]:
         if not paint or not inventory:
             return None
         if paint.paint_id in inventory:
             return None
-            
+
         candidates = self.matcher.match_top_n(paint.lab, brand, role=role, target_family=target_family, n=20)
+
+        # A matte target must not be offered a metallic substitute (DEC-5 /
+        # O-D4). `match_color` already refuses to SERVE one — metallics are
+        # gonio-apparent, so a single diffuse LAB is not commensurable with a
+        # matte target's — but `match_top_n` deliberately carries no metallic
+        # logic, so this path bypassed it. 43 of 1,077 matte base paints (3.99%)
+        # admit a metallic within ΔE00 6.0; Citadel Corax White's nearest
+        # candidate of ANY kind is Stormhost Silver at 2.28.
+        #
+        # Filtered HERE and not inside `match_top_n`, which has one other
+        # consumer that genuinely wants metals: `scripts/build_conversions.py`
+        # generates the SEO conversion pages, where someone searching for a
+        # Leadbelcher equivalent must be shown metals. (The plan's reason for
+        # this placement — "match_top_n is shared with routes/forge.py" — is
+        # wrong: forge.py never touches PaintMatcher. The conclusion stands for
+        # the conversions instead.)
+        #
+        # Filtering the returned list rather than the pool costs nothing: over
+        # all 1,077 matte targets the post-filtered top-20 prefix is identical
+        # to a pool-filtered one in 1,077 of 1,077 cases.
+        from core.color_engine import flagged_metallic_for
+        if not flagged_metallic_for(role, context):
+            candidates = [(c, d) for c, d in candidates if not c.metallic]
+
         from core.color_engine import annotate_ownership
         info = annotate_ownership(candidates, inventory)
         alt = info.get("owned_alternative")

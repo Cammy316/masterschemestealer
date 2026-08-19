@@ -428,6 +428,25 @@ from core.colour_maths import lab_to_oklab as _lab_to_oklab
 _RETRIEVAL_SHORTLIST: int = 48
 
 
+def flagged_metallic_for(role: str, context: Optional[dict]) -> bool:
+    """Is the scan's metallic flag set for this role?
+
+    The single derivation of that decision, so `match_color` and the
+    owned-alternative lookup cannot drift apart (DEC-5). Accepts both the legacy
+    boolean `is_metallic` and the float `metallic_score`. Always False for
+    shade/wash, which are family-keyed and never metallic-gated — that carve-out
+    is why the flag is computed per role rather than per cluster.
+    """
+    if role in ('shade', 'wash'):
+        return False
+    if not context:
+        return False
+    raw = context.get('metallic_score')
+    if raw is None:
+        raw = float(bool(context.get('is_metallic', False)))
+    return float(raw) >= 0.5
+
+
 class PaintMatcher:
     """Match colours to paint database — OKLab retrieval + CIEDE2000 ranking."""
 
@@ -518,15 +537,7 @@ class PaintMatcher:
 
         mask = self._candidates_mask(brand, role)
 
-        # Scan-inferred metallic flag (both legacy bool and float score).
-        metallic_score = 0.0
-        if role not in ('shade', 'wash'):
-            if context:
-                raw = context.get('metallic_score')
-                if raw is None:
-                    raw = float(bool(context.get('is_metallic', False)))
-                metallic_score = float(raw)
-        flagged_metallic = metallic_score >= 0.5
+        flagged_metallic = flagged_metallic_for(role, context)
 
         # ── Colour-family gate (base/highlight only) ─────────────────────────
         # Restrict to the detected family + adjacent families (shared adjacency
