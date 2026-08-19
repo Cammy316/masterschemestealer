@@ -393,6 +393,18 @@ FAMILY_GATED_ROLES = {'dominant', 'highlight'}
 # A base/highlight match beyond this CIEDE2000 distance is noise, not a
 # recommendation — return None so the slot honestly shows "No match found"
 # instead of a far-off (often cross-family) paint, e.g. a ΔE-44 grey for a pink.
+#
+# MEASURED UNREACHABLE, AND DELIBERATELY KEPT (O-E11 / DEC-3). This ceiling has
+# never fired and cannot fire on the current database: exhaustively over all
+# 17 families × 6 brands × metallic flag, all 204 gated pools are non-empty
+# (the smallest holds 19 paints), the worst achievable ΔE00 anywhere is 22.83,
+# and 414 of 414 real base slots across the five bench photographs were filled.
+# It is kept because it is a candidacy CONDITION, not a tuning knob: it bounds
+# what the matcher is allowed to return if the DB ever thins out in a hue
+# region, and lowering it to make it bite would be a matcher-contract change
+# that core invariant 4 forbids without an approved plan. D11's other half is
+# genuinely live — `derive_partner`'s HONEST_EMPTY_SCORE fires 10 times in
+# 2,432 slots — so "No match found" is reachable for partners, never for a base.
 BASE_MATCH_DELTA_E_CEILING: float = 30.0
 
 # Metallic competition (scan-flagged targets): a metallic paint wins the slot

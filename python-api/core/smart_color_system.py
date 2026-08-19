@@ -446,7 +446,25 @@ class SmartColorExtractor:
         union_lab = pixels_lab[all_local_indices]
         median_lab = np.median(union_lab, axis=0)
 
-        # 1b. Base-coat bias for dark NEUTRAL clusters only. The OKLab-chroma
+        # 1b. Darker-half bias for dark NEUTRAL clusters only.
+        #
+        # NAMING (DEC-1). This was called the "base-coat bias" and that name
+        # taught the wrong thing. On a miniature the tonal range runs
+        # shade → base → highlight, so the median of the darker half — roughly
+        # the 25th L-percentile of the merge — lands in the SHADE, not on the
+        # base coat. The mechanism is still the one D7 describes and is kept
+        # unchanged; only the label is corrected. Call it what it is: a bias
+        # toward the darker half of the merged pixels.
+        #
+        # What it costs, measured on real photographs: it fires on 9 of 43
+        # merged clusters (21%) and changes the recommended paint in 10 of 27
+        # brand × case combinations (37%), with shifts reaching 7.84 ΔE00 and
+        # ΔL* 9.88. Near-neutral same-brand nearest-neighbour distance is
+        # 3.12–4.67 median, so that moves the recommendation about one
+        # genuinely distinct paint over. Kept because the alternative is worse
+        # (below), not because the trade is free.
+        #
+        # Why it is restricted to neutrals: the OKLab-chroma
         # gate alone is too loose near black — a dark chromatic shadow merge
         # (e.g. magenta shading at LAB a≈+12) slips under 0.05 and the bias
         # then manufactured a spurious 'Brown' card in production, evicting a

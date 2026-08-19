@@ -180,6 +180,21 @@ export function findClosestPaint(targetHex: string) {
   };
 }
 
+/**
+ * The Forge's own ΔE vocabulary — deliberately NOT the canonical one (DEC-7).
+ *
+ * The canonical bands live in `lib/deltaE.ts` (perfect <2 · close <5 · fair <10
+ * · distant beyond) and measure MATCH DISTANCE: how far a real paint sits from
+ * a colour the engine detected. This scale measures MIX ACCURACY: how close the
+ * Kubelka–Munk prediction for a mix lands to the colour the user asked for.
+ * They are different quantities, so they get different bands — a 4 ΔE mix is a
+ * mediocre recipe, whereas a 4 ΔE paint match is a good one. Forcing the
+ * canonical vocabulary onto this function would make the numbers agree and the
+ * meaning wrong, which is the worse error.
+ *
+ * Do not widen this scale to new surfaces. Anything reporting match distance
+ * uses `deltaBand`/`DELTA_BAND_WORD` from `lib/deltaE.ts`.
+ */
 function getDeltaEBand(deltaE: number): string {
   if (deltaE < 1.0) return 'Identical';
   if (deltaE <= 2.0) return 'Excellent';

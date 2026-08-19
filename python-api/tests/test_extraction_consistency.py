@@ -95,7 +95,11 @@ def test_combined_rgb_and_lab_describe_the_same_colour(extractor):
 
 
 # ---------------------------------------------------------------------------
-# _combine_clusters: the darker-half base-coat bias must stay neutral-only
+# _combine_clusters: the darker-half bias must stay neutral-only
+#
+# Named "base-coat bias" until DEC-1. The name was wrong: on a miniature the
+# tonal range is shade → base → highlight, so the darker half's median lands in
+# the SHADE. The behaviour is unchanged — only the label.
 # ---------------------------------------------------------------------------
 
 def _ramp_pixels(l_lo: float, l_hi: float, a: float, b: float, n: int = 40):
@@ -121,8 +125,8 @@ def _pixel_cluster(pixels_lab: np.ndarray, lo: int, hi: int) -> dict:
 
 
 def test_darker_half_bias_skips_chromatic_shadows(extractor):
-    """The darker-half base-coat bias exists for dark NEUTRAL base coats
-    (black/grey armour). It must never fire on a dark CHROMATIC cluster —
+    """The darker-half bias exists for dark NEUTRAL surfaces (black/grey
+    armour). It must never fire on a dark CHROMATIC cluster —
     in production it re-medianed a magenta-shadow merge onto its darker half
     and manufactured a 'Brown' card (#50383f) that evicted the vivid yellow
     beak from the five displayed colours.
@@ -144,9 +148,9 @@ def test_darker_half_bias_skips_chromatic_shadows(extractor):
         f"L={combined['median_lab'][0]:.1f} (union median is 28.0)")
 
 
-def test_darker_half_bias_still_applies_to_neutral_base_coats(extractor):
+def test_darker_half_bias_still_applies_to_neutral_merges(extractor):
     """The counterpart guard: a genuinely neutral dark merge (grey armour,
-    L ramp 20→40 at a≈1) must STILL receive the base-coat bias — that
+    L ramp 20→40 at a≈1) must STILL receive the darker-half bias — that
     behaviour is what fixed dark-armour base picks in the first place."""
     pixels = np.vstack([
         _ramp_pixels(20.0, 30.0, 1.0, 0.0),
@@ -159,7 +163,7 @@ def test_darker_half_bias_still_applies_to_neutral_base_coats(extractor):
 
     # Union median L = 30; the darker-half median is ~25.
     assert combined["median_lab"][0] < 28.0, (
-        f"base-coat bias no longer applies to neutral dark merges: "
+        f"darker-half bias no longer applies to neutral dark merges: "
         f"L={combined['median_lab'][0]:.1f} (expected ~25)")
 
 
