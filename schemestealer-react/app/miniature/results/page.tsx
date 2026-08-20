@@ -14,6 +14,7 @@ import { AuspexReveal } from '@/components/miniscan/AuspexReveal';
 import { HexPalette } from '@/components/miniscan/HexPalette';
 import { PaintList } from '@/components/PaintCard';
 import { PaintRecipeCard } from '@/components/shared/PaintRecipeCard';
+import type { BrandKey } from '@/lib/brandRanking';
 import { PaintResults } from '@/components/shared/PaintResults';
 import { HexChip } from '@/components/shared/HexChip';
 import { ShareButton } from '@/components/ShareButton';
@@ -65,6 +66,13 @@ export default function MiniscanResultsPage() {
       : scanHistory.find((s) => s.mode === 'miniature') ?? null;
   const activeSession = useAppStore((s) => s.activeSession);
   const setActiveSession = useAppStore((s) => s.setActiveSession);
+  // The brand the user has explicitly chosen, shared by every recipe card
+  // on this page. `null` means they have not chosen: each card then opens on
+  // its OWN best-matching brand (lib/brandRanking.ts — Citadel is beaten on
+  // 76% of real cards). The first tap on any card lifts the choice here and
+  // every card follows, so one control switches the whole result set.
+  // Deliberately NOT persisted: a new scan starts honest again.
+  const [brandOverride, setBrandOverride] = useState<BrandKey | null>(null);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [showKoFiPrompt, setShowKoFiPrompt] = useState(false);
@@ -364,6 +372,8 @@ export default function MiniscanResultsPage() {
                         colorHex={color.hex}
                         paintRecipe={color.paintRecipe}
                         mode="miniature"
+                      brandOverride={brandOverride}
+                      onBrandOverride={setBrandOverride}
                         coverage={color.percentage}
                         onStartPainting={(brand) => handleStartPainting(index, brand)}
                       />

@@ -18,6 +18,7 @@ import { useAppStore } from '@/lib/store';
 import { useOwnedPaints } from '@/hooks/useLocalStorage';
 import { copyRecipe } from '@/lib/clipboard';
 import { deltaBand, DELTA_BAND_WORD, shouldShowDeltaBadge } from '@/lib/deltaE';
+import { bestBrandFor, type BrandKey } from '@/lib/brandRanking';
 import {
   shouldShowEstimatedColour,
   ESTIMATED_COLOUR_LABEL,
@@ -36,12 +37,27 @@ interface PaintRecipeCardProps {
   /** Detected-colour coverage %, surfaced in the copied recipe header. */
   coverage?: number;
   onStartPainting?: (brand: string) => void;
+  /**
+   * A brand the user has explicitly chosen, shared across every card in the
+   * results view. `null` (the initial state) means "no choice yet", and each
+   * card independently opens on ITS OWN best-matching brand — Citadel is beaten
+   * on 76% of real cards, see lib/brandRanking.ts.
+   *
+   * Once the user picks a brand on any card, the page lifts it here and every
+   * card follows, because a painter works out of one range at a time. So the
+   * first view is honest and one tap unifies it.
+   */
+  brandOverride?: BrandKey | null;
+  /** Raised when the user picks a brand on THIS card; the page applies it to all. */
+  onBrandOverride?: (brand: BrandKey) => void;
 }
 
 // The six supported brands (those with measured-swatch ground truth). Scale75 is
 // intentionally absent — it has no measured data, so the backend never returns a
 // recipe for it and it must not render a tab. Mirrors config.SUPPORTED_BRANDS.
-type BrandKey = 'citadel' | 'vallejo' | 'army_painter' | 'ak' | 'pro_acryl' | 'two_thin_coats';
+// One definition, imported from the ranking module — two copies of this union
+// would let the tabs and the ranking drift apart silently.
+export type { BrandKey };
 
 const BRANDS: { key: BrandKey; name: string; short: string; isPremium?: boolean }[] = [
   { key: 'citadel', name: 'Citadel', short: 'Citadel' },
@@ -189,8 +205,13 @@ export function PaintRecipeCard({
   mode,
   coverage,
   onStartPainting,
+  brandOverride,
+  onBrandOverride,
 }: PaintRecipeCardProps) {
-  const [selectedBrand, setSelectedBrand] = useState<BrandKey>('citadel');
+  // Falls back to per-card state when the card is used without a page to lift
+  // the choice into, so the component still works standalone.
+  const [localBrand, setLocalBrand] = useState<BrandKey | null>(null);
+  const selectedBrand = brandOverride !== undefined ? brandOverride : localBrand;
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showComparison, setShowComparison] = useState(false);
   const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null);
@@ -225,10 +246,17 @@ export function PaintRecipeCard({
   // Derive the effective brand: the user's choice if it's present in this scan's
   // response, otherwise the first available brand. Derived (not stored) so we
   // never have to reset state in an effect.
-  const effectiveBrand: BrandKey = useMemo(
-    () => (visibleBrands.some((b) => b.key === selectedBrand) ? selectedBrand : visibleBrands[0].key),
-    [visibleBrands, selectedBrand]
-  );
+  // The user's choice if they have made one and it is offered here; otherwise
+  // the brand whose BASE match is closest to this colour. Citadel used to win
+  // this unconditionally by sitting first in the BRANDS array — measured over
+  // 37 real cards it is actually beaten on 28 of them (76%), by a median of
+  // 2.5 ΔE00 and up to 9.1, which moves several cards a whole band.
+  const effectiveBrand: BrandKey = useMemo(() => {
+    if (selectedBrand && visibleBrands.some((b) => b.key === selectedBrand)) {
+      return selectedBrand;
+    }
+    return bestBrandFor(paintRecipe, visibleBrands.map((b) => b.key)) ?? visibleBrands[0].key;
+  }, [visibleBrands, selectedBrand, paintRecipe]);
 
   const currentRecipe: BrandRecipe = useMemo(
     () => paintRecipe[effectiveBrand] ?? { base: null, shade: null, highlight: null, wash: null },
@@ -270,10 +298,11 @@ export function PaintRecipeCard({
   }, [colorFamily, colorHex, coverage, currentRecipe, effectiveBrand]);
 
   const handleBrandChange = useCallback((brand: BrandKey) => {
-    setSelectedBrand(brand);
+    setLocalBrand(brand);
+    onBrandOverride?.(brand);          // one tap switches every card in the view
     const brandName = BRANDS.find((b) => b.key === brand)?.name || brand;
-    setAnnouncement(`Switched to ${brandName} paints`);
-  }, []);
+    setAnnouncement(`Switched all colours to ${brandName} paints`);
+  }, [onBrandOverride]);
 
   // Swipe gesture (kept as a bonus; the tabs are the obvious control)
   const handleSwipe = useCallback((direction: 'left' | 'right') => {
@@ -527,7 +556,11 @@ export function PaintRecipeCard({
           >
             {RECIPE_STEPS.map((step) => {
               const paint = currentRecipe[step.key];
-              const brandName = BRANDS.find((b) => b.key === selectedBrand)?.name || selectedBrand;
+              // effectiveBrand, not selectedBrand: this names the brand actually
+              // rendered. `selectedBrand` is null until the user picks one, and
+              // could already diverge when a stored choice was not offered by
+              // this scan — either way the owned-paint id would be wrong.
+              const brandName = BRANDS.find((b) => b.key === effectiveBrand)?.name || effectiveBrand;
               const paintId = paint ? getPaintId(brandName, paint.name) : '';
 
               return (
